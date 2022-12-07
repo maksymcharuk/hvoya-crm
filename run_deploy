@@ -1,0 +1,14 @@
+#!/bin/sh
+ssh charuk@167.99.145.25 <<EOF
+ cd ~/hvoya-crm
+ git pull
+ npm install
+ npm run build
+ cd client
+ npm install
+ npm run build
+ cd ~/hvoya-crm
+ npm run typeorm:run-migrations
+ pm2 restart all
+ exit
+EOF
