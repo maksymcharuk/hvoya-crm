@@ -1,11 +1,12 @@
 #!/bin/sh
 ssh charuk@167.99.145.25 <<EOF
+ cd ~/hvoya-crm/client
+ npm install
  cd ~/hvoya-crm
  git pull
  npm install
  npm run build
- cd client
- npm install
+ cd ~/hvoya-crm/client
  npm run build
  cd ~/hvoya-crm
  npm run typeorm:run-migrations

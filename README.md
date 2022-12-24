@@ -1,32 +1,50 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Hvoya CRM. Project built with [Nest.js](https://nestjs.com/) and [Angular](https://angular.io/).
 
 ## Installation
+
+### Prerequisites
+
+1. [Node.js](https://nodejs.org/en/) and NPM (~v16.15.0)
+2. [PostgreSQL](https://www.postgresql.org/download/) (~15.1)
+3. Install [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) for VS Code
+
+Install:
+1. Nest CLI
+```
+npm install -g @nestjs/cli
+```
+2. Angular CLI 
+```
+npm install -g @angular/cli
+```
+
+### Backend (Nest)
+
+1. Install node modules in the `root` of the project running: 
+
+```bash
+$ npm install
+```
+
+2. Create `.env` file in the `root` of the project with the following content:
+
+```
+PORT='3000'
+
+DB_HOST='localhost'
+DB_PORT=5432
+DB_USERNAME='postgres'
+DB_PASSWORD='postgres'
+DB_NAME='hvoya_crm_dev'
+```
+
+3. Create DB with the configs from `.env` in PostgreSQL.
+
+### Frontend (Angular)
+
+Switch to the `client` folder and install node modules running:
 
 ```bash
 $ npm install
@@ -34,18 +52,25 @@ $ npm install
 
 ## Running the app
 
+### Backend (Nest)
+
 ```bash
 # development
-$ npm run start
-
-# watch mode
 $ npm run start:dev
 
 # production mode
 $ npm run start:prod
 ```
 
+### Frontend (Angular)
+
+```bash
+$ npm run start
+```
+
 ## Test
+
+### Backend (Nest)
 
 ```bash
 # unit tests
@@ -58,16 +83,31 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
+### Frontend (Angular)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+$ npm run test
+```
 
-## Stay in touch
+## Environments
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+1. [Staging](http://167.99.145.25/) -> `ssh root@167.99.145.25`
+2. [Jenkins](http://159.89.233.123:8080/) -> `ssh root@159.89.233.123`
+3. [Trello](https://trello.com/b/YvdzPYBT/hvoya-crm)
+4. [Small cheatsheet](https://docs.google.com/document/d/1pn9lYFZJRZNnFB6rV9sUU3tAMIfulvh9J2B37NIPl_8/edit#heading=h.xdwyq0n7131o) with some basic commands to help setup dev env
 
-## License
+## Recipes
 
-Nest is [MIT licensed](LICENSE).
+### Backend (Nest)
+
+#### 1. Add new entity
+
+1. Add entity to the `entities` folder.
+2. Generate migration `npm run typeorm:generate-migration --name=<name>`.
+3. Run migration `npm run typeorm:run-migrations`.
+
+#### 2. Update entity (Add new column(s) or update column type, etc.)
+
+1. Update entity.
+2. Generate migration `npm run typeorm:generate-migration --name=<name>`.
+3. Run migration `npm run typeorm:run-migrations`.
