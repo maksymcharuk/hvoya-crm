@@ -54,6 +54,7 @@ $ npm install
 
 ### Backend (Nest)
 
+In `root` folder run:
 ```bash
 # development
 $ npm run start:dev
@@ -62,8 +63,11 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+> Note: All API endpoint routes start with `/api`. E.g. `/api/products`
+
 ### Frontend (Angular)
 
+In `client` folder run:
 ```bash
 $ npm run start
 ```
@@ -72,6 +76,7 @@ $ npm run start
 
 ### Backend (Nest)
 
+In `root` folder run:
 ```bash
 # unit tests
 $ npm run test
@@ -85,6 +90,7 @@ $ npm run test:cov
 
 ### Frontend (Angular)
 
+In `client` folder run:
 ```bash
 $ npm run test
 ```
