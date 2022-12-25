@@ -20,6 +20,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
 })
-class DatabaseModule {}
-
-export default DatabaseModule;
+export class DatabaseModule {}
