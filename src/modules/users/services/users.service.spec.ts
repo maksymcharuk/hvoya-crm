@@ -1,37 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
-import { mockUser } from '../../../../test/mocks/user.mock';
+import * as userReposityMock from '../../../../test/mocks/reposiories/user.repository.mock';
+import { mockUser } from '../../../../test/mocks/entities/user.mock';
 
 import { UserEntity } from '../../../entities/user.entity';
-import { UserService } from './user.service';
+import { UsersService } from './users.service';
 
-describe('UserService', () => {
-  let service: UserService;
-  let findOneBySpy: jest.Mock;
-  let createSpy: jest.Mock;
-  let saveSpy: jest.Mock;
+describe('UsersService', () => {
+  let service: UsersService;
 
   beforeEach(async () => {
-    findOneBySpy = jest.fn().mockResolvedValue(mockUser);
-    createSpy = jest.fn().mockReturnValue(mockUser);
-    saveSpy = jest.fn().mockReturnValue(mockUser);
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
           provide: getRepositoryToken(UserEntity),
-          useValue: {
-            findOneBy: findOneBySpy,
-            create: createSpy,
-            save: saveSpy,
-          },
+          useValue: userReposityMock.userRepositoryMock,
         },
-        UserService,
+        UsersService,
       ],
     }).compile();
 
-    service = module.get<UserService>(UserService);
+    service = module.get<UsersService>(UsersService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -41,14 +35,14 @@ describe('UserService', () => {
   it('should fetch user by id', async () => {
     const user = await service.findById(1);
 
-    expect(findOneBySpy).toHaveBeenCalledTimes(1);
+    expect(userReposityMock.findOneBySpy).toHaveBeenCalledTimes(1);
     expect(user).toEqual(mockUser);
   });
 
   it('should fetch user by email', async () => {
     const user = await service.findByEmail('email');
 
-    expect(findOneBySpy).toHaveBeenCalledTimes(1);
+    expect(userReposityMock.findOneBySpy).toHaveBeenCalledTimes(1);
     expect(user).toEqual(mockUser);
   });
 
@@ -72,8 +66,8 @@ describe('UserService', () => {
 
     delete mockUser.password;
 
-    expect(createSpy).toHaveBeenCalledTimes(1);
-    expect(saveSpy).toHaveBeenCalledTimes(1);
+    expect(userReposityMock.createSpy).toHaveBeenCalledTimes(1);
+    expect(userReposityMock.saveSpy).toHaveBeenCalledTimes(1);
     expect(user).toEqual(mockUser);
   });
 });
