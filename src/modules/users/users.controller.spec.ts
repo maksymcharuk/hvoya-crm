@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { usersServiceMock } from '../../../test/mocks/services/users.service.mock';
+import { caslAbilityFactoryMock } from '../../../test/mocks/factories/casl-ability.factory';
+import { CaslAbilityFactory } from '../casl/casl-ability/casl-ability.factory';
 import { UsersService } from './services/users.service';
 import { UsersController } from './users.controller';
 
@@ -10,7 +12,10 @@ describe('UsersController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [{ provide: UsersService, useValue: usersServiceMock }],
+      providers: [
+        { provide: UsersService, useValue: usersServiceMock },
+        { provide: CaslAbilityFactory, useValue: caslAbilityFactoryMock },
+      ],
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
@@ -32,11 +37,13 @@ describe('UsersController', () => {
 
   it('should fetch user by id', async () => {
     const userMock = { id: 1, email: 'email', password: 'password' };
-    usersServiceMock.findById.mockImplementation(() => userMock);
+    usersServiceMock.showById.mockImplementation(() => userMock);
 
     const user = await controller.getUserById('1');
 
-    expect(usersServiceMock.findById).toHaveBeenCalledTimes(1);
+    delete userMock.password;
+
+    expect(usersServiceMock.showById).toHaveBeenCalledTimes(1);
     expect(user).toEqual(userMock);
   });
 });

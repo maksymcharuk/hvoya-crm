@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { AuthLoginDto } from '../../../../dtos/auth-login.dto';
 import { UserEntity } from '../../../../entities/user.entity';
+import { JwtTokenPayload } from '../../../../interfaces/jwt-token-payload.interface';
 
 import { UsersService } from '../../../../modules/users/services/users.service';
 
@@ -16,8 +17,11 @@ export class AuthService {
   async login(authLoginDto: AuthLoginDto) {
     const user = await this.validateUser(authLoginDto);
 
-    const payload = {
-      userId: user.id,
+    const payload: JwtTokenPayload = {
+      user: {
+        id: user.id,
+        role: user.role,
+      },
     };
 
     return {
