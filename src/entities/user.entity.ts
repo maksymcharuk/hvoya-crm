@@ -2,20 +2,28 @@ import { BeforeInsert, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { BaseEntity } from './base.entity';
+import { Role } from '../enums/role.enum';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column({ nullable: true, default: '' })
+  @Column({ default: '' })
   firstName: string;
 
-  @Column({ nullable: true, default: '' })
+  @Column({ default: '' })
   lastName: string;
 
   @Column()
   password: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.User,
+  })
+  role: Role;
 
   @BeforeInsert()
   async hashPassword() {

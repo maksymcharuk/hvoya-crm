@@ -27,6 +27,7 @@
     "typeorm:schema-drop": "npm run typeorm -- -d ./typeorm.config.ts schema:drop"
   },
   "dependencies": {
+    "@casl/ability": "^6.3.3",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
