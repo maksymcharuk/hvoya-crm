@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Action } from '../../enums/action.enum';
 import { UserEntity } from '../../entities/user.entity';
 import { CreateUserDto } from '../../dtos/create-user.dto';
@@ -23,7 +31,7 @@ export class UsersController {
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
-  getUserById(@Param('id') id: string) {
-    return this.usersService.showById(+id);
+  getUserById(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.showById(id);
   }
 }
