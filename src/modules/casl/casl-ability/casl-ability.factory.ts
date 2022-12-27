@@ -29,6 +29,10 @@ export class CaslAbilityFactory {
       can(Action.Manage, 'all'); // read-write access to everything
     }
 
+    if (user.role === Role.Admin) {
+      can(Action.Read, UserEntity); // read-only access to User table
+    }
+
     return build({
       // Read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details
       detectSubjectType: (item) =>

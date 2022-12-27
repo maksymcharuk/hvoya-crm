@@ -39,7 +39,7 @@ describe('UsersController', () => {
     const userMock = { id: 1, email: 'email', password: 'password' };
     usersServiceMock.showById.mockImplementation(() => userMock);
 
-    const user = await controller.getUserById('1');
+    const user = await controller.getUserById(1);
 
     delete userMock.password;
 
