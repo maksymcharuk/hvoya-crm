@@ -28,22 +28,7 @@ npm install -g @angular/cli
 $ npm install
 ```
 
-2. Create `.env` file in the `root` of the project with the following content:
-
-```
-# APP
-PORT='3000'
-
-# DATABASE
-DB_HOST='localhost'
-DB_PORT=5432
-DB_USERNAME='postgres'
-DB_PASSWORD='postgres'
-DB_NAME='hvoya_crm_dev'
-
-# JWT
-JWT_SECRET='secret'
-```
+2. Copy `.env.example` file in the `root` of the project and rename it to `.env`.
 
 3. Create DB with the configs from `.env` in PostgreSQL manually or by running:
 ```
