@@ -77,6 +77,24 @@ In `client` folder run:
 $ npm run start
 ```
 
+## Development
+
+### Backend (Nest)
+
+Technologies and tools:
+1. Authorization - [Nest CASL](https://docs.nestjs.com/security/authorization#integrating-casl)
+
+Architecture:
+1. [How Do You Design a Shopping Cart Database for E-Commerce?](https://fabric.inc/blog/shopping-cart-database-design/)
+2. [Design Amazon - Online Shopping System](https://github.com/tssovi/grokking-the-object-oriented-design-interview/blob/master/object-oriented-design-case-studies/design-amazon-online-shopping-system.md)
+ 
+### Frontend (Angular)
+
+Technologies and tools:
+1. UI Framework - [Prime NG](https://www.primefaces.org/primeng)
+2. Role-based authorization - [CASL for Angular](https://www.npmjs.com/package/@casl/angular)
+3. NGRX?
+
 ## Test
 
 ### Backend (Nest)
