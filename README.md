@@ -45,7 +45,17 @@ DB_NAME='hvoya_crm_dev'
 JWT_SECRET='secret'
 ```
 
-3. Create DB with the configs from `.env` in PostgreSQL.
+3. Create DB with the configs from `.env` in PostgreSQL manually or by running:
+```
+npm run db:setup
+```
+
+> This will create DB with default data.  
+>
+> Users:  
+> SuperAdmin - login: john-super-admin@email.com, pass: 12345  
+> Admin - login: alice-admin@email.com, pass:  12345  
+> User - login: peter-user@email.com, pass: 12345  
 
 ### Frontend (Angular)
 
@@ -132,11 +142,11 @@ $ npm run test
 #### 1. Add new entity
 
 1. Add entity to the `entities` folder.
-2. Generate migration `npm run typeorm:generate-migration --name=<name>`.
-3. Run migration `npm run typeorm:run-migrations`.
+2. Generate migration `npm run migrations:generate --name=<name>`.
+3. Run migration `npm run migrations:run`.
 
 #### 2. Update entity (Add new column(s) or update column type, etc.)
 
 1. Update entity.
-2. Generate migration `npm run typeorm:generate-migration --name=<name>`.
-3. Run migration `npm run typeorm:run-migrations`.
+2. Generate migration `npm run migrations:generate --name=<name>`.
+3. Run migration `npm run migrations:run`.
