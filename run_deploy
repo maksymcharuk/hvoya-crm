@@ -11,7 +11,7 @@ ssh charuk@167.99.145.25 <<EOF
  cd ~/hvoya-crm/client
  npm run build
  cd ~/hvoya-crm
- npm run typeorm:run-migrations
+ npm run migrations:run
  pm2 restart all
  exit
 EOF
