@@ -10,6 +10,11 @@
             <p-password name="password" formControlName="password" id="float-input-invalid" [toggleMask]="true"></p-password>
             <label for="float-input-invalid">Password</label>
         </span>
-        <button [disabled]="!signInForm.valid" type="submit" pButton label="Sign In" class="sign-in-form-button"></button>
+        <div class="sign-in-wrapper-confirm-secttion">
+            <a [routerLink]="['/', 'auth', 'sign-up']">register</a>
+            <button [disabled]="!signInForm.valid" type="submit" 
+                pButton label="Sign In">
+            </button>
+        </div>
     </form>
 </div>
