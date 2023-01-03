@@ -1,4 +1,4 @@
-.sign-in-wrapper {
+.sign-up-wrapper {
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -7,6 +7,14 @@
 
     &-element {
         margin: 15px;
+
+        li {
+            font-size: 12px;
+        }
+
+        .valid {
+            color: green;
+        }
     }
 
     &-form {
