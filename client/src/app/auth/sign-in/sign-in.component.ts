@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoginDTO, LoginDTOFormGroup } from '../../shared/interfaces/login.dto';
+import { SignInDTO, SignInDTOFormGroup } from '../../shared/interfaces/sign-in.dto';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -12,10 +12,12 @@ import { AuthService } from '../auth.service';
 })
 export class SignInComponent implements OnInit {
 
+  isLoading: boolean = false;
+
   signInForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required]
-  }) as LoginDTOFormGroup;
+  }) as SignInDTOFormGroup;
 
   constructor(private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -23,10 +25,12 @@ export class SignInComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  onSubmit(value: LoginDTO) {
-    this.authService.login(value)
+  onSubmit(value: SignInDTO) {
+    this.isLoading = true;
+    this.authService.signIn(value)
       .subscribe(() => {
-        this.router.navigateByUrl('');
+        this.isLoading = false;
+        this.router.navigateByUrl('dashboard');
       })
   }
 }

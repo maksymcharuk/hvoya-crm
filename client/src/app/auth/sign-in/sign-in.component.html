@@ -12,7 +12,7 @@
         </span>
         <div class="sign-in-wrapper-confirm-secttion">
             <a [routerLink]="['/', 'auth', 'sign-up']">register</a>
-            <button [disabled]="!signInForm.valid" type="submit" 
+            <button [disabled]="!signInForm.valid || isLoading" type="submit" 
                 pButton label="Sign In">
             </button>
         </div>
