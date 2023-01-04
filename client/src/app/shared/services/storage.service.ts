@@ -12,6 +12,6 @@ export class StorageService {
   }
 
   getItem(key: string) {
-    return JSON.parse(localStorage.getItem(key) || '');
+    return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key) || '') : null;
   }
 }
