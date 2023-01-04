@@ -1,13 +1,13 @@
 <div class="sign-in-wrapper">
-    <form class="sign-in-wrapper-form" [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+    <form class="sign-in-wrapper-form" [formGroup]="signInForm" (ngSubmit)="onSubmit(signInForm.value)">
         <span class="p-float-label sign-in-wrapper-element p-input-icon-right">
             <i class="pi pi-user"></i>
-            <input name="email" formControlName="email" id="float-input-invalid" type="text" 
+            <input name="email" formControlName="email" id="float-input-invalid" type="email" 
                 pInputText> 
             <label for="float-input-invalid">Email</label>
         </span>
         <span class="p-float-label sign-in-wrapper-element">
-            <p-password name="password" formControlName="password" id="float-input-invalid" [toggleMask]="true"></p-password>
+            <p-password name="password" formControlName="password" id="float-input-invalid" [toggleMask]="true" [feedback]="false"></p-password>
             <label for="float-input-invalid">Password</label>
         </span>
         <div class="sign-in-wrapper-confirm-secttion">
