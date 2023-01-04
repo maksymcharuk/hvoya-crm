@@ -19,7 +19,8 @@ const routes: Routes = [
   declarations: [SignInComponent, SighUpComponent],
   imports: [
     RouterModule.forChild(routes),
-    CommonModule, InputTextModule,
+    CommonModule,
+    InputTextModule,
     ReactiveFormsModule,
     PasswordModule,
     ButtonModule,

@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControlOptions, FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { SignUpDTO, SignUpDTOFormGroup } from '../../shared/interfaces/sign-up.dto';
 import { PasswordValidators } from "../../shared/validators/password-validator";
+import { AuthService } from '../auth.service';
 
 
 @Component({
@@ -27,9 +30,11 @@ export class SighUpComponent implements OnInit {
     {
       validator: PasswordValidators.MatchValidator
     } as AbstractControlOptions
-  );
+  ) as SignUpDTOFormGroup;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.signUpForm.valueChanges.subscribe(() => {
@@ -37,7 +42,12 @@ export class SighUpComponent implements OnInit {
     });
   }
 
-  onSubmit() { }
+  onSubmit(value: SignUpDTO) {
+    this.authService.signUp(value)
+      .subscribe(() => {
+        this.router.navigateByUrl('dashboard');
+      })
+  }
 
   getPasswordErrors() {
     if (this.signUpForm.get('password')?.value) {
