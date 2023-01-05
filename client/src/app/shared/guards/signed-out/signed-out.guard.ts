@@ -1,18 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 import { StorageService } from '../../services/storage.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SignedOutGuard implements CanActivate {
+  constructor(private storageService: StorageService, private router: Router) {}
 
-  constructor(private storageService: StorageService,
-    private router: Router) { }
-
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): boolean {
+  canActivate(): boolean {
     if (!this.storageService.getItem('access_token')) {
       return true;
     } else {
@@ -20,5 +16,4 @@ export class SignedOutGuard implements CanActivate {
       return false;
     }
   }
-
 }

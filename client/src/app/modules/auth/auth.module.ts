@@ -7,12 +7,12 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 
-import { SignInComponent } from '../../auth/sign-in/sign-in.component';
-import { SighUpComponent } from '../../auth/sigh-up/sigh-up.component';
+import { SignInComponent } from './sign-in/sign-in.component';
+import { SighUpComponent } from './sigh-up/sigh-up.component';
 
 const routes: Routes = [
   { path: 'sign-in', component: SignInComponent },
-  { path: 'sign-up', component: SighUpComponent }
+  { path: 'sign-up', component: SighUpComponent },
 ];
 
 @NgModule({
@@ -24,8 +24,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     PasswordModule,
     ButtonModule,
-    DividerModule
+    DividerModule,
   ],
   exports: [RouterModule],
 })
-export class AuthModule { }
+export class AuthModule {}

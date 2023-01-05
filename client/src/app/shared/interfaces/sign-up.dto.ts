@@ -1,16 +1,15 @@
-import { FormGroup, AbstractControl } from "@angular/forms";
+import { FormGroup, AbstractControl } from '@angular/forms';
 
 export interface SignUpDTO {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
-
 export interface SignUpDTOFormGroup extends FormGroup {
-    value: SignUpDTO;
+  value: SignUpDTO;
 
-    controls: {
-        email: AbstractControl;
-        password: AbstractControl;
-    };
+  controls: {
+    email: AbstractControl;
+    password: AbstractControl;
+  };
 }
