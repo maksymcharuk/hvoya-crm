@@ -4,7 +4,7 @@ import {
   CaslAbilityFactory,
   AppAbility,
 } from './casl-ability/casl-ability.factory';
-import { JwtTokenPayload } from '../../interfaces/jwt-token-payload.interface';
+import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 import { CHECK_POLICIES_KEY } from './check-policies.decorator';
 import { PolicyHandler } from './policy-handler';
 

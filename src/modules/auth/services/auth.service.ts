@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { AuthSignInDto } from '../../../dtos/auth-sign-in.dto';
-import { AuthSignUpDto } from '../../../dtos/auth-sign-up.dto';
-import { UserEntity } from '../../../entities/user.entity';
-import { JwtTokenPayload } from '../../../interfaces/jwt-token-payload.interface';
+import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
+import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
+import { UserEntity } from '@entities/user.entity';
+import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 
 import { UsersService } from '../../../modules/users/services/users.service';
 
