@@ -13,6 +13,6 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  await app.listen(configService.get('PORT'));
+  await app.listen(configService.get('PORT') || '3000');
 }
 bootstrap();

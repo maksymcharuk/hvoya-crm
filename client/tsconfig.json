@@ -26,6 +26,13 @@
       "@environment/*": ["src/environments/*"],
       "@shared/*": ["src/app/shared/*"],
     },
+    "noImplicitAny": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "alwaysStrict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

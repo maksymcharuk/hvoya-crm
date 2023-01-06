@@ -2,8 +2,8 @@ import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 import * as bcrypt from 'bcrypt';
 
-import { UserEntity } from '../../../entities/user.entity';
-import { Role } from '../../../enums/role.enum';
+import { UserEntity } from '@entities/user.entity';
+import { Role } from '@enums/role.enum';
 
 export default class UserSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {

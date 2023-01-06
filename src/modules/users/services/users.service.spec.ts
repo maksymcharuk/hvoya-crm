@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import * as userReposityMock from '../../../../test/mocks/reposiories/user.repository.mock';
 import { mockUser } from '../../../../test/mocks/entities/user.mock';
 
-import { UserEntity } from '../../../entities/user.entity';
+import { UserEntity } from '@entities/user.entity';
 import { UsersService } from './users.service';
 
 describe('UsersService', () => {

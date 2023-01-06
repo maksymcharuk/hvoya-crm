@@ -7,9 +7,9 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { Action } from '../../enums/action.enum';
-import { UserEntity } from '../../entities/user.entity';
-import { CreateUserDto } from '../../dtos/create-user.dto';
+import { Action } from '@enums/action.enum';
+import { UserEntity } from '@entities/user.entity';
+import { CreateUserDto } from '@dtos/create-user.dto';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';
