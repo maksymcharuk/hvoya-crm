@@ -115,7 +115,7 @@ $ npm run test
 
 ## Environments
 
-1. [Staging](http://167.99.145.25/) -> `ssh root@167.99.145.25`
+1. [Staging](http://staging.hvoya-crm.com/) -> `ssh root@167.99.145.25`
 2. [Jenkins](http://159.89.233.123:8080/) -> `ssh root@159.89.233.123`
 3. [Trello](https://trello.com/b/YvdzPYBT/hvoya-crm)
 4. [Small cheatsheet](https://docs.google.com/document/d/1pn9lYFZJRZNnFB6rV9sUU3tAMIfulvh9J2B37NIPl_8/edit#heading=h.xdwyq0n7131o) with some basic commands to help setup dev env
