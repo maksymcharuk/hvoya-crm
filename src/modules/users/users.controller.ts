@@ -15,11 +15,16 @@ import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';
 import { UsersService } from './services/users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { MailService } from '../mail/services/mail.service';
+import { TestMail } from '../mail/test.mail';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private mailService: MailService,
+  ) {}
 
   @Post()
   @CheckPolicies((ability: AppAbility) =>
@@ -31,7 +36,8 @@ export class UsersController {
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
-  getUserById(@Param('id', ParseIntPipe) id: number) {
+  async getUserById(@Param('id', ParseIntPipe) id: number) {
+    await this.mailService.send(new TestMail(), 'maxcharuk@gmail.com');
     return this.usersService.showById(id);
   }
 }
