@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PoliciesGuard } from '@shared/guards/policies/policies.guard';
 import { SignedInGuard } from './shared/guards/signed-in/signed-in.guard';
 import { SignedOutGuard } from './shared/guards/signed-out/signed-out.guard';
 
@@ -17,13 +18,13 @@ const routes: Routes = [
       import('./modules/dashboard/dashboard.module').then(
         (m) => m.DashboardModule,
       ),
-    canActivate: [SignedInGuard],
+    canActivate: [SignedInGuard, PoliciesGuard],
   },
   {
     path: 'admin',
     loadChildren: () =>
       import('./modules/admin/admin.module').then((m) => m.AdminModule),
-    canActivate: [SignedInGuard],
+    canActivate: [SignedInGuard, PoliciesGuard],
   },
 ];
 
@@ -31,4 +32,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
