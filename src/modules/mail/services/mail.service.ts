@@ -33,13 +33,9 @@ export class MailService {
       return createTransport({
         host: this.configService.get('MAIL_HOST'),
         port: this.configService.get('MAIL_PORT'),
-        secure: this.configService.get('MAIL_SECURE'), // true for 465, false for other ports
         auth: {
           user: this.configService.get('MAIL_USERNAME'),
           pass: this.configService.get('MAIL_PASSWORD'),
-        },
-        tls: {
-          ciphers: 'SSLv3',
         },
       });
     }
