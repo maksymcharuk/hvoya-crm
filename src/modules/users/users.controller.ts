@@ -37,7 +37,11 @@ export class UsersController {
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
   async getUserById(@Param('id', ParseIntPipe) id: number) {
-    await this.mailService.send(new TestMail(), 'maxcharuk@gmail.com');
+    // TODO: Remove after testing
+    await this.mailService.send(
+      new TestMail('Hello. This is a test email message'),
+      'maxcharuk@gmail.com',
+    );
     return this.usersService.showById(id);
   }
 }
