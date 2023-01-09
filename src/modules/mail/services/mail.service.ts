@@ -37,6 +37,9 @@ export class MailService {
           user: this.configService.get('MAIL_USERNAME'),
           pass: this.configService.get('MAIL_PASSWORD'),
         },
+        tls: {
+          ciphers: 'SSLv3',
+        },
       });
     }
   }
