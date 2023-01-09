@@ -9,6 +9,19 @@
   <style></style>
 
   <body style="margin: 0 auto 40px auto; padding: 0; background-color: #f7f7f7">
-    Test email message: <b>{{ message }}</b>
+    Test email message:
+    </br> 
+    </br> 
+    {{#if user}}
+      <b>User ID: {{ user.id }}</b>
+      </br>
+      <b>First name: {{ user.firstName }}</b>
+      </br>
+      <b>Last name: {{ user.lastName }}</b>
+      </br>
+      <b>Email: {{ user.email }}</b>
+    {{else}}
+      <b>User was no found</b>>
+    {{/if}}
   </body>
 </html>
