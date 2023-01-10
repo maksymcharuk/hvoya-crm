@@ -4,6 +4,7 @@ import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SignInDTO, SignInDTOFormGroup } from '@shared/interfaces/sign-in.dto';
 import { AuthService } from '@shared/services/auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -26,9 +27,11 @@ export class SignInComponent {
 
   onSubmit(value: SignInDTO) {
     this.isLoading = true;
-    this.authService.signIn(value).subscribe(() => {
-      this.isLoading = false;
-      this.router.navigateByUrl('dashboard');
-    });
+    this.authService
+      .signIn(value)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe(() => {
+        this.router.navigateByUrl('dashboard');
+      });
   }
 }

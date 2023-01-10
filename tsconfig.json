@@ -33,5 +33,4 @@
       "@interfaces/*": ["src/interfaces/*"],
     },
   },
-  "exclude": ["client"],
 }
