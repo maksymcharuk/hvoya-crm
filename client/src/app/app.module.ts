@@ -13,6 +13,8 @@ import { AppComponent } from './app.component';
 import { PureAbility } from '@casl/ability';
 import { AppAbility } from '@shared/roles/ability';
 import { HttpExceptionInterceptor } from '@shared/interceptors/http-exception.interceptor';
+import { PoliciesService } from '@shared/services/policies.service';
+import { UserService } from '@shared/services/user.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +28,8 @@ import { HttpExceptionInterceptor } from '@shared/interceptors/http-exception.in
   ],
   providers: [
     MessageService,
+    PoliciesService,
+    UserService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpExceptionInterceptor,
