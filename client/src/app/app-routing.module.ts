@@ -19,12 +19,14 @@ const routes: Routes = [
         (m) => m.DashboardModule,
       ),
     canActivate: [SignedInGuard, RoleGuard],
+    data: { roles: ['SuperAdmin', 'Admin', 'User'] },
   },
   {
     path: 'admin',
     loadChildren: () =>
       import('./modules/admin/admin.module').then((m) => m.AdminModule),
     canActivate: [SignedInGuard, RoleGuard],
+    data: { roles: ['SuperAdmin', 'Admin'] },
   },
 ];
 
