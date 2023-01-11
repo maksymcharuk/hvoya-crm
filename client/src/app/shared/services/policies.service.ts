@@ -18,13 +18,13 @@ export class PoliciesService {
 
     switch (user.role) {
       case 'SuperAdmin':
-        can('all', 'Item');
+        can('allowed', 'AdminPage');
         break;
       case 'Admin':
-        can('all', 'Item');
+        can('allowed', 'AdminPage');
         break;
       case 'User':
-        can('read', 'Item');
+        can('allowed', 'DashboardPage');
         break;
     }
 

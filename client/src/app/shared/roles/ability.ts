@@ -1,7 +1,7 @@
 import { Ability, AbilityClass } from '@casl/ability';
 
-type Actions = 'create' | 'read' | 'update' | 'delete' | 'all';
-type Subjects = 'Item' | 'Post';
+type Actions = 'allowed';
+export type Subjects = 'AdminPage' | 'DashboardPage';
 
 export type AppAbility = Ability<[Actions, Subjects]>;
 export const AppAbility = Ability as AbilityClass<AppAbility>;
