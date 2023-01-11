@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private storageService: StorageService,
-  ) {}
+  ) { }
 
   signIn(value: SignInDTO) {
     return this.http

@@ -4,6 +4,8 @@ import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SignInDTO, SignInDTOFormGroup } from '@shared/interfaces/sign-in.dto';
 import { AuthService } from '@shared/services/auth.service';
+import { PoliciesService } from '@shared/services/policies.service';
+import { UserService } from '@shared/services/user.service';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -23,7 +25,9 @@ export class SignInComponent {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-  ) {}
+    private userService: UserService,
+    private policiesService: PoliciesService,
+  ) { }
 
   onSubmit(value: SignInDTO) {
     this.isLoading = true;
@@ -31,7 +35,13 @@ export class SignInComponent {
       .signIn(value)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe(() => {
-        this.router.navigateByUrl('dashboard');
+        this.policiesService.updateAbility();
+        const { role } = this.userService.getUser();
+        if (role === 'SuperAdmin' || role === 'Admin') {
+          this.router.navigateByUrl('admin');
+        } else {
+          this.router.navigateByUrl('dashboard');
+        }
       });
   }
 }
