@@ -1,0 +1,71 @@
+<div class="layout-topbar">
+  <a class="layout-topbar-logo" routerLink="">
+    <img src="assets/images/logo.svg" alt="logo" />
+  </a>
+
+  <button
+    #menubutton
+    class="p-link layout-menu-button layout-topbar-button"
+    (click)="layoutService.onMenuToggle()"
+  >
+    <i class="pi pi-bars"></i>
+  </button>
+
+  <button
+    #topbarmenubutton
+    class="p-link layout-topbar-menu-button layout-topbar-button"
+    (click)="layoutService.showProfileSidebar()"
+  >
+    <i class="pi pi-ellipsis-v"></i>
+  </button>
+
+  <div
+    #topbarmenu
+    class="layout-topbar-menu"
+    [ngClass]="{
+      'layout-topbar-menu-mobile-active':
+        layoutService.state.profileSidebarVisible
+    }"
+  >
+    <button
+      class="p-link layout-topbar-button"
+      (click)="notifications.toggle($event)"
+    >
+      <i class="pi pi-bell"></i>
+      <span>Notifications</span>
+    </button>
+    <p-overlayPanel #notifications>
+      <ng-template pTemplate> Notifications </ng-template>
+    </p-overlayPanel>
+
+    <button
+      class="p-link layout-topbar-button"
+      (click)="balance.toggle($event)"
+    >
+      <i class="pi pi-money-bill"></i>
+      <span>Balance</span>
+    </button>
+    <p-overlayPanel #balance>
+      <ng-template pTemplate> Balance </ng-template>
+    </p-overlayPanel>
+
+    <button class="p-link layout-topbar-button" (click)="cart.toggle($event)">
+      <i class="pi pi-shopping-cart"></i>
+      <span>Shoppping cart</span>
+    </button>
+    <p-overlayPanel #cart>
+      <ng-template pTemplate> Shoppping cart </ng-template>
+    </p-overlayPanel>
+
+    <button
+      class="p-link layout-topbar-button"
+      (click)="account.toggle($event)"
+    >
+      <i class="pi pi-user"></i>
+      <span>Account</span>
+    </button>
+    <p-overlayPanel #account>
+      <ng-template pTemplate> Account </ng-template>
+    </p-overlayPanel>
+  </div>
+</div>

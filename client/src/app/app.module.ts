@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AbilityModule } from '@casl/angular';
 
+import { AbilityModule } from '@casl/angular';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
@@ -40,4 +39,4 @@ import { UserService } from '@shared/services/user.service';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
