@@ -1,5 +1,186 @@
 /* You can add global styles to this file, and also import other style files */
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+.dashboard {
+  background-color: var(--surface-ground);
+  display: flex;
+  height: 100vh;
+
+  &__sidebar {
+    background-color: var(--surface-section);
+    border-color: var(--surface-border);
+    border-right-style: solid;
+    border-right-width: 1px;
+    user-select: none;
+    width: 280px;
+  }
+
+  &__sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &__logo-wrapper {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    height: 60px;
+    justify-content: center;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  &__sidebar-menu {
+    overflow-y: auto;
+  }
+
+  &__sidebar-footer {
+    margin-top: auto;
+  }
+
+  &__sidebar-divider {
+    border-width: 1px 0 0 0;
+    border-style: solid;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    border-color: var(--surface-border);
+  }
+
+  &__sidebar-footer-link {
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    margin: 1rem;
+    padding: 1rem;
+    align-items: center;
+    display: flex;
+    color: var(--surface-700);
+  }
+
+  &__sidebar-avatar {
+    $size: 28px;
+    border-radius: 50%;
+    height: $size;
+    width: $size;
+    margin-right: 0.5rem;
+  }
+
+  &__main {
+    position: relative;
+    min-height: 100vh;
+    flex: 1 1 auto;
+    flex-direction: column;
+    display: flex;
+  }
+
+  &__navbar {
+    height: 60px;
+    position: relative;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    border-color: var(--surface-border);
+    background-color: var(--surface-0);
+  }
+
+  &__navbar-menu {
+    user-select: none;
+    list-style: none;
+    user-select: none;
+    z-index: 1;
+    right: 0px;
+    top: 100%;
+    margin: 0rem;
+    padding: 0rem;
+    align-items: center;
+    flex-direction: row;
+    display: flex;
+    border-color: var(--surface-border);
+    background-color: var(--surface-section);
+    margin-left: auto;
+  }
+
+  &__navbar-menu-link {
+    transition-duration: 150ms;
+    transition-property: background-color, border-color, color;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1rem;
+    align-items: center;
+    font-weight: 500;
+    display: flex;
+    color: var(--surface-600);
+
+    &:hover {
+      background-color: var(--surface-100);
+      color: var(--surface-900);
+    }
+
+    i {
+      margin-right: 0.5rem;
+      font-size: 1.5rem;
+    }
+  }
+
+  &__navbar-avatar {
+    $size: 32px;
+    border-radius: 50%;
+    height: $size;
+    width: $size;
+  }
+
+  &__main-content {
+    overflow-y: auto !important;
+    flex: 1 1 auto !important;
+    flex-direction: column !important;
+    display: flex !important;
+  }
+
+  &__main-content-inner {
+    padding: 2rem;
+  }
+}
+
+.sidebar-menu.p-panelmenu {
+  .p-panelmenu-content .p-menuitem .p-menuitem-link .p-panelmenu-icon,
+  .p-panelmenu-header > a .p-panelmenu-icon {
+    order: 3;
+    justify-self: flex-end;
+    align-self: self-end;
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .p-panelmenu-content {
+    border: 0;
+  }
+
+  .p-panelmenu-content .p-menuitem .p-menuitem-link:not(.p-disabled):hover,
+  .p-panelmenu-header.p-highlight:not(.p-disabled) > a:hover,
+  .p-panelmenu-header:not(.p-highlight):not(.p-disabled) > a:hover {
+    background-color: var(--surface-100);
+  }
+
+  .p-panelmenu-header-link {
+    border-radius: 0;
+    border: 0;
+    background-color: transparent;
+    display: flex;
+  }
 }

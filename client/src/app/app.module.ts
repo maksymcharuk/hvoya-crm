@@ -8,6 +8,8 @@ import { AbilityModule } from '@casl/angular';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
+import { StyleClassModule } from 'primeng/styleclass';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PureAbility } from '@casl/ability';
@@ -37,7 +39,8 @@ import { UserService } from '@shared/services/user.service';
     },
     { provide: AppAbility, useValue: new AppAbility() },
     { provide: PureAbility, useExisting: AppAbility },
+    StyleClassModule,
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
