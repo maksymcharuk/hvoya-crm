@@ -25,6 +25,7 @@
     "paths": {
       "@environment/*": ["src/environments/*"],
       "@shared/*": ["src/app/shared/*"],
+      "@layout/*": ["src/app/layout/*"],
     },
     "noImplicitAny": true,
     "allowUnreachableCode": false,

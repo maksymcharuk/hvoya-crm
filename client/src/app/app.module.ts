@@ -1,14 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AbilityModule } from '@casl/angular';
 
+import { AbilityModule } from '@casl/angular';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-
-import { StyleClassModule } from 'primeng/styleclass';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -39,7 +36,6 @@ import { UserService } from '@shared/services/user.service';
     },
     { provide: AppAbility, useValue: new AppAbility() },
     { provide: PureAbility, useExisting: AppAbility },
-    StyleClassModule,
   ],
   bootstrap: [AppComponent],
 })
