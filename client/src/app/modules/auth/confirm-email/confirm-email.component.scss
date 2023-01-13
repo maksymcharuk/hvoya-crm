@@ -1,0 +1,13 @@
+.confirm-page-wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    &-logo {
+        top: 120px;
+        position: absolute;
+    }
+}

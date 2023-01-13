@@ -16,6 +16,7 @@ export default class UserSeeder implements Seeder {
         email: 'john-super-admin@email.com',
         password: password,
         role: Role.SuperAdmin,
+        emailConfirmed: true,
       },
       {
         firstName: 'Alice',
@@ -23,6 +24,7 @@ export default class UserSeeder implements Seeder {
         email: 'alice-admin@email.com',
         password: password,
         role: Role.Admin,
+        emailConfirmed: true,
       },
       {
         firstName: 'Peter',
@@ -30,6 +32,7 @@ export default class UserSeeder implements Seeder {
         email: 'peter-user@email.com',
         password: password,
         role: Role.User,
+        emailConfirmed: true,
       },
     ]);
   }

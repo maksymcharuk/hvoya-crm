@@ -29,11 +29,11 @@ export class AuthService {
 
   signUp(value: SignUpDTO) {
     return this.http
-      .post<SignUpResponse>(`${environment.apiUrl}/auth/sign-up`, value)
-      .pipe(
-        tap(({ access_token }: SignUpResponse) => {
-          this.storageService.setItem('access_token', access_token);
-        }),
-      );
+      .post<SignUpResponse>(`${environment.apiUrl}/auth/sign-up`, value);
+  }
+
+  confirmEmail(tokenObj: { confirmEmailToken: string }) {
+    return this.http
+      .post<SignUpResponse>(`${environment.apiUrl}/auth/confirm-email`, tokenObj);
   }
 }
