@@ -25,6 +25,11 @@ export class UserEntity extends BaseEntity {
   })
   role: Role;
 
+  @Column({
+    default: false
+  })
+  emailConfirmed: boolean;
+
   @BeforeInsert()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 8);

@@ -33,3 +33,16 @@
         </div>
     </form>
 </div>
+
+<p-dialog [(visible)]="displayConfirmEmailModal" 
+    [dismissableMask]="true"
+    [modal]="true" 
+    class="confirm-email-dialog" 
+    [style]="{width: '50vw'}"
+    [draggable]="false" 
+    [resizable]="false">
+    <p class="confirm-email-dialog-text">Thank you for signing up. We have sent you an email with a link to confirm your email address. 
+        If you don't see the email, please check your spam folder.
+    </p>
+    <p class="confirm-email-dialog-email">{{confirmEmailValue}}</p>
+</p-dialog>

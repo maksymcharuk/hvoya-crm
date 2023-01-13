@@ -10,10 +10,16 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const user = this.usersRepository.create(createUserDto);
+    await this.usersRepository.save(user);
+
+    return this.sanitizeUser(user);
+  }
+
+  async save(user: UserEntity): Promise<UserEntity> {
     await this.usersRepository.save(user);
 
     return this.sanitizeUser(user);
@@ -39,12 +45,8 @@ export class UsersService {
     return await this.usersRepository.findOneBy({ id });
   }
 
-  async findByEmail(email: string): Promise<UserEntity> {
+  async findByEmail(email: string): Promise<UserEntity | null> {
     const user = await this.usersRepository.findOneBy({ email });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
     return user;
   }

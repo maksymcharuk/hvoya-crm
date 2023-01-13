@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControlOptions, FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { SignUpDTO, SignUpDTOFormGroup } from '@shared/interfaces/sign-up.dto';
 import { PasswordValidators } from '@shared/validators/password-validator';
 import { AuthService } from '@shared/services/auth.service';
@@ -16,6 +15,8 @@ export class SighUpComponent implements OnInit {
   hasUpperCase: boolean | undefined = true;
   hasNumeric: boolean | undefined = true;
   hasMinLength: boolean | undefined = true;
+  displayConfirmEmailModal: boolean = false;
+  confirmEmailValue: string = '';
 
   signUpForm = this.formBuilder.group(
     {
@@ -40,8 +41,7 @@ export class SighUpComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.signUpForm.valueChanges.subscribe(() => {
@@ -51,7 +51,9 @@ export class SighUpComponent implements OnInit {
 
   onSubmit(value: SignUpDTO) {
     this.authService.signUp(value).subscribe(() => {
-      this.router.navigateByUrl('dashboard');
+      this.displayConfirmEmailModal = true;
+      this.confirmEmailValue = this.signUpForm.get('email')?.value;
+      this.signUpForm.reset();
     });
   }
 

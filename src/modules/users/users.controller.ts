@@ -16,7 +16,7 @@ import { PoliciesGuard } from '../casl/policies.guard';
 import { UsersService } from './services/users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MailService } from '../mail/services/mail.service';
-import { TestMail } from '../mail/test.mail';
+import { TestMail } from '../mail/mails/test.mail';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
@@ -24,7 +24,7 @@ export class UsersController {
   constructor(
     private usersService: UsersService,
     private mailService: MailService,
-  ) {}
+  ) { }
 
   @Post()
   @CheckPolicies((ability: AppAbility) =>
