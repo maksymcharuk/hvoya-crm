@@ -15,7 +15,7 @@ import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 import { UsersService } from '../../../modules/users/services/users.service';
 import { MailService } from '../../../modules/mail/services/mail.service';
 import { ConfirmEmailMail } from '../../../modules/mail/mails/confirm-email.mail';
-import { appAddressConfig } from '../../../config';
+import { clientOriginMap } from '../../../config';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
@@ -54,18 +54,19 @@ export class AuthService {
 
     user = await this.usersService.create(authSignUpDto);
     const { access_token } = this.signToken(user);
-    const url = `${appAddressConfig.get(this.configService.get('NODE_ENV') === 'development' ? 'dev' : 'staging')}/auth/confirm-email?token=${access_token}`;
+    const url = `${clientOriginMap.get(
+      this.configService.get('NODE_ENV') || 'development',
+    )}/auth/confirm-email?token=${access_token}`;
     this.mailService.send(new ConfirmEmailMail(user, url), user.email);
   }
 
   async confirmEmail(confirmEmailToken: string) {
-    const decodedToken = this.jwtService.verify(confirmEmailToken) as JwtTokenPayload;
+    const decodedToken = this.jwtService.verify(
+      confirmEmailToken,
+    ) as JwtTokenPayload;
 
     if (!decodedToken) {
-      throw new HttpException(
-        'Invalid confirm token',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Invalid confirm token', HttpStatus.BAD_REQUEST);
     }
 
     const user = await this.usersService.findById(decodedToken.user.id);
