@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { BaseEntity } from './base.entity';
@@ -31,6 +31,7 @@ export class UserEntity extends BaseEntity {
   emailConfirmed: boolean;
 
   @BeforeInsert()
+  @BeforeUpdate()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 8);
   }
