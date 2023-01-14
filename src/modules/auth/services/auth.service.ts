@@ -5,7 +5,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 
 import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
@@ -17,6 +17,7 @@ import { MailService } from '../../../modules/mail/services/mail.service';
 import { ConfirmEmailMail } from '../../../modules/mail/mails/confirm-email.mail';
 import { clientOriginMap } from '../../../config';
 import { ConfigService } from '@nestjs/config';
+import { ResetPasswordEmailMail } from 'src/modules/mail/mails/reset-password-email.mail';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
@@ -82,6 +83,54 @@ export class AuthService {
     await this.usersService.save(user);
   }
 
+  async forgotPassword(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new HttpException(
+        'User with such email does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const { access_token } = this.signToken(user, { expiresIn: '10m' });
+    const url = `${clientOriginMap.get(
+      this.configService.get('NODE_ENV') || 'development',
+    )}/auth/reset-password?token=${access_token}`;
+    this.mailService.send(new ResetPasswordEmailMail(user, url), user.email);
+  }
+
+  async resetPassword(changePassword: { token: string; password: string }) {
+    const { token, password } = changePassword;
+    let decodedToken
+
+    try {
+      decodedToken = this.jwtService.verify(
+        token,
+      ) as JwtTokenPayload;
+    } catch (error) {
+      throw new HttpException('Link was expired, try to reset password again', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.usersService.findById(decodedToken.user.id);
+    if (!user) {
+      throw new HttpException(
+        'User with such confirm token does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if ((await user.validatePassword(password))) {
+      throw new HttpException(
+        'New password should be different from old one',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    user.password = password;
+
+    await this.usersService.save(user);
+  }
+
   async validateUser(authSignInDto: AuthSignInDto): Promise<UserEntity> {
     const { email, password } = authSignInDto;
 
@@ -98,7 +147,7 @@ export class AuthService {
     return user;
   }
 
-  private signToken(user: UserEntity) {
+  private signToken(user: UserEntity, options?: JwtSignOptions) {
     const payload: JwtTokenPayload = {
       user: {
         id: user.id,
@@ -107,7 +156,7 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, options),
     };
   }
 }

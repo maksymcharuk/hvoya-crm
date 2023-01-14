@@ -24,4 +24,14 @@ export class AuthController {
     const { confirmEmailToken } = tokenObj
     return this.authService.confirmEmail(confirmEmailToken);
   }
+
+  @Post('reset-password')
+  async resetPassword(@Body() confirmPassword: { token: string; password: string }) {
+    return this.authService.resetPassword(confirmPassword);
+  }
+
+  @Post('forgot-password')
+  async sendResetPasswordMail(@Body() emailObj: { email: string }) {
+    return this.authService.forgotPassword(emailObj.email);
+  }
 }
