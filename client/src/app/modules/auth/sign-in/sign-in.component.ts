@@ -27,7 +27,7 @@ export class SignInComponent {
     private router: Router,
     private userService: UserService,
     private policiesService: PoliciesService,
-  ) { }
+  ) {}
 
   onSubmit(value: SignInDTO) {
     this.isLoading = true;
@@ -36,7 +36,15 @@ export class SignInComponent {
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe(() => {
         this.policiesService.updateAbility();
-        const { role } = this.userService.getUser();
+        const user = this.userService.getUser();
+
+        if (!user) {
+          this.router.navigateByUrl('/');
+          return;
+        }
+
+        const { role } = user;
+
         if (role === 'SuperAdmin' || role === 'Admin') {
           this.router.navigateByUrl('admin');
         } else {

@@ -7,7 +7,7 @@ import { AuthService } from './services/auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('sign-in')
   async signIn(@Body() authSignInDto: AuthSignInDto) {
@@ -21,12 +21,14 @@ export class AuthController {
 
   @Post('confirm-email')
   async confirmEmail(@Body() tokenObj: { confirmEmailToken: string }) {
-    const { confirmEmailToken } = tokenObj
+    const { confirmEmailToken } = tokenObj;
     return this.authService.confirmEmail(confirmEmailToken);
   }
 
   @Post('reset-password')
-  async resetPassword(@Body() confirmPassword: { token: string; password: string }) {
+  async resetPassword(
+    @Body() confirmPassword: { token: string; password: string },
+  ) {
     return this.authService.resetPassword(confirmPassword);
   }
 

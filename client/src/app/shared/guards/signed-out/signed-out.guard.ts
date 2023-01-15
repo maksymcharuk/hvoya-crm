@@ -7,13 +7,24 @@ import { UserService } from '@shared/services/user.service';
   providedIn: 'root',
 })
 export class SignedOutGuard implements CanActivate {
-  constructor(private storageService: StorageService, private router: Router, private userService: UserService,) { }
+  constructor(
+    private storageService: StorageService,
+    private router: Router,
+    private userService: UserService,
+  ) {}
 
   canActivate(): boolean {
     if (!this.storageService.getItem('access_token')) {
       return true;
     } else {
-      const { role } = this.userService.getUser();
+      const user = this.userService.getUser();
+
+      if (!user) {
+        return true;
+      }
+
+      const { role } = user;
+
       if (role === 'SuperAdmin' || role === 'Admin') {
         this.router.navigateByUrl('admin');
       } else {

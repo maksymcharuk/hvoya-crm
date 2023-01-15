@@ -6,18 +6,19 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
 import { UserEntity } from '@entities/user.entity';
 import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
+import { Env } from '@enums/env.enum';
 
+import { appOrigin } from '../../../config';
 import { UsersService } from '../../../modules/users/services/users.service';
 import { MailService } from '../../../modules/mail/services/mail.service';
 import { ConfirmEmailMail } from '../../../modules/mail/mails/confirm-email.mail';
-import { clientOriginMap } from '../../../config';
-import { ConfigService } from '@nestjs/config';
-import { ResetPasswordEmailMail } from 'src/modules/mail/mails/reset-password-email.mail';
+import { ResetPasswordEmailMail } from '../../../modules/mail/mails/reset-password-email.mail';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +27,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
@@ -55,8 +56,8 @@ export class AuthService {
 
     user = await this.usersService.create(authSignUpDto);
     const { access_token } = this.signToken(user);
-    const url = `${clientOriginMap.get(
-      this.configService.get('NODE_ENV') || 'development',
+    const url = `${appOrigin.get(
+      this.configService.get('NODE_ENV') || Env.Development,
     )}/auth/confirm-email?token=${access_token}`;
     this.mailService.send(new ConfirmEmailMail(user, url), user.email);
   }
@@ -93,22 +94,23 @@ export class AuthService {
     }
 
     const { access_token } = this.signToken(user, { expiresIn: '10m' });
-    const url = `${clientOriginMap.get(
-      this.configService.get('NODE_ENV') || 'development',
+    const url = `${appOrigin.get(
+      this.configService.get('NODE_ENV') || Env.Development,
     )}/auth/reset-password?token=${access_token}`;
     this.mailService.send(new ResetPasswordEmailMail(user, url), user.email);
   }
 
   async resetPassword(changePassword: { token: string; password: string }) {
     const { token, password } = changePassword;
-    let decodedToken
+    let decodedToken;
 
     try {
-      decodedToken = this.jwtService.verify(
-        token,
-      ) as JwtTokenPayload;
+      decodedToken = this.jwtService.verify(token) as JwtTokenPayload;
     } catch (error) {
-      throw new HttpException('Link was expired, try to reset password again', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Link was expired, try to reset password again',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const user = await this.usersService.findById(decodedToken.user.id);
@@ -119,7 +121,7 @@ export class AuthService {
       );
     }
 
-    if ((await user.validatePassword(password))) {
+    if (await user.validatePassword(password)) {
       throw new HttpException(
         'New password should be different from old one',
         HttpStatus.BAD_REQUEST,
