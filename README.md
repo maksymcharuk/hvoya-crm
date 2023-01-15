@@ -28,11 +28,14 @@ npm install -g @angular/cli
 $ npm install
 ```
 
-2. Copy `.env.example` file in the `root` of the project and rename it to `.env`.
+2. Duplicate `.env.example` file in the `env` folder of the project and rename it to `.env`.
 
 3. Create DB with the configs from `.env` in PostgreSQL manually or by running:
 ```
 npm run db:setup
+
+# Additionaly create DB for tests
+NODE_ENV=test npm run db:setup
 ```
 
 > This will create DB with default data.  
@@ -59,11 +62,15 @@ In `root` folder run:
 # development
 $ npm run start:dev
 
+# e2e tests (will use DB for tests)
+$ npm run start:test
+
 # production mode
 $ npm run start:prod
 ```
 
 > Note: All API endpoint routes start with `/api`. E.g. `/api/products`
+> Note: For e2e tests development use `npm run start:test`
 
 ### Frontend (Angular)
 
@@ -89,6 +96,7 @@ Technologies and tools:
 1. UI Framework - [Prime NG](https://www.primefaces.org/primeng)
 2. Role-based authorization - [CASL for Angular](https://www.npmjs.com/package/@casl/angular)
 3. NGRX?
+4. Cypress
 
 ## Test
 
@@ -110,7 +118,11 @@ $ npm run test:cov
 
 In `client` folder run:
 ```bash
+# unit tests
 $ npm run test
+
+# e2e tests 
+$ npm run cypress:start
 ```
 
 ## Environments
@@ -135,3 +147,10 @@ $ npm run test
 1. Update entity.
 2. Generate migration `npm run migrations:generate --name=<name>`.
 3. Run migration `npm run migrations:run`.
+
+#### 3. Working with e2e tests
+
+1. Setup test DB run (in the `root` folder) `NODE_ENV=test npm run db:setup`
+2. Run backend (in the `root` folder)  - `npm run start:test`
+3. Run frontend (in the `client` folder) - `npm run start`
+4. Run Cypress (in the `client` folder)  - `npm run cypress:open`
