@@ -1,34 +1,34 @@
 .sign-in-wrapper {
-    height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &-element {
+    margin: 15px;
+  }
+
+  &-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 300px;
+  }
 
-    &-element {
-        margin: 15px;
-    }
+  &-confirm-secttion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 70%;
+  }
 
-    &-form {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 300px;
-    }
+  &-forgot-password {
+    margin-top: 20px;
+  }
 
-    &-confirm-secttion {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 70%;
-    }
-
-    &-forgot-password {
-        margin-top: 20px;
-    }
-
-    a {
-        text-decoration: none;
-    }
+  a {
+    text-decoration: none;
+  }
 }

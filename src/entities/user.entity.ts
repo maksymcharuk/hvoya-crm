@@ -26,7 +26,7 @@ export class UserEntity extends BaseEntity {
   role: Role;
 
   @Column({
-    default: false
+    default: false,
   })
   emailConfirmed: boolean;
 

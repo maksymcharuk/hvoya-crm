@@ -7,7 +7,7 @@ import helmet from 'helmet';
 import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
 import * as nocache from 'nocache';
-import { clientOriginMap } from './config';
+import { appOrigin } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -27,7 +27,7 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: clientOriginMap.get(configService.get('NODE_ENV') || 'development'),
+    origin: appOrigin.get(configService.get('NODE_ENV') || 'development'),
   });
   app.setGlobalPrefix('api', { exclude: ['/'] });
   app.useGlobalPipes(

@@ -9,6 +9,7 @@ import {
 import { TemplateService } from './template.service';
 import { ConfigService } from '@nestjs/config';
 import { Mail } from '@interfaces/mail.interface';
+import { Env } from '@enums/env.enum';
 
 @Injectable()
 export class MailService {
@@ -18,7 +19,11 @@ export class MailService {
   ) {}
 
   async createTransport(): Promise<Transporter> {
-    if (this.configService.get('NODE_ENV') === 'development') {
+    if (
+      [Env.Development, Env.Test].includes(
+        this.configService.get('NODE_ENV') || Env.Development,
+      )
+    ) {
       const testAccount = await createTestAccount();
       return createTransport({
         host: 'smtp.ethereal.email',
@@ -59,7 +64,7 @@ export class MailService {
       html: content,
     });
 
-    if (this.configService.get('NODE_ENV') === 'development') {
+    if (this.configService.get('NODE_ENV') === Env.Development) {
       console.log('Message sent: %s', info.messageId);
       console.log('Preview URL: %s', getTestMessageUrl(info));
     }

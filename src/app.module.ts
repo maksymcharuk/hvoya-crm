@@ -16,7 +16,12 @@ import { CaslModule } from './modules/casl/casl.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      envFilePath: process.env['NODE_ENV']
+        ? `${process.cwd()}/env/${process.env['NODE_ENV']}.env`
+        : `${process.cwd()}/env/.env`,
+      isGlobal: true,
+    }),
     DatabaseModule,
     UsersModule,
     AuthModule,

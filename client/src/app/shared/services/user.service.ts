@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from './storage.service';
+import jwt_decode from 'jwt-decode';
+import { JwtTokenPayload } from '@shared/interfaces/jwt-payload.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
-  constructor(private storageService: StorageService) { }
+  constructor(private storageService: StorageService) {}
 
   getUser() {
-    let token = this.storageService.getItem('access_token');
+    const token = this.storageService.getItem('access_token');
 
     if (!token) return null;
-    let splittedToken = token.split('.')[1];
+    const decodedToken: JwtTokenPayload = jwt_decode(token);
 
-    if (!splittedToken) return null;
-    return JSON.parse(atob(splittedToken)).user;
+    return decodedToken.user;
   }
 }

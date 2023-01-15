@@ -4,7 +4,11 @@ import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { resolve } from 'path';
 
-config();
+config({
+  path: process.env['NODE_ENV']
+    ? `${process.cwd()}/env/${process.env['NODE_ENV']}.env`
+    : `${process.cwd()}/env/.env`,
+});
 
 const configService = new ConfigService();
 

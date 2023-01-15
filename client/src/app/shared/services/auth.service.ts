@@ -16,7 +16,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private storageService: StorageService,
-  ) { }
+  ) {}
 
   signIn(value: SignInDTO) {
     return this.http
@@ -29,22 +29,30 @@ export class AuthService {
   }
 
   signUp(value: SignUpDTO) {
-    return this.http
-      .post<SignUpResponse>(`${environment.apiUrl}/auth/sign-up`, value);
+    return this.http.post<SignUpResponse>(
+      `${environment.apiUrl}/auth/sign-up`,
+      value,
+    );
   }
 
   confirmEmail(tokenObj: { confirmEmailToken: string }) {
-    return this.http
-      .post<SignUpResponse>(`${environment.apiUrl}/auth/confirm-email`, tokenObj);
+    return this.http.post<SignUpResponse>(
+      `${environment.apiUrl}/auth/confirm-email`,
+      tokenObj,
+    );
   }
 
   resetPassword(password: string, token: string | null) {
-    return this.http
-      .post<SignUpResponse>(`${environment.apiUrl}/auth/reset-password`, { password, token });
+    return this.http.post<SignUpResponse>(
+      `${environment.apiUrl}/auth/reset-password`,
+      { password, token },
+    );
   }
 
   forgotPassword(value: ForgotPasswordDTO) {
-    return this.http
-      .post<SignUpResponse>(`${environment.apiUrl}/auth/forgot-password`, value);
+    return this.http.post<SignUpResponse>(
+      `${environment.apiUrl}/auth/forgot-password`,
+      value,
+    );
   }
 }
