@@ -9,7 +9,7 @@ export default defineConfig({
       on('task', {
         async connectDB(query): Promise<any> {
           const client = new Client({
-            user: 'postgres',
+            user: 'charukv',
             password: 'postgres',
             host: 'localhost',
             database: 'hvoya_crm_test',

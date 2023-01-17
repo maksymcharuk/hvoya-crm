@@ -65,7 +65,9 @@
       <span>Account</span>
     </button>
     <p-overlayPanel #account>
-      <ng-template pTemplate> Account </ng-template>
+      <ng-template pTemplate>
+        <button pButton pRipple type="button" label="Logout" class="p-button-text" (click)="logout()"></button>
+      </ng-template>
     </p-overlayPanel>
   </div>
 </div>

@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { LayoutService } from '@shared/layout/services/layout.service';
+import { AuthService } from '@shared/services/auth.service';
 
 @Component({
   selector: 'admin-topbar',
@@ -15,5 +16,9 @@ export class AdminTopBarComponent {
 
   @ViewChild('topbarmenu') menu!: ElementRef;
 
-  constructor(public layoutService: LayoutService) {}
+  constructor(public layoutService: LayoutService, private authService: AuthService) { }
+
+  logout() {
+    this.authService.logout();
+  }
 }

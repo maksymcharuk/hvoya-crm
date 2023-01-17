@@ -12,6 +12,7 @@ declare namespace Cypress {
     signInAsUser(): typeof signInAsUser;
     signUp(email: string, password: string): typeof signUp;
     resetPassword(password: string, token: string): typeof resetPassword;
+    logout(): typeof logout;
   }
 }
 
@@ -63,6 +64,11 @@ function resetPassword(password: string, token: string): void {
   cy.get('button[type=submit]').click();
 }
 
+function logout(): void {
+  cy.get('i.pi-user').click();
+  cy.get('button').contains('Logout').click();
+}
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -95,3 +101,4 @@ Cypress.Commands.add('signInAsAdmin', signInAsAdmin);
 Cypress.Commands.add('signInAsUser', signInAsUser);
 Cypress.Commands.add('signUp', signUp);
 Cypress.Commands.add('resetPassword', resetPassword);
+Cypress.Commands.add('logout', logout);

@@ -8,6 +8,7 @@ import { SignUpResponse } from '@shared/interfaces/sign-up-response';
 import { SignUpDTO } from '@shared/interfaces/sign-up.dto';
 import { StorageService } from '@shared/services/storage.service';
 import { ForgotPasswordDTO } from '@shared/interfaces/forgot-password.dto';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private storageService: StorageService,
-  ) {}
+    private router: Router,
+  ) { }
 
   signIn(value: SignInDTO) {
     return this.http
@@ -54,5 +56,10 @@ export class AuthService {
       `${environment.apiUrl}/auth/forgot-password`,
       value,
     );
+  }
+
+  logout() {
+    this.storageService.removeItem('access_token');
+    this.router.navigateByUrl('/auth/sign-in');
   }
 }
