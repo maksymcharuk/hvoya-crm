@@ -64,7 +64,11 @@ export class MailService {
       html: content,
     });
 
-    if (this.configService.get('NODE_ENV') === Env.Development) {
+    if (
+      [Env.Development, Env.Test].includes(
+        this.configService.get('NODE_ENV') || Env.Development,
+      )
+    ) {
       console.log('Message sent: %s', info.messageId);
       console.log('Preview URL: %s', getTestMessageUrl(info));
     }
