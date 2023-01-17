@@ -142,7 +142,7 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    if (!(await user?.validatePassword(password))) {
+    if (!(await user.validatePassword(password))) {
       throw new UnauthorizedException('User email or password is incorrect');
     }
 

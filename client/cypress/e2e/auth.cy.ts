@@ -1,4 +1,4 @@
-import jwt_encode from 'jwt-encode';
+import { signToken } from 'cypress/support/helpers';
 
 describe('Auth', () => {
   describe('Sign in', () => {
@@ -9,14 +9,17 @@ describe('Auth', () => {
 
     it('Sign in as super admin', () => {
       cy.signInAsSuperAdmin();
+      cy.contains('Hello admin');
     });
 
     it('Sign in as admin', () => {
       cy.signInAsAdmin();
+      cy.contains('Hello admin');
     });
 
     it('Sign in as user', () => {
       cy.signInAsUser();
+      cy.contains('Hello user');
     });
 
     it('Sign in with invalid credentials', () => {
@@ -37,6 +40,35 @@ describe('Auth', () => {
       cy.signUp(uniqueEmail, 'Test12345');
       cy.contains(uniqueEmail);
       cy.contains('Thank you for signing up');
+    });
+
+    it('Register new user and try to sign in without confirmation', () => {
+      const uniqueEmail = `test+${Date.now()}@email.com`;
+      cy.signUp(uniqueEmail, 'Test12345');
+      cy.contains(uniqueEmail);
+      cy.contains('Thank you for signing up');
+
+      cy.signIn(uniqueEmail, 'Test12345');
+      cy.get('[role="alert"]').contains('Email is not confirmed');
+    });
+
+    it('Register new user, confirm and sign in', () => {
+      const uniqueEmail = `test+${Date.now()}@email.com`;
+      cy.signUp(uniqueEmail, 'Test12345');
+      cy.contains(uniqueEmail);
+      cy.contains('Thank you for signing up');
+
+      cy.task<any[]>(
+        'connectDB',
+        'SELECT * FROM public."user" ORDER BY id ASC',
+      ).then((users) => {
+        const token = signToken(users[users.length - 1].id);
+
+        cy.visit(`/auth/confirm-email?token=${token}`);
+
+        cy.signIn(uniqueEmail, 'Test12345');
+        cy.contains('Hello user');
+      });
     });
   });
 
@@ -79,24 +111,31 @@ describe('Auth', () => {
     });
 
     it('Visits Reset password page with token and resets password', () => {
-      const token = jwt_encode(
-        {
-          user: {
-            id: 4,
-            role: 'User',
-          },
-        },
-        Cypress.env('JWT_SECRET'),
-        { expiresIn: '10m' },
-      );
-      const uniquePassword = `Admin${Date.now()}`;
+      cy.task<any[]>(
+        'connectDB',
+        'SELECT * FROM public."user" ORDER BY id ASC',
+      ).then((users) => {
+        const token = signToken(users[users.length - 1].id);
+        const password = `Test${Date.now()}`;
 
-      cy.visit(resetPasswordUrl + `?token=${token}`);
-      cy.get('input[type=password]').first().type(uniquePassword);
-      cy.get('input[type=password]').first().blur();
-      cy.get('input[type=password]').last().type(uniquePassword);
-      cy.get('button[type=submit]').click();
-      cy.url().should('contain', '/auth/sign-in');
+        cy.resetPassword(password, token);
+        cy.url().should('contain', '/auth/sign-in');
+      });
+    });
+
+    it('Reset password and login with new one', () => {
+      cy.task<any[]>(
+        'connectDB',
+        'SELECT * FROM public."user" ORDER BY id ASC',
+      ).then((users) => {
+        const user = users[users.length - 1];
+        const token = signToken(user.id);
+        const password = `Test${Date.now()}`;
+
+        cy.resetPassword(password, token);
+        cy.signIn(user.email, password);
+        cy.contains('Hello user');
+      });
     });
   });
 });

@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
+import { UserSubscriber } from './subscribers/user.subscriber';
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -16,6 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         database: configService.get('DB_NAME'),
         entities: [],
         autoLoadEntities: true,
+        subscribers: [UserSubscriber],
       }),
     }),
   ],

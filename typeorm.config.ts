@@ -23,6 +23,9 @@ const options: DataSourceOptions & SeederOptions = {
   migrations: [resolve(__dirname, 'src/**/database/migrations/**/*{.ts,.js}')],
   seeds: [resolve(__dirname, 'src/**/database/seeds/**/*{.ts,.js}')],
   factories: [resolve(__dirname, 'src/**/database/factories/**/*{.ts,.js}')],
+  subscribers: [
+    resolve(__dirname, 'src/**/database/subscribers/**/*{.ts,.js}'),
+  ],
 };
 
 export const dataSource = new DataSource(options);
