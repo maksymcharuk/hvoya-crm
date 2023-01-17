@@ -1,5 +1,8 @@
+import * as dotenv from 'dotenv';
 import { defineConfig } from 'cypress';
-import { Client } from 'pg';
+import { connectDB } from 'cypress/support/tasks';
+
+dotenv.config({ path: '../env/test.env' });
 
 export default defineConfig({
   e2e: {
@@ -7,20 +10,7 @@ export default defineConfig({
     supportFile: 'cypress/support/e2e.ts',
     setupNodeEvents(on) {
       on('task', {
-        async connectDB(query): Promise<any> {
-          const client = new Client({
-            user: 'charukv',
-            password: 'postgres',
-            host: 'localhost',
-            database: 'hvoya_crm_test',
-            ssl: false,
-            port: 5432,
-          });
-          await client.connect();
-          const res = await client.query(query);
-          await client.end();
-          return res.rows;
-        },
+        connectDB,
       });
     },
   },
