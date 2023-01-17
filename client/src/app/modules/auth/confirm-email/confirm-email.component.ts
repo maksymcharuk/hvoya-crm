@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '@shared/services/auth.service';
+import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-confirm-email',
@@ -27,10 +28,12 @@ export class ConfirmEmailComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe((params) => {
       const confirmEmailToken = params['token'];
 
-      this.authService.confirmEmail({ confirmEmailToken }).subscribe(() => {
-        clearInterval(dotsInterval);
-        this.router.navigateByUrl('auth/sign-in');
-      });
+      this.authService.confirmEmail({ confirmEmailToken })
+        .pipe(delay(3000))
+        .subscribe(() => {
+          clearInterval(dotsInterval);
+          this.router.navigateByUrl('auth/sign-in');
+        });
     });
   }
 

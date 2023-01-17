@@ -16,6 +16,7 @@ export class ResetPasswordComponent implements OnInit {
   hasNumeric: boolean | undefined = true;
   hasMinLength: boolean | undefined = true;
   token: string | null = null;
+  displayConfirmDialog: boolean = false;
 
   confirmPasswordForm = this.formBuilder.group(
     {
@@ -58,7 +59,10 @@ export class ResetPasswordComponent implements OnInit {
 
   onSubmit(value: ConfirmPasswordDTO) {
     this.authService.resetPassword(value.password, this.token).subscribe(() => {
-      this.router.navigateByUrl('auth/sign-in');
+      this.displayConfirmDialog = true;
+      setTimeout(() => {
+        this.router.navigateByUrl('auth/sign-in');
+      }, 3000);
     });
   }
 
