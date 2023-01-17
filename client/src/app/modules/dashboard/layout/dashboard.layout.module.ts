@@ -11,6 +11,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ButtonModule } from 'primeng/button';
 
 import { LayoutConfigModule } from '@shared/layout/layout-config.module';
 import { DashboardMenuComponent } from './dashboard.menu.component';
@@ -42,7 +43,8 @@ import { DashboardLayoutComponent } from './dashboard.layout.component';
     OverlayPanelModule,
     RouterModule,
     LayoutConfigModule,
+    ButtonModule,
   ],
   exports: [DashboardLayoutComponent],
 })
-export class DashboardLayoutModule {}
+export class DashboardLayoutModule { }

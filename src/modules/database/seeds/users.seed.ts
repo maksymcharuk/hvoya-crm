@@ -1,6 +1,5 @@
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
-import * as bcrypt from 'bcrypt';
 
 import { UserEntity } from '../../../entities/user.entity';
 import { Role } from '../../../enums/role.enum';
@@ -8,7 +7,7 @@ import { Role } from '../../../enums/role.enum';
 export default class UserSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
     const repository = dataSource.getRepository(UserEntity);
-    const password = await bcrypt.hash('12345', 8);
+    const password = '12345';
     await repository.insert([
       {
         firstName: 'John',

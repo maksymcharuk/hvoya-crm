@@ -5,7 +5,7 @@ import {
   UpdateEvent,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from '@entities/user.entity';
+import { UserEntity } from '../../../entities/user.entity';
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {

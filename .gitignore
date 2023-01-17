@@ -5,6 +5,7 @@ client/.angular/
 
 # Configs
 .env
+.test.env
 
 # Logs
 logs

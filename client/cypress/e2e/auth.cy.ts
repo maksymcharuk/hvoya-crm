@@ -138,4 +138,22 @@ describe('Auth', () => {
       });
     });
   });
+
+  describe('Logout', () => {
+
+    it('Logout as admin', () => {
+      cy.signInAsAdmin();
+      cy.contains('Hello admin');
+      cy.logout();
+      cy.url().should('contain', '/auth/sign-in');
+    });
+
+    it('Logout in as user', () => {
+      cy.signInAsUser();
+      cy.contains('Hello user');
+      cy.logout();
+      cy.url().should('contain', '/auth/sign-in');
+    });
+
+  });
 });
