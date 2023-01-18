@@ -1,14 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControlOptions, FormBuilder, Validators } from '@angular/forms';
+import {
+  AbstractControlOptions,
+  FormBuilder,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmPasswordDTO, ConfirmPasswordDTOFormGroup } from '@shared/interfaces/confirm-password.dto';
+import {
+  ConfirmPasswordDTO,
+  ConfirmPasswordDTOFormGroup,
+} from '@shared/interfaces/dto/confirm-password.dto';
 import { AuthService } from '@shared/services/auth.service';
 import { PasswordValidators } from '@shared/validators/password-validator';
 
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.scss']
+  styleUrls: ['./reset-password.component.scss'],
 })
 export class ResetPasswordComponent implements OnInit {
   hasLowerCase: boolean | undefined = true;
@@ -41,7 +48,7 @@ export class ResetPasswordComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.confirmPasswordForm.valueChanges.subscribe(() => {
@@ -70,7 +77,9 @@ export class ResetPasswordComponent implements OnInit {
       this.hasUpperCase = this.confirmPasswordForm
         .get('password')
         ?.hasError('hasUpperCase');
-      this.hasNumeric = this.confirmPasswordForm.get('password')?.hasError('hasNumeric');
+      this.hasNumeric = this.confirmPasswordForm
+        .get('password')
+        ?.hasError('hasNumeric');
       this.hasMinLength = this.confirmPasswordForm
         .get('password')
         ?.hasError('minlength');

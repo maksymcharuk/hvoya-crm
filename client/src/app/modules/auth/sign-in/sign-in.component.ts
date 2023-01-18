@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SignInDTO, SignInDTOFormGroup } from '@shared/interfaces/sign-in.dto';
+import {
+  SignInDTO,
+  SignInDTOFormGroup,
+} from '@shared/interfaces/dto/sign-in.dto';
 import { AuthService } from '@shared/services/auth.service';
 import { PoliciesService } from '@shared/services/policies.service';
 import { UserService } from '@shared/services/user.service';

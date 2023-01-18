@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import {
   ForgotPasswordDTO,
   ForgotPasswordFormGroupDTO,
-} from '@shared/interfaces/forgot-password.dto';
+} from '@shared/interfaces/dto/forgot-password.dto';
 import { AuthService } from '@shared/services/auth.service';
 
 @Component({

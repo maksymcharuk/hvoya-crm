@@ -4,11 +4,10 @@ import { AppAbility } from '@shared/roles/ability';
 import { UserService } from './user.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PoliciesService {
-
-  constructor(private ability: AppAbility, private userService: UserService) { }
+  constructor(private ability: AppAbility, private userService: UserService) {}
 
   updateAbility() {
     const user = this.userService.getUser();
@@ -30,6 +29,4 @@ export class PoliciesService {
 
     this.ability.update(rules);
   }
-
-
 }

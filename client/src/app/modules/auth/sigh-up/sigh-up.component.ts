@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControlOptions, FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { SignUpDTO, SignUpDTOFormGroup } from '@shared/interfaces/sign-up.dto';
+import {
+  SignUpDTO,
+  SignUpDTOFormGroup,
+} from '@shared/interfaces/dto/sign-up.dto';
 import { PasswordValidators } from '@shared/validators/password-validator';
 import { AuthService } from '@shared/services/auth.service';
 
@@ -41,7 +44,7 @@ export class SighUpComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.signUpForm.valueChanges.subscribe(() => {
