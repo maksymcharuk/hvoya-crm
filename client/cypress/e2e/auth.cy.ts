@@ -140,7 +140,6 @@ describe('Auth', () => {
   });
 
   describe('Logout', () => {
-
     it('Logout as admin', () => {
       cy.signInAsAdmin();
       cy.contains('Hello admin');
@@ -148,12 +147,11 @@ describe('Auth', () => {
       cy.url().should('contain', '/auth/sign-in');
     });
 
-    it('Logout in as user', () => {
+    it('Logout as user', () => {
       cy.signInAsUser();
       cy.contains('Hello user');
       cy.logout();
       cy.url().should('contain', '/auth/sign-in');
     });
-
   });
 });
