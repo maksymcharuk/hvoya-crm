@@ -43,6 +43,10 @@ export class UsersService {
     return await this.usersRepository.findOneBy({ email });
   }
 
+  async getAll(): Promise<UserEntity[]> {
+    return await this.usersRepository.find();
+  }
+
   private sanitizeUser(user: UserEntity): UserEntity {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: Object is possibly 'undefined'.
