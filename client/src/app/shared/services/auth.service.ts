@@ -6,9 +6,9 @@ import { SignInResponse } from '@shared/interfaces/sign-in-response';
 import { SignInDTO } from '@shared/interfaces/sign-in.dto';
 import { SignUpResponse } from '@shared/interfaces/sign-up-response';
 import { SignUpDTO } from '@shared/interfaces/sign-up.dto';
-import { StorageService } from '@shared/services/storage.service';
 import { ForgotPasswordDTO } from '@shared/interfaces/forgot-password.dto';
 import { Router } from '@angular/router';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,16 +16,16 @@ import { Router } from '@angular/router';
 export class AuthService {
   constructor(
     private http: HttpClient,
-    private storageService: StorageService,
+    private tokenService: TokenService,
     private router: Router,
-  ) { }
+  ) {}
 
   signIn(value: SignInDTO) {
     return this.http
       .post<SignInResponse>(`${environment.apiUrl}/auth/sign-in`, value)
       .pipe(
         tap(({ access_token }: SignInResponse) => {
-          this.storageService.setItem('access_token', access_token);
+          this.tokenService.setToken(access_token);
         }),
       );
   }
@@ -59,7 +59,7 @@ export class AuthService {
   }
 
   logout() {
-    this.storageService.removeItem('access_token');
+    this.tokenService.removeToken();
     this.router.navigateByUrl('/auth/sign-in');
   }
 }
