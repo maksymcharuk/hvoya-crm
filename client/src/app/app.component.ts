@@ -7,8 +7,7 @@ import { PoliciesService } from '@shared/services/policies.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-
-  constructor(private policiesService: PoliciesService) { }
+  constructor(private policiesService: PoliciesService) {}
 
   ngOnInit() {
     this.policiesService.updateAbility();

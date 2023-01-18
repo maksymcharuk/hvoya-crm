@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { environment } from '@environment/environment';
-import { SignInResponse } from '@shared/interfaces/sign-in-response';
-import { SignInDTO } from '@shared/interfaces/sign-in.dto';
-import { SignUpResponse } from '@shared/interfaces/sign-up-response';
-import { SignUpDTO } from '@shared/interfaces/sign-up.dto';
-import { ForgotPasswordDTO } from '@shared/interfaces/forgot-password.dto';
+import { SignInResponse } from '@shared/interfaces/responses/sign-in.response';
+import { SignInDTO } from '@shared/interfaces/dto/sign-in.dto';
+import { SignUpResponse } from '@shared/interfaces/responses/sign-up.response';
+import { SignUpDTO } from '@shared/interfaces/dto/sign-up.dto';
+import { ForgotPasswordDTO } from '@shared/interfaces/dto/forgot-password.dto';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 

@@ -1,13 +1,13 @@
 import { FormGroup, AbstractControl } from '@angular/forms';
 
 export interface ForgotPasswordDTO {
-    email: string;
+  email: string;
 }
 
 export interface ForgotPasswordFormGroupDTO extends FormGroup {
-    value: ForgotPasswordDTO;
+  value: ForgotPasswordDTO;
 
-    controls: {
-        email: AbstractControl;
-    };
+  controls: {
+    email: AbstractControl;
+  };
 }
