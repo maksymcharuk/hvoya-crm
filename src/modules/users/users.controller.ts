@@ -32,7 +32,12 @@ export class UsersController {
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
   async getUserById(@Param('id', ParseIntPipe) id: number) {
-    const user = await this.usersService.showById(id);
-    return user;
+    return this.usersService.showById(id);
+  }
+
+  @Get()
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
+  async getUsers() {
+    return this.usersService.getAll();
   }
 }
