@@ -19,10 +19,12 @@ import { UsersService } from '../../../modules/users/services/users.service';
 import { MailService } from '../../../modules/mail/services/mail.service';
 import { ConfirmEmailMail } from '../../../modules/mail/mails/confirm-email.mail';
 import { ResetPasswordEmailMail } from '../../../modules/mail/mails/reset-password-email.mail';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private dataSource: DataSource,
     private usersService: UsersService,
     private jwtService: JwtService,
     private mailService: MailService,
@@ -44,6 +46,7 @@ export class AuthService {
   }
 
   async signUp(authSignUpDto: AuthSignUpDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
     const { email } = authSignUpDto;
 
     let user = await this.usersService.findByEmail(email);
@@ -54,12 +57,23 @@ export class AuthService {
       );
     }
 
-    user = await this.usersService.create(authSignUpDto);
-    const { access_token } = this.signToken(user);
-    const url = `${appOrigin.get(
-      this.configService.get('NODE_ENV') || Env.Development,
-    )}/auth/confirm-email?token=${access_token}`;
-    this.mailService.send(new ConfirmEmailMail(user, url), user.email);
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      user = await this.usersService.create(queryRunner, authSignUpDto);
+
+      const { access_token } = this.signToken(user);
+      const url = `${appOrigin.get(
+        this.configService.get('NODE_ENV') || Env.Development,
+      )}/auth/confirm-email?token=${access_token}`;
+      await this.mailService.send(new ConfirmEmailMail(user, url), user.email);
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(err.message, 500);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async confirmEmail(confirmEmailToken: string) {
@@ -81,7 +95,7 @@ export class AuthService {
 
     user.emailConfirmed = true;
 
-    await this.usersService.save(user);
+    await this.usersService.update(user);
   }
 
   async forgotPassword(email: string) {
@@ -97,7 +111,10 @@ export class AuthService {
     const url = `${appOrigin.get(
       this.configService.get('NODE_ENV') || Env.Development,
     )}/auth/reset-password?token=${access_token}`;
-    this.mailService.send(new ResetPasswordEmailMail(user, url), user.email);
+    await this.mailService.send(
+      new ResetPasswordEmailMail(user, url),
+      user.email,
+    );
   }
 
   async resetPassword(changePassword: { token: string; password: string }) {
@@ -130,7 +147,7 @@ export class AuthService {
 
     user.password = password;
 
-    await this.usersService.save(user);
+    await this.usersService.update(user);
   }
 
   async validateUser(authSignInDto: AuthSignInDto): Promise<UserEntity> {
