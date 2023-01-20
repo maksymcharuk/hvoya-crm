@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { UserSubscriber } from './subscriptions/user.subscriber';
+import { UserSubscriber } from './subscribers/user.subscriber';
 
 @Module({
   imports: [
