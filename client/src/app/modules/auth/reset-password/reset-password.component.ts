@@ -11,6 +11,7 @@ import {
 } from '@shared/interfaces/dto/confirm-password.dto';
 import { AuthService } from '@shared/services/auth.service';
 import { PasswordValidators } from '@shared/validators/password-validator';
+import { delay, share } from 'rxjs/operators';
 
 @Component({
   selector: 'app-reset-password',
@@ -23,6 +24,7 @@ export class ResetPasswordComponent implements OnInit {
   hasNumeric: boolean | undefined = true;
   hasMinLength: boolean | undefined = true;
   token: string | null = null;
+  displayConfirmDialog: boolean = false;
 
   confirmPasswordForm = this.formBuilder.group(
     {
@@ -64,7 +66,11 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   onSubmit(value: ConfirmPasswordDTO) {
-    this.authService.resetPassword(value.password, this.token).subscribe(() => {
+    const request$ = this.authService.resetPassword(value.password, this.token).pipe(share());
+    request$.subscribe(() => {
+      this.displayConfirmDialog = true;
+    });
+    request$.pipe(delay(3000)).subscribe(() => {
       this.router.navigateByUrl('auth/sign-in');
     });
   }
