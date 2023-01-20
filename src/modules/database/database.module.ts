@@ -23,4 +23,4 @@ import { UserSubscriber } from './subscribers/user.subscriber';
     }),
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }

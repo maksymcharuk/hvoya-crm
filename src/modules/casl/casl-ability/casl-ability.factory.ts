@@ -11,8 +11,11 @@ import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Role } from '@enums/role.enum';
 import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
+import { ProductCategoryEntity } from '@entities/product-category.entity';
+import { ProductBaseEntity } from '@entities/product-base.entity';
+import { ProductVariantEntity } from '@entities/product-variant.entity';
 
-type Subjects = InferSubjects<typeof UserEntity> | 'all';
+type Subjects = InferSubjects<typeof UserEntity | typeof ProductCategoryEntity | typeof ProductBaseEntity | typeof ProductVariantEntity> | 'all';
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
 
@@ -31,6 +34,9 @@ export class CaslAbilityFactory {
 
     if (user.role === Role.Admin) {
       can(Action.Read, UserEntity); // read-only access to User table
+      can(Action.Manage, ProductCategoryEntity); // read-only access to Product Category table
+      can(Action.Manage, ProductBaseEntity); // read-only access to Product Base table
+      can(Action.Manage, ProductVariantEntity); // read-only access to Product Variant table
     }
 
     return build({
