@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { UserSubscriber } from './subscribers/user.subscriber';
+import { UserSubscriber } from './subscriptions/user.subscriber';
 
 @Module({
   imports: [
@@ -23,4 +23,4 @@ import { UserSubscriber } from './subscribers/user.subscriber';
     }),
   ],
 })
-export class DatabaseModule {}
+export class DatabaseModule { }
