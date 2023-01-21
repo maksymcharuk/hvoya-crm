@@ -16,8 +16,7 @@ import { AppAbility } from '@shared/roles/ability';
 import { HttpExceptionInterceptor } from '@shared/interceptors/http-exception.interceptor';
 import { AuthInterceptor } from '@shared/interceptors/auth.interceptor';
 
-import { PoliciesService } from '@shared/services/policies.service';
-import { UserService } from '@shared/services/user.service';
+import { SharedModule } from '@shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,11 +27,10 @@ import { UserService } from '@shared/services/user.service';
     BrowserAnimationsModule,
     ToastModule,
     AbilityModule,
+    SharedModule,
   ],
   providers: [
     MessageService,
-    PoliciesService,
-    UserService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpExceptionInterceptor,

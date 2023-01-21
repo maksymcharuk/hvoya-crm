@@ -88,6 +88,11 @@
   }
 }
 
+.layout-menu-dropdown {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 991px) {
   .layout-topbar {
     justify-content: space-between;

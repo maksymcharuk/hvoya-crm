@@ -1,0 +1,11 @@
+<ul class="vertical-menu">
+  <ng-container *ngFor="let item of menuItemList">
+    <li
+      class="vertical-menu__item"
+      [routerLink]="item.routerLink"
+      routerLinkActive="active"
+    >
+      {{ item.label }}
+    </li>
+  </ng-container>
+</ul>

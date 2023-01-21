@@ -7,15 +7,22 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'dashboard',
+    redirectTo: 'main',
   },
   {
     path: '',
     component: DashboardComponent,
     children: [
       {
-        path: 'dashboard',
+        path: '',
         component: DashboardMainComponent,
+      },
+      {
+        path: 'account',
+        loadChildren: () =>
+          import('./modules/account/account.module').then(
+            (m) => m.AccountModule,
+          ),
       },
     ],
   },
