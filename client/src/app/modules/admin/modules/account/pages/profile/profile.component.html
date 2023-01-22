@@ -1,0 +1,27 @@
+<form
+  class="p-fluid"
+  [formGroup]="updateProfileForm"
+  (ngSubmit)="onSubmit(updateProfileForm.value)"
+>
+  <h5>Personal information</h5>
+  <div class="field">
+    <label for="phone-number">Phone number:</label>
+    <p-inputMask
+      inputId="phone-number"
+      formControlName="phoneNumber"
+      mask="+38 (999) 999-9999"
+      slotChar=" "
+      [unmask]="true"
+      [autoClear]="true"
+    ></p-inputMask>
+  </div>
+  <div class="field">
+    <label for="first-name">First name:</label>
+    <input id="first-name" pInputText formControlName="firstName" />
+  </div>
+  <div class="field">
+    <label for="last-name">Last name:</label>
+    <input id="last-name" pInputText formControlName="lastName" />
+  </div>
+  <button pButton type="submit" label="Save" [disabled]="isLoading"></button>
+</form>
