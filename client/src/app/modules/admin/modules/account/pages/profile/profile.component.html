@@ -1,0 +1,57 @@
+<form
+  class="p-fluid"
+  [formGroup]="updateProfileForm"
+  (ngSubmit)="onSubmit(updateProfileForm.value)"
+>
+  <h5>Personal information</h5>
+  <div class="field">
+    <label for="phone-number">Phone number:</label>
+    <p-inputMask
+      inputId="phone-number"
+      formControlName="phoneNumber"
+      mask="+38 (999) 999-9999"
+      slotChar=" "
+      [unmask]="true"
+      [autoClear]="true"
+    ></p-inputMask>
+  </div>
+  <div class="field">
+    <label for="first-name">First name:</label>
+    <input id="first-name" pInputText formControlName="firstName" />
+  </div>
+  <div class="field">
+    <label for="last-name">Last name:</label>
+    <input id="last-name" pInputText formControlName="lastName" />
+  </div>
+  <div class="field">
+    <label for="city">City:</label>
+    <input id="city" pInputText pKeyFilter="alpha" formControlName="city" />
+  </div>
+  <div class="field">
+    <label for="about">Bio:</label>
+    <textarea
+      id="about"
+      pInputTextarea
+      [rows]="5"
+      [autoResize]="true"
+      formControlName="bio"
+    ></textarea>
+  </div>
+  <h5>Payment information</h5>
+  <div class="field">
+    <label for="card-number">Card number:</label>
+    <p-inputMask
+      inputId="card-number"
+      formControlName="cardNumber"
+      mask="9999 9999 9999 9999"
+      slotChar=" "
+      [unmask]="true"
+      [autoClear]="true"
+    ></p-inputMask>
+  </div>
+  <div class="field">
+    <label for="cardholder-name">Cardholder name:</label>
+    <input id="cardholder-name" pInputText formControlName="cardholderName" />
+  </div>
+  <button pButton type="submit" label="Save" [disabled]="isLoading"></button>
+</form>
