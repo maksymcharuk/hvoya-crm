@@ -1,0 +1,63 @@
+<form
+  class="p-fluid"
+  [formGroup]="updateProfileForm"
+  (ngSubmit)="onSubmit(updateProfileForm.value)"
+>
+  <div class="field">
+    <label for="email">Email:</label>
+    <input
+      id="email"
+      pInputText
+      value="email@test.com"
+      [readOnly]="true"
+      [disabled]="true"
+    />
+  </div>
+  <h5>Change password</h5>
+  <div class="field">
+    <label for="previous-password">Old password:</label>
+    <p-password
+      id="previous-password"
+      formControlName="previousPassword"
+      [toggleMask]="true"
+      [feedback]="false"
+    ></p-password>
+  </div>
+  <div class="field">
+    <label for="password">New password:</label>
+    <p-password id="password" formControlName="password" [toggleMask]="true">
+      <ng-template pTemplate="footer">
+        <p-divider></p-divider>
+        <p class="mt-2">Requirements</p>
+        <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+          <li [ngClass]="{ valid: !hasLowerCase }">
+            At least one lowercase
+            <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
+          </li>
+          <li [ngClass]="{ valid: !hasUpperCase }">
+            At least one uppercase
+            <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
+          </li>
+          <li [ngClass]="{ valid: !hasNumeric }">
+            At least one numeric
+            <i class="pi pi-check" *ngIf="!hasNumeric"></i>
+          </li>
+          <li [ngClass]="{ valid: !hasMinLength }">
+            Minimum 8 characters
+            <i class="pi pi-check" *ngIf="!hasMinLength"></i>
+          </li>
+        </ul>
+      </ng-template>
+    </p-password>
+  </div>
+  <div class="field">
+    <label for="confirm-password">Confirm new password:</label>
+    <p-password
+      formControlName="confirmPassword"
+      id="confirm-password"
+      [toggleMask]="true"
+      [feedback]="false"
+    ></p-password>
+  </div>
+  <button pButton type="submit" label="Save" [disabled]="isLoading"></button>
+</form>
