@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
 import {
-  UpdateAdminProfileDTO,
-  UpdateAdminProfileFormGroup,
-} from '@shared/interfaces/dto/update-admin-profile.dto';
+  UpdateUserProfileDTO,
+  UpdateUserProfileFormGroup,
+} from '@shared/interfaces/dto/update-user-profile.dto';
 
 @Component({
   selector: 'app-profile',
@@ -18,11 +18,15 @@ export class ProfileComponent {
     phoneNumber: [''],
     firstName: [''],
     lastName: [''],
-  }) as UpdateAdminProfileFormGroup;
+    city: [''],
+    bio: [''],
+    cardNumber: [''],
+    cardholderName: [''],
+  }) as UpdateUserProfileFormGroup;
 
   constructor(private formBuilder: FormBuilder) {}
 
-  onSubmit(value: UpdateAdminProfileDTO) {
+  onSubmit(value: UpdateUserProfileDTO) {
     this.isLoading = true;
     console.log(value);
   }
