@@ -15,8 +15,15 @@ const routes: Routes = [
     component: AdminComponent,
     children: [
       {
-        path: 'dashboard',
+        path: '',
         component: AdminDashboardComponent,
+      },
+      {
+        path: 'account',
+        loadChildren: () =>
+          import('./modules/account/account.module').then(
+            (m) => m.AccountModule,
+          ),
       },
     ],
   },

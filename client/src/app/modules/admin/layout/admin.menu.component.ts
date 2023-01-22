@@ -1,6 +1,5 @@
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
-import { LayoutService } from '@shared/layout/services/layout.service';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -9,8 +8,6 @@ import { MenuItem } from 'primeng/api';
 })
 export class AdminMenuComponent implements OnInit {
   model: MenuItem[] = [];
-
-  constructor(public layoutService: LayoutService) {}
 
   ngOnInit() {
     this.model = [
