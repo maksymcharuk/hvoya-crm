@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './modules/database/database.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { AccountModule } from './modules/account/account.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { ProductsModule } from './modules/products/products.module';
 
@@ -26,6 +27,7 @@ import { ProductsModule } from './modules/products/products.module';
     DatabaseModule,
     UsersModule,
     AuthModule,
+    AccountModule,
     CaslModule,
     ProductsModule,
   ],

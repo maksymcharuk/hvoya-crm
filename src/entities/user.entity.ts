@@ -15,6 +15,21 @@ export class UserEntity extends BaseEntity {
   @Column({ default: '' })
   lastName: string;
 
+  @Column({ default: '' })
+  phoneNumber: string;
+
+  @Column({ default: '' })
+  location: string;
+
+  @Column({ default: '' })
+  bio: string;
+
+  @Column({ default: '' })
+  cardNumber: string;
+
+  @Column({ default: '' })
+  cardholderName: string;
+
   @Column()
   password: string;
 

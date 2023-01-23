@@ -31,6 +31,8 @@
       "@entities/*": ["src/entities/*"],
       "@enums/*": ["src/enums/*"],
       "@interfaces/*": ["src/interfaces/*"],
+      "@decorators/*": ["src/decorators/*"],
+      "@transformers/*": ["src/transformers/*"],
     },
   },
 }
