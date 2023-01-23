@@ -9,6 +9,7 @@ import {
 import { AuthService } from '@shared/services/auth.service';
 import { PoliciesService } from '@shared/services/policies.service';
 import { UserService } from '@shared/services/user.service';
+import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -30,7 +31,8 @@ export class SignInComponent {
     private router: Router,
     private userService: UserService,
     private policiesService: PoliciesService,
-  ) {}
+    private readonly messageService: MessageService
+  ) { }
 
   onSubmit(value: SignInDTO) {
     this.isLoading = true;
@@ -52,6 +54,17 @@ export class SignInComponent {
           this.router.navigateByUrl('admin');
         } else {
           this.router.navigateByUrl('dashboard');
+        }
+      }, (error) => {
+        if (error.status === 409) {
+          this.authService.sendEmailConfirmation(value.email)
+            .subscribe(() => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Confirmation email sent',
+                detail: 'Please check your email to confirm your account',
+              });
+            });
         }
       });
   }
