@@ -19,7 +19,7 @@ export default class UserSeeder implements Seeder {
         phoneNumber: '0673344123',
         location: 'Lviv',
         bio: 'I am a super admin',
-        cardNumber: '1234567890123456',
+        cardNumber: '5218 5722 2223 2634',
         cardholderName: 'John SuperAdmin',
       },
       {
@@ -32,7 +32,7 @@ export default class UserSeeder implements Seeder {
         phoneNumber: '0671234567',
         location: 'New York',
         bio: 'I am an admin',
-        cardNumber: '1234567890123456',
+        cardNumber: '5218 5722 2223 2634',
         cardholderName: 'Alice Admin',
       },
       {
@@ -45,7 +45,7 @@ export default class UserSeeder implements Seeder {
         phoneNumber: '0679876543',
         location: 'Lutsk',
         bio: 'I am a user',
-        cardNumber: '1234567890123456',
+        cardNumber: '5218 5722 2223 2634',
         cardholderName: 'Peter User',
       },
     ]);

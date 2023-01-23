@@ -7,7 +7,7 @@ export class UpdateProfileDto {
   @IsOptional()
   lastName?: string;
 
-  @IsPhoneNumber()
+  @IsPhoneNumber('UA', { message: 'Phone number is not valid' })
   @IsOptional()
   phoneNumber?: string;
 
@@ -17,7 +17,7 @@ export class UpdateProfileDto {
   @IsOptional()
   bio?: string;
 
-  @IsCreditCard()
+  @IsCreditCard({ message: 'Card number is not valid' })
   @IsOptional()
   cardNumber?: string;
 
