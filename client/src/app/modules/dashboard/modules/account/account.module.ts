@@ -6,6 +6,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ButtonModule } from 'primeng/button';
 import { InputMaskModule } from 'primeng/inputmask';
+import { PasswordModule } from 'primeng/password';
+import { DividerModule } from 'primeng/divider';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -13,9 +15,10 @@ import { AccountComponent } from './account.component';
 import { AccountRoutingModule } from './account-routing.module';
 
 import { ProfileComponent } from './pages/profile/profile.component';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 @NgModule({
-  declarations: [AccountComponent, ProfileComponent],
+  declarations: [AccountComponent, ProfileComponent, SettingsComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -25,6 +28,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
     InputTextareaModule,
     ButtonModule,
     InputMaskModule,
+    PasswordModule,
+    DividerModule,
     AccountRoutingModule,
   ],
 })
