@@ -3,6 +3,8 @@
 // with Intellisense and code completion in your
 // IDE or Text Editor.
 // ***********************************************
+import { signToken } from 'cypress/support/helpers';
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
   interface Chainable {
@@ -12,7 +14,10 @@ declare namespace Cypress {
     signInAsUser(): typeof signInAsUser;
     signUp(email: string, password: string): typeof signUp;
     resetPassword(password: string, token: string): typeof resetPassword;
+    singUpAndConfirmEmail(): typeof singUpAndConfirmEmail;
     logout(): typeof logout;
+    openUserMenu(): typeof openUserMenu;
+    openAccountPage(): typeof openAccountPage;
   }
 }
 
@@ -64,9 +69,33 @@ function resetPassword(password: string, token: string): void {
   cy.get('button[type=submit]').click();
 }
 
-function logout(): void {
+function openUserMenu(): void {
   cy.get('i.pi-user').click();
-  cy.get('button').contains('Logout').click();
+}
+
+function logout(): void {
+  cy.openUserMenu();
+  cy.get('.p-button-label').contains('Logout').click();
+}
+
+function openAccountPage(): void {
+  cy.openUserMenu();
+  cy.get('.p-button-label').contains('Account').click();
+}
+
+function singUpAndConfirmEmail(email: string, password: string): void {
+  cy.signUp(email, password);
+  cy.contains(email);
+  cy.contains('Thank you for signing up');
+
+  cy.task<any[]>(
+    'connectDB',
+    'SELECT * FROM public."user" ORDER BY id ASC',
+  ).then((users) => {
+    const token = signToken(users[users.length - 1].id);
+
+    cy.visit(`/auth/confirm-email?token=${token}`);
+  });
 }
 
 // ***********************************************
@@ -101,4 +130,7 @@ Cypress.Commands.add('signInAsAdmin', signInAsAdmin);
 Cypress.Commands.add('signInAsUser', signInAsUser);
 Cypress.Commands.add('signUp', signUp);
 Cypress.Commands.add('resetPassword', resetPassword);
+Cypress.Commands.add('singUpAndConfirmEmail', singUpAndConfirmEmail);
 Cypress.Commands.add('logout', logout);
+Cypress.Commands.add('openUserMenu', openUserMenu);
+Cypress.Commands.add('openAccountPage', openAccountPage);
