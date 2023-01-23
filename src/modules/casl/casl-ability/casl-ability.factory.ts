@@ -15,7 +15,14 @@ import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 
-type Subjects = InferSubjects<typeof UserEntity | typeof ProductCategoryEntity | typeof ProductBaseEntity | typeof ProductVariantEntity> | 'all';
+type Subjects =
+  | InferSubjects<
+      | typeof UserEntity
+      | typeof ProductCategoryEntity
+      | typeof ProductBaseEntity
+      | typeof ProductVariantEntity
+    >
+  | 'all';
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
 
@@ -37,6 +44,10 @@ export class CaslAbilityFactory {
       can(Action.Manage, ProductCategoryEntity); // read-only access to Product Category table
       can(Action.Manage, ProductBaseEntity); // read-only access to Product Base table
       can(Action.Manage, ProductVariantEntity); // read-only access to Product Variant table
+    }
+
+    if (user.role === Role.User) {
+      can([Action.Read, Action.Update], UserEntity); // read-write access to User table
     }
 
     return build({

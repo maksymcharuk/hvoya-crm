@@ -16,6 +16,11 @@ export default class UserSeeder implements Seeder {
         password: password,
         role: Role.SuperAdmin,
         emailConfirmed: true,
+        phoneNumber: '0673344123',
+        location: 'Lviv',
+        bio: 'I am a super admin',
+        cardNumber: '1234567890123456',
+        cardholderName: 'John SuperAdmin',
       },
       {
         firstName: 'Alice',
@@ -24,6 +29,11 @@ export default class UserSeeder implements Seeder {
         password: password,
         role: Role.Admin,
         emailConfirmed: true,
+        phoneNumber: '0671234567',
+        location: 'New York',
+        bio: 'I am an admin',
+        cardNumber: '1234567890123456',
+        cardholderName: 'Alice Admin',
       },
       {
         firstName: 'Peter',
@@ -32,6 +42,11 @@ export default class UserSeeder implements Seeder {
         password: password,
         role: Role.User,
         emailConfirmed: true,
+        phoneNumber: '0679876543',
+        location: 'Lutsk',
+        bio: 'I am a user',
+        cardNumber: '1234567890123456',
+        cardholderName: 'Peter User',
       },
     ]);
   }
