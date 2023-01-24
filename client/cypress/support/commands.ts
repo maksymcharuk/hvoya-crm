@@ -21,11 +21,18 @@ declare namespace Cypress {
   }
 }
 
-function signIn(email: string, password: string): void {
+function signIn(
+  email: string,
+  password: string,
+  options: { full: boolean } = { full: false },
+): void {
   cy.visit('/');
   cy.get('input[type=email]').type(email);
   cy.get('input[type=password]').type(password);
   cy.get('button[type=submit]').click();
+  if (options.full) {
+    cy.get('.layout-topbar-logo').should('be.visible');
+  }
 }
 
 function signInAsSuperAdmin(): void {

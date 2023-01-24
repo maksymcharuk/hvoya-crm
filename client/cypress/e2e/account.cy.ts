@@ -3,12 +3,9 @@ describe('Account', () => {
     const email = `test+${Date.now()}@email.com`;
     const password = 'Test12345';
 
-    it('Sign up as new user and update profile', () => {
+    it('Sign up as new user and update profile with valid data', () => {
       cy.singUpAndConfirmEmail(email, password);
-      cy.signIn(email, password);
-
-      cy.contains('Hello user');
-
+      cy.signIn(email, password, { full: true });
       cy.openAccountPage();
 
       const phoneNumber = '0671234567';
@@ -50,10 +47,38 @@ describe('Account', () => {
         'have.value',
         cardholderName,
       );
-
       cy.get('.user-info .user-info__name').contains(
         `${firstName} ${lastName}`,
       );
+    });
+
+    it('Sign in and try to update profile with invalid phone number', () => {
+      cy.signIn(email, password, { full: true });
+      cy.openAccountPage();
+
+      const phoneNumber = '067123456';
+
+      cy.get('input[id="phone-number"]').clear().type(phoneNumber);
+      cy.get('button[type=submit]').click();
+      cy.get('[role="alert"]').contains('Phone number is not valid');
+    });
+
+    it('Sign in and try to update profile with invalid card data', () => {
+      cy.signIn(email, password, { full: true });
+      cy.openAccountPage();
+
+      const invalidCardNumber = '5218 5722 2223 263';
+
+      cy.get('input[id="card-number"]').clear().type(invalidCardNumber);
+      cy.get('button[type=submit]').click();
+      cy.get('[role="alert"]').contains('Card number is not valid');
+
+      const validCardNumber = '5218 5722 2223 2634';
+
+      cy.get('input[id="card-number"]').clear().type(validCardNumber);
+      cy.get('input[id="cardholder-name"]').clear();
+      cy.get('button[type=submit]').click();
+      cy.get('[role="alert"]').contains('Cardholder name is required');
     });
   });
 });
