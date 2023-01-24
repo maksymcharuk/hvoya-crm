@@ -83,7 +83,7 @@ describe('Account', () => {
       cy.get('[role="alert"]').contains('Cardholder name is required');
     });
 
-    it('Sign in as admin and try to update profile with valid data', () => {
+    it('Sign up as admin and try to update profile with valid data', () => {
       cy.singUpAndConfirmEmail(testAdminEmail, testAdminPassword);
       cy.task<any[]>(
         'connectDB',
@@ -133,6 +133,63 @@ describe('Account', () => {
       cy.get('input[id="phone-number"]').clear().type(phoneNumber);
       cy.get('button[type=submit]').click();
       cy.get('[role="alert"]').contains('Phone number is not valid');
+    });
+  });
+
+  describe('Settings', () => {
+    describe('Change password', () => {
+      const testAdminEmail = `admin+${Date.now()}@email.com`;
+      const testAdminPassword = 'Admin12345';
+      const testUserEmail = `user+${Date.now()}@email.com`;
+      const testUserPassword = 'Test12345';
+
+      const userUpdatedPassword = 'UserPassword123';
+      const adminUpdatedPassword = 'AdminPassword123';
+
+      it('Sign up as user and change password', () => {
+        cy.singUpAndConfirmEmail(testUserEmail, testUserPassword);
+        cy.signIn(testUserEmail, testUserPassword, { full: true });
+        cy.openSettingsPage();
+
+        cy.get('input[id="current-password"]').clear().type(testUserPassword);
+        cy.get('input[id="password"]').clear().type(userUpdatedPassword).blur();
+        cy.get('input[id="confirm-password"]')
+          .clear()
+          .type(userUpdatedPassword);
+        cy.get('button[type=submit]').click();
+        cy.get('[role="alert"]').contains('Password was changed successfully');
+      });
+
+      it('Sign in as user with new password', () => {
+        cy.signIn(testUserEmail, userUpdatedPassword, { full: true });
+      });
+
+      it('Sign up as admin and change password', () => {
+        cy.singUpAndConfirmEmail(testAdminEmail, testAdminPassword);
+        cy.task<any[]>(
+          'connectDB',
+          `UPDATE public."user" 
+            SET role = 'Admin'::user_role_enum
+            WHERE id = (SELECT max(id) FROM public."user")`,
+        );
+        cy.signIn(testAdminEmail, testAdminPassword, { full: true });
+        cy.openSettingsPage();
+
+        cy.get('input[id="current-password"]').clear().type(testAdminPassword);
+        cy.get('input[id="password"]')
+          .clear()
+          .type(adminUpdatedPassword)
+          .blur();
+        cy.get('input[id="confirm-password"]')
+          .clear()
+          .type(adminUpdatedPassword);
+        cy.get('button[type=submit]').click();
+        cy.get('[role="alert"]').contains('Password was changed successfully');
+      });
+
+      it('Sign in as admin with new password', () => {
+        cy.signIn(testAdminEmail, adminUpdatedPassword, { full: true });
+      });
     });
   });
 });

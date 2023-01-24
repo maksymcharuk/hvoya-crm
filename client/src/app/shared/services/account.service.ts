@@ -6,6 +6,7 @@ import { environment } from '@environment/environment';
 import { GetProfileResponse } from '@shared/interfaces/responses/get-profile.response';
 import { UpdateUserProfileDTO } from '@shared/interfaces/dto/update-user-profile.dto';
 import { UpdateAdminProfileDTO } from '@shared/interfaces/dto/update-admin-profile.dto';
+import { ChangePasswordDTO } from '@shared/interfaces/dto/change-password.dto';
 
 @Injectable()
 export class AccountService {
@@ -34,5 +35,12 @@ export class AccountService {
         updateUserProfileDTO,
       )
       .pipe(tap((profile) => this.profile$.next(profile)));
+  }
+
+  changePassword(changePasswordDTO: ChangePasswordDTO): Observable<void> {
+    return this.http.put<void>(
+      `${environment.apiUrl}/account/change-password`,
+      changePasswordDTO,
+    );
   }
 }

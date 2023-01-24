@@ -5,10 +5,14 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { finalize } from 'rxjs';
+import { MessageService } from 'primeng/api';
+
 import {
-  UpdateAdminSettingsDTO,
-  UpdateAdminSettingsFormGroup,
-} from '@shared/interfaces/dto/update-admin-settings.dto';
+  ChangePasswordDTO,
+  ChangePasswordFormGroup,
+} from '@shared/interfaces/dto/change-password.dto';
+import { AccountService } from '@shared/services/account.service';
 import { PasswordValidators } from '@shared/validators/password-validator';
 
 @Component({
@@ -17,6 +21,7 @@ import { PasswordValidators } from '@shared/validators/password-validator';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent {
+  profile$ = this.accountService.profile$;
   isLoading = false;
 
   hasLowerCase: boolean | undefined = true;
@@ -24,9 +29,9 @@ export class SettingsComponent {
   hasNumeric: boolean | undefined = true;
   hasMinLength: boolean | undefined = true;
 
-  updateProfileForm = this.formBuilder.group(
+  changePasswordForm = this.formBuilder.group(
     {
-      previousPassword: ['', [Validators.required]],
+      currentPassword: ['', [Validators.required]],
       password: [
         '',
         [
@@ -42,12 +47,24 @@ export class SettingsComponent {
     {
       validator: PasswordValidators.MatchValidator,
     } as AbstractControlOptions,
-  ) as UpdateAdminSettingsFormGroup;
+  ) as ChangePasswordFormGroup;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private accountService: AccountService,
+    private messageService: MessageService,
+  ) {}
 
-  onSubmit(value: UpdateAdminSettingsDTO) {
+  onChangePasswordSubmit(value: ChangePasswordDTO) {
     this.isLoading = true;
-    console.log(value);
+    this.accountService
+      .changePassword(value)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe(() => {
+        this.messageService.add({
+          severity: 'success',
+          detail: 'Password was changed successfully',
+        });
+      });
   }
 }
