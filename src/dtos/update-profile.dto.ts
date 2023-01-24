@@ -1,4 +1,10 @@
-import { IsCreditCard, IsOptional, IsPhoneNumber } from 'class-validator';
+import {
+  IsCreditCard,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+  ValidateIf,
+} from 'class-validator';
 
 export class UpdateProfileDto {
   @IsOptional()
@@ -7,8 +13,9 @@ export class UpdateProfileDto {
   @IsOptional()
   lastName?: string;
 
-  @IsPhoneNumber()
+  @ValidateIf((e) => e.phoneNumber)
   @IsOptional()
+  @IsPhoneNumber('UA', { message: 'Phone number is not valid' })
   phoneNumber?: string;
 
   @IsOptional()
@@ -17,10 +24,12 @@ export class UpdateProfileDto {
   @IsOptional()
   bio?: string;
 
-  @IsCreditCard()
+  @ValidateIf((e) => e.cardNumber)
   @IsOptional()
+  @IsCreditCard({ message: 'Card number is not valid' })
   cardNumber?: string;
 
-  @IsOptional()
+  @ValidateIf((e) => e.cardNumber)
+  @IsNotEmpty({ message: 'Cardholder name is required' })
   cardholderName?: string;
 }
