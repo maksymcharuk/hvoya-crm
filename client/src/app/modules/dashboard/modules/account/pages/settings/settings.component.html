@@ -1,31 +1,38 @@
-<form
-  class="p-fluid"
-  [formGroup]="updateProfileForm"
-  (ngSubmit)="onSubmit(updateProfileForm.value)"
->
+<div class="p-fluid">
   <div class="field">
     <label for="email">Email:</label>
     <input
       id="email"
+      [value]="(profile$ | async)?.email"
       pInputText
-      value="email@test.com"
       [readOnly]="true"
       [disabled]="true"
     />
   </div>
+</div>
+
+<form
+  class="p-fluid"
+  [formGroup]="changePasswordForm"
+  (ngSubmit)="onChangePasswordSubmit(changePasswordForm.value)"
+>
   <h5>Change password</h5>
   <div class="field">
-    <label for="previous-password">Old password:</label>
+    <label for="current-password">Current password:</label>
     <p-password
-      id="previous-password"
-      formControlName="previousPassword"
+      inputId="current-password"
+      formControlName="currentPassword"
       [toggleMask]="true"
       [feedback]="false"
     ></p-password>
   </div>
   <div class="field">
     <label for="password">New password:</label>
-    <p-password id="password" formControlName="password" [toggleMask]="true">
+    <p-password
+      inputId="password"
+      formControlName="password"
+      [toggleMask]="true"
+    >
       <ng-template pTemplate="footer">
         <p-divider></p-divider>
         <p class="mt-2">Requirements</p>
@@ -54,7 +61,7 @@
     <label for="confirm-password">Confirm new password:</label>
     <p-password
       formControlName="confirmPassword"
-      id="confirm-password"
+      inputId="confirm-password"
       [toggleMask]="true"
       [feedback]="false"
     ></p-password>

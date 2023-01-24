@@ -18,6 +18,8 @@ declare namespace Cypress {
     logout(): typeof logout;
     openUserMenu(): typeof openUserMenu;
     openAccountPage(): typeof openAccountPage;
+    openProfilePage(): typeof openProfilePage;
+    openSettingsPage(): typeof openSettingsPage;
   }
 }
 
@@ -90,6 +92,16 @@ function openAccountPage(): void {
   cy.get('.p-button-label').contains('Account').click();
 }
 
+function openProfilePage(): void {
+  cy.openUserMenu();
+  cy.get('li').contains('Profile').click();
+}
+
+function openSettingsPage(): void {
+  cy.openAccountPage();
+  cy.get('li').contains('Settings').click();
+}
+
 function singUpAndConfirmEmail(email: string, password: string): void {
   cy.signUp(email, password);
   cy.contains(email);
@@ -141,3 +153,5 @@ Cypress.Commands.add('singUpAndConfirmEmail', singUpAndConfirmEmail);
 Cypress.Commands.add('logout', logout);
 Cypress.Commands.add('openUserMenu', openUserMenu);
 Cypress.Commands.add('openAccountPage', openAccountPage);
+Cypress.Commands.add('openProfilePage', openProfilePage);
+Cypress.Commands.add('openSettingsPage', openSettingsPage);
