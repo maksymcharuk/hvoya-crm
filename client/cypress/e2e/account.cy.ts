@@ -1,11 +1,13 @@
 describe('Account', () => {
   describe('Profile', () => {
-    const email = `test+${Date.now()}@email.com`;
-    const password = 'Test12345';
+    const testAdminEmail = `admin+${Date.now()}@email.com`;
+    const testAdminPassword = 'Admin12345';
+    const testUserEmail = `user+${Date.now()}@email.com`;
+    const testUserPassword = 'Test12345';
 
-    it('Sign up as new user and update profile with valid data', () => {
-      cy.singUpAndConfirmEmail(email, password);
-      cy.signIn(email, password, { full: true });
+    it('Sign up as user and update profile with valid data', () => {
+      cy.singUpAndConfirmEmail(testUserEmail, testUserPassword);
+      cy.signIn(testUserEmail, testUserPassword, { full: true });
       cy.openAccountPage();
 
       const phoneNumber = '0671234567';
@@ -52,8 +54,8 @@ describe('Account', () => {
       );
     });
 
-    it('Sign in and try to update profile with invalid phone number', () => {
-      cy.signIn(email, password, { full: true });
+    it('Sign in as user and try to update profile with invalid phone number', () => {
+      cy.signIn(testUserEmail, testUserPassword, { full: true });
       cy.openAccountPage();
 
       const phoneNumber = '067123456';
@@ -63,8 +65,8 @@ describe('Account', () => {
       cy.get('[role="alert"]').contains('Phone number is not valid');
     });
 
-    it('Sign in and try to update profile with invalid card data', () => {
-      cy.signIn(email, password, { full: true });
+    it('Sign in as user and try to update profile with invalid card data', () => {
+      cy.signIn(testUserEmail, testUserPassword, { full: true });
       cy.openAccountPage();
 
       const invalidCardNumber = '5218 5722 2223 263';
@@ -79,6 +81,58 @@ describe('Account', () => {
       cy.get('input[id="cardholder-name"]').clear();
       cy.get('button[type=submit]').click();
       cy.get('[role="alert"]').contains('Cardholder name is required');
+    });
+
+    it('Sign in as admin and try to update profile with valid data', () => {
+      cy.singUpAndConfirmEmail(testAdminEmail, testAdminPassword);
+      cy.task<any[]>(
+        'connectDB',
+        `UPDATE public."user" 
+          SET role = 'Admin'::user_role_enum
+          WHERE id = (SELECT max(id) FROM public."user")`,
+      );
+
+      cy.signIn(testAdminEmail, testAdminPassword, { full: true });
+      cy.openAccountPage();
+
+      const phoneNumber = '0671234567';
+      const phoneNumberFormated = '+38 (067) 123-4567';
+      const firstName = 'TestFname';
+      const lastName = 'TestLname';
+
+      cy.get('input[id="phone-number"]').clear().type(phoneNumber);
+      cy.get('input[id="first-name"]').clear().type(firstName);
+      cy.get('input[id="last-name"]').clear().type(lastName);
+
+      cy.get('button[type=submit]').click();
+
+      cy.get('[role="alert"]').contains('Profile updated successfully');
+      cy.get('.user-info .user-info__name').contains(
+        `${firstName} ${lastName}`,
+      );
+
+      cy.reload();
+
+      cy.get('input[id="phone-number"]').should(
+        'have.value',
+        phoneNumberFormated,
+      );
+      cy.get('input[id="first-name"]').should('have.value', firstName);
+      cy.get('input[id="last-name"]').should('have.value', lastName);
+      cy.get('.user-info .user-info__name').contains(
+        `${firstName} ${lastName}`,
+      );
+    });
+
+    it('Sign in as admin and try to update profile with invalid phone number', () => {
+      cy.signIn(testAdminEmail, testAdminPassword, { full: true });
+      cy.openAccountPage();
+
+      const phoneNumber = '067123456';
+
+      cy.get('input[id="phone-number"]').clear().type(phoneNumber);
+      cy.get('button[type=submit]').click();
+      cy.get('[role="alert"]').contains('Phone number is not valid');
     });
   });
 });

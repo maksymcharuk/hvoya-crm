@@ -13,7 +13,7 @@ export class UpdateProfileDto {
   @IsOptional()
   lastName?: string;
 
-  @ValidateIf((e) => e.phoneNumber !== '')
+  @ValidateIf((e) => e.phoneNumber)
   @IsOptional()
   @IsPhoneNumber('UA', { message: 'Phone number is not valid' })
   phoneNumber?: string;
@@ -24,12 +24,12 @@ export class UpdateProfileDto {
   @IsOptional()
   bio?: string;
 
-  @ValidateIf((e) => e.cardNumber !== '')
+  @ValidateIf((e) => e.cardNumber)
   @IsOptional()
   @IsCreditCard({ message: 'Card number is not valid' })
   cardNumber?: string;
 
-  @ValidateIf((e) => e.cardNumber !== '')
+  @ValidateIf((e) => e.cardNumber)
   @IsNotEmpty({ message: 'Cardholder name is required' })
   cardholderName?: string;
 }
