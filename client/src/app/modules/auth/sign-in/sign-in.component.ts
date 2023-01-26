@@ -19,6 +19,7 @@ import { finalize } from 'rxjs';
 })
 export class SignInComponent {
   isLoading = false;
+  emailConfirmationSent: boolean = false;
 
   signInForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -57,14 +58,17 @@ export class SignInComponent {
         }
       }, (error) => {
         if (error.status === 409) {
-          this.authService.sendEmailConfirmation(value.email)
-            .subscribe(() => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Confirmation email sent',
-                detail: 'Please check your email to confirm your account',
+          if (!this.emailConfirmationSent) {
+            this.authService.sendEmailConfirmation(value.email)
+              .subscribe(() => {
+                this.emailConfirmationSent = true;
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Confirmation email sent',
+                  detail: 'Please check your email to confirm your account',
+                });
               });
-            });
+          }
         }
       });
   }
