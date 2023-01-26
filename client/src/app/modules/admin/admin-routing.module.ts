@@ -25,6 +25,13 @@ const routes: Routes = [
             (m) => m.AccountModule,
           ),
       },
+      {
+        path: 'products',
+        loadChildren: () =>
+          import('./modules/products/admin-products.module').then(
+            (m) => m.AdminProductsModule,
+          ),
+      },
     ],
   },
 ];

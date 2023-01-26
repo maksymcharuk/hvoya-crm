@@ -22,7 +22,7 @@ export class AdminMenuComponent implements OnInit {
           {
             label: 'Products',
             icon: 'pi pi-fw pi-shopping-cart',
-            routerLink: ['/'],
+            routerLink: ['products'],
           },
           {
             label: 'Order',

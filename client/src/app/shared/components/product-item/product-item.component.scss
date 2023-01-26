@@ -1,0 +1,28 @@
+::ng-deep {
+  .p-selectbutton {
+    display: flex;
+
+    .p-button {
+      flex: 1 1 auto;
+      padding: 0.25rem;
+    }
+  }
+
+  .colors {
+    position: absolute;
+    left: 0.25rem;
+    bottom: 0.25rem;
+
+    .p-selectbutton {
+      display: flex;
+      flex-direction: column;
+
+      .p-button {
+        border: 0;
+        border-radius: 50% !important;
+        flex: none;
+        padding: 0.3rem;
+      }
+    }
+  }
+}
