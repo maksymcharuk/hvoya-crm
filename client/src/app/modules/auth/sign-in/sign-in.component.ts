@@ -68,6 +68,12 @@ export class SignInComponent {
                   detail: 'Please check your email to confirm your account',
                 });
               });
+          } else {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Confirmation email sent',
+              detail: 'Please check your email to confirm your account',
+            });
           }
         }
       });
