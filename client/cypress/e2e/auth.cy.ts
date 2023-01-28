@@ -8,18 +8,36 @@ describe('Auth', () => {
     });
 
     it('Sign in as super admin', () => {
-      cy.signInAsSuperAdmin();
-      cy.contains('Hello admin');
+      cy.fixture('auth.json')
+        .as('authData')
+        .then(({ credentials }) => {
+          cy.signInAsSuperAdmin();
+          cy.contains(credentials.superAdmin.firstName);
+          cy.contains(credentials.superAdmin.lastName);
+          cy.contains(credentials.superAdmin.email);
+        });
     });
 
     it('Sign in as admin', () => {
-      cy.signInAsAdmin();
-      cy.contains('Hello admin');
+      cy.fixture('auth.json')
+        .as('authData')
+        .then(({ credentials }) => {
+          cy.signInAsAdmin();
+          cy.contains(credentials.admin.firstName);
+          cy.contains(credentials.admin.lastName);
+          cy.contains(credentials.admin.email);
+        });
     });
 
     it('Sign in as user', () => {
-      cy.signInAsUser();
-      cy.contains('Hello user');
+      cy.fixture('auth.json')
+        .as('authData')
+        .then(({ credentials }) => {
+          cy.signInAsUser();
+          cy.contains(credentials.user.firstName);
+          cy.contains(credentials.user.lastName);
+          cy.contains(credentials.user.email);
+        });
     });
 
     it('Sign in with invalid credentials', () => {
@@ -53,22 +71,11 @@ describe('Auth', () => {
     });
 
     it('Register new user, confirm and sign in', () => {
-      const uniqueEmail = `test+${Date.now()}@email.com`;
-      cy.signUp(uniqueEmail, 'Test12345');
-      cy.contains(uniqueEmail);
-      cy.contains('Thank you for signing up');
-
-      cy.task<any[]>(
-        'connectDB',
-        'SELECT * FROM public."user" ORDER BY id ASC',
-      ).then((users) => {
-        const token = signToken(users[users.length - 1].id);
-
-        cy.visit(`/auth/confirm-email?token=${token}`);
-
-        cy.signIn(uniqueEmail, 'Test12345');
-        cy.contains('Hello user');
-      });
+      const email = `test+${Date.now()}@email.com`;
+      const password = 'Test12345';
+      cy.singUpAndConfirmEmail(email, password);
+      cy.signIn(email, password);
+      cy.contains('Hello user');
     });
   });
 

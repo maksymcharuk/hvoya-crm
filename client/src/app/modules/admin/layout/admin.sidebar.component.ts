@@ -1,10 +1,12 @@
 import { Component, ElementRef } from '@angular/core';
-import { LayoutService } from '@shared/layout/services/layout.service';
+import { AccountService } from '@shared/services/account.service';
 
 @Component({
   selector: 'admin-sidebar',
   templateUrl: './admin.sidebar.component.html',
 })
 export class AdminSidebarComponent {
-  constructor(public layoutService: LayoutService, public el: ElementRef) {}
+  profile$ = this.accountService.profile$;
+
+  constructor(public el: ElementRef, private accountService: AccountService) {}
 }

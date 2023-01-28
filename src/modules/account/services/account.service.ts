@@ -19,8 +19,8 @@ export class AccountService {
   ): Promise<UserEntity> {
     let user = await this.usersRepository.findOneByOrFail({ id: userId });
 
-    if (!(await user.validatePassword(changePasswordDto.previousPassword))) {
-      throw new HttpException('Previous password is incorrect', 400);
+    if (!(await user.validatePassword(changePasswordDto.currentPassword))) {
+      throw new HttpException('Current password is incorrect', 400);
     }
 
     try {

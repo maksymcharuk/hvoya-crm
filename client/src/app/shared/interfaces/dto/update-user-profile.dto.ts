@@ -4,7 +4,7 @@ export interface UpdateUserProfileDTO {
   phoneNumber: string;
   firstName: string;
   lastName: string;
-  city: string;
+  location: string;
   bio: string;
   cardNumber: string;
   cardholderName: string;
@@ -17,7 +17,7 @@ export interface UpdateUserProfileFormGroup extends FormGroup {
     phoneNumber: AbstractControl;
     firstName: AbstractControl;
     lastName: AbstractControl;
-    city: AbstractControl;
+    location: AbstractControl;
     bio: AbstractControl;
     cardNumber: AbstractControl;
     cardholderName: AbstractControl;

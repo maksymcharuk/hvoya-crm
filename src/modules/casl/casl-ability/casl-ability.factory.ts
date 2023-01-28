@@ -40,7 +40,7 @@ export class CaslAbilityFactory {
     }
 
     if (user.role === Role.Admin) {
-      can(Action.Read, UserEntity); // read-only access to User table
+      can([Action.Read, Action.Update], UserEntity); // read-only access to User table
       can(Action.Manage, ProductCategoryEntity); // read-only access to Product Category table
       can(Action.Manage, ProductBaseEntity); // read-only access to Product Base table
       can(Action.Manage, ProductVariantEntity); // read-only access to Product Variant table

@@ -3,6 +3,8 @@
 // with Intellisense and code completion in your
 // IDE or Text Editor.
 // ***********************************************
+import { signToken } from 'cypress/support/helpers';
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
   interface Chainable {
@@ -12,15 +14,27 @@ declare namespace Cypress {
     signInAsUser(): typeof signInAsUser;
     signUp(email: string, password: string): typeof signUp;
     resetPassword(password: string, token: string): typeof resetPassword;
+    singUpAndConfirmEmail(): typeof singUpAndConfirmEmail;
     logout(): typeof logout;
+    openUserMenu(): typeof openUserMenu;
+    openAccountPage(): typeof openAccountPage;
+    openProfilePage(): typeof openProfilePage;
+    openSettingsPage(): typeof openSettingsPage;
   }
 }
 
-function signIn(email: string, password: string): void {
+function signIn(
+  email: string,
+  password: string,
+  options: { full: boolean } = { full: false },
+): void {
   cy.visit('/');
   cy.get('input[type=email]').type(email);
   cy.get('input[type=password]').type(password);
   cy.get('button[type=submit]').click();
+  if (options.full) {
+    cy.get('.layout-topbar-logo').should('be.visible');
+  }
 }
 
 function signInAsSuperAdmin(): void {
@@ -64,9 +78,43 @@ function resetPassword(password: string, token: string): void {
   cy.get('button[type=submit]').click();
 }
 
-function logout(): void {
+function openUserMenu(): void {
   cy.get('i.pi-user').click();
-  cy.get('button').contains('Logout').click();
+}
+
+function logout(): void {
+  cy.openUserMenu();
+  cy.get('.p-button-label').contains('Logout').click();
+}
+
+function openAccountPage(): void {
+  cy.openUserMenu();
+  cy.get('.p-button-label').contains('Account').click();
+}
+
+function openProfilePage(): void {
+  cy.openUserMenu();
+  cy.get('li').contains('Profile').click();
+}
+
+function openSettingsPage(): void {
+  cy.openAccountPage();
+  cy.get('li').contains('Settings').click();
+}
+
+function singUpAndConfirmEmail(email: string, password: string): void {
+  cy.signUp(email, password);
+  cy.contains(email);
+  cy.contains('Thank you for signing up');
+
+  cy.task<any[]>(
+    'connectDB',
+    'SELECT * FROM public."user" ORDER BY id ASC',
+  ).then((users) => {
+    const token = signToken(users[users.length - 1].id);
+
+    cy.visit(`/auth/confirm-email?token=${token}`);
+  });
 }
 
 // ***********************************************
@@ -101,4 +149,9 @@ Cypress.Commands.add('signInAsAdmin', signInAsAdmin);
 Cypress.Commands.add('signInAsUser', signInAsUser);
 Cypress.Commands.add('signUp', signUp);
 Cypress.Commands.add('resetPassword', resetPassword);
+Cypress.Commands.add('singUpAndConfirmEmail', singUpAndConfirmEmail);
 Cypress.Commands.add('logout', logout);
+Cypress.Commands.add('openUserMenu', openUserMenu);
+Cypress.Commands.add('openAccountPage', openAccountPage);
+Cypress.Commands.add('openProfilePage', openProfilePage);
+Cypress.Commands.add('openSettingsPage', openSettingsPage);
