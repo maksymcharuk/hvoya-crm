@@ -63,6 +63,17 @@ export default class ProductSeeder implements Seeder {
         baseProduct: productBase[0],
       },
       {
+        sku: 'CLSK-3',
+        name: 'Classic tree3',
+        description: 'Classic Christmas tree',
+        size: '1.2m',
+        color: 'green',
+        price: 50,
+        availableItemCount: 10,
+        imageIds: [],
+        baseProduct: productBase[0],
+      },
+      {
         sku: 'LUX-1',
         name: 'Lux tree1',
         description: 'Lux Christmas tree',
