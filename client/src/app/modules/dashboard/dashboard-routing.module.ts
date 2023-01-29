@@ -24,6 +24,13 @@ const routes: Routes = [
             (m) => m.AccountModule,
           ),
       },
+      {
+        path: 'products',
+        loadChildren: () =>
+          import('./modules/products/dashboard-products.module').then(
+            (m) => m.DashboardProductsModule,
+          ),
+      },
     ],
   },
 ];
