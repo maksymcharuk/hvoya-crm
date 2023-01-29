@@ -1,23 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ProductBase, ProductVariant } from '@shared/interfaces/products';
 
 @Component({
   selector: 'app-product-item',
   templateUrl: './product-item.component.html',
   styleUrls: ['./product-item.component.scss'],
 })
-export class ProductItemComponent {
-  sizes = [
-    { name: '80cm', code: '80' },
-    { name: '120cm', code: '120' },
-    { name: '160cm', code: '160' },
-    { name: '220cm', code: '220' },
-  ];
-  selectedSize = '80';
+export class ProductItemComponent implements OnInit {
+  @Input() product!: ProductBase;
 
-  colors = [
-    { name: 'White', code: '#EDEEF4' },
-    { name: 'Green', code: '#008000' },
-    { name: 'Blue', code: '#87e3ef' },
-  ];
-  selectedColor = '#008000';
+  variants: ProductVariant[] = [];
+  selectedVariant: ProductVariant | undefined;
+
+  sizes: { code: string }[] = [];
+  selectedSize = '';
+
+  colors: { code: string }[] = [];
+  selectedColor = '';
+
+  ngOnInit(): void {
+    this.variants = this.product.variants;
+    this.selectedVariant = this.variants[0];
+    this.sizes = this.getUniqueArray(this.variants, 'size').map((size) => ({
+      code: size,
+    }));
+    this.selectedSize = this.sizes[0]?.code || '';
+
+    this.updateColors();
+  }
+
+  onVariantChange({ value }: any, type: 'color' | 'size'): void {
+    this.updateColors();
+
+    const selectedSize = type === 'size' ? value : this.selectedSize;
+    const selectedColor = type === 'color' ? value : this.selectedColor;
+
+    this.selectedVariant = this.variants.find(
+      (variant) =>
+        variant.size === selectedSize && variant.color === selectedColor,
+    );
+  }
+
+  private updateColors(): void {
+    this.colors = this.variants
+      .filter((variant) => variant.size === this.selectedSize)
+      .map((color) => ({ code: color.color }));
+    this.selectedColor = this.colors[0]?.code || '';
+  }
+
+  private getUniqueArray(arr: any[], key: string): any[] {
+    return Array.from(new Set(arr.map((item) => item[key])));
+  }
 }

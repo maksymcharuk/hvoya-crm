@@ -1,1 +1,4 @@
-<app-product-list></app-product-list>
+<app-product-list
+  [productList]="productList$ | async"
+  [isLoading]="isLoading"
+></app-product-list>

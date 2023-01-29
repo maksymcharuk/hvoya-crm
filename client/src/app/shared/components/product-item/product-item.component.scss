@@ -1,3 +1,18 @@
+.wrapper {
+  position: relative;
+  height: 0;
+  /* Formula is: (height / width * 100%) */
+  padding-top: calc(360 / 360 * 100%);
+}
+
+.wrapper__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: 100%;
+  height: auto;
+}
+
 ::ng-deep {
   .p-selectbutton {
     display: flex;

@@ -1,8 +1,8 @@
 <div class="p-2">
-  <div class="relative mb-3">
+  <div class="wrapper mb-3">
     <img
       src="https://hvoya.com/static/uploads/103/conversions/yalynka-lyta-classic-2-2-thumb.jpg"
-      class="w-full"
+      class="wrapper__img w-full"
     /><span
       class="bg-pink-500 text-pink-50 font-bold px-2 py-1 absolute"
       style="border-radius: 1rem; right: 1rem; bottom: 1rem"
@@ -12,6 +12,7 @@
       <p-selectButton
         [options]="colors"
         [(ngModel)]="selectedColor"
+        (onChange)="onVariantChange($event, 'color')"
         optionValue="code"
       >
         <ng-template let-color>
@@ -20,20 +21,19 @@
       </p-selectButton>
     </div>
   </div>
-  <span class="text-900 font-medium text-xl"
-    >Ялинка лита Premium Mix 220 см</span
-  >
+  <span class="text-900 font-medium text-xl">{{ selectedVariant?.name }}</span>
   <div class="my-2">
     <p-selectButton
       [options]="sizes"
       [(ngModel)]="selectedSize"
-      optionLabel="name"
+      (onChange)="onVariantChange($event, 'size')"
+      optionLabel="code"
       optionValue="code"
     ></p-selectButton>
   </div>
   <div class="my-4">
-    <span class="line-through text-600">$321.00</span
-    ><span class="font-bold text-900 ml-2">$150.00</span>
+    <span class="line-through text-600">$321.00</span>
+    <span class="font-bold text-900 ml-2">${{ selectedVariant?.price }}</span>
   </div>
   <button
     pbutton=""
@@ -45,7 +45,7 @@
     <span
       class="p-button-icon p-button-icon-left pi pi-shopping-cart"
       aria-hidden="true"
-    ></span
-    ><span class="p-button-label">Add to Cart</span><span class="p-ink"></span>
+    ></span>
+    <span class="p-button-label">Add to Cart</span><span class="p-ink"></span>
   </button>
 </div>

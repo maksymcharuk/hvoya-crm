@@ -5,6 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -18,7 +19,7 @@ const COMPONENTS = [
   ProductItemComponent,
 ];
 
-const PRIMENG_MODULES = [SelectButtonModule];
+const PRIMENG_MODULES = [SelectButtonModule, SkeletonModule];
 
 @NgModule({
   declarations: [...COMPONENTS],
