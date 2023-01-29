@@ -48,6 +48,7 @@ export default class ProductSeeder implements Seeder {
         color: 'green',
         price: 100,
         availableItemCount: 10,
+        imageIds: [],
         baseProduct: productBase[0],
       },
       {
@@ -58,6 +59,7 @@ export default class ProductSeeder implements Seeder {
         color: 'blue',
         price: 100,
         availableItemCount: 10,
+        imageIds: [],
         baseProduct: productBase[0],
       },
       {
@@ -68,6 +70,7 @@ export default class ProductSeeder implements Seeder {
         color: 'blue',
         price: 100,
         availableItemCount: 10,
+        imageIds: [],
         baseProduct: productBase[1],
       },
       {
@@ -78,6 +81,7 @@ export default class ProductSeeder implements Seeder {
         color: 'green',
         price: 100,
         availableItemCount: 10,
+        imageIds: [],
         baseProduct: productBase[1],
       },
       {
@@ -88,6 +92,7 @@ export default class ProductSeeder implements Seeder {
         color: 'green',
         price: 100,
         availableItemCount: 10,
+        imageIds: [],
         baseProduct: productBase[2],
       },
       {
@@ -98,6 +103,7 @@ export default class ProductSeeder implements Seeder {
         color: 'blue',
         price: 100,
         availableItemCount: 10,
+        imageIds: [],
         baseProduct: productBase[2],
       },
       {
@@ -108,6 +114,7 @@ export default class ProductSeeder implements Seeder {
         color: 'green',
         price: 100,
         availableItemCount: 10,
+        imageIds: [],
         baseProduct: productBase[3],
       },
       {
@@ -118,6 +125,7 @@ export default class ProductSeeder implements Seeder {
         color: 'blue',
         price: 100,
         availableItemCount: 10,
+        imageIds: [],
         baseProduct: productBase[3],
       },
     ]);

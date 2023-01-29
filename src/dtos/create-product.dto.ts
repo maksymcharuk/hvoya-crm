@@ -1,71 +1,42 @@
-import { Type } from 'class-transformer';
-import { IsDefined, IsNotEmpty, IsNotEmptyObject, IsObject, ValidateIf, ValidateNested } from 'class-validator';
-
-
-class ProductCategoryDto {
-    @IsNotEmpty()
-    name: string;
-}
-
-class ProductBaseDto {
-    @IsNotEmpty()
-    name: string;
-}
-
-class ProductVariantDto {
-    @IsNotEmpty()
-    sku: string;
-
-    @IsNotEmpty()
-    name: string;
-
-    @IsNotEmpty()
-    description: string;
-
-    @IsNotEmpty()
-    size: string;
-
-    @IsNotEmpty()
-    color: string;
-
-    @IsNotEmpty()
-    price: number;
-
-    @IsNotEmpty()
-    availableItemCount: number;
-}
+import { IsNotEmpty, ValidateIf } from 'class-validator';
 
 export class CreateProductDto {
 
-    @ValidateIf(o => !o.productCategory)
+    @ValidateIf(o => !o.productCategoryName)
     @IsNotEmpty()
     productCategoryId: number;
 
     @ValidateIf(o => !o.productCategoryId)
-    @IsDefined()
-    @IsNotEmptyObject()
-    @IsObject()
-    @ValidateNested({ each: true })
-    @Type(() => ProductCategoryDto)
-    productCategory: ProductCategoryDto;
+    @IsNotEmpty()
+    productCategoryName: string;
 
-    @ValidateIf(o => !o.productBase)
+    @ValidateIf(o => !o.productBaseName)
     @IsNotEmpty()
     productBaseId: number;
 
     @ValidateIf(o => !o.productBaseId)
-    @IsDefined()
-    @IsNotEmptyObject()
-    @IsObject()
-    @ValidateNested({ each: true })
-    @Type(() => ProductBaseDto)
-    productBase: ProductBaseDto;
+    @IsNotEmpty()
+    productBaseName: string;
 
-    @IsDefined()
-    @IsNotEmptyObject()
-    @IsObject()
-    @ValidateNested({ each: true })
-    @Type(() => ProductVariantDto)
-    productVariant: ProductVariantDto;
+    @IsNotEmpty()
+    productVariantSku: string;
+
+    @IsNotEmpty()
+    productVariantName: string;
+
+    @IsNotEmpty()
+    productVariantDescription: string;
+
+    @IsNotEmpty()
+    productVariantSize: string;
+
+    @IsNotEmpty()
+    productVariantColor: string;
+
+    @IsNotEmpty()
+    productVariantPrice: number;
+
+    @IsNotEmpty()
+    productVariantAvailableItemCount: number;
 }
 

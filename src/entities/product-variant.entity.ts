@@ -33,6 +33,12 @@ export class ProductVariantEntity extends BaseEntity {
   @Column()
   availableItemCount: number;
 
+  @Column("text", {
+    array: true,
+    nullable: true
+  })
+  imageIds: string[];
+
   @ManyToOne(() => ProductBaseEntity, (productBase) => productBase.variants)
   baseProduct: ProductBaseEntity;
 }
