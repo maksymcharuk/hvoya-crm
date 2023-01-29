@@ -15,7 +15,10 @@ export class UserEntity extends BaseEntity {
   @Column({ default: '' })
   lastName: string;
 
-  @Column({ default: '' })
+  @Column({
+    default: '',
+    nullable: true,
+  })
   phoneNumber: string;
 
   @Column({ default: '' })

@@ -36,4 +36,9 @@ export class AuthController {
   async sendResetPasswordMail(@Body() emailObj: { email: string }) {
     return this.authService.forgotPassword(emailObj.email);
   }
+
+  @Post('send-email-confirmation')
+  async sendEmailConfirmation(@Body() emailObj: { email: string }) {
+    return this.authService.sendEmailConfirmation(emailObj.email);
+  }
 }

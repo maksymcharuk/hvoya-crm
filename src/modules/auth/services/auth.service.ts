@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -29,7 +30,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
@@ -39,7 +40,7 @@ export class AuthService {
     }
 
     if (user.emailConfirmed === false) {
-      throw new UnauthorizedException('Email is not confirmed');
+      throw new ConflictException('Email is not confirmed');
     }
 
     return this.signToken(user);
@@ -148,6 +149,22 @@ export class AuthService {
     user.password = password;
 
     await this.usersService.update(user);
+  }
+
+  async sendEmailConfirmation(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new HttpException(
+        'User with such email does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const { access_token } = this.signToken(user);
+    const url = `${appOrigin.get(
+      this.configService.get('NODE_ENV') || Env.Development,
+    )}/auth/confirm-email?token=${access_token}`;
+    await this.mailService.send(new ConfirmEmailMail(user, url), user.email);
   }
 
   async validateUser(authSignInDto: AuthSignInDto): Promise<UserEntity> {

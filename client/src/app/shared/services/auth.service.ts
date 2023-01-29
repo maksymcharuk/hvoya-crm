@@ -18,7 +18,7 @@ export class AuthService {
     private http: HttpClient,
     private tokenService: TokenService,
     private router: Router,
-  ) {}
+  ) { }
 
   signIn(value: SignInDTO) {
     return this.http
@@ -61,5 +61,9 @@ export class AuthService {
   logout() {
     this.tokenService.removeToken();
     this.router.navigateByUrl('/auth/sign-in');
+  }
+
+  sendEmailConfirmation(email: string) {
+    return this.http.post(`${environment.apiUrl}/auth/send-email-confirmation`, { email });
   }
 }

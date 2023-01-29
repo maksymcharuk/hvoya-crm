@@ -9,6 +9,7 @@ import {
 import { AuthService } from '@shared/services/auth.service';
 import { PoliciesService } from '@shared/services/policies.service';
 import { UserService } from '@shared/services/user.service';
+import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -18,6 +19,7 @@ import { finalize } from 'rxjs';
 })
 export class SignInComponent {
   isLoading = false;
+  emailConfirmationSent: boolean = false;
 
   signInForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -30,7 +32,8 @@ export class SignInComponent {
     private router: Router,
     private userService: UserService,
     private policiesService: PoliciesService,
-  ) {}
+    private readonly messageService: MessageService
+  ) { }
 
   onSubmit(value: SignInDTO) {
     this.isLoading = true;
@@ -52,6 +55,26 @@ export class SignInComponent {
           this.router.navigateByUrl('admin');
         } else {
           this.router.navigateByUrl('dashboard');
+        }
+      }, (error) => {
+        if (error.status === 409) {
+          if (!this.emailConfirmationSent) {
+            this.authService.sendEmailConfirmation(value.email)
+              .subscribe(() => {
+                this.emailConfirmationSent = true;
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Confirmation email sent',
+                  detail: 'Please check your email to confirm your account',
+                });
+              });
+          } else {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Confirmation email sent',
+              detail: 'Please check your email to confirm your account',
+            });
+          }
         }
       });
   }
