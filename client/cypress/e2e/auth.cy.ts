@@ -161,4 +161,16 @@ describe('Auth', () => {
       cy.url().should('contain', '/auth/sign-in');
     });
   });
+
+  describe('Send email confirmation if email is not confirmed', () => {
+    it('Send email confirmation on sing in if not confirmed', () => {
+      const uniqueEmail = `test+${Date.now()}@email.com`;
+      cy.signUp(uniqueEmail, 'Test12345');
+      cy.contains(uniqueEmail);
+      cy.contains('Thank you for signing up');
+
+      cy.signIn(uniqueEmail, 'Test12345');
+      cy.get('[role="alert"]').contains('Please check your email to confirm your account');
+    });
+  });
 });
