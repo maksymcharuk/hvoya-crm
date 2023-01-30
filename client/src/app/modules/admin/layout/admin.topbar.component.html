@@ -34,27 +34,8 @@
       <i class="pi pi-bell"></i>
       <span>Notifications</span>
     </button>
-    <p-overlayPanel #notifications>
+    <p-overlayPanel #overlayPanel #notifications>
       <ng-template pTemplate> Notifications </ng-template>
-    </p-overlayPanel>
-
-    <button
-      class="p-link layout-topbar-button"
-      (click)="balance.toggle($event)"
-    >
-      <i class="pi pi-money-bill"></i>
-      <span>Balance</span>
-    </button>
-    <p-overlayPanel #balance>
-      <ng-template pTemplate> Balance </ng-template>
-    </p-overlayPanel>
-
-    <button class="p-link layout-topbar-button" (click)="cart.toggle($event)">
-      <i class="pi pi-shopping-cart"></i>
-      <span>Shoppping cart</span>
-    </button>
-    <p-overlayPanel #cart>
-      <ng-template pTemplate> Shoppping cart </ng-template>
     </p-overlayPanel>
 
     <button
@@ -64,7 +45,7 @@
       <i class="pi pi-user"></i>
       <span>Account</span>
     </button>
-    <p-overlayPanel #account>
+    <p-overlayPanel #overlayPanel #account>
       <ng-template pTemplate>
         <div class="layout-menu-dropdown">
           <button
