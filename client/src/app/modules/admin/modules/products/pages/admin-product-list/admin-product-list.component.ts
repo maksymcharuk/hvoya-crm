@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ProductsService } from '@shared/services/products.service';
-import { share } from 'rxjs';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-admin-product-list',
@@ -8,10 +8,10 @@ import { share } from 'rxjs';
   styleUrls: ['./admin-product-list.component.scss'],
 })
 export class AdminProductListComponent {
-  productList$ = this.productsService.getProducts().pipe(share());
+  productList$ = this.productsService
+    .getProducts()
+    .pipe(finalize(() => (this.isLoading = false)));
   isLoading = true;
 
-  constructor(private productsService: ProductsService) {
-    this.productList$.subscribe(() => (this.isLoading = false));
-  }
+  constructor(private productsService: ProductsService) {}
 }
