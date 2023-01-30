@@ -14,6 +14,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ButtonModule } from 'primeng/button';
 
 import { LayoutConfigModule } from '@shared/layout/layout-config.module';
+import { CartModule } from '../modules/cart/cart.module';
+
 import { DashboardMenuComponent } from './dashboard.menu.component';
 import { DashboardMenuitemComponent } from './dashboard.menuitem.component';
 import { DashboardTopBarComponent } from './dashboard.topbar.component';
@@ -44,7 +46,8 @@ import { DashboardLayoutComponent } from './dashboard.layout.component';
     RouterModule,
     LayoutConfigModule,
     ButtonModule,
+    CartModule,
   ],
   exports: [DashboardLayoutComponent],
 })
-export class DashboardLayoutModule { }
+export class DashboardLayoutModule {}

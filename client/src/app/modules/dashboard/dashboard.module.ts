@@ -14,6 +14,7 @@ import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardLayoutModule } from './layout/dashboard.layout.module';
 import { DashboardMainComponent } from './pages/main/main.component';
+import { CartModule } from './modules/cart/cart.module';
 
 @NgModule({
   declarations: [DashboardComponent, DashboardMainComponent],
@@ -26,6 +27,7 @@ import { DashboardMainComponent } from './pages/main/main.component';
     InputTextModule,
     BadgeModule,
     DashboardLayoutModule,
+    CartModule,
     SharedModule,
   ],
   exports: [RouterModule],
