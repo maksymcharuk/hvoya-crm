@@ -48,6 +48,9 @@ export class CaslAbilityFactory {
 
     if (user.role === Role.User) {
       can([Action.Read, Action.Update], UserEntity); // read-write access to User table
+      can(Action.Read, ProductCategoryEntity); // read-only access to Product Category table
+      can(Action.Read, ProductBaseEntity); // read-only access to Product Base table
+      can(Action.Read, ProductVariantEntity); // read-only access to Product Variant table
     }
 
     return build({

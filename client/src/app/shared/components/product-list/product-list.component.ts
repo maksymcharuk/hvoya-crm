@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ProductBase } from '@shared/interfaces/products';
 
 @Component({
   selector: 'app-product-list',
@@ -6,6 +7,6 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./product-list.component.scss'],
 })
 export class ProductListComponent {
-  @Input() productList: any[] = [];
+  @Input() productList: ProductBase[] = [];
   @Input() isLoading = true;
 }

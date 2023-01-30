@@ -1,14 +1,16 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { delay, Observable, of } from 'rxjs';
-import * as data from './products.data';
+import { environment } from '@environment/environment';
+import { GetProductsResponse } from '@shared/interfaces/responses/get-products.response';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
-  private products = data.default;
+  constructor(private http: HttpClient) {}
 
-  getProducts(): Observable<any> {
-    return of(this.products).pipe(delay(2000));
+  getProducts(): Observable<GetProductsResponse> {
+    return this.http.get<GetProductsResponse>(`${environment.apiUrl}/products`);
   }
 }

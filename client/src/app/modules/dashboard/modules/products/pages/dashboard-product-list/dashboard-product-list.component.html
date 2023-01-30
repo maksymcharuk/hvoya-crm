@@ -1,4 +1,4 @@
 <app-product-list
-  [productList]="productList$ | async"
+  [productList]="(productList$ | async) || []"
   [isLoading]="isLoading"
 ></app-product-list>
