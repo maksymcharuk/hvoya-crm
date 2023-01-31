@@ -1,0 +1,27 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <h4>Cart</h4>
+      <div *ngIf="cart$ | async as cart" class="surface-section">
+        <app-cart-item
+          *ngFor="let cartItem of cart.cartItems; trackBy: identify"
+          [cartItem]="cartItem"
+        ></app-cart-item>
+        <div class="flex">
+          <div class="w-12rem hidden md:block"></div>
+          <div class="md:pl-5 mt-6 flex-auto">
+            <div class="flex justify-content-end mb-4 pt-4">
+              <span class="text-xl text-900 font-bold text-3xl">Total:</span>
+              <span class="text-xl text-900 font-bold text-3xl ml-5">
+                ${{ cart.total }}
+              </span>
+            </div>
+            <div class="flex justify-content-end">
+              <button pButton label="Check Out"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

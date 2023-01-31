@@ -1,0 +1,46 @@
+<div
+  class="flex flex-column md:flex-row py-2 border-top-1 border-bottom-1 surface-border md:align-items-center"
+>
+  <img
+    [src]="cartItem.product.images ? cartItem.product.images[0]?.url : ''"
+    class="w-12rem flex-shrink-0 mx-auto md:mx-0"
+  />
+  <div class="flex-auto py-5 md:pl-5">
+    <div
+      class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
+    >
+      <div class="w-full sm:w-6 flex flex-column">
+        <span class="text-900 text-xl font-medium mb-3">
+          {{ cartItem.product.name }}
+        </span>
+        <span class="text-600">{{ cartItem.product.sku }}</span>
+      </div>
+      <div
+        class="w-full sm:w-6 flex align-items-start justify-content-between mt-3 sm:mt-0"
+      >
+        <div class="p-fluid sm:w-6rem">
+          <form *ngIf="quantityForm" [formGroup]="quantityForm">
+            <p-inputNumber
+              mode="decimal"
+              formControlName="quantity"
+              [showButtons]="true"
+              [min]="1"
+            ></p-inputNumber>
+          </form>
+        </div>
+        <div class="flex flex-column sm:align-items-end">
+          <span class="text-900 text-2xl font-medium mb-2 sm:mb-3">
+            ${{ cartItem.product.price * cartItem.quantity }}
+          </span>
+          <a
+            (click)="removeCartItem()"
+            tabindex="0"
+            class="cursor-pointer text-pink-500 font-medium hover:text-pink-600 transition-colors transition-duration-300"
+          >
+            Remove
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
