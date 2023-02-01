@@ -7,6 +7,7 @@ export interface ProductVariant {
   size: string;
   color: string;
   availableItemCount: number;
+  images: { url: string }[];
 }
 
 export interface ProductCategory {

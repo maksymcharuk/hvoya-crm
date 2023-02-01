@@ -8,6 +8,7 @@ import { CartService } from '../../services/cart.service';
 })
 export class CartWidgetComponent {
   cart$ = this.cartService.cart$;
+  cartLoading$ = this.cartService.cartLoading$;
 
   constructor(private cartService: CartService) {}
 }

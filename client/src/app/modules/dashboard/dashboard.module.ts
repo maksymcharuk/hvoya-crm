@@ -10,11 +10,12 @@ import { BadgeModule } from 'primeng/badge';
 
 import { SharedModule } from '@shared/shared.module';
 
-import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardLayoutModule } from './layout/dashboard.layout.module';
-import { DashboardMainComponent } from './pages/main/main.component';
 import { CartModule } from './modules/cart/cart.module';
+
+import { DashboardComponent } from './dashboard.component';
+import { DashboardMainComponent } from './pages/main/main.component';
 
 @NgModule({
   declarations: [DashboardComponent, DashboardMainComponent],

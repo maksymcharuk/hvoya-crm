@@ -1,0 +1,83 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <h4>Cart</h4>
+      <div *ngIf="cart$ | async as cart; else skeleton" class="surface-section">
+        <app-cart-item
+          *ngFor="let cartItem of cart.cartItems; trackBy: identify"
+          [cartItem]="cartItem"
+        ></app-cart-item>
+        <div class="flex">
+          <div class="w-12rem hidden md:block"></div>
+          <div class="md:pl-5 mt-6 flex-auto">
+            <div class="flex justify-content-end mb-4 pt-4">
+              <span class="text-xl text-900 font-bold text-3xl">Total:</span>
+              <span class="text-xl text-900 font-bold text-3xl ml-5">
+                <ng-container
+                  *ngIf="(cartLoading$ | async) === 0; else totalPriceSkeleton"
+                >
+                  ${{ cart.total }}
+                </ng-container>
+                <ng-template #totalPriceSkeleton>
+                  <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+                </ng-template>
+              </span>
+            </div>
+            <div class="flex justify-content-end">
+              <button pButton label="Check Out"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #skeleton>
+  <ng-container *ngFor="let _ of [].constructor(2)">
+    <div
+      class="flex flex-column md:flex-row py-2 border-top-1 border-bottom-1 surface-border md:align-items-center"
+    >
+      <p-skeleton height="12rem" width="12rem"></p-skeleton>
+      <div class="flex-auto py-5 md:pl-5">
+        <div
+          class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
+        >
+          <div class="w-full sm:w-6 flex flex-column">
+            <span class="mb-3">
+              <p-skeleton height="1.5rem" width="8rem"></p-skeleton>
+            </span>
+            <p-skeleton height="1rem" width="5rem"></p-skeleton>
+          </div>
+          <div
+            class="w-full sm:w-6 flex align-items-start justify-content-between mt-3 sm:mt-0"
+          >
+            <div class="p-fluid sm:w-6rem">
+              <p-skeleton height="39px" width="84px"></p-skeleton>
+            </div>
+            <div class="flex flex-column sm:align-items-end">
+              <span class="mb-2 sm:mb-3">
+                <p-skeleton height="1.5rem" width="5rem"></p-skeleton>
+              </span>
+              <p-skeleton height="1rem" width="5rem"></p-skeleton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <div class="flex">
+    <div class="w-12rem hidden md:block"></div>
+    <div class="md:pl-5 mt-6 flex-auto">
+      <div class="flex justify-content-end mb-4 pt-4">
+        <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+        <span class="ml-5">
+          <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+        </span>
+      </div>
+      <div class="flex justify-content-end">
+        <p-skeleton height="39px" width="107px"></p-skeleton>
+      </div>
+    </div>
+  </div>
+</ng-template>

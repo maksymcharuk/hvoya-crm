@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ProductBase, ProductVariant } from '@shared/interfaces/products';
+import { CartService } from 'src/app/modules/dashboard/modules/cart/services/cart.service';
 
 @Component({
   selector: 'app-product-item',
@@ -18,6 +19,8 @@ export class ProductItemComponent implements OnInit {
   colors: { code: string }[] = [];
   selectedColor = '';
 
+  constructor(private cartService: CartService) {}
+
   ngOnInit(): void {
     this.variants = this.product.variants;
     this.selectedVariant = this.variants[0];
@@ -27,6 +30,17 @@ export class ProductItemComponent implements OnInit {
     this.selectedSize = this.sizes[0]?.code || '';
 
     this.updateColors();
+  }
+
+  addToCart(): void {
+    if (!this.selectedVariant) {
+      return;
+    }
+
+    this.cartService.addToCart({
+      product: this.selectedVariant,
+      quantity: 1,
+    });
   }
 
   onVariantChange({ value }: any, type: 'color' | 'size'): void {

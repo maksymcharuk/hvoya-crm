@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ButtonModule } from 'primeng/button';
 
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -19,7 +20,7 @@ const COMPONENTS = [
   ProductItemComponent,
 ];
 
-const PRIMENG_MODULES = [SelectButtonModule, SkeletonModule];
+const PRIMENG_MODULES = [SelectButtonModule, SkeletonModule, ButtonModule];
 
 @NgModule({
   declarations: [...COMPONENTS],
