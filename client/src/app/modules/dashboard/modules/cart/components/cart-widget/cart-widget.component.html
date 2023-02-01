@@ -1,58 +1,60 @@
 <div class="text-900 text-xl pb-3 border-bottom-1 surface-border">
   Your Cart
 </div>
-<ng-container *ngIf="cart$ | async as cart; else skeleton">
-  <div class="max-h-15rem overflow-y-auto">
-    <table class="w-full">
-      <ng-container *ngFor="let cartItem of cart.cartItems">
-        <tr>
-          <td class="py-3">
-            <img
-              [src]="
-                cartItem.product.images ? cartItem.product.images[0]?.url : ''
-              "
-              class="w-4rem h-4rem flex-shrink-0 shadow-1"
-            />
-          </td>
-          <td class="pl-5 mr-8">
-            <span class="text-900 font-medium">
-              {{ cartItem.product.name }}
-            </span>
-            <div class="text-600 mt-2">{{ cartItem.product.sku }}</div>
-          </td>
-          <td class="pl-5 font-medium ml-auto mr-2">
-            Qty: {{ cartItem.quantity }}
-          </td>
-          <td class="pl-5 text-900 font-medium">
-            ${{ cartItem.product.price }}
-          </td>
-        </tr>
-      </ng-container>
-    </table>
-  </div>
-  <div class="py-3 border-bottom-1 surface-border">
-    <div class="flex align-items-center justify-content-between mb-3">
-      <span class="text-900 font-medium"> Total </span>
-      <div class="text-900 font-medium">${{ cart.total }}</div>
+<ng-container *ngIf="(cartLoading$ | async) === 0; else skeleton">
+  <ng-container *ngIf="cart$ | async as cart">
+    <div class="max-h-15rem overflow-y-auto">
+      <table class="w-full">
+        <ng-container *ngFor="let cartItem of cart.cartItems">
+          <tr>
+            <td class="py-3">
+              <img
+                [src]="
+                  cartItem.product.images ? cartItem.product.images[0]?.url : ''
+                "
+                class="w-4rem h-4rem flex-shrink-0 shadow-1"
+              />
+            </td>
+            <td class="pl-5 mr-8">
+              <span class="text-900 font-medium">
+                {{ cartItem.product.name }}
+              </span>
+              <div class="text-600 mt-2">{{ cartItem.product.sku }}</div>
+            </td>
+            <td class="pl-5 font-medium ml-auto mr-2">
+              Qty: {{ cartItem.quantity }}
+            </td>
+            <td class="pl-5 text-900 font-medium">
+              ${{ cartItem.product.price * cartItem.quantity }}
+            </td>
+          </tr>
+        </ng-container>
+      </table>
     </div>
-    <div class="h-2rem w-full surface-200">
-      <div
-        class="w-9 bg-pink-500 h-full text-white font-medium text-sm flex align-items-center p-3"
-      >
-        $16 away from free shipping
+    <div class="py-3 border-bottom-1 surface-border">
+      <div class="flex align-items-center justify-content-between mb-3">
+        <span class="text-900 font-medium"> Total </span>
+        <div class="text-900 font-medium">${{ cart.total }}</div>
+      </div>
+      <div class="h-2rem w-full surface-200">
+        <div
+          class="w-9 bg-pink-500 h-full text-white font-medium text-sm flex align-items-center p-3"
+        >
+          $16 away from free shipping
+        </div>
       </div>
     </div>
-  </div>
-  <div class="py-3 flex align-items-center p-fluid">
-    <button
-      routerLink="cart"
-      pButton
-      class="p-button-outlined mr-2"
-      type="button"
-      label="View Cart"
-    ></button>
-    <button pButton class="ml-2" type="button" label="Check Out"></button>
-  </div>
+    <div class="py-3 flex align-items-center p-fluid">
+      <button
+        routerLink="cart"
+        pButton
+        class="p-button-outlined mr-2"
+        type="button"
+        label="View Cart"
+      ></button>
+      <button pButton class="ml-2" type="button" label="Check Out"></button>
+    </div>
+  </ng-container>
 </ng-container>
 
 <ng-template #skeleton>

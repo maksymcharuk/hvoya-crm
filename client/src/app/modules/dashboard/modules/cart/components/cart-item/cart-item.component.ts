@@ -3,9 +3,11 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  OnDestroy,
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { CartItem } from '@shared/interfaces/cart.interface';
+import { BehaviorSubject, finalize, Subject, takeUntil } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 
 @Component({
@@ -13,29 +15,53 @@ import { CartService } from '../../services/cart.service';
   templateUrl: './cart-item.component.html',
   styleUrls: ['./cart-item.component.scss'],
 })
-export class CartItemComponent implements AfterViewInit {
+export class CartItemComponent implements AfterViewInit, OnDestroy {
   @Input() cartItem!: CartItem;
+
+  updating$ = new BehaviorSubject<number>(0);
+  destroy$ = new Subject();
 
   quantityForm = this.fb.group({
     quantity: [1],
   });
+
+  get quantityControl() {
+    return this.quantityForm.get('quantity');
+  }
 
   constructor(
     private cartService: CartService,
     private fb: FormBuilder,
     private ref: ChangeDetectorRef,
   ) {
-    this.quantityForm.get('quantity')?.valueChanges.subscribe((quantity) => {
-      this.cartService.addToCart({
-        product: this.cartItem.product,
-        quantity: quantity || 1,
+    this.quantityControl?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((quantity) => {
+        this.updating$.next(this.updating$.getValue() + 1);
+        this.cartService
+          .addToCart({
+            product: this.cartItem.product,
+            quantity: quantity || 1,
+          })
+          .pipe(
+            finalize(() => {
+              this.updating$.next(this.updating$.getValue() - 1);
+            }),
+          )
+          .subscribe();
       });
-    });
   }
 
   ngAfterViewInit(): void {
-    this.quantityForm.get('quantity')?.setValue(this.cartItem.quantity || 1);
+    this.quantityControl?.patchValue(this.cartItem.quantity, {
+      emitEvent: false,
+    });
     this.ref.detectChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   removeCartItem(): void {

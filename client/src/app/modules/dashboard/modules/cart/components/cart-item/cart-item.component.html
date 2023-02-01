@@ -19,7 +19,7 @@
         class="w-full sm:w-6 flex align-items-start justify-content-between mt-3 sm:mt-0"
       >
         <div class="p-fluid sm:w-6rem">
-          <form *ngIf="quantityForm" [formGroup]="quantityForm">
+          <form [formGroup]="quantityForm">
             <p-inputNumber
               mode="decimal"
               formControlName="quantity"
@@ -30,7 +30,12 @@
         </div>
         <div class="flex flex-column sm:align-items-end">
           <span class="text-900 text-2xl font-medium mb-2 sm:mb-3">
-            ${{ cartItem.product.price * cartItem.quantity }}
+            <ng-container *ngIf="(updating$ | async) === 0; else priceSkeleton"
+              >${{ cartItem.product.price * cartItem.quantity }}
+            </ng-container>
+            <ng-template #priceSkeleton>
+              <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+            </ng-template>
           </span>
           <a
             (click)="removeCartItem()"

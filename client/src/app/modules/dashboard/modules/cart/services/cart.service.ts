@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Cart, CartItem } from '@shared/interfaces/cart.interface';
-import { BehaviorSubject, delay, Observable, of, shareReplay } from 'rxjs';
+import {
+  BehaviorSubject,
+  delay,
+  finalize,
+  Observable,
+  of,
+  shareReplay,
+} from 'rxjs';
 import * as data from './cart.data';
 
 @Injectable({
@@ -8,6 +15,9 @@ import * as data from './cart.data';
 })
 export class CartService {
   cart$ = new BehaviorSubject<Cart | null>(null);
+  cartLoading$ = new BehaviorSubject<number>(0);
+  // TODO: remove this delay
+  delay = 2000;
 
   constructor() {
     this.getCart()
@@ -19,26 +29,38 @@ export class CartService {
 
   getCart(): Observable<Cart> {
     // TODO: get cart from backend
-    return of(data.default).pipe(delay(1000));
+    this.cartLoading$.next(this.cartLoading$.getValue() + 1);
+    return of(data.default).pipe(
+      delay(this.delay),
+      finalize(() => this.cartLoading$.next(this.cartLoading$.getValue() - 1)),
+    );
   }
 
-  addToCart(cartItem: CartItem): void {
+  addToCart(cartItem: CartItem): Observable<Cart> {
+    // TODO: add to cart on backend
     const cart = this.cart$.getValue();
     const cartItems: CartItem[] = cart?.cartItems
       ? JSON.parse(JSON.stringify(cart?.cartItems))
       : [];
 
     if (cartItems.length === 0) {
-      of({})
-        .pipe(delay(1000))
-        .subscribe(() => {
-          this.cart$.next({
-            cartItems: [cartItem],
-            total: cartItem.product.price,
-          });
+      this.cartLoading$.next(this.cartLoading$.getValue() + 1);
+      console.log(this.cartLoading$.getValue());
+      const response$ = of({} as Cart).pipe(delay(this.delay));
+
+      response$.subscribe(() => {
+        this.cartLoading$.next(this.cartLoading$.getValue() - 1);
+        this.cart$.next({
+          cartItems: [cartItem],
+          total: cartItem.product.price,
         });
-      return;
+      });
+
+      return response$;
     }
+
+    this.cartLoading$.next(this.cartLoading$.getValue() + 1);
+    console.log(this.cartLoading$.getValue());
 
     let found = false;
     cartItems.forEach((item: CartItem) => {
@@ -52,27 +74,29 @@ export class CartService {
       cartItems.push(cartItem);
     }
 
-    of({})
-      .pipe(delay(1000))
-      .subscribe(() => {
-        this.cart$.next({
-          cartItems,
-          total: cartItems.reduce(
-            (acc, item) => acc + item.product.price * item.quantity,
-            0,
-          ),
-        });
+    const response$ = of({} as Cart).pipe(delay(this.delay));
+    response$.subscribe(() => {
+      this.cartLoading$.next(this.cartLoading$.getValue() - 1);
+      this.cart$.next({
+        cartItems,
+        total: cartItems.reduce(
+          (acc, item) => acc + item.product.price * item.quantity,
+          0,
+        ),
       });
+    });
+    return response$;
   }
 
-  removeFromCart(cartItem: CartItem): void {
+  removeFromCart(cartItem: CartItem): Observable<Cart> {
+    // TODO: remove from cart on backend
     const cart = this.cart$.getValue();
     const cartItems: CartItem[] = cart?.cartItems
       ? JSON.parse(JSON.stringify(cart?.cartItems))
       : [];
 
     if (cartItems.length === 0) {
-      return;
+      return of({} as Cart);
     }
 
     const index = cartItems.findIndex(
@@ -83,16 +107,19 @@ export class CartService {
       cartItems.splice(index, 1);
     }
 
-    of({})
-      .pipe(delay(1000))
-      .subscribe(() => {
-        this.cart$.next({
-          cartItems,
-          total: cartItems.reduce(
-            (acc, item) => acc + item.product.price * item.quantity,
-            0,
-          ),
-        });
+    this.cartLoading$.next(this.cartLoading$.getValue() + 1);
+
+    const response$ = of({} as Cart).pipe(delay(this.delay));
+    response$.subscribe(() => {
+      this.cartLoading$.next(this.cartLoading$.getValue() - 1);
+      this.cart$.next({
+        cartItems,
+        total: cartItems.reduce(
+          (acc, item) => acc + item.product.price * item.quantity,
+          0,
+        ),
       });
+    });
+    return response$;
   }
 }
