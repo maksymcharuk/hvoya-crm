@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
 
 import { AppController } from './app.controller';
@@ -25,6 +26,11 @@ import { CartModule } from './modules/cart/cart.module';
         : `${process.cwd()}/env/.env`,
       isGlobal: true,
     }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: { target: 'pino-pretty' },
+      },
+    }),
     DatabaseModule,
     UsersModule,
     AuthModule,
@@ -36,4 +42,4 @@ import { CartModule } from './modules/cart/cart.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

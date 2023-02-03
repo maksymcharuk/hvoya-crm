@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
+import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
@@ -14,7 +15,7 @@ import { appOrigin } from './config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: ['log', 'error', 'warn', 'debug', 'verbose'],
+    bufferLogs: true,
   });
   const configService = app.get(ConfigService);
 
@@ -40,6 +41,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  app.useLogger(app.get(Logger));
 
   await app.listen(configService.get('PORT') || '3000');
 }
