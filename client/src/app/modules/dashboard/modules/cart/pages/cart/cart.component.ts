@@ -10,6 +10,7 @@ import { CartService } from '../../services/cart.service';
 export class CartComponent {
   cart$ = this.cartService.cart$;
   cartLoading$ = this.cartService.cartLoading$;
+  cartNotEmpty$ = this.cartService.cartNotEmpty$;
 
   constructor(private cartService: CartService) {}
 

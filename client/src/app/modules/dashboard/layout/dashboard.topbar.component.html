@@ -32,7 +32,7 @@
       (click)="notifications.toggle($event)"
     >
       <i class="pi pi-bell"></i>
-      <span>Notifications</span>
+      <span class="topbar-button-text">Notifications</span>
     </button>
     <p-overlayPanel #overlayPanel #notifications>
       <ng-template pTemplate> Notifications </ng-template>
@@ -43,15 +43,26 @@
       (click)="balance.toggle($event)"
     >
       <i class="pi pi-money-bill"></i>
-      <span>Balance</span>
+      <span class="topbar-button-text">Balance</span>
     </button>
     <p-overlayPanel #overlayPanel #balance>
       <ng-template pTemplate> Balance </ng-template>
     </p-overlayPanel>
 
     <button class="p-link layout-topbar-button" (click)="cart.toggle($event)">
-      <i class="pi pi-shopping-cart"></i>
-      <span>Shoppping cart</span>
+      <i
+        *ngIf="
+          cartItemsNumber$ | async as cartItemsNumber;
+          else shoppingIconWithoutBadge
+        "
+        class="pi pi-shopping-cart"
+        pBadge
+        [value]="cartItemsNumber"
+      ></i>
+      <ng-template #shoppingIconWithoutBadge>
+        <i class="pi pi-shopping-cart"></i>
+      </ng-template>
+      <span class="topbar-button-text">Shoppping cart</span>
     </button>
     <p-overlayPanel #overlayPanel #cart>
       <ng-template pTemplate><app-cart-widget></app-cart-widget></ng-template>
@@ -62,7 +73,7 @@
       (click)="account.toggle($event)"
     >
       <i class="pi pi-user"></i>
-      <span>Account</span>
+      <span class="topbar-button-text">Account</span>
     </button>
     <p-overlayPanel #overlayPanel #account>
       <ng-template pTemplate>

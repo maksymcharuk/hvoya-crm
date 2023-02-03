@@ -14,6 +14,7 @@ import { OverlayPanel } from 'primeng/overlaypanel';
 
 import { LayoutService } from '@shared/layout/services/layout.service';
 import { AuthService } from '@shared/services/auth.service';
+import { CartService } from '../modules/cart/services/cart.service';
 
 @Component({
   selector: 'dashboard-topbar',
@@ -21,6 +22,7 @@ import { AuthService } from '@shared/services/auth.service';
 })
 export class DashboardTopBarComponent implements AfterViewInit {
   items!: MenuItem[];
+  cartItemsNumber$ = this.cartService.cartItemsNumber$;
 
   @ViewChild('menubutton') menuButton!: ElementRef;
   @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
@@ -34,6 +36,7 @@ export class DashboardTopBarComponent implements AfterViewInit {
 
   constructor(
     public layoutService: LayoutService,
+    private cartService: CartService,
     private authService: AuthService,
     private router: Router,
   ) {}

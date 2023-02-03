@@ -1,11 +1,12 @@
 import { ProductVariant } from './products';
 
 export interface CartItem {
+  id: number;
   product: ProductVariant;
   quantity: number;
 }
 
 export interface Cart {
-  cartItems: CartItem[];
+  items: CartItem[];
   total: number;
 }

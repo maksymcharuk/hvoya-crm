@@ -2,33 +2,38 @@
   <div class="col-12">
     <div class="card">
       <h4>Cart</h4>
-      <div *ngIf="cart$ | async as cart; else skeleton" class="surface-section">
-        <app-cart-item
-          *ngFor="let cartItem of cart.cartItems; trackBy: identify"
-          [cartItem]="cartItem"
-        ></app-cart-item>
-        <div class="flex">
-          <div class="w-12rem hidden md:block"></div>
-          <div class="md:pl-5 mt-6 flex-auto">
-            <div class="flex justify-content-end mb-4 pt-4">
-              <span class="text-xl text-900 font-bold text-3xl">Total:</span>
-              <span class="text-xl text-900 font-bold text-3xl ml-5">
-                <ng-container
-                  *ngIf="(cartLoading$ | async) === 0; else totalPriceSkeleton"
-                >
-                  ${{ cart.total }}
-                </ng-container>
-                <ng-template #totalPriceSkeleton>
-                  <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
-                </ng-template>
-              </span>
-            </div>
-            <div class="flex justify-content-end">
-              <button pButton label="Check Out"></button>
+      <ng-container *ngIf="cart$ | async as cart; else skeleton">
+        <ng-container *ngIf="cartNotEmpty$ | async; else emptyCart">
+          <app-cart-item
+            *ngFor="let cartItem of cart.items; trackBy: identify"
+            [cartItem]="cartItem"
+          ></app-cart-item>
+          <div class="flex">
+            <div class="w-12rem hidden md:block"></div>
+            <div class="md:pl-5 mt-6 flex-auto">
+              <div class="flex justify-content-end mb-4 pt-4">
+                <span class="text-xl text-900 font-bold text-3xl">Total:</span>
+                <span class="text-xl text-900 font-bold text-3xl ml-5">
+                  <ng-container
+                    *ngIf="
+                      (cartLoading$ | async) === 0;
+                      else totalPriceSkeleton
+                    "
+                  >
+                    ${{ cart.total }}
+                  </ng-container>
+                  <ng-template #totalPriceSkeleton>
+                    <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+                  </ng-template>
+                </span>
+              </div>
+              <div class="flex justify-content-end">
+                <button pButton label="Check Out"></button>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 </div>
@@ -79,5 +84,14 @@
         <p-skeleton height="39px" width="107px"></p-skeleton>
       </div>
     </div>
+  </div>
+</ng-template>
+
+<ng-template #emptyCart>
+  <div
+    class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
+  >
+    <i class="pi pi-shopping-cart text-4xl"></i>
+    <span class="text-2xl mt-3">Cart is empty</span>
   </div>
 </ng-template>

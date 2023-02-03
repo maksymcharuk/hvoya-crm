@@ -24,6 +24,7 @@
     "typeorm-extension": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js",
     "migrations:create": "npm run typeorm migration:create -- ./src/modules/database/migrations/$npm_config_name",
     "migrations:generate": "npm run typeorm migration:generate -- ./src/modules/database/migrations/$npm_config_name -d ./typeorm.config.ts",
+    "migrations:revert": "npm run typeorm migration:revert -- -d ./typeorm.config.ts",
     "migrations:run": "npm run typeorm migration:run -- -d ./typeorm.config.ts",
     "schema:drop": "npm run typeorm schema:drop -- -d ./typeorm.config.ts",
     "schema:sync": "npm run typeorm schema:sync -- -d ./typeorm.config.ts",

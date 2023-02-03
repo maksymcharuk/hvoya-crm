@@ -30,8 +30,8 @@
         </div>
         <div class="flex flex-column sm:align-items-end">
           <span class="text-900 text-2xl font-medium mb-2 sm:mb-3">
-            <ng-container *ngIf="(updating$ | async) === 0; else priceSkeleton"
-              >${{ cartItem.product.price * cartItem.quantity }}
+            <ng-container *ngIf="(updating$ | async) === 0; else priceSkeleton">
+              ${{ cartItem.product.price * cartItem.quantity }}
             </ng-container>
             <ng-template #priceSkeleton>
               <p-skeleton height="1.75rem" width="5rem"></p-skeleton>

@@ -1,8 +1,9 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { BaseEntity } from './base.entity';
 import { Role } from '../enums/role.enum';
+import { CartEntity } from './cart.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -47,6 +48,10 @@ export class UserEntity extends BaseEntity {
     default: false,
   })
   emailConfirmed: boolean;
+
+  @OneToOne(() => CartEntity, (cart) => cart.owner)
+  @JoinColumn()
+  cart: CartEntity;
 
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);
