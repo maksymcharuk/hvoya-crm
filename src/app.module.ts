@@ -12,6 +12,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AccountModule } from './modules/account/account.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { ProductsModule } from './modules/products/products.module';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ProductsModule } from './modules/products/products.module';
     AccountModule,
     CaslModule,
     ProductsModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { DecimalTransformer } from '../transformers/decimal.transformer';
@@ -28,14 +29,14 @@ export class ProductVariantEntity extends BaseEntity {
     default: 0.0,
     transformer: new DecimalTransformer(),
   })
-  price: number;
+  price: Decimal;
 
   @Column()
   availableItemCount: number;
 
-  @Column("text", {
+  @Column('text', {
     array: true,
-    nullable: true
+    nullable: true,
   })
   imageIds: string[];
 

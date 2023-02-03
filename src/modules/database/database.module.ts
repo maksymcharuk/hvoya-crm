@@ -16,11 +16,10 @@ import { UserSubscriber } from './subscribers/user.subscriber';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [],
-        autoLoadEntities: true,
         subscribers: [UserSubscriber],
+        autoLoadEntities: true,
       }),
     }),
   ],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}

@@ -7,7 +7,14 @@ import {
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { CartItem } from '@shared/interfaces/cart.interface';
-import { BehaviorSubject, finalize, Subject, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  finalize,
+  Subject,
+  takeUntil,
+} from 'rxjs';
+
 import { CartService } from '../../services/cart.service';
 
 @Component({
@@ -35,12 +42,12 @@ export class CartItemComponent implements AfterViewInit, OnDestroy {
     private ref: ChangeDetectorRef,
   ) {
     this.quantityControl?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((quantity) => {
         this.updating$.next(this.updating$.getValue() + 1);
         this.cartService
           .addToCart({
-            product: this.cartItem.product,
+            productId: this.cartItem.product.id,
             quantity: quantity || 1,
           })
           .pipe(
@@ -65,6 +72,6 @@ export class CartItemComponent implements AfterViewInit, OnDestroy {
   }
 
   removeCartItem(): void {
-    this.cartService.removeFromCart(this.cartItem);
+    this.cartService.removeFromCart({ productId: this.cartItem.product.id });
   }
 }
