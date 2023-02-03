@@ -1,0 +1,146 @@
+<div class="grid">
+    <div class="col-8">
+      <div class="card">
+        <form [formGroup]="productCreateForm"
+        (ngSubmit)="onSubmit(productCreateForm.value)">
+        <div class="p-fluid p-formgrid grid" formGroupName="productCategoryGroup">
+            <div *ngIf="!newCategory" class="field col-12 md:col-6">
+                <label for="productCategoryId">Категорія</label>
+                <p-dropdown [options]="productsCategories" placeholder="Виберіть категорію"
+                    optionLabel="name" formControlName="productCategoryId" id="productCategoryId"
+                    [showClear]="true" optionValue="id" filterBy="name" [filter]="true">
+                    <ng-template let-category pTemplate="item">
+                        <div>
+                            <div>{{ category.name }}</div>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div *ngIf="newCategory" class="field col-12 md:col-6">
+                <label for="productCategoryName">Нова категорія</label>
+                <input id="productCategoryName" type="text" name="productCategoryName"
+                    formControlName="productCategoryName" placeholder="Введіть назву нової категорії" pInputText>
+            </div>
+            <div class="field col-12 md:col-1 add-button">
+                <button pButton pRipple type="button" [icon]="newCategory ? 'pi pi-minus' : 'pi pi-plus'" 
+                    class="p-button-success" (click)="toggleNewCategory()">
+                </button>
+            </div>
+        </div>
+        <hr>
+        <div class="p-fluid p-formgrid grid" formGroupName="productBaseGroup">
+            <div *ngIf="!newProductBase" class="field col-12 md:col-6">
+                <label for="productBaseId">Базовий продукт</label>
+                <p-dropdown [options]="baseProductsByCategory" placeholder="Виберіть базовий продукт"
+                    optionLabel="name" formControlName="productBaseId"
+                    [showClear]="true" optionValue="id" id="productBaseId">
+                    <ng-template let-baseProduct pTemplate="item">
+                        <div>
+                            <div>{{ baseProduct.name }}</div>
+                        </div>
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div *ngIf="newProductBase" class="field col-12 md:col-6">
+                <label for="productBaseName">Новий базовий продукт</label>
+                <input id="productBaseName" type="text" name="productBaseName"
+                    formControlName="productBaseName" placeholder="Введіть назву нового базового продукту" pInputText>
+            </div>
+            <div class="field col-12 md:col-1 add-button">
+                <button pButton pRipple type="button" [icon]="newProductBase ? 'pi pi-minus' : 'pi pi-plus'" 
+                    [disabled]="newCategory" class="p-button-success" (click)="toggleNewProductBase()">
+                </button>
+            </div>
+        </div>
+        <hr>
+    
+            <div class="p-fluid p-formgrid grid" formGroupName="productVariantGroup">
+                <div class="field col-6">
+                    <label for="productVariantSku">Артикул</label>
+                    <input id="productVariantSku" type="text" name="productVariantSku"
+                        formControlName="productVariantSku" placeholder="Введіть актикул" pInputText> 
+                </div>
+                <div class="field col-6">
+                    <label for="productVariantName">Назва</label>
+                    <input id="productVariantName" type="text" name="productVariantName"
+                        formControlName="productVariantName" placeholder="Введіть назву" pInputText> 
+                </div>
+                <div class="field col-12">
+                    <label for="productVariantDescription">Опис</label>
+                    <textarea rows="5" cols="30" formControlName="productVariantDescription" 
+                        pInputTextarea id="productVariantDescription" type="text" 
+                        name="productVariantDescription" placeholder="Введіть опис для продукту" [autoResize]="true"></textarea>
+                </div>
+                <div class="field col-4">
+                    <label for="productVariantSize">Розмір</label>
+                    <p-dropdown [options]="sizes" optionLabel="name" formControlName="productVariantSize"
+                        [showClear]="true" optionValue="name" id="productVariantSize"
+                        placeholder="Виберіть розмір">
+                        <ng-template let-size pTemplate="item">
+                            <div>
+                                <div>{{ size.name }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+                <div class="field col-4">
+                    <label for="productVariantColor">Колір</label>
+                    <p-dropdown [options]="colors" optionLabel="name" formControlName="productVariantColor"
+                        [showClear]="true" optionValue="name" id="productVariantColor"
+                        placeholder="Виберіть колір">
+                        <ng-template let-color pTemplate="item">
+                            <div>
+                                <div>{{ color.name }}</div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+                <div class="field col-4">
+                    <label for="productVariantPrice">Ціна</label>
+                    <p-inputNumber inputId="productVariantPrice" id="productVariantPrice" 
+                        formControlName="productVariantPrice" currency="UAH" locale="uk-UA"
+                        [allowEmpty]="false" mode="currency">
+                    </p-inputNumber>
+                </div>
+                <div class="field col-12">
+                    <label for="images">Завантаження файлів</label>
+                    <p-fileUpload #fileUpload name="images[]" [customUpload]="true" (uploadHandler)="onUpload($event)"
+                        (onRemove)="onRemove($event)" class="upload-files"
+                        [multiple]="true" [accept]="acceptedFiles" [invalidFileTypeMessageDetail]="invalidFileTypeMessage"  [maxFileSize]="5000000" [auto]="true" 
+                        [disabled]="productImagesDisabled" chooseLabel="Завантажити файл">
+                        <ng-template pTemplate="content">
+                            <ul *ngIf="productImagesControl?.value?.length">
+                                <li *ngFor="let file of productImagesControl?.value">{{file.name}} - {{file.size}} bytes</li>
+                            </ul>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <ul *ngIf="!productImagesControl?.value?.length" class="upload-files-no-files">
+                                <span class="upload-files-no-files-text">Перетягніть файл для завантаження<i class="pi pi-upload" style="font-size: 1.5rem"></i></span>
+                            </ul>
+                        </ng-template>
+                    </p-fileUpload>
+
+                </div>
+                <div class="grid justify-content-end col-12">
+                    <div class="field col-3">
+                        <button
+                            [disabled]="!productCreateForm.valid"
+                            type="submit"
+                            pButton
+                            label="Create"
+                        ></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card product-preview">
+        <div class="product-preview-header">
+          <div>Попередній перегляд</div>
+        </div>
+        <app-product-item [product]="product$ | async" [hideAddToCartButton]="true" [previewImages]="previewImagesList"></app-product-item>
+      </div>
+    </div>
+</div>

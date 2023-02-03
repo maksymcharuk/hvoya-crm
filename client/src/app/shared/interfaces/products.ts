@@ -1,3 +1,5 @@
+import { File } from './file.interface';
+
 export interface ProductVariant {
   id: number;
   sku: string;
@@ -7,7 +9,7 @@ export interface ProductVariant {
   size: string;
   color: string;
   availableItemCount: number;
-  images: { url: string }[];
+  images: File[];
 }
 
 export interface ProductCategory {
@@ -20,4 +22,10 @@ export interface ProductBase {
   name: string;
   category: ProductCategory;
   variants: ProductVariant[];
+}
+
+export interface ProductBaseForCreation {
+  id: number;
+  name: string;
+  category: ProductCategory;
 }

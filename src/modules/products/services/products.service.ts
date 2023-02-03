@@ -1,28 +1,29 @@
 import { CreateProductDto } from '@dtos/create-product.dto';
+import { FileEntity } from '@entities/file.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CloudinaryService } from '../../../modules/cloudinary/services/cloudinary.service';
+import { FilesService } from 'src/modules/files/services/files.service';
 import { DataSource } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
   constructor(
     private dataSource: DataSource,
-    private cloudinary: CloudinaryService,
-  ) {}
+    private filesService: FilesService,
+  ) { }
 
   async createProduct(
     createProductDto: CreateProductDto,
     images: Array<Express.Multer.File>,
-  ): Promise<void> {
+  ): Promise<ProductVariantEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
     const productCategoryId = createProductDto.productCategoryId;
     const productBaseId = createProductDto.productBaseId;
     let savedProductCategory = null;
     let savedProductBase = null;
-    let productVariantImagesIds = [];
+    let productImages: FileEntity[] = [];
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -46,7 +47,7 @@ export class ProductsService {
         const newBaseProduct = await queryRunner.manager.create(
           ProductBaseEntity,
           {
-            ...{ name: createProductDto.productBaseName },
+            name: createProductDto.productBaseName,
             category: savedProductCategory,
           },
         );
@@ -58,35 +59,30 @@ export class ProductsService {
         )) as ProductBaseEntity;
       }
 
-      productVariantImagesIds = await Promise.all(
-        images.map(async (image) => {
-          return (await this.cloudinary.uploadImageToCloudinary(image))
-            ?.public_id;
-        }),
-      );
+      productImages = await Promise.all(
+        images.map((image) => {
+          return this.filesService.uploadFile(queryRunner, image);
+        }));
 
       const newProductVariant = await queryRunner.manager.create(
         ProductVariantEntity,
         {
-          ...{
-            sku: createProductDto.productVariantSku,
-            name: createProductDto.productVariantName,
-            description: createProductDto.productVariantDescription,
-            size: createProductDto.productVariantSize,
-            color: createProductDto.productVariantColor,
-            price: createProductDto.productVariantPrice,
-            availableItemCount:
-              createProductDto.productVariantAvailableItemCount,
-            images: productVariantImagesIds,
-          },
+          sku: createProductDto.productVariantSku,
+          name: createProductDto.productVariantName,
+          description: createProductDto.productVariantDescription,
+          size: createProductDto.productVariantSize,
+          color: createProductDto.productVariantColor,
+          price: createProductDto.productVariantPrice,
+          images: productImages,
           baseProduct: savedProductBase,
         },
       );
-      await queryRunner.manager.save(newProductVariant);
+      const savedProductVariant = await queryRunner.manager.save(newProductVariant);
 
       await queryRunner.commitTransaction();
+      return savedProductVariant;
     } catch (err) {
-      await this.cloudinary.removeImageFromCloudinary(productVariantImagesIds);
+      this.filesService.deleteFilesCloudinary(productImages);
       await queryRunner.rollbackTransaction();
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     } finally {
@@ -96,7 +92,13 @@ export class ProductsService {
 
   getProducts(): Promise<ProductBaseEntity[]> {
     return this.dataSource.manager.find(ProductBaseEntity, {
-      relations: ['category', 'variants'],
+      relations: ['category', 'variants', 'variants.images'],
+    });
+  }
+
+  getProductsForCrete(): Promise<ProductBaseEntity[]> {
+    return this.dataSource.manager.find(ProductBaseEntity, {
+      relations: ['category'],
     });
   }
 }

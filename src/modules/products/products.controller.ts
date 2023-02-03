@@ -25,7 +25,7 @@ import { ProductsService } from './services/products.service';
 @Controller('products')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class ProductsController {
-  constructor(private productsService: ProductsService) {}
+  constructor(private productsService: ProductsService) { }
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
@@ -56,5 +56,14 @@ export class ProductsController {
   )
   getProducts() {
     return this.productsService.getProducts();
+  }
+
+  @Get('create')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Create, ProductBaseEntity) &&
+    ability.can(Action.Create, ProductVariantEntity),
+  )
+  getProductsForCrete() {
+    return this.productsService.getProductsForCrete();
   }
 }

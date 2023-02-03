@@ -35,8 +35,5 @@ export class CreateProductDto {
 
     @IsNotEmpty()
     productVariantPrice: number;
-
-    @IsNotEmpty()
-    productVariantAvailableItemCount: number;
 }
 

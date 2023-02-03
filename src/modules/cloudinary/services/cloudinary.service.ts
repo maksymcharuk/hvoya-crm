@@ -4,7 +4,7 @@ import toStream = require('buffer-to-stream');
 
 @Injectable()
 export class CloudinaryService {
-    async uploadImage(
+    private async uploadImage(
         file: Express.Multer.File,
     ): Promise<UploadApiResponse | UploadApiErrorResponse | undefined> {
 
@@ -18,7 +18,7 @@ export class CloudinaryService {
         });
     }
 
-    async removeImages(publicIds: string[]) {
+    private async removeImages(publicIds: string[]) {
 
         return new Promise((resolve, reject) => {
             v2.api.delete_resources(publicIds, (error, result) => {
