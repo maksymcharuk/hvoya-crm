@@ -8,9 +8,10 @@ import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { CaslModule } from '../casl/casl.module';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { FilesModule } from '../files/files.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductCategoryEntity, ProductBaseEntity, ProductVariantEntity]), CaslModule, CloudinaryModule],
+  imports: [TypeOrmModule.forFeature([ProductCategoryEntity, ProductBaseEntity, ProductVariantEntity]), CaslModule, CloudinaryModule, FilesModule],
   controllers: [ProductsController],
   providers: [ProductsService]
 })

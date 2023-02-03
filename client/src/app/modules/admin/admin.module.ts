@@ -13,4 +13,4 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
   declarations: [AdminComponent, AdminDashboardComponent],
   imports: [CommonModule, AdminRoutingModule, AdminLayoutModule, SharedModule],
 })
-export class AdminModule {}
+export class AdminModule { }

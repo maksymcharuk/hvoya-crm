@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AdminProductsComponent } from './admin-products.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
+import { CreateProductComponent } from './pages/create-product/create-product.component';
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
         path: '',
         component: AdminProductListComponent,
       },
+      {
+        path: 'create',
+        component: CreateProductComponent,
+      },
     ],
   },
 ];
@@ -26,4 +31,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AdminProductsRoutingModule {}
+export class AdminProductsRoutingModule { }

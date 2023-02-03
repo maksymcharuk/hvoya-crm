@@ -1,0 +1,71 @@
+.categories {
+    &-tab {
+        &-new {
+            input {
+                padding: 0;
+                border: none;
+                outline: none;
+                box-shadow: none;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+                font-size: 1rem;
+                font-weight: 700;
+                color: #6c757d;
+            }
+        }
+    }
+}
+
+.add-button {
+    display: flex;
+    flex-basis: content;
+    align-items: flex-end;
+}
+
+.upload-files {
+    &-no-files {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #6c757d;
+            
+            i {
+                margin-left: 10px;
+            }
+        }
+    }
+}
+
+.product-preview {
+    position: sticky;
+    top: 100px;
+    min-height: 400px;
+
+    &-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.75rem 1.25rem;
+        margin-bottom: 0;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-align : center;
+    }
+}
+
+::ng-deep {
+    .p-fileupload {
+        .p-fileupload-highlight {
+            background-color: #1c1c1c34;
+        }
+    }
+
+    .p-fluid .p-fileupload button.p-button {
+        width: 50%;
+    }
+}

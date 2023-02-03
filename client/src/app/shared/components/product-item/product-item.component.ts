@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { ProductBase, ProductVariant } from '@shared/interfaces/products';
 
 @Component({
@@ -6,8 +6,10 @@ import { ProductBase, ProductVariant } from '@shared/interfaces/products';
   templateUrl: './product-item.component.html',
   styleUrls: ['./product-item.component.scss'],
 })
-export class ProductItemComponent implements OnInit {
+export class ProductItemComponent implements OnInit, OnChanges {
   @Input() product!: ProductBase;
+  @Input() hideAddToCartButton: boolean = false;
+  @Input() previewImages: string[] = [];
 
   variants: ProductVariant[] = [];
   selectedVariant: ProductVariant | undefined;
@@ -18,6 +20,8 @@ export class ProductItemComponent implements OnInit {
   colors: { code: string }[] = [];
   selectedColor = '';
 
+  selectedImage: string = '';
+
   ngOnInit(): void {
     this.variants = this.product.variants;
     this.selectedVariant = this.variants[0];
@@ -25,8 +29,26 @@ export class ProductItemComponent implements OnInit {
       code: size,
     }));
     this.selectedSize = this.sizes[0]?.code || '';
+    this.selectedImage = this.selectedVariant?.images[0]?.url || '';
 
     this.updateColors();
+  }
+
+  ngOnChanges(changes: any): void {
+    if (changes.product) {
+      this.variants = changes.product.currentValue.variants;
+      this.selectedVariant = changes.product.currentValue.variants[0];
+      this.sizes = this.getUniqueArray(this.variants, 'size').map((size) => ({
+        code: size,
+      }));
+      this.selectedSize = this.sizes[0]?.code || '';
+
+      this.updateColors();
+    }
+
+    if (changes.previewImages && changes.previewImages.currentValue) {
+      this.selectedImage = changes.previewImages.currentValue[0] || '';
+    }
   }
 
   onVariantChange({ value }: any, type: 'color' | 'size'): void {

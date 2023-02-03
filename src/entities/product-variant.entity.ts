@@ -1,7 +1,8 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BaseEntity } from './base.entity';
+import { FileEntity } from './file.entity';
 import { ProductBaseEntity } from './product-base.entity';
 
 @Entity('product_variant')
@@ -30,14 +31,13 @@ export class ProductVariantEntity extends BaseEntity {
   })
   price: number;
 
-  @Column()
+  @Column({
+    default: 0,
+  })
   availableItemCount: number;
 
-  @Column("text", {
-    array: true,
-    nullable: true
-  })
-  imageIds: string[];
+  @OneToMany(() => FileEntity, (image) => image.productVariant)
+  images: FileEntity[];
 
   @ManyToOne(() => ProductBaseEntity, (productBase) => productBase.variants)
   baseProduct: ProductBaseEntity;

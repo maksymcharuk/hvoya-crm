@@ -1,4 +1,6 @@
-<app-product-list
-  [productList]="(productList$ | async) || []"
-  [isLoading]="isLoading"
-></app-product-list>
+<div class="card">
+  <app-product-list
+    [productList]="(productList$ | async) || []"
+    [isLoading]="isLoading"
+  ></app-product-list>
+</div>
