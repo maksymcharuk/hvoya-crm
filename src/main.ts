@@ -2,15 +2,21 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+
+import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
 import * as nocache from 'nocache';
+
+import { Env } from '@enums/env.enum';
+import { AppModule } from './app.module';
 import { appOrigin } from './config';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true,
+  });
   const configService = app.get(ConfigService);
 
   app.use(
@@ -27,7 +33,7 @@ async function bootstrap() {
     }),
   );
   app.enableCors({
-    origin: appOrigin.get(configService.get('NODE_ENV') || 'development'),
+    origin: appOrigin.get(configService.get('NODE_ENV') || Env.Development),
   });
   app.setGlobalPrefix('api', { exclude: ['/'] });
   app.useGlobalPipes(
@@ -35,6 +41,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  app.useLogger(app.get(Logger));
 
   await app.listen(configService.get('PORT') || '3000');
 }

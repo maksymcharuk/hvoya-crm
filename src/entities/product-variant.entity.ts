@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { DecimalTransformer } from '../transformers/decimal.transformer';
@@ -29,7 +30,7 @@ export class ProductVariantEntity extends BaseEntity {
     default: 0.0,
     transformer: new DecimalTransformer(),
   })
-  price: number;
+  price: Decimal;
 
   @Column({
     default: 0,

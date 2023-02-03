@@ -1,46 +1,60 @@
-<div class="text-900 text-xl pb-3 border-bottom-1 surface-border">
-  Your Cart
-</div>
-<ng-container *ngIf="cart$ | async as cart; else skeleton">
-  <ul class="list-none p-0 m-0 max-h-15rem overflow-y-auto">
-    <ng-container *ngFor="let cartItem of cart.cartItems">
-      <li class="flex py-3 align-items-center">
-        <img [src]="" class="w-4rem h-4rem flex-shrink-0 shadow-1" />
-        <div class="pl-3 mr-8">
-          <span class="text-900 font-medium">{{ cartItem.product.name }}</span>
-          <div class="text-600 mt-2">{{ cartItem.product.sku }}</div>
+<div class="cart-widget">
+  <div class="text-900 text-xl pb-3 border-bottom-1 surface-border">
+    Your Cart
+  </div>
+  <ng-container *ngIf="(cartLoading$ | async) === 0; else skeleton">
+    <ng-container *ngIf="cart$ | async as cart">
+      <ng-container *ngIf="cartNotEmpty$ | async; else emptyCart">
+        <div class="max-h-15rem overflow-y-auto">
+          <table class="w-full">
+            <ng-container *ngFor="let cartItem of cart.items">
+              <tr>
+                <td class="py-3">
+                  <img
+                    [src]="
+                      cartItem.product.images
+                        ? cartItem.product.images[0]?.url
+                        : ''
+                    "
+                    class="w-4rem h-4rem flex-shrink-0 shadow-1"
+                  />
+                </td>
+                <td class="pl-5 mr-8">
+                  <span class="text-900 font-medium">
+                    {{ cartItem.product.name }}
+                  </span>
+                  <div class="text-600 mt-2">{{ cartItem.product.sku }}</div>
+                </td>
+                <td class="pl-5 font-medium ml-auto mr-2">
+                  Qty: {{ cartItem.quantity }}
+                </td>
+                <td class="pl-5 text-900 font-medium">
+                  ${{ cartItem.product.price * cartItem.quantity }}
+                </td>
+              </tr>
+            </ng-container>
+          </table>
         </div>
-        <div class="text-900 font-medium ml-auto">
-          ${{ cartItem.product.price }}
+        <div class="py-3 border-bottom-1 surface-border">
+          <div class="flex align-items-center justify-content-between">
+            <span class="text-900 font-bold"> Total </span>
+            <div class="text-900 font-bold">${{ cart.total }}</div>
+          </div>
         </div>
-      </li>
+        <div class="py-3 flex align-items-center p-fluid">
+          <button
+            routerLink="cart"
+            pButton
+            class="p-button-outlined mr-2"
+            type="button"
+            label="View Cart"
+          ></button>
+          <button pButton class="ml-2" type="button" label="Check Out"></button>
+        </div>
+      </ng-container>
     </ng-container>
-  </ul>
-  <div class="py-3 border-bottom-1 surface-border">
-    <div class="flex align-items-center justify-content-between mb-3">
-      <span class="text-900 font-medium">
-        Total <span class="text-600 text-sm font-normal">incl. VAT</span>
-      </span>
-      <div class="text-900 font-medium">${{ cart.total }}</div>
-    </div>
-    <div class="h-2rem w-full surface-200">
-      <div
-        class="w-9 bg-pink-500 h-full text-white font-medium text-sm flex align-items-center p-3"
-      >
-        $16 away from free shipping
-      </div>
-    </div>
-  </div>
-  <div class="py-3 flex align-items-center p-fluid">
-    <button
-      pButton
-      class="p-button-outlined mr-2"
-      type="button"
-      label="View Cart"
-    ></button>
-    <button pButton class="ml-2" type="button" label="Check Out"></button>
-  </div>
-</ng-container>
+  </ng-container>
+</div>
 
 <ng-template #skeleton>
   <div class="py-3">
@@ -50,10 +64,7 @@
     <p-skeleton height="4rem"></p-skeleton>
   </div>
   <div class="py-3 border-bottom-1 surface-border">
-    <div class="mb-3">
-      <p-skeleton height="16px"></p-skeleton>
-    </div>
-    <p-skeleton height="2rem"></p-skeleton>
+    <p-skeleton height="16px"></p-skeleton>
   </div>
   <div class="py-3 grid">
     <div class="col-6 pr-2 pb-0">
@@ -62,5 +73,14 @@
     <div class="col-6 pl-2 pb-0">
       <p-skeleton height="39px"></p-skeleton>
     </div>
+  </div>
+</ng-template>
+
+<ng-template #emptyCart>
+  <div
+    class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
+  >
+    <i class="pi pi-shopping-cart text-4xl"></i>
+    <span class="text-2xl mt-3">Cart is empty</span>
   </div>
 </ng-template>

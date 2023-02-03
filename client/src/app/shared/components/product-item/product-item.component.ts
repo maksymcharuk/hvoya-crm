@@ -1,5 +1,8 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { ProductBase, ProductVariant } from '@shared/interfaces/products';
+import { MessageService } from 'primeng/api';
+import { combineLatest, take, switchMap } from 'rxjs';
+import { CartService } from 'src/app/modules/dashboard/modules/cart/services/cart.service';
 
 @Component({
   selector: 'app-product-item',
@@ -21,6 +24,12 @@ export class ProductItemComponent implements OnInit, OnChanges {
   selectedColor = '';
 
   selectedImage: string = '';
+
+  constructor(
+    private cartService: CartService,
+    private messageService: MessageService,
+  ) { }
+
 
   ngOnInit(): void {
     this.variants = this.product.variants;
@@ -49,6 +58,39 @@ export class ProductItemComponent implements OnInit, OnChanges {
     if (changes.previewImages && changes.previewImages.currentValue) {
       this.selectedImage = changes.previewImages.currentValue[0] || '';
     }
+  }
+
+  addToCart(): void {
+    if (!this.selectedVariant) {
+      return;
+    }
+
+    combineLatest([this.cartService.cart$])
+      .pipe(
+        take(1),
+        switchMap(([cart]) => {
+          const selectedVariantCount = cart?.items.find(
+            (item) => item.product.id === this.selectedVariant?.id,
+          )?.quantity;
+          if (!this.selectedVariant) {
+            this.messageService.add({
+              severity: 'error',
+              detail: `Can't add to cart`,
+            });
+            throw new Error("Can't add to cart");
+          }
+          return this.cartService.addToCart({
+            productId: this.selectedVariant.id,
+            quantity: selectedVariantCount ? selectedVariantCount + 1 : 1,
+          });
+        }),
+      )
+      .subscribe(() => {
+        this.messageService.add({
+          severity: 'success',
+          detail: `${this.selectedVariant?.name} added to cart`,
+        });
+      });
   }
 
   onVariantChange({ value }: any, type: 'color' | 'size'): void {
