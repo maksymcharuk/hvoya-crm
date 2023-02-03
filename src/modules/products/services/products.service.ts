@@ -1,18 +1,20 @@
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+
 import { CreateProductDto } from '@dtos/create-product.dto';
 import { FileEntity } from '@entities/file.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { FilesService } from 'src/modules/files/services/files.service';
-import { DataSource } from 'typeorm';
+
+import { FilesService } from '../../../modules/files/services/files.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     private dataSource: DataSource,
     private filesService: FilesService,
-  ) { }
+  ) {}
 
   async createProduct(
     createProductDto: CreateProductDto,
@@ -62,7 +64,8 @@ export class ProductsService {
       productImages = await Promise.all(
         images.map((image) => {
           return this.filesService.uploadFile(queryRunner, image);
-        }));
+        }),
+      );
 
       const newProductVariant = await queryRunner.manager.create(
         ProductVariantEntity,
@@ -77,7 +80,9 @@ export class ProductsService {
           baseProduct: savedProductBase,
         },
       );
-      const savedProductVariant = await queryRunner.manager.save(newProductVariant);
+      const savedProductVariant = await queryRunner.manager.save(
+        newProductVariant,
+      );
 
       await queryRunner.commitTransaction();
       return savedProductVariant;

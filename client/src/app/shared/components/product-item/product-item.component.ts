@@ -1,8 +1,9 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { ProductBase, ProductVariant } from '@shared/interfaces/products';
 import { MessageService } from 'primeng/api';
 import { combineLatest, take, switchMap } from 'rxjs';
-import { CartService } from 'src/app/modules/dashboard/modules/cart/services/cart.service';
+
+import { ProductBase, ProductVariant } from '@shared/interfaces/products';
+import { CartService } from '../../../modules/dashboard/modules/cart/services/cart.service';
 
 @Component({
   selector: 'app-product-item',
@@ -28,8 +29,7 @@ export class ProductItemComponent implements OnInit, OnChanges {
   constructor(
     private cartService: CartService,
     private messageService: MessageService,
-  ) { }
-
+  ) {}
 
   ngOnInit(): void {
     this.variants = this.product.variants;

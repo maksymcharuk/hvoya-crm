@@ -33,6 +33,7 @@
       "@interfaces/*": ["src/interfaces/*"],
       "@decorators/*": ["src/decorators/*"],
       "@transformers/*": ["src/transformers/*"],
+      "@validators/*": ["src/validators/*"],
     },
   },
 }
