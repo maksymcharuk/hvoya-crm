@@ -201,13 +201,13 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleNewProductBase() {
+  toggleNewProductBase(isNewCategory?: boolean) {
     this.productCreateForm.get('productBaseGroup')?.patchValue({
       productBaseId: '',
       productBaseName: '',
     });
     this.onBaseProductChange({ value: false });
-    this.newProductBase = !this.newProductBase;
+    this.newProductBase = isNewCategory !== undefined ? isNewCategory : !this.newProductBase;
 
     if (this.newProductBase) {
       this.productCreateForm
@@ -242,7 +242,8 @@ export class CreateProductComponent implements OnInit, OnDestroy {
     });
 
     this.newCategory = !this.newCategory;
-    this.newProductBase = this.newCategory;
+    this.toggleNewProductBase(this.newCategory);
+
 
     if (this.newCategory) {
       this.productCreateForm

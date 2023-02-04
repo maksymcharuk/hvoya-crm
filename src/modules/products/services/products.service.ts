@@ -6,6 +6,7 @@ import { FileEntity } from '@entities/file.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
+import { Folder } from '@enums/folder.enum';
 
 import { FilesService } from '../../../modules/files/services/files.service';
 
@@ -63,7 +64,9 @@ export class ProductsService {
 
       productImages = await Promise.all(
         images.map((image) => {
-          return this.filesService.uploadFile(queryRunner, image);
+          return this.filesService.uploadFile(queryRunner, image, {
+            folder: Folder.ProductImages,
+          });
         }),
       );
 

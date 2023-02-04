@@ -19,6 +19,6 @@ export class ProductsService {
   }
 
   getProductsForCreation(): Observable<GetProductsForCreationResponse> {
-    return this.http.get<GetProductsForCreationResponse>(`${environment.apiUrl}/products/create`);
+    return this.http.get<GetProductsForCreationResponse>(`${environment.apiUrl}/products/base`);
   }
 }

@@ -1,18 +1,20 @@
 import { FileEntity } from '@entities/file.entity';
 import { Injectable } from '@nestjs/common';
 import { QueryRunner } from 'typeorm';
+import { UploadApiOptions } from 'cloudinary';
 
 import { CloudinaryService } from '../../../modules/cloudinary/services/cloudinary.service';
 
 @Injectable()
 export class FilesService {
-  constructor(private cloudinaryService: CloudinaryService) {}
+  constructor(private cloudinaryService: CloudinaryService) { }
 
   async uploadFile(
     queryRunner: QueryRunner,
     file: Express.Multer.File,
+    options: UploadApiOptions,
   ): Promise<FileEntity> {
-    const result = await this.cloudinaryService.uploadImageToCloudinary(file);
+    const result = await this.cloudinaryService.uploadImageToCloudinary(file, options);
 
     return queryRunner.manager.save(FileEntity, {
       public_id: result?.public_id,

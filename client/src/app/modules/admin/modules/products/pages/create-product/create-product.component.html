@@ -65,11 +65,10 @@
                     <input id="productVariantName" type="text" name="productVariantName"
                         formControlName="productVariantName" placeholder="Введіть назву" pInputText> 
                 </div>
-                <div class="field col-12">
+                <div class="field col-12 product-description">
                     <label for="productVariantDescription">Опис</label>
-                    <textarea rows="5" cols="30" formControlName="productVariantDescription" 
-                        pInputTextarea id="productVariantDescription" type="text" 
-                        name="productVariantDescription" placeholder="Введіть опис для продукту" [autoResize]="true"></textarea>
+                    <p-editor formControlName="productVariantDescription" id="productVariantDescription"
+                        name="productVariantDescription" placeholder="Введіть опис для продукту"></p-editor>
                 </div>
                 <div class="field col-4">
                     <label for="productVariantSize">Розмір</label>
@@ -127,7 +126,7 @@
                             [disabled]="!productCreateForm.valid"
                             type="submit"
                             pButton
-                            label="Create"
+                            label="Додати"
                         ></button>
                     </div>
                 </div>

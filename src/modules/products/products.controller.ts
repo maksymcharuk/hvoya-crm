@@ -27,7 +27,7 @@ import { ProductsService } from './services/products.service';
 @Controller('products')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class ProductsController {
-  constructor(private productsService: ProductsService) {}
+  constructor(private productsService: ProductsService) { }
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
@@ -43,7 +43,7 @@ export class ProductsController {
       new ParseFilePipe({
         validators: [
           new MaxFilesSizeValidator({ maxSize: 5000000 }),
-          new FileTypeValidator({ fileType: 'png' }),
+          new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
       }),
     )
@@ -60,7 +60,7 @@ export class ProductsController {
     return this.productsService.getProducts();
   }
 
-  @Get('create')
+  @Get('base')
   @CheckPolicies(
     (ability: AppAbility) =>
       ability.can(Action.Read, ProductBaseEntity) &&
