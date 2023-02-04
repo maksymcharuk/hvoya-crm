@@ -1,9 +1,13 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
-import { combineLatest, take, switchMap } from 'rxjs';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+} from '@angular/core';
 
 import { ProductBase, ProductVariant } from '@shared/interfaces/products';
-import { CartService } from '../../../modules/dashboard/modules/cart/services/cart.service';
 
 @Component({
   selector: 'app-product-item',
@@ -12,8 +16,10 @@ import { CartService } from '../../../modules/dashboard/modules/cart/services/ca
 })
 export class ProductItemComponent implements OnInit, OnChanges {
   @Input() product!: ProductBase;
-  @Input() hideAddToCartButton: boolean = false;
+  @Input() hideAddToCartButton = false;
   @Input() previewImages: string[] = [];
+
+  @Output() addToCart = new EventEmitter<ProductVariant>();
 
   variants: ProductVariant[] = [];
   selectedVariant: ProductVariant | undefined;
@@ -24,12 +30,7 @@ export class ProductItemComponent implements OnInit, OnChanges {
   colors: { code: string }[] = [];
   selectedColor = '';
 
-  selectedImage: string = '';
-
-  constructor(
-    private cartService: CartService,
-    private messageService: MessageService,
-  ) {}
+  selectedImage = '';
 
   ngOnInit(): void {
     this.variants = this.product.variants;
@@ -60,37 +61,11 @@ export class ProductItemComponent implements OnInit, OnChanges {
     }
   }
 
-  addToCart(): void {
+  onAddToCart(): void {
     if (!this.selectedVariant) {
       return;
     }
-
-    combineLatest([this.cartService.cart$])
-      .pipe(
-        take(1),
-        switchMap(([cart]) => {
-          const selectedVariantCount = cart?.items.find(
-            (item) => item.product.id === this.selectedVariant?.id,
-          )?.quantity;
-          if (!this.selectedVariant) {
-            this.messageService.add({
-              severity: 'error',
-              detail: `Can't add to cart`,
-            });
-            throw new Error("Can't add to cart");
-          }
-          return this.cartService.addToCart({
-            productId: this.selectedVariant.id,
-            quantity: selectedVariantCount ? selectedVariantCount + 1 : 1,
-          });
-        }),
-      )
-      .subscribe(() => {
-        this.messageService.add({
-          severity: 'success',
-          detail: `${this.selectedVariant?.name} added to cart`,
-        });
-      });
+    this.addToCart.emit(this.selectedVariant);
   }
 
   onVariantChange({ value }: any, type: 'color' | 'size'): void {

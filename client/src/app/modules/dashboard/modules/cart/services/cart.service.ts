@@ -16,19 +16,15 @@ import { RemoveFromCartResponse } from '@shared/interfaces/responses/remove-from
 export class CartService {
   cart$ = new BehaviorSubject<Cart | null>(null);
   cartLoading$ = new BehaviorSubject<number>(0);
-  cartNotEmpty$ = this.cart$.pipe(
-    map((cart) => {
-      const itemsNumber = cart?.items.reduce(
-        (acc, item) => acc + item.quantity,
-        0,
-      );
-      return itemsNumber && itemsNumber > 0;
-    }),
-  );
   cartItemsNumber$ = this.cart$.pipe(
     map((cart) => {
       const number = cart?.items.reduce((acc, item) => acc + item.quantity, 0);
-      return number && number > 0 ? number.toString() : null;
+      return number && number > 0 ? number : null;
+    }),
+  );
+  cartNotEmpty$ = this.cartItemsNumber$.pipe(
+    map((cartItemsNumber) => {
+      return cartItemsNumber && cartItemsNumber > 0;
     }),
   );
 
