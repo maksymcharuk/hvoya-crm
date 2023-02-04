@@ -27,9 +27,9 @@
     ></p-selectButton>
   </div>
   <div class="my-4">
-    <span class="font-bold text-900 ml-2" *ngIf="selectedVariant?.price"
-      >${{ selectedVariant?.price }}</span
-    >
+    <span class="font-bold text-900 ml-2" *ngIf="selectedVariant?.price">{{
+      selectedVariant?.price | currency
+    }}</span>
   </div>
   <button
     *ngIf="!hideAddToCartButton"

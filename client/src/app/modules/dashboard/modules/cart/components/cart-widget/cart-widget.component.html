@@ -29,7 +29,7 @@
                   Qty: {{ cartItem.quantity }}
                 </td>
                 <td class="pl-5 text-900 font-medium">
-                  ${{ cartItem.product.price * cartItem.quantity }}
+                  {{ cartItem.product.price * cartItem.quantity | currency }}
                 </td>
               </tr>
             </ng-container>
@@ -38,7 +38,7 @@
         <div class="py-3 border-bottom-1 surface-border">
           <div class="flex align-items-center justify-content-between">
             <span class="text-900 font-bold"> Total </span>
-            <div class="text-900 font-bold">${{ cart.total }}</div>
+            <div class="text-900 font-bold">{{ cart.total | currency }}</div>
           </div>
         </div>
         <div class="py-3 flex align-items-center p-fluid">
