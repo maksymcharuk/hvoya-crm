@@ -17,6 +17,7 @@ import { Action } from '@enums/action.enum';
 import { CreateProductDto } from '@dtos/create-product.dto';
 import { FileTypeValidator } from '@validators/ files-type.validator';
 import { MaxFilesSizeValidator } from '@validators/max-files-size.validator';
+
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
@@ -62,8 +63,8 @@ export class ProductsController {
   @Get('create')
   @CheckPolicies(
     (ability: AppAbility) =>
-      ability.can(Action.Create, ProductBaseEntity) &&
-      ability.can(Action.Create, ProductVariantEntity),
+      ability.can(Action.Read, ProductBaseEntity) &&
+      ability.can(Action.Read, ProductCategoryEntity),
   )
   getProductsForCrete() {
     return this.productsService.getProductsForCrete();

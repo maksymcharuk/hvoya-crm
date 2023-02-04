@@ -7,9 +7,13 @@ import { CartItemEntity } from '@entities/cart-item.entity';
 
 import { CartController } from './cart.controller';
 import { CartService } from './services/cart.service';
+import { CaslModule } from '../casl/casl.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, CartEntity, CartItemEntity])],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity, CartEntity, CartItemEntity]),
+    CaslModule,
+  ],
   controllers: [CartController],
   providers: [CartService],
 })

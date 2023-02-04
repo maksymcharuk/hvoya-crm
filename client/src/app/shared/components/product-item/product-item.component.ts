@@ -78,6 +78,7 @@ export class ProductItemComponent implements OnInit, OnChanges {
       (variant) =>
         variant.size === selectedSize && variant.color === selectedColor,
     );
+    this.selectedImage = this.selectedVariant?.images[0]?.url || '';
   }
 
   private updateColors(): void {

@@ -4,4 +4,7 @@ export enum Action {
   Read = 'read',
   Update = 'update',
   Delete = 'delete',
+  // Cart
+  AddTo = 'addTo',
+  RemoveFrom = 'removeFrom',
 }
