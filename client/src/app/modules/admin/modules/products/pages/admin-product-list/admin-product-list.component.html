@@ -2,5 +2,6 @@
   <app-product-list
     [productList]="(productList$ | async) || []"
     [isLoading]="isLoading"
+    [hideAddToCartButton]="true"
   ></app-product-list>
 </div>

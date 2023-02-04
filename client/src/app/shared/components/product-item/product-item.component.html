@@ -1,9 +1,6 @@
 <div class="p-2">
   <div class="wrapper mb-3">
-    <img
-      [src]="selectedImage"
-      class="wrapper__img w-full"
-    />
+    <img [src]="selectedImage" class="wrapper__img w-full" />
     <div class="colors my-2">
       <p-selectButton
         *ngIf="selectedColor"
@@ -20,7 +17,7 @@
   </div>
   <span class="text-900 font-medium text-xl">{{ selectedVariant?.name }}</span>
   <div class="my-2">
-    <p-selectButton 
+    <p-selectButton
       *ngIf="selectedSize"
       [options]="sizes"
       [(ngModel)]="selectedSize"
@@ -30,7 +27,9 @@
     ></p-selectButton>
   </div>
   <div class="my-4">
-    <span class="font-bold text-900 ml-2" *ngIf="selectedVariant?.price">${{ selectedVariant?.price }}</span>
+    <span class="font-bold text-900 ml-2" *ngIf="selectedVariant?.price"
+      >${{ selectedVariant?.price }}</span
+    >
   </div>
   <button
     *ngIf="!hideAddToCartButton"
@@ -40,6 +39,6 @@
     icon="pi pi-shopping-cart"
     iconPos="left"
     label="Add to Cart"
-    (click)="addToCart()"
+    (click)="onAddToCart()"
   ></button>
 </div>
