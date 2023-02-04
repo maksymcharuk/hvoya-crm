@@ -11,8 +11,17 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { FilesModule } from '../files/files.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductCategoryEntity, ProductBaseEntity, ProductVariantEntity]), CaslModule, CloudinaryModule, FilesModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      ProductCategoryEntity,
+      ProductBaseEntity,
+      ProductVariantEntity,
+    ]),
+    CaslModule,
+    CloudinaryModule,
+    FilesModule,
+  ],
   controllers: [ProductsController],
-  providers: [ProductsService]
+  providers: [ProductsService],
 })
-export class ProductsModule { }
+export class ProductsModule {}

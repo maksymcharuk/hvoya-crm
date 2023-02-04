@@ -17,7 +17,7 @@ export class CartService {
     try {
       let cart = await manager.findOne(CartEntity, {
         where: { owner: { id: userId } },
-        relations: ['items.product'],
+        relations: ['items.product.images'],
         order: {
           items: {
             product: {
@@ -27,7 +27,10 @@ export class CartService {
         },
       });
       if (!cart) {
-        cart = await manager.save(CartEntity, { owner: { id: userId } });
+        cart = await manager.save(CartEntity, {
+          owner: { id: userId },
+          items: [],
+        });
       }
       return cart;
     } catch (error) {
