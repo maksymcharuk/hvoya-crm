@@ -20,7 +20,7 @@
                       else totalPriceSkeleton
                     "
                   >
-                    ${{ cart.total }}
+                    {{ cart.total | currency }}
                   </ng-container>
                   <ng-template #totalPriceSkeleton>
                     <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
