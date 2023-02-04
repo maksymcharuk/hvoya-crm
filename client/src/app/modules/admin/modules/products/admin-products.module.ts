@@ -9,6 +9,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FileUploadModule } from 'primeng/fileupload';
 import { HttpClientModule } from '@angular/common/http';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { EditorModule } from 'primeng/editor';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -35,6 +36,7 @@ import { CreateProductComponent } from './pages/create-product/create-product.co
     FileUploadModule,
     HttpClientModule,
     InputNumberModule,
+    EditorModule
   ],
 })
 export class AdminProductsModule { }
