@@ -15,7 +15,7 @@ export class ProductsService {
   constructor(
     private dataSource: DataSource,
     private filesService: FilesService,
-  ) { }
+  ) {}
 
   async createProduct(
     createProductDto: CreateProductDto,
@@ -24,7 +24,6 @@ export class ProductsService {
     const queryRunner = this.dataSource.createQueryRunner();
     const productCategoryId = createProductDto.productCategoryId;
     const productBaseId = createProductDto.productBaseId;
-    const uploadFileOptions = { folder: Folder.Products };
     let savedProductCategory = null;
     let savedProductBase = null;
     let productImages: FileEntity[] = [];
@@ -65,7 +64,9 @@ export class ProductsService {
 
       productImages = await Promise.all(
         images.map((image) => {
-          return this.filesService.uploadFile(queryRunner, image, uploadFileOptions);
+          return this.filesService.uploadFile(queryRunner, image, {
+            folder: Folder.ProductImages,
+          });
         }),
       );
 

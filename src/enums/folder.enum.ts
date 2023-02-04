@@ -1,3 +1,3 @@
 export enum Folder {
-    Products = 'products',
+  ProductImages = 'images/products',
 }
