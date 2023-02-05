@@ -38,6 +38,9 @@
     "db:setup": "npm run db:drop && npm run db:create && npm run migrations:run && npm run db:seed",
     "db:setup-test": "NODE_ENV=test npm run db:setup"
   },
+  "pre-push": [
+    "test:ui"
+  ],
   "dependencies": {
     "@casl/ability": "^6.3.3",
     "@nestjs/common": "^9.0.0",
