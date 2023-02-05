@@ -1,11 +1,15 @@
 #!/bin/sh
 cd ..
 # Setup test DB
-NODE_ENV=test npm run db:setup
+npm run db:setup-test
+# Stop server and client if they are running
+pm2 delete server
+pm2 delete client
 # Start server and client
-NODE_ENV=test npx pm2 start npm --name "Server" -- run start
-npx pm2 start npm --name "Client" -- run start --prefix client
+npx pm2 start npm --name "server" -- run start:test-headless
+npx pm2 start npm --name "client" -- run start:test-headless --prefix client
 # Run Cypress tests
 npm run cypress:headless --prefix client
 # Stop server and client
-npx pm2 delete all
+pm2 delete server
+pm2 delete client

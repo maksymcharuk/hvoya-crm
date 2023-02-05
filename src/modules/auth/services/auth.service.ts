@@ -30,7 +30,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
@@ -122,8 +122,11 @@ export class AuthService {
     const { token, password } = changePassword;
     let decodedToken;
 
+    console.log('token', token);
+
     try {
       decodedToken = this.jwtService.verify(token) as JwtTokenPayload;
+      console.log('decodedToken', decodedToken);
     } catch (error) {
       throw new HttpException(
         'Link was expired, try to reset password again',
@@ -132,6 +135,7 @@ export class AuthService {
     }
 
     const user = await this.usersService.findById(decodedToken.user.id);
+    console.log('user', user);
     if (!user) {
       throw new HttpException(
         'User with such confirm token does not exist',
@@ -147,6 +151,8 @@ export class AuthService {
     }
 
     user.password = password;
+
+    console.log('user2', user);
 
     await this.usersService.update(user);
   }

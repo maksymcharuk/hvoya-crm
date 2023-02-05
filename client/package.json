@@ -4,6 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:test": "ng serve --configuration test --port 4201",
+    "start:test-headless": "ng serve --configuration test --port 4201",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false",
@@ -11,9 +13,12 @@
     "format:all": "npx prettier --write .",
     "e2e": "ng e2e",
     "cypress:open": "cypress open",
-    "cypress:headless": "cypress run",
+    "cypress:headless": "cypress run --spec cypress/e2e/index.cy.ts",
     "cypress:start": "./run_cypress"
   },
+  "pre-push": [
+    "cypress:start"
+  ],
   "private": true,
   "dependencies": {
     "@angular/animations": "^15.1.3",
