@@ -19,19 +19,23 @@ async function bootstrap() {
   });
   const configService = app.get(ConfigService);
 
-  app.use(
-    helmet({
-      contentSecurityPolicy: false,
-    }),
-  );
-  app.use(nocache());
-  app.use(compression());
-  app.use(
-    (rateLimit as any)({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
-    }),
-  );
+  // Security configs
+  if (configService.get('NODE_ENV') === Env.Production) {
+    app.use(
+      helmet({
+        contentSecurityPolicy: false,
+      }),
+    );
+    app.use(
+      (rateLimit as any)({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 100, // limit each IP to 100 requests per windowMs
+      }),
+    );
+    app.use(nocache());
+    app.use(compression());
+  }
+
   app.enableCors({
     origin: appOrigin.get(configService.get('NODE_ENV') || Env.Development),
   });

@@ -79,6 +79,22 @@ describe('Auth', () => {
     });
   });
 
+  describe('Logout', () => {
+    it('Logout as admin', () => {
+      cy.signInAsAdmin();
+      cy.contains('Hello admin');
+      cy.logout();
+      cy.url().should('contain', '/auth/sign-in');
+    });
+
+    it('Logout as user', () => {
+      cy.signInAsUser();
+      cy.contains('Hello user');
+      cy.logout();
+      cy.url().should('contain', '/auth/sign-in');
+    });
+  });
+
   describe('Forgot password', () => {
     const forgotPasswordUrl = '/auth/forgot-password';
 
@@ -146,22 +162,6 @@ describe('Auth', () => {
     });
   });
 
-  describe('Logout', () => {
-    it('Logout as admin', () => {
-      cy.signInAsAdmin();
-      cy.contains('Hello admin');
-      cy.logout();
-      cy.url().should('contain', '/auth/sign-in');
-    });
-
-    it('Logout as user', () => {
-      cy.signInAsUser();
-      cy.contains('Hello user');
-      cy.logout();
-      cy.url().should('contain', '/auth/sign-in');
-    });
-  });
-
   describe('Send email confirmation if email is not confirmed', () => {
     it('Send email confirmation on sing in if not confirmed', () => {
       const uniqueEmail = `test+${Date.now()}@email.com`;
@@ -170,7 +170,9 @@ describe('Auth', () => {
       cy.contains('Thank you for signing up');
 
       cy.signIn(uniqueEmail, 'Test12345');
-      cy.get('[role="alert"]').contains('Please check your email to confirm your account');
+      cy.get('[role="alert"]').contains(
+        'Please check your email to confirm your account',
+      );
     });
   });
 });
