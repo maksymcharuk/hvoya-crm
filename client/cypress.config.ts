@@ -8,6 +8,7 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:4201',
     supportFile: 'cypress/support/e2e.ts',
+    defaultCommandTimeout: 10000,
     setupNodeEvents(on) {
       on('task', {
         connectDB,
