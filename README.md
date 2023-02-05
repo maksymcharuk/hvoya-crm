@@ -35,7 +35,7 @@ $ npm install
 npm run db:setup
 
 # Additionaly create DB for tests
-NODE_ENV=test npm run db:setup
+npm run db:setup-test
 ```
 
 > This will create DB with default data.  
@@ -106,12 +106,6 @@ In `root` folder run:
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
 ### Frontend (Angular)
@@ -120,7 +114,12 @@ In `client` folder run:
 ```bash
 # unit tests
 $ npm run test
+```
 
+### e2e tests
+
+In `client` folder run:
+```bash
 # e2e tests 
 $ npm run cypress:start
 ```
@@ -150,7 +149,9 @@ $ npm run cypress:start
 
 #### 3. Working with e2e tests
 
-1. Setup test DB run (in the `root` folder) `NODE_ENV=test npm run db:setup`
-2. Run backend (in the `root` folder)  - `npm run start:test`
-3. Run frontend (in the `client` folder) - `npm run start`
-4. Run Cypress (in the `client` folder)  - `npm run cypress:open`
+In the `root` folder:
+1. Setup test DB run - `npm run db:setup-test`
+2. Run backend - `npm run start:test`
+In the `client` folder:
+3. Run frontend - `npm run start:test`
+4. Run Cypress - `npm run cypress:open`
