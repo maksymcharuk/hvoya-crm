@@ -1,14 +1,19 @@
+import { Observable } from 'rxjs';
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+
 import { environment } from '@environment/environment';
-import { GetProductsForCreationResponse, GetProductsResponse } from '@shared/interfaces/responses/get-products.response';
-import { Observable } from 'rxjs';
+import {
+  GetProductsForCreationResponse,
+  GetProductsResponse,
+} from '@shared/interfaces/responses/get-products.response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   createProduct(product: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}/products`, product);
@@ -19,6 +24,8 @@ export class ProductsService {
   }
 
   getProductsForCreation(): Observable<GetProductsForCreationResponse> {
-    return this.http.get<GetProductsForCreationResponse>(`${environment.apiUrl}/products/base`);
+    return this.http.get<GetProductsForCreationResponse>(
+      `${environment.apiUrl}/products/base`,
+    );
   }
 }

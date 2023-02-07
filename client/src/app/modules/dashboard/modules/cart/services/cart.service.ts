@@ -1,13 +1,14 @@
+import { BehaviorSubject, Observable, map, shareReplay } from 'rxjs';
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map, Observable, shareReplay } from 'rxjs';
 
 import { environment } from '@environment/environment';
 import { Cart } from '@shared/interfaces/cart.interface';
-import { GetCartResponse } from '@shared/interfaces/responses/get-cart.response';
 import { AddToCartDTO } from '@shared/interfaces/dto/add-to-cart.dto';
-import { AddToCartResponse } from '@shared/interfaces/responses/add-to-cart.response';
 import { RemoveFromCartDTO } from '@shared/interfaces/dto/remove-from-cart.dto';
+import { AddToCartResponse } from '@shared/interfaces/responses/add-to-cart.response';
+import { GetCartResponse } from '@shared/interfaces/responses/get-cart.response';
 import { RemoveFromCartResponse } from '@shared/interfaces/responses/remove-from-cart.response';
 
 @Injectable({

@@ -8,9 +8,8 @@ describe('VerticalMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VerticalMenuComponent ]
-    })
-    .compileComponents();
+      declarations: [VerticalMenuComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(VerticalMenuComponent);
     component = fixture.componentInstance;

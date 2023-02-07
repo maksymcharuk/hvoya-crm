@@ -3,7 +3,6 @@
 // with Intellisense and code completion in your
 // IDE or Text Editor.
 // ***********************************************
-
 import { signToken } from 'cypress/support/helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

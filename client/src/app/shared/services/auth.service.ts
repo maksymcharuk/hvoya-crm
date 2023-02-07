@@ -1,13 +1,16 @@
+import { tap } from 'rxjs';
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { tap } from 'rxjs';
-import { environment } from '@environment/environment';
-import { SignInResponse } from '@shared/interfaces/responses/sign-in.response';
-import { SignInDTO } from '@shared/interfaces/dto/sign-in.dto';
-import { SignUpResponse } from '@shared/interfaces/responses/sign-up.response';
-import { SignUpDTO } from '@shared/interfaces/dto/sign-up.dto';
-import { ForgotPasswordDTO } from '@shared/interfaces/dto/forgot-password.dto';
 import { Router } from '@angular/router';
+
+import { environment } from '@environment/environment';
+import { ForgotPasswordDTO } from '@shared/interfaces/dto/forgot-password.dto';
+import { SignInDTO } from '@shared/interfaces/dto/sign-in.dto';
+import { SignUpDTO } from '@shared/interfaces/dto/sign-up.dto';
+import { SignInResponse } from '@shared/interfaces/responses/sign-in.response';
+import { SignUpResponse } from '@shared/interfaces/responses/sign-up.response';
+
 import { TokenService } from './token.service';
 
 @Injectable({
@@ -18,7 +21,7 @@ export class AuthService {
     private http: HttpClient,
     private tokenService: TokenService,
     private router: Router,
-  ) { }
+  ) {}
 
   signIn(value: SignInDTO) {
     return this.http
@@ -64,6 +67,9 @@ export class AuthService {
   }
 
   sendEmailConfirmation(email: string) {
-    return this.http.post(`${environment.apiUrl}/auth/send-email-confirmation`, { email });
+    return this.http.post(
+      `${environment.apiUrl}/auth/send-email-confirmation`,
+      { email },
+    );
   }
 }

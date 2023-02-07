@@ -1,3 +1,7 @@
+import { MenuItem } from 'primeng/api';
+import { OverlayPanel } from 'primeng/overlaypanel';
+import { filter } from 'rxjs';
+
 import {
   AfterViewInit,
   Component,
@@ -7,10 +11,6 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { filter } from 'rxjs';
-
-import { MenuItem } from 'primeng/api';
-import { OverlayPanel } from 'primeng/overlaypanel';
 
 import { LayoutService } from '@shared/layout/services/layout.service';
 import { AuthService } from '@shared/services/auth.service';

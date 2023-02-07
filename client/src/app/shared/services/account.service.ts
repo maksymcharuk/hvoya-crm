@@ -1,12 +1,13 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, shareReplay, tap } from 'rxjs';
 
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
 import { environment } from '@environment/environment';
-import { GetProfileResponse } from '@shared/interfaces/responses/get-profile.response';
-import { UpdateUserProfileDTO } from '@shared/interfaces/dto/update-user-profile.dto';
-import { UpdateAdminProfileDTO } from '@shared/interfaces/dto/update-admin-profile.dto';
 import { ChangePasswordDTO } from '@shared/interfaces/dto/change-password.dto';
+import { UpdateAdminProfileDTO } from '@shared/interfaces/dto/update-admin-profile.dto';
+import { UpdateUserProfileDTO } from '@shared/interfaces/dto/update-user-profile.dto';
+import { GetProfileResponse } from '@shared/interfaces/responses/get-profile.response';
 
 @Injectable()
 export class AccountService {

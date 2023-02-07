@@ -1,3 +1,5 @@
+import { DataSource } from 'typeorm';
+
 import {
   ConflictException,
   HttpException,
@@ -6,21 +8,20 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 
 import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
 import { UserEntity } from '@entities/user.entity';
-import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 import { Env } from '@enums/env.enum';
+import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 
 import { appOrigin } from '../../../config';
-import { UsersService } from '../../../modules/users/services/users.service';
-import { MailService } from '../../../modules/mail/services/mail.service';
 import { ConfirmEmailMail } from '../../../modules/mail/mails/confirm-email.mail';
 import { ResetPasswordEmailMail } from '../../../modules/mail/mails/reset-password-email.mail';
-import { DataSource } from 'typeorm';
+import { MailService } from '../../../modules/mail/services/mail.service';
+import { UsersService } from '../../../modules/users/services/users.service';
 
 @Injectable()
 export class AuthService {

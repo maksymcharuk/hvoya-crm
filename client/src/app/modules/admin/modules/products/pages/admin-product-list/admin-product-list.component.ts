@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { ProductsService } from '@shared/services/products.service';
 import { finalize } from 'rxjs';
+
+import { Component } from '@angular/core';
+
+import { ProductsService } from '@shared/services/products.service';
 
 @Component({
   selector: 'app-admin-product-list',

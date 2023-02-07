@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+
 import { CartItem } from '@shared/interfaces/cart.interface';
+
 import { CartService } from '../../services/cart.service';
 
 @Component({

@@ -1,15 +1,17 @@
-import { HttpException, Injectable } from '@nestjs/common';
 import {
-  createTransport,
   Transporter,
   createTestAccount,
+  createTransport,
   getTestMessageUrl,
 } from 'nodemailer';
 
-import { TemplateService } from './template.service';
+import { HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Mail } from '@interfaces/mail.interface';
+
 import { Env } from '@enums/env.enum';
+import { Mail } from '@interfaces/mail.interface';
+
+import { TemplateService } from './template.service';
 
 @Injectable()
 export class MailService {
