@@ -7,13 +7,7 @@ import {
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { CartItem } from '@shared/interfaces/cart.interface';
-import {
-  BehaviorSubject,
-  debounceTime,
-  finalize,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { BehaviorSubject, debounceTime, Subject, takeUntil } from 'rxjs';
 
 import { CartService } from '../../services/cart.service';
 
@@ -50,12 +44,9 @@ export class CartItemComponent implements AfterViewInit, OnDestroy {
             productId: this.cartItem.product.id,
             quantity: quantity || 1,
           })
-          .pipe(
-            finalize(() => {
-              this.updating$.next(this.updating$.getValue() - 1);
-            }),
-          )
-          .subscribe();
+          .subscribe(() => {
+            this.updating$.next(this.updating$.getValue() - 1);
+          });
       });
   }
 

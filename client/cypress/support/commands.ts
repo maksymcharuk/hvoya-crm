@@ -3,30 +3,44 @@
 // with Intellisense and code completion in your
 // IDE or Text Editor.
 // ***********************************************
+
 import { signToken } from 'cypress/support/helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace Cypress {
-  interface Chainable {
-    signIn(email: string, password: string): typeof signIn;
-    signInAsSuperAdmin(): typeof signInAsSuperAdmin;
-    signInAsAdmin(): typeof signInAsAdmin;
-    signInAsUser(): typeof signInAsUser;
-    signUp(email: string, password: string): typeof signUp;
-    resetPassword(password: string, token: string): typeof resetPassword;
-    singUpAndConfirmEmail(): typeof singUpAndConfirmEmail;
-    logout(): typeof logout;
-    openUserMenu(): typeof openUserMenu;
-    openAccountPage(): typeof openAccountPage;
-    openProfilePage(): typeof openProfilePage;
-    openSettingsPage(): typeof openSettingsPage;
+interface SignInOptions {
+  full: boolean;
+}
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      signIn(
+        email: string,
+        password: string,
+        options?: SignInOptions,
+      ): typeof signIn;
+      signInAsSuperAdmin(options?: SignInOptions): typeof signInAsSuperAdmin;
+      signInAsAdmin(options?: SignInOptions): typeof signInAsAdmin;
+      signInAsUser(options?: SignInOptions): typeof signInAsUser;
+      signUp(email: string, password: string): typeof signUp;
+      resetPassword(password: string, token: string): typeof resetPassword;
+      registerNewAdmin(
+        email: string,
+        password: string,
+      ): typeof registerNewAdmin;
+      registerNewUser(email: string, password: string): typeof registerNewUser;
+      logout(): typeof logout;
+      openUserMenu(): typeof openUserMenu;
+      openAccountPage(): typeof openAccountPage;
+      openProfilePage(): typeof openProfilePage;
+      openSettingsPage(): typeof openSettingsPage;
+    }
   }
 }
 
 function signIn(
   email: string,
   password: string,
-  options: { full: boolean } = { full: false },
+  options: SignInOptions = { full: false },
 ): void {
   cy.visit('/');
   cy.get('input[type=email]').type(email);
@@ -37,27 +51,31 @@ function signIn(
   }
 }
 
-function signInAsSuperAdmin(): void {
+function signInAsSuperAdmin(options?: SignInOptions): void {
   cy.fixture('auth.json')
     .as('authData')
     .then(({ credentials }) => {
-      cy.signIn(credentials.superAdmin.email, credentials.superAdmin.password);
+      cy.signIn(
+        credentials.superAdmin.email,
+        credentials.superAdmin.password,
+        options,
+      );
     });
 }
 
-function signInAsAdmin(): void {
+function signInAsAdmin(options?: SignInOptions): void {
   cy.fixture('auth.json')
     .as('authData')
     .then(({ credentials }) => {
-      cy.signIn(credentials.admin.email, credentials.admin.password);
+      cy.signIn(credentials.admin.email, credentials.admin.password, options);
     });
 }
 
-function signInAsUser(): void {
+function signInAsUser(options?: SignInOptions): void {
   cy.fixture('auth.json')
     .as('authData')
     .then(({ credentials }) => {
-      cy.signIn(credentials.user.email, credentials.user.password);
+      cy.signIn(credentials.user.email, credentials.user.password, options);
     });
 }
 
@@ -102,7 +120,7 @@ function openSettingsPage(): void {
   cy.get('li').contains('Settings').click();
 }
 
-function singUpAndConfirmEmail(email: string, password: string): void {
+function registerNewUser(email: string, password: string): void {
   cy.signUp(email, password);
   cy.contains(email);
   cy.contains('Thank you for signing up');
@@ -115,6 +133,16 @@ function singUpAndConfirmEmail(email: string, password: string): void {
 
     cy.visit(`/auth/confirm-email?token=${token}`);
   });
+}
+
+function registerNewAdmin(email: string, password: string): void {
+  cy.registerNewUser(email, password);
+  cy.task<any[]>(
+    'connectDB',
+    `UPDATE public."user" 
+      SET role = 'Admin'::user_role_enum
+      WHERE id = (SELECT max(id) FROM public."user")`,
+  );
 }
 
 // ***********************************************
@@ -149,7 +177,8 @@ Cypress.Commands.add('signInAsAdmin', signInAsAdmin);
 Cypress.Commands.add('signInAsUser', signInAsUser);
 Cypress.Commands.add('signUp', signUp);
 Cypress.Commands.add('resetPassword', resetPassword);
-Cypress.Commands.add('singUpAndConfirmEmail', singUpAndConfirmEmail);
+Cypress.Commands.add('registerNewAdmin', registerNewAdmin);
+Cypress.Commands.add('registerNewUser', registerNewUser);
 Cypress.Commands.add('logout', logout);
 Cypress.Commands.add('openUserMenu', openUserMenu);
 Cypress.Commands.add('openAccountPage', openAccountPage);
