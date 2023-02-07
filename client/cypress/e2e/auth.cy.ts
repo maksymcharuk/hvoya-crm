@@ -73,7 +73,7 @@ describe('Auth', () => {
     it('Register new user, confirm and sign in', () => {
       const email = `test+${Date.now()}@email.com`;
       const password = 'Test12345';
-      cy.singUpAndConfirmEmail(email, password);
+      cy.registerNewUser(email, password);
       cy.signIn(email, password);
       cy.contains('Hello user');
     });

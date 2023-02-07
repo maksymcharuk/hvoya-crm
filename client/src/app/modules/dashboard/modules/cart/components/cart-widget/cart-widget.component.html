@@ -8,7 +8,7 @@
         <div class="max-h-15rem overflow-y-auto">
           <table class="w-full">
             <ng-container *ngFor="let cartItem of cart.items">
-              <tr>
+              <tr data-cy="cart-widget-item">
                 <td class="py-3">
                   <img
                     [src]="
