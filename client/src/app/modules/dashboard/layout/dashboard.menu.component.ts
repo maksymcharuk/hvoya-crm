@@ -1,7 +1,9 @@
+import { MenuItem } from 'primeng/api';
+
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
+
 import { LayoutService } from '@shared/layout/services/layout.service';
-import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'dashboard-menu',
@@ -10,7 +12,7 @@ import { MenuItem } from 'primeng/api';
 export class DashboardMenuComponent implements OnInit {
   model: MenuItem[] = [];
 
-  constructor(public layoutService: LayoutService) { }
+  constructor(public layoutService: LayoutService) {}
 
   ngOnInit() {
     this.model = [

@@ -1,3 +1,5 @@
+import { BehaviorSubject, Subject, debounceTime, takeUntil } from 'rxjs';
+
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -6,8 +8,8 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+
 import { CartItem } from '@shared/interfaces/cart.interface';
-import { BehaviorSubject, debounceTime, Subject, takeUntil } from 'rxjs';
 
 import { CartService } from '../../services/cart.service';
 

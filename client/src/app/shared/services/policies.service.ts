@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AbilityBuilder } from '@casl/ability';
+
 import { AppAbility } from '@shared/roles/ability';
+
 import { UserService } from './user.service';
 
 @Injectable({

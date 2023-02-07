@@ -1,5 +1,10 @@
+import { MessageService } from 'primeng/api';
+import { FileUpload } from 'primeng/fileupload';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Validators, FormBuilder, AbstractControl } from '@angular/forms';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+
 import {
   ProductBaseForCreation,
   ProductCategory,
@@ -7,9 +12,6 @@ import {
 } from '@shared/interfaces/products';
 import { GetProductsForCreationResponse } from '@shared/interfaces/responses/get-products.response';
 import { ProductsService } from '@shared/services/products.service';
-import { MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-create-product',
@@ -207,7 +209,8 @@ export class CreateProductComponent implements OnInit, OnDestroy {
       productBaseName: '',
     });
     this.onBaseProductChange({ value: false });
-    this.newProductBase = isNewCategory !== undefined ? isNewCategory : !this.newProductBase;
+    this.newProductBase =
+      isNewCategory !== undefined ? isNewCategory : !this.newProductBase;
 
     if (this.newProductBase) {
       this.productCreateForm
@@ -243,7 +246,6 @@ export class CreateProductComponent implements OnInit, OnDestroy {
 
     this.newCategory = !this.newCategory;
     this.toggleNewProductBase(this.newCategory);
-
 
     if (this.newCategory) {
       this.productCreateForm

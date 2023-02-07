@@ -1,15 +1,16 @@
-import { NestExpressApplication } from '@nestjs/platform-express';
+import * as compression from 'compression';
+import * as rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import { Logger } from 'nestjs-pino';
+import * as nocache from 'nocache';
+
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-
-import { Logger } from 'nestjs-pino';
-import helmet from 'helmet';
-import * as compression from 'compression';
-import * as rateLimit from 'express-rate-limit';
-import * as nocache from 'nocache';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { Env } from '@enums/env.enum';
+
 import { AppModule } from './app.module';
 import { appOrigin } from './config';
 

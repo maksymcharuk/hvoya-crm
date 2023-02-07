@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
 import { readFileSync } from 'fs';
-import { join } from 'path';
 import * as Handlebars from 'handlebars';
+import { join } from 'path';
+
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class TemplateService {

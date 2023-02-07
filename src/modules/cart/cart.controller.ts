@@ -7,9 +7,9 @@ import { CartEntity } from '@entities/cart.entity';
 import { Action } from '@enums/action.enum';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { PoliciesGuard } from '../casl/policies.guard';
-import { CheckPolicies } from '../casl/check-policies.decorator';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
+import { CheckPolicies } from '../casl/check-policies.decorator';
+import { PoliciesGuard } from '../casl/policies.guard';
 import { CartService } from './services/cart.service';
 
 @Controller('cart')

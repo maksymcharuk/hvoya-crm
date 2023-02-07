@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { PoliciesService } from '@shared/services/policies.service';
 
 @Component({

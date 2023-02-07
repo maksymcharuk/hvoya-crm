@@ -1,10 +1,10 @@
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 
-import { ProductVariantEntity } from '../../../entities/product-variant.entity';
-import { ProductCategoryEntity } from '../../../entities/product-category.entity';
-import { ProductBaseEntity } from '../../../entities/product-base.entity';
 import { FileEntity } from '../../../entities/file.entity';
+import { ProductBaseEntity } from '../../../entities/product-base.entity';
+import { ProductCategoryEntity } from '../../../entities/product-category.entity';
+import { ProductVariantEntity } from '../../../entities/product-variant.entity';
 
 export default class ProductSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {

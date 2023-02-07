@@ -1,15 +1,15 @@
 import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
 
-import { Action } from '@enums/action.enum';
-import { UserEntity } from '@entities/user.entity';
 import { User } from '@decorators/user.decorator';
-import { UpdateProfileDto } from '@dtos/update-profile.dto';
 import { ChangePasswordDto } from '@dtos/change-password.dto';
+import { UpdateProfileDto } from '@dtos/update-profile.dto';
+import { UserEntity } from '@entities/user.entity';
+import { Action } from '@enums/action.enum';
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AccountService } from './services/account.service';
 
 @Controller('account')

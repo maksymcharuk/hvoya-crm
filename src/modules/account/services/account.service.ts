@@ -1,10 +1,11 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { UserEntity } from '@entities/user.entity';
+import { HttpException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
 import { ChangePasswordDto } from '@dtos/change-password.dto';
 import { UpdateProfileDto } from '@dtos/update-profile.dto';
+import { UserEntity } from '@entities/user.entity';
 
 @Injectable()
 export class AccountService {

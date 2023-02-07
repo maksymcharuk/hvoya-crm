@@ -1,9 +1,11 @@
+import { Observable } from 'rxjs';
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+
 import { environment } from '@environment/environment';
 import { GetUserResponse } from '@shared/interfaces/responses/get-user.response';
 import { GetUsersResponse } from '@shared/interfaces/responses/get-users.response';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

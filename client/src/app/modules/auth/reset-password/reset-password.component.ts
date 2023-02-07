@@ -1,3 +1,5 @@
+import { delay, share } from 'rxjs/operators';
+
 import { Component, OnInit } from '@angular/core';
 import {
   AbstractControlOptions,
@@ -5,13 +7,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import {
   ConfirmPasswordDTO,
   ConfirmPasswordDTOFormGroup,
 } from '@shared/interfaces/dto/confirm-password.dto';
 import { AuthService } from '@shared/services/auth.service';
 import { PasswordValidators } from '@shared/validators/password-validator';
-import { delay, share } from 'rxjs/operators';
 
 @Component({
   selector: 'app-reset-password',
@@ -66,7 +68,9 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   onSubmit(value: ConfirmPasswordDTO) {
-    const request$ = this.authService.resetPassword(value.password, this.token).pipe(share());
+    const request$ = this.authService
+      .resetPassword(value.password, this.token)
+      .pipe(share());
     request$.subscribe(() => {
       this.displayConfirmDialog = true;
     });

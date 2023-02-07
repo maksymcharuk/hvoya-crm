@@ -1,4 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
+
 import { AccountService } from '@shared/services/account.service';
 
 @Component({

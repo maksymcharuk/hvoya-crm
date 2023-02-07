@@ -1,12 +1,12 @@
+import { MessageService } from 'primeng/api';
+import { finalize } from 'rxjs';
+
 import { Component } from '@angular/core';
 import {
   AbstractControlOptions,
   FormBuilder,
   Validators,
 } from '@angular/forms';
-
-import { finalize } from 'rxjs';
-import { MessageService } from 'primeng/api';
 
 import {
   ChangePasswordDTO,
