@@ -1,0 +1,3 @@
+<div class="mt-1" *ngIf="formGroup.get(controlName)?.invalid && (formGroup.get(controlName)?.dirty || formGroup.get(controlName)?.touched)">
+    <small *ngIf="formGroup.get(controlName)?.errors![errorType]" class="p-error block">{{errorMessage}}</small>
+</div>

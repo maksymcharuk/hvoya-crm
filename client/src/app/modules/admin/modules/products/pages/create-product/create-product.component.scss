@@ -15,12 +15,6 @@
     }
 }
 
-.add-button {
-    display: flex;
-    flex-basis: content;
-    align-items: flex-end;
-}
-
 .upload-files {
     &-no-files {
         display: flex;
@@ -68,12 +62,4 @@
     .p-fluid .p-fileupload button.p-button {
         width: 50%;
     }
-
-    .p-editor-container {
-        height: 15rem;
-    }
-}
-
-.product-description {
-    min-height: 300px;
 }

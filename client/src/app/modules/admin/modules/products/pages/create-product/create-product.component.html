@@ -15,13 +15,26 @@
                         </div>
                     </ng-template>
                 </p-dropdown>
+                <app-form-control-error-message 
+                    [formGroup]="productCreateForm"
+                    controlName="productCategoryGroup.productCategoryId"
+                    errorType="required"
+                    errorMessage="Потрібно вибрати категорію">
+                </app-form-control-error-message>
             </div>
             <div *ngIf="newCategory" class="field col-12 md:col-6">
                 <label for="productCategoryName">Нова категорія</label>
                 <input id="productCategoryName" type="text" name="productCategoryName"
                     formControlName="productCategoryName" placeholder="Введіть назву нової категорії" pInputText>
+                <app-form-control-error-message 
+                    [formGroup]="productCreateForm"
+                    controlName="productCategoryGroup.productCategoryName"
+                    errorType="required"
+                    errorMessage="Потрібно ввести категорію">
+                </app-form-control-error-message>
             </div>
-            <div class="field col-12 md:col-1 add-button">
+            <div class="field col-12 md:col-1">
+                <label>&nbsp;</label>
                 <button pButton pRipple type="button" [icon]="newCategory ? 'pi pi-minus' : 'pi pi-plus'" 
                     class="p-button-success" (click)="toggleNewCategory()">
                 </button>
@@ -40,13 +53,26 @@
                         </div>
                     </ng-template>
                 </p-dropdown>
+                <app-form-control-error-message 
+                    [formGroup]="productCreateForm"
+                    controlName="productBaseGroup.productBaseId"
+                    errorType="required"
+                    errorMessage="Потрібно вибрати базовий продукт">
+                </app-form-control-error-message>
             </div>
             <div *ngIf="newProductBase" class="field col-12 md:col-6">
                 <label for="productBaseName">Новий базовий продукт</label>
                 <input id="productBaseName" type="text" name="productBaseName"
                     formControlName="productBaseName" placeholder="Введіть назву нового базового продукту" pInputText>
+                <app-form-control-error-message 
+                    [formGroup]="productCreateForm"
+                    controlName="productBaseGroup.productBaseName"
+                    errorType="required"
+                    errorMessage="Потрібно ввести категорію">
+                </app-form-control-error-message>
             </div>
-            <div class="field col-12 md:col-1 add-button">
+            <div class="field col-12 md:col-1">
+                <label>&nbsp;</label>
                 <button pButton pRipple type="button" [icon]="newProductBase ? 'pi pi-minus' : 'pi pi-plus'" 
                     [disabled]="newCategory" class="p-button-success" (click)="toggleNewProductBase()">
                 </button>
@@ -59,16 +85,34 @@
                     <label for="productVariantSku">Артикул</label>
                     <input id="productVariantSku" type="text" name="productVariantSku"
                         formControlName="productVariantSku" placeholder="Введіть актикул" pInputText> 
+                    <app-form-control-error-message 
+                        [formGroup]="productCreateForm"
+                        controlName="productVariantGroup.productVariantSku"
+                        errorType="required"
+                        errorMessage="Потрібно ввести артикул">
+                    </app-form-control-error-message>
                 </div>
                 <div class="field col-6">
                     <label for="productVariantName">Назва</label>
                     <input id="productVariantName" type="text" name="productVariantName"
                         formControlName="productVariantName" placeholder="Введіть назву" pInputText> 
+                    <app-form-control-error-message 
+                        [formGroup]="productCreateForm"
+                        controlName="productVariantGroup.productVariantName"
+                        errorType="required"
+                        errorMessage="Потрібно ввести назву">
+                    </app-form-control-error-message>
                 </div>
-                <div class="field col-12 product-description">
+                <div class="field col-12">
                     <label for="productVariantDescription">Опис</label>
                     <p-editor formControlName="productVariantDescription" id="productVariantDescription"
                         name="productVariantDescription" placeholder="Введіть опис для продукту"></p-editor>
+                    <app-form-control-error-message
+                        [formGroup]="productCreateForm"
+                        controlName="productVariantGroup.productVariantDescription"
+                        errorType="required"
+                        errorMessage="Потрібно ввести опис">
+                    </app-form-control-error-message>
                 </div>
                 <div class="field col-4">
                     <label for="productVariantSize">Розмір</label>
@@ -81,6 +125,12 @@
                             </div>
                         </ng-template>
                     </p-dropdown>
+                    <app-form-control-error-message
+                        [formGroup]="productCreateForm"
+                        controlName="productVariantGroup.productVariantSize"
+                        errorType="required"
+                        errorMessage="Потрібно вибрати розмір">
+                    </app-form-control-error-message>
                 </div>
                 <div class="field col-4">
                     <label for="productVariantColor">Колір</label>
@@ -93,6 +143,12 @@
                             </div>
                         </ng-template>
                     </p-dropdown>
+                    <app-form-control-error-message
+                        [formGroup]="productCreateForm"
+                        controlName="productVariantGroup.productVariantColor"
+                        errorType="required"
+                        errorMessage="Потрібно вибрати колір">
+                    </app-form-control-error-message>
                 </div>
                 <div class="field col-4">
                     <label for="productVariantPrice">Ціна</label>
@@ -100,6 +156,12 @@
                         formControlName="productVariantPrice" currency="UAH" locale="uk-UA"
                         [allowEmpty]="false" mode="currency">
                     </p-inputNumber>
+                    <app-form-control-error-message
+                        [formGroup]="productCreateForm"
+                        controlName="productVariantGroup.productVariantPrice"
+                        errorType="required"
+                        errorMessage="Потрібно ввести ціну">
+                    </app-form-control-error-message>
                 </div>
                 <div class="field col-12">
                     <label for="images">Завантаження файлів</label>
@@ -118,12 +180,10 @@
                             </ul>
                         </ng-template>
                     </p-fileUpload>
-
                 </div>
                 <div class="grid justify-content-end col-12">
                     <div class="field col-3">
                         <button
-                            [disabled]="!productCreateForm.valid"
                             type="submit"
                             pButton
                             label="Додати"
