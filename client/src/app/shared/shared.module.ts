@@ -14,19 +14,21 @@ import { ProductListComponent } from './components/product-list/product-list.com
 import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
+import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 
-registerLocaleData(localeUk);
+registerLocaleData( localeUk );
 
 const COMPONENTS = [
   VerticalMenuComponent,
   ProductListComponent,
   ProductItemComponent,
+  FormControlErrorMessageComponent,
 ];
 
 const PRIMENG_MODULES = [SelectButtonModule, SkeletonModule, ButtonModule];
 
-@NgModule({
-  declarations: [...COMPONENTS],
+@NgModule( {
+  declarations: [...COMPONENTS, FormControlErrorMessageComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -49,5 +51,5 @@ const PRIMENG_MODULES = [SelectButtonModule, SkeletonModule, ButtonModule];
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'UAH' },
   ],
   exports: [...COMPONENTS],
-})
-export class SharedModule {}
+} )
+export class SharedModule { }
