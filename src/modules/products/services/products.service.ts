@@ -15,7 +15,7 @@ export class ProductsService {
   constructor(
     private dataSource: DataSource,
     private filesService: FilesService,
-  ) {}
+  ) { }
 
   async createProduct(
     createProductDto: CreateProductDto,
@@ -31,20 +31,20 @@ export class ProductsService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      if (!productBaseId) {
-        if (!productCategoryId) {
+      if ( !productBaseId ) {
+        if ( !productCategoryId ) {
           const newProductCategory = await queryRunner.manager.create(
             ProductCategoryEntity,
             { name: createProductDto.productCategoryName },
           );
-          savedProductCategory = (await queryRunner.manager.save(
+          savedProductCategory = ( await queryRunner.manager.save(
             newProductCategory,
-          )) as ProductCategoryEntity;
+          ) ) as ProductCategoryEntity;
         } else {
-          savedProductCategory = (await queryRunner.manager.findOneByOrFail(
+          savedProductCategory = ( await queryRunner.manager.findOneByOrFail(
             ProductCategoryEntity,
             { id: productCategoryId },
-          )) as ProductCategoryEntity;
+          ) ) as ProductCategoryEntity;
         }
 
         const newBaseProduct = await queryRunner.manager.create(
@@ -54,20 +54,20 @@ export class ProductsService {
             category: savedProductCategory,
           },
         );
-        savedProductBase = await queryRunner.manager.save(newBaseProduct);
+        savedProductBase = await queryRunner.manager.save( newBaseProduct );
       } else {
-        savedProductBase = (await queryRunner.manager.findOneByOrFail(
+        savedProductBase = ( await queryRunner.manager.findOneByOrFail(
           ProductBaseEntity,
           { id: productBaseId },
-        )) as ProductBaseEntity;
+        ) ) as ProductBaseEntity;
       }
 
       productImages = await Promise.all(
-        images.map((image) => {
-          return this.filesService.uploadFile(queryRunner, image, {
+        images.map( ( image ) => {
+          return this.filesService.uploadFile( queryRunner, image, {
             folder: Folder.ProductImages,
-          });
-        }),
+          } );
+        } ),
       );
 
       const newProductVariant = await queryRunner.manager.create(
@@ -89,24 +89,27 @@ export class ProductsService {
 
       await queryRunner.commitTransaction();
       return savedProductVariant;
-    } catch (err) {
-      this.filesService.deleteFilesCloudinary(productImages);
-      await queryRunner.rollbackTransaction();
-      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    } catch ( err ) {
+      try {
+        await this.filesService.deleteFilesCloudinary( productImages );
+      } finally {
+        await queryRunner.rollbackTransaction();
+        throw new HttpException( err.message, HttpStatus.BAD_REQUEST );
+      }
     } finally {
       await queryRunner.release();
     }
   }
 
   getProducts(): Promise<ProductBaseEntity[]> {
-    return this.dataSource.manager.find(ProductBaseEntity, {
+    return this.dataSource.manager.find( ProductBaseEntity, {
       relations: ['category', 'variants', 'variants.images'],
-    });
+    } );
   }
 
   getProductsForCrete(): Promise<ProductBaseEntity[]> {
-    return this.dataSource.manager.find(ProductBaseEntity, {
+    return this.dataSource.manager.find( ProductBaseEntity, {
       relations: ['category'],
-    });
+    } );
   }
 }

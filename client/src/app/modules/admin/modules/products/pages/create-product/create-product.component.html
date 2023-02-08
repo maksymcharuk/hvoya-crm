@@ -8,7 +8,8 @@
                 <label for="productCategoryId">Категорія</label>
                 <p-dropdown [options]="productsCategories" placeholder="Виберіть категорію"
                     optionLabel="name" formControlName="productCategoryId" id="productCategoryId"
-                    [showClear]="true" optionValue="id" filterBy="name" [filter]="true">
+                    [showClear]="true" optionValue="id" filterBy="name" [filter]="true"
+                    data-cy="product-category-id">
                     <ng-template let-category pTemplate="item">
                         <div>
                             <div>{{ category.name }}</div>
@@ -25,7 +26,8 @@
             <div *ngIf="newCategory" class="field col-12 md:col-6">
                 <label for="productCategoryName">Нова категорія</label>
                 <input id="productCategoryName" type="text" name="productCategoryName"
-                    formControlName="productCategoryName" placeholder="Введіть назву нової категорії" pInputText>
+                    formControlName="productCategoryName" placeholder="Введіть назву нової категорії" pInputText
+                    data-cy="product-category-name">
                 <app-form-control-error-message 
                     [formGroup]="productCreateForm"
                     controlName="productCategoryGroup.productCategoryName"
@@ -36,7 +38,7 @@
             <div class="field col-12 md:col-1">
                 <label>&nbsp;</label>
                 <button pButton pRipple type="button" [icon]="newCategory ? 'pi pi-minus' : 'pi pi-plus'" 
-                    class="p-button-success" (click)="toggleNewCategory()">
+                    class="p-button-success" (click)="toggleNewCategory()" data-cy="new-product-category-toggle">
                 </button>
             </div>
         </div>
@@ -46,7 +48,8 @@
                 <label for="productBaseId">Базовий продукт</label>
                 <p-dropdown [options]="baseProductsByCategory" placeholder="Виберіть базовий продукт"
                     optionLabel="name" formControlName="productBaseId"
-                    [showClear]="true" optionValue="id" id="productBaseId">
+                    [showClear]="true" optionValue="id" id="productBaseId"
+                    data-cy="product-base-product-id">
                     <ng-template let-baseProduct pTemplate="item">
                         <div>
                             <div>{{ baseProduct.name }}</div>
@@ -63,7 +66,8 @@
             <div *ngIf="newProductBase" class="field col-12 md:col-6">
                 <label for="productBaseName">Новий базовий продукт</label>
                 <input id="productBaseName" type="text" name="productBaseName"
-                    formControlName="productBaseName" placeholder="Введіть назву нового базового продукту" pInputText>
+                    formControlName="productBaseName" placeholder="Введіть назву нового базового продукту" pInputText
+                    data-cy="product-base-product-name">
                 <app-form-control-error-message 
                     [formGroup]="productCreateForm"
                     controlName="productBaseGroup.productBaseName"
@@ -74,7 +78,8 @@
             <div class="field col-12 md:col-1">
                 <label>&nbsp;</label>
                 <button pButton pRipple type="button" [icon]="newProductBase ? 'pi pi-minus' : 'pi pi-plus'" 
-                    [disabled]="newCategory" class="p-button-success" (click)="toggleNewProductBase()">
+                    [disabled]="newCategory" class="p-button-success" (click)="toggleNewProductBase()"
+                    data-cy="new-base-product-toggle">
                 </button>
             </div>
         </div>
@@ -84,7 +89,8 @@
                 <div class="field col-6">
                     <label for="productVariantSku">Артикул</label>
                     <input id="productVariantSku" type="text" name="productVariantSku"
-                        formControlName="productVariantSku" placeholder="Введіть актикул" pInputText> 
+                        formControlName="productVariantSku" placeholder="Введіть актикул" pInputText
+                        data-cy="product-sku"> 
                     <app-form-control-error-message 
                         [formGroup]="productCreateForm"
                         controlName="productVariantGroup.productVariantSku"
@@ -95,7 +101,8 @@
                 <div class="field col-6">
                     <label for="productVariantName">Назва</label>
                     <input id="productVariantName" type="text" name="productVariantName"
-                        formControlName="productVariantName" placeholder="Введіть назву" pInputText> 
+                        formControlName="productVariantName" placeholder="Введіть назву" pInputText
+                        data-cy="product-name-field"> 
                     <app-form-control-error-message 
                         [formGroup]="productCreateForm"
                         controlName="productVariantGroup.productVariantName"
@@ -106,7 +113,8 @@
                 <div class="field col-12">
                     <label for="productVariantDescription">Опис</label>
                     <p-editor formControlName="productVariantDescription" id="productVariantDescription"
-                        name="productVariantDescription" placeholder="Введіть опис для продукту"></p-editor>
+                        name="productVariantDescription" placeholder="Введіть опис для продукту"
+                        data-cy="product-description"></p-editor>
                     <app-form-control-error-message
                         [formGroup]="productCreateForm"
                         controlName="productVariantGroup.productVariantDescription"
@@ -118,7 +126,7 @@
                     <label for="productVariantSize">Розмір</label>
                     <p-dropdown [options]="sizes" optionLabel="name" formControlName="productVariantSize"
                         [showClear]="true" optionValue="name" id="productVariantSize"
-                        placeholder="Виберіть розмір">
+                        placeholder="Виберіть розмір" data-cy="product-size">
                         <ng-template let-size pTemplate="item">
                             <div>
                                 <div>{{ size.name }}</div>
@@ -136,7 +144,7 @@
                     <label for="productVariantColor">Колір</label>
                     <p-dropdown [options]="colors" optionLabel="name" formControlName="productVariantColor"
                         [showClear]="true" optionValue="name" id="productVariantColor"
-                        placeholder="Виберіть колір">
+                        placeholder="Виберіть колір" data-cy="product-color">
                         <ng-template let-color pTemplate="item">
                             <div>
                                 <div>{{ color.name }}</div>
@@ -154,7 +162,7 @@
                     <label for="productVariantPrice">Ціна</label>
                     <p-inputNumber inputId="productVariantPrice" id="productVariantPrice" 
                         formControlName="productVariantPrice" currency="UAH" locale="uk-UA"
-                        [allowEmpty]="false" mode="currency">
+                        [allowEmpty]="false" mode="currency" data-cy="product-prize">
                     </p-inputNumber>
                     <app-form-control-error-message
                         [formGroup]="productCreateForm"
@@ -168,7 +176,8 @@
                     <p-fileUpload #fileUpload name="images[]" [customUpload]="true" (uploadHandler)="onUpload($event)"
                         (onRemove)="onRemove($event)" class="upload-files"
                         [multiple]="true" [accept]="acceptedFiles" [invalidFileTypeMessageDetail]="invalidFileTypeMessage"  [maxFileSize]="5000000" [auto]="true" 
-                        [disabled]="productImagesDisabled" chooseLabel="Завантажити файл">
+                        [disabled]="productImagesDisabled" chooseLabel="Завантажити файл"
+                        data-cy="product-image-upload">
                         <ng-template pTemplate="content">
                             <ul *ngIf="productImagesControl?.value?.length">
                                 <li *ngFor="let file of productImagesControl?.value">{{file.name}} - {{file.size}} bytes</li>
@@ -187,6 +196,7 @@
                             type="submit"
                             pButton
                             label="Додати"
+                            data-cy="product-save-button"
                         ></button>
                     </div>
                 </div>
