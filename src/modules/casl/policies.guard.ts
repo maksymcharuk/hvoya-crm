@@ -1,10 +1,12 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import {
-  CaslAbilityFactory,
-  AppAbility,
-} from './casl-ability/casl-ability.factory';
+
 import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
+
+import {
+  AppAbility,
+  CaslAbilityFactory,
+} from './casl-ability/casl-ability.factory';
 import { CHECK_POLICIES_KEY } from './check-policies.decorator';
 import { PolicyHandler } from './policy-handler';
 

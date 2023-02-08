@@ -6,12 +6,18 @@ import { ProductVariantEntity } from './product-variant.entity';
 
 @Entity('product_base')
 export class ProductBaseEntity extends BaseEntity {
-    @Column({ unique: true })
-    name: string;
+  @Column({ unique: true })
+  name: string;
 
-    @ManyToOne(() => ProductCategoryEntity, (productCategory) => productCategory.products)
-    category: ProductCategoryEntity;
+  @ManyToOne(
+    () => ProductCategoryEntity,
+    (productCategory) => productCategory.products,
+  )
+  category: ProductCategoryEntity;
 
-    @OneToMany(() => ProductVariantEntity, (productVariant) => productVariant.baseProduct)
-    variants: ProductVariantEntity[];
+  @OneToMany(
+    () => ProductVariantEntity,
+    (productVariant) => productVariant.baseProduct,
+  )
+  variants: ProductVariantEntity[];
 }

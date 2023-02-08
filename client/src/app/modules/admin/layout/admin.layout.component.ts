@@ -1,7 +1,10 @@
+import { Subscription, filter } from 'rxjs';
+
 import { Component, OnDestroy, Renderer2, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, Subscription } from 'rxjs';
+
 import { LayoutService } from '@shared/layout/services/layout.service';
+
 import { AdminSidebarComponent } from './admin.sidebar.component';
 import { AdminTopBarComponent } from './admin.topbar.component';
 

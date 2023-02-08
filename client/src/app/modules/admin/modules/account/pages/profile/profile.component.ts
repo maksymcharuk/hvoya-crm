@@ -1,8 +1,8 @@
+import { MessageService } from 'primeng/api';
+import { finalize } from 'rxjs';
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-
-import { finalize } from 'rxjs';
-import { MessageService } from 'primeng/api';
 
 import {
   UpdateAdminProfileDTO,

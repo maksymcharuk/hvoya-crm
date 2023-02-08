@@ -1,7 +1,10 @@
-import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
+
+import { Injectable } from '@angular/core';
+
 import { JwtTokenPayload } from '@shared/interfaces/jwt-payload.interface';
 import { TokenUser } from '@shared/interfaces/token-user.interface';
+
 import { TokenService } from './token.service';
 
 @Injectable({

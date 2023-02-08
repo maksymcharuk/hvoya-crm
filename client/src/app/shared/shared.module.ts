@@ -1,19 +1,19 @@
-import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
-import { CommonModule, registerLocaleData } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import localeUk from '@angular/common/locales/uk';
-
+import { ButtonModule } from 'primeng/button';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
-import { ButtonModule } from 'primeng/button';
 
-import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
-import { AuthInterceptor } from './interceptors/auth.interceptor';
-import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.component';
-import { ProductListComponent } from './components/product-list/product-list.component';
+import { CommonModule, registerLocaleData } from '@angular/common';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import localeUk from '@angular/common/locales/uk';
+import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
 import { ProductItemComponent } from './components/product-item/product-item.component';
+import { ProductListComponent } from './components/product-list/product-list.component';
+import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.component';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 
 registerLocaleData( localeUk );

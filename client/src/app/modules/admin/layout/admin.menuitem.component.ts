@@ -1,3 +1,13 @@
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import {
   Component,
   HostBinding,
@@ -6,17 +16,10 @@ import {
   OnInit,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { MenuService } from '../../../shared/layout/services/menu.service';
+
 import { LayoutService } from '@shared/layout/services/layout.service';
+
+import { MenuService } from '../../../shared/layout/services/menu.service';
 
 @Component({
   selector: '[admin-menuitem]',

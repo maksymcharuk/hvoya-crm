@@ -1,6 +1,7 @@
+import { MenuItem } from 'primeng/api';
+
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
-import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'admin-menu',
@@ -32,8 +33,8 @@ export class AdminMenuComponent implements OnInit {
                 label: 'Create',
                 icon: 'pi pi-fw pi-plus-circle',
                 routerLink: ['products/create'],
-              }
-            ]
+              },
+            ],
           },
           {
             label: 'Order',

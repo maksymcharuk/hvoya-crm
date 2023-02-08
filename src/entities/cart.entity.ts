@@ -1,5 +1,5 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import Decimal from 'decimal.js';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 
 import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BaseEntity } from './base.entity';

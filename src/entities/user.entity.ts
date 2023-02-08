@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
-import { BaseEntity } from './base.entity';
 import { Role } from '../enums/role.enum';
+import { BaseEntity } from './base.entity';
 import { CartEntity } from './cart.entity';
 
 @Entity('user')

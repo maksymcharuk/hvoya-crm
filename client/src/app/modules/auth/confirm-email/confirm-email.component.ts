@@ -1,21 +1,24 @@
+import { delay } from 'rxjs/operators';
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { AuthService } from '@shared/services/auth.service';
-import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-confirm-email',
   templateUrl: './confirm-email.component.html',
-  styleUrls: ['./confirm-email.component.scss']
+  styleUrls: ['./confirm-email.component.scss'],
 })
 export class ConfirmEmailComponent implements OnInit {
-
   dots: string = '';
-  dotsInterval: ReturnType<typeof setInterval> = setInterval(() => { }, 0);
+  dotsInterval: ReturnType<typeof setInterval> = setInterval(() => {}, 0);
 
-  constructor(private authService: AuthService,
+  constructor(
+    private authService: AuthService,
     private activatedRoute: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.dotsInterval = setInterval(() => {
@@ -29,7 +32,8 @@ export class ConfirmEmailComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe((params) => {
       const confirmEmailToken = params['token'];
 
-      this.authService.confirmEmail({ confirmEmailToken })
+      this.authService
+        .confirmEmail({ confirmEmailToken })
         .pipe(delay(3000))
         .subscribe(() => {
           this.router.navigateByUrl('auth/sign-in');
@@ -40,5 +44,4 @@ export class ConfirmEmailComponent implements OnInit {
   ngOnDestroy(): void {
     clearInterval(this.dotsInterval);
   }
-
 }

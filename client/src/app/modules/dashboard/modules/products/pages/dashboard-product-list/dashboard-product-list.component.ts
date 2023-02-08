@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { combineLatest, finalize, switchMap, take } from 'rxjs';
+
+import { Component } from '@angular/core';
 
 import { ProductVariant } from '@shared/interfaces/products';
 import { ProductsService } from '@shared/services/products.service';

@@ -1,3 +1,5 @@
+import { DataSource } from 'typeorm';
+
 import {
   Body,
   Controller,
@@ -8,15 +10,16 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { Action } from '@enums/action.enum';
-import { UserEntity } from '@entities/user.entity';
+
 import { CreateUserDto } from '@dtos/create-user.dto';
+import { UserEntity } from '@entities/user.entity';
+import { Action } from '@enums/action.enum';
+
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';
 import { UsersService } from './services/users.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, PoliciesGuard)

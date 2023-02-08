@@ -1,5 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateProductDto } from '@dtos/create-product.dto';
 import { FileEntity } from '@entities/file.entity';

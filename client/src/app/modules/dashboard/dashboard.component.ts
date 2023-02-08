@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+
 import { AccountService } from '@shared/services/account.service';
+
 import { CartService } from './modules/cart/services/cart.service';
 
 @Component({

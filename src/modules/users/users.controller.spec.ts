@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { usersServiceMock } from '../../../test/mocks/services/users.service.mock';
 import { caslAbilityFactoryMock } from '../../../test/mocks/factories/casl-ability.factory';
+import { usersServiceMock } from '../../../test/mocks/services/users.service.mock';
 import { CaslAbilityFactory } from '../casl/casl-ability/casl-ability.factory';
 import { UsersService } from './services/users.service';
 import { UsersController } from './users.controller';
