@@ -1,215 +1,333 @@
 <div class="grid">
-    <div class="col-8">
-      <div class="card">
-        <form [formGroup]="productCreateForm"
-        (ngSubmit)="onSubmit(productCreateForm.value)">
-        <div class="p-fluid p-formgrid grid" formGroupName="productCategoryGroup">
-            <div *ngIf="!newCategory" class="field col-12 md:col-6">
-                <label for="productCategoryId">Категорія</label>
-                <p-dropdown [options]="productsCategories" placeholder="Виберіть категорію"
-                    optionLabel="name" formControlName="productCategoryId" id="productCategoryId"
-                    [showClear]="true" optionValue="id" filterBy="name" [filter]="true"
-                    data-cy="product-category-id">
-                    <ng-template let-category pTemplate="item">
-                        <div>
-                            <div>{{ category.name }}</div>
-                        </div>
-                    </ng-template>
-                </p-dropdown>
-                <app-form-control-error-message 
-                    [formGroup]="productCreateForm"
-                    controlName="productCategoryGroup.productCategoryId"
-                    errorType="required"
-                    errorMessage="Потрібно вибрати категорію">
-                </app-form-control-error-message>
-            </div>
-            <div *ngIf="newCategory" class="field col-12 md:col-6">
-                <label for="productCategoryName">Нова категорія</label>
-                <input id="productCategoryName" type="text" name="productCategoryName"
-                    formControlName="productCategoryName" placeholder="Введіть назву нової категорії" pInputText
-                    data-cy="product-category-name">
-                <app-form-control-error-message 
-                    [formGroup]="productCreateForm"
-                    controlName="productCategoryGroup.productCategoryName"
-                    errorType="required"
-                    errorMessage="Потрібно ввести категорію">
-                </app-form-control-error-message>
-            </div>
-            <div class="field col-12 md:col-1">
-                <label>&nbsp;</label>
-                <button pButton pRipple type="button" [icon]="newCategory ? 'pi pi-minus' : 'pi pi-plus'" 
-                    class="p-button-success" (click)="toggleNewCategory()" data-cy="new-product-category-toggle">
-                </button>
-            </div>
+  <div class="col-8">
+    <div class="card">
+      <form
+        [formGroup]="productCreateForm"
+        (ngSubmit)="onSubmit(productCreateForm.value)"
+      >
+        <div
+          class="p-fluid p-formgrid grid"
+          formGroupName="productCategoryGroup"
+        >
+          <div *ngIf="!newCategory" class="field col-12 md:col-6">
+            <label for="productCategoryId">Категорія</label>
+            <p-dropdown
+              [options]="productsCategories"
+              placeholder="Виберіть категорію"
+              optionLabel="name"
+              formControlName="productCategoryId"
+              id="productCategoryId"
+              [showClear]="true"
+              optionValue="id"
+              filterBy="name"
+              [filter]="true"
+              data-cy="product-category-id"
+            >
+              <ng-template let-category pTemplate="item">
+                <div>
+                  <div>{{ category.name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productCategoryGroup.productCategoryId"
+              errorType="required"
+              errorMessage="Потрібно вибрати категорію"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div *ngIf="newCategory" class="field col-12 md:col-6">
+            <label for="productCategoryName">Нова категорія</label>
+            <input
+              id="productCategoryName"
+              type="text"
+              name="productCategoryName"
+              formControlName="productCategoryName"
+              placeholder="Введіть назву нової категорії"
+              pInputText
+              data-cy="product-category-name"
+            />
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productCategoryGroup.productCategoryName"
+              errorType="required"
+              errorMessage="Потрібно ввести категорію"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-12 md:col-1">
+            <label>&nbsp;</label>
+            <button
+              pButton
+              pRipple
+              type="button"
+              [icon]="newCategory ? 'pi pi-minus' : 'pi pi-plus'"
+              class="p-button-success"
+              (click)="toggleNewCategory()"
+              data-cy="new-product-category-toggle"
+            ></button>
+          </div>
         </div>
-        <hr>
+        <hr />
         <div class="p-fluid p-formgrid grid" formGroupName="productBaseGroup">
-            <div *ngIf="!newProductBase" class="field col-12 md:col-6">
-                <label for="productBaseId">Базовий продукт</label>
-                <p-dropdown [options]="baseProductsByCategory" placeholder="Виберіть базовий продукт"
-                    optionLabel="name" formControlName="productBaseId"
-                    [showClear]="true" optionValue="id" id="productBaseId"
-                    data-cy="product-base-product-id">
-                    <ng-template let-baseProduct pTemplate="item">
-                        <div>
-                            <div>{{ baseProduct.name }}</div>
-                        </div>
-                    </ng-template>
-                </p-dropdown>
-                <app-form-control-error-message 
-                    [formGroup]="productCreateForm"
-                    controlName="productBaseGroup.productBaseId"
-                    errorType="required"
-                    errorMessage="Потрібно вибрати базовий продукт">
-                </app-form-control-error-message>
-            </div>
-            <div *ngIf="newProductBase" class="field col-12 md:col-6">
-                <label for="productBaseName">Новий базовий продукт</label>
-                <input id="productBaseName" type="text" name="productBaseName"
-                    formControlName="productBaseName" placeholder="Введіть назву нового базового продукту" pInputText
-                    data-cy="product-base-product-name">
-                <app-form-control-error-message 
-                    [formGroup]="productCreateForm"
-                    controlName="productBaseGroup.productBaseName"
-                    errorType="required"
-                    errorMessage="Потрібно ввести категорію">
-                </app-form-control-error-message>
-            </div>
-            <div class="field col-12 md:col-1">
-                <label>&nbsp;</label>
-                <button pButton pRipple type="button" [icon]="newProductBase ? 'pi pi-minus' : 'pi pi-plus'" 
-                    [disabled]="newCategory" class="p-button-success" (click)="toggleNewProductBase()"
-                    data-cy="new-base-product-toggle">
-                </button>
-            </div>
+          <div *ngIf="!newProductBase" class="field col-12 md:col-6">
+            <label for="productBaseId">Базовий продукт</label>
+            <p-dropdown
+              [options]="baseProductsByCategory"
+              placeholder="Виберіть базовий продукт"
+              optionLabel="name"
+              formControlName="productBaseId"
+              [showClear]="true"
+              optionValue="id"
+              id="productBaseId"
+              data-cy="product-base-product-id"
+            >
+              <ng-template let-baseProduct pTemplate="item">
+                <div>
+                  <div>{{ baseProduct.name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productBaseGroup.productBaseId"
+              errorType="required"
+              errorMessage="Потрібно вибрати базовий продукт"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div *ngIf="newProductBase" class="field col-12 md:col-6">
+            <label for="productBaseName">Новий базовий продукт</label>
+            <input
+              id="productBaseName"
+              type="text"
+              name="productBaseName"
+              formControlName="productBaseName"
+              placeholder="Введіть назву нового базового продукту"
+              pInputText
+              data-cy="product-base-product-name"
+            />
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productBaseGroup.productBaseName"
+              errorType="required"
+              errorMessage="Потрібно ввести категорію"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-12 md:col-1">
+            <label>&nbsp;</label>
+            <button
+              pButton
+              pRipple
+              type="button"
+              [icon]="newProductBase ? 'pi pi-minus' : 'pi pi-plus'"
+              [disabled]="newCategory"
+              class="p-button-success"
+              (click)="toggleNewProductBase()"
+              data-cy="new-base-product-toggle"
+            ></button>
+          </div>
         </div>
-        <hr>
-    
-            <div class="p-fluid p-formgrid grid" formGroupName="productVariantGroup">
-                <div class="field col-6">
-                    <label for="productVariantSku">Артикул</label>
-                    <input id="productVariantSku" type="text" name="productVariantSku"
-                        formControlName="productVariantSku" placeholder="Введіть актикул" pInputText
-                        data-cy="product-sku"> 
-                    <app-form-control-error-message 
-                        [formGroup]="productCreateForm"
-                        controlName="productVariantGroup.productVariantSku"
-                        errorType="required"
-                        errorMessage="Потрібно ввести артикул">
-                    </app-form-control-error-message>
+        <hr />
+
+        <div
+          class="p-fluid p-formgrid grid"
+          formGroupName="productVariantGroup"
+        >
+          <div class="field col-6">
+            <label for="productVariantSku">Артикул</label>
+            <input
+              id="productVariantSku"
+              type="text"
+              name="productVariantSku"
+              formControlName="productVariantSku"
+              placeholder="Введіть актикул"
+              pInputText
+              data-cy="product-sku"
+            />
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productVariantGroup.productVariantSku"
+              errorType="required"
+              errorMessage="Потрібно ввести артикул"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-6">
+            <label for="productVariantName">Назва</label>
+            <input
+              id="productVariantName"
+              type="text"
+              name="productVariantName"
+              formControlName="productVariantName"
+              placeholder="Введіть назву"
+              pInputText
+              data-cy="product-name-field"
+            />
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productVariantGroup.productVariantName"
+              errorType="required"
+              errorMessage="Потрібно ввести назву"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-12">
+            <label for="productVariantDescription">Опис</label>
+            <p-editor
+              formControlName="productVariantDescription"
+              id="productVariantDescription"
+              name="productVariantDescription"
+              placeholder="Введіть опис для продукту"
+              data-cy="product-description"
+            ></p-editor>
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productVariantGroup.productVariantDescription"
+              errorType="required"
+              errorMessage="Потрібно ввести опис"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-4">
+            <label for="productVariantSize">Розмір</label>
+            <p-dropdown
+              [options]="sizes"
+              optionLabel="name"
+              formControlName="productVariantSize"
+              [showClear]="true"
+              optionValue="name"
+              id="productVariantSize"
+              placeholder="Виберіть розмір"
+              data-cy="product-size"
+            >
+              <ng-template let-size pTemplate="item">
+                <div>
+                  <div>{{ size.name }}</div>
                 </div>
-                <div class="field col-6">
-                    <label for="productVariantName">Назва</label>
-                    <input id="productVariantName" type="text" name="productVariantName"
-                        formControlName="productVariantName" placeholder="Введіть назву" pInputText
-                        data-cy="product-name-field"> 
-                    <app-form-control-error-message 
-                        [formGroup]="productCreateForm"
-                        controlName="productVariantGroup.productVariantName"
-                        errorType="required"
-                        errorMessage="Потрібно ввести назву">
-                    </app-form-control-error-message>
+              </ng-template>
+            </p-dropdown>
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productVariantGroup.productVariantSize"
+              errorType="required"
+              errorMessage="Потрібно вибрати розмір"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-4">
+            <label for="productVariantColor">Колір</label>
+            <p-dropdown
+              [options]="colors"
+              optionLabel="name"
+              formControlName="productVariantColor"
+              [showClear]="true"
+              optionValue="name"
+              id="productVariantColor"
+              placeholder="Виберіть колір"
+              data-cy="product-color"
+            >
+              <ng-template let-color pTemplate="item">
+                <div>
+                  <div>{{ color.name }}</div>
                 </div>
-                <div class="field col-12">
-                    <label for="productVariantDescription">Опис</label>
-                    <p-editor formControlName="productVariantDescription" id="productVariantDescription"
-                        name="productVariantDescription" placeholder="Введіть опис для продукту"
-                        data-cy="product-description"></p-editor>
-                    <app-form-control-error-message
-                        [formGroup]="productCreateForm"
-                        controlName="productVariantGroup.productVariantDescription"
-                        errorType="required"
-                        errorMessage="Потрібно ввести опис">
-                    </app-form-control-error-message>
-                </div>
-                <div class="field col-4">
-                    <label for="productVariantSize">Розмір</label>
-                    <p-dropdown [options]="sizes" optionLabel="name" formControlName="productVariantSize"
-                        [showClear]="true" optionValue="name" id="productVariantSize"
-                        placeholder="Виберіть розмір" data-cy="product-size">
-                        <ng-template let-size pTemplate="item">
-                            <div>
-                                <div>{{ size.name }}</div>
-                            </div>
-                        </ng-template>
-                    </p-dropdown>
-                    <app-form-control-error-message
-                        [formGroup]="productCreateForm"
-                        controlName="productVariantGroup.productVariantSize"
-                        errorType="required"
-                        errorMessage="Потрібно вибрати розмір">
-                    </app-form-control-error-message>
-                </div>
-                <div class="field col-4">
-                    <label for="productVariantColor">Колір</label>
-                    <p-dropdown [options]="colors" optionLabel="name" formControlName="productVariantColor"
-                        [showClear]="true" optionValue="name" id="productVariantColor"
-                        placeholder="Виберіть колір" data-cy="product-color">
-                        <ng-template let-color pTemplate="item">
-                            <div>
-                                <div>{{ color.name }}</div>
-                            </div>
-                        </ng-template>
-                    </p-dropdown>
-                    <app-form-control-error-message
-                        [formGroup]="productCreateForm"
-                        controlName="productVariantGroup.productVariantColor"
-                        errorType="required"
-                        errorMessage="Потрібно вибрати колір">
-                    </app-form-control-error-message>
-                </div>
-                <div class="field col-4">
-                    <label for="productVariantPrice">Ціна</label>
-                    <p-inputNumber inputId="productVariantPrice" id="productVariantPrice" 
-                        formControlName="productVariantPrice" currency="UAH" locale="uk-UA"
-                        [allowEmpty]="false" mode="currency" data-cy="product-prize">
-                    </p-inputNumber>
-                    <app-form-control-error-message
-                        [formGroup]="productCreateForm"
-                        controlName="productVariantGroup.productVariantPrice"
-                        errorType="required"
-                        errorMessage="Потрібно ввести ціну">
-                    </app-form-control-error-message>
-                </div>
-                <div class="field col-12">
-                    <label for="images">Завантаження файлів</label>
-                    <p-fileUpload #fileUpload name="images[]" [customUpload]="true" (uploadHandler)="onUpload($event)"
-                        (onRemove)="onRemove($event)" class="upload-files"
-                        [multiple]="true" [accept]="acceptedFiles" [invalidFileTypeMessageDetail]="invalidFileTypeMessage"  [maxFileSize]="5000000" [auto]="true" 
-                        [disabled]="productImagesDisabled" chooseLabel="Завантажити файл"
-                        data-cy="product-image-upload">
-                        <ng-template pTemplate="content">
-                            <ul *ngIf="productImagesControl?.value?.length">
-                                <li *ngFor="let file of productImagesControl?.value">{{file.name}} - {{file.size}} bytes</li>
-                            </ul>
-                        </ng-template>
-                        <ng-template pTemplate="content">
-                            <ul *ngIf="!productImagesControl?.value?.length" class="upload-files-no-files">
-                                <span class="upload-files-no-files-text">Перетягніть файл для завантаження<i class="pi pi-upload" style="font-size: 1.5rem"></i></span>
-                            </ul>
-                        </ng-template>
-                    </p-fileUpload>
-                </div>
-                <div class="grid justify-content-end col-12">
-                    <div class="field col-3">
-                        <button
-                            type="submit"
-                            pButton
-                            label="Додати"
-                            data-cy="product-save-button"
-                        ></button>
-                    </div>
-                </div>
+              </ng-template>
+            </p-dropdown>
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productVariantGroup.productVariantColor"
+              errorType="required"
+              errorMessage="Потрібно вибрати колір"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-4">
+            <label for="productVariantPrice">Ціна</label>
+            <p-inputNumber
+              inputId="productVariantPrice"
+              id="productVariantPrice"
+              formControlName="productVariantPrice"
+              currency="UAH"
+              locale="uk-UA"
+              [allowEmpty]="false"
+              mode="currency"
+              data-cy="product-prize"
+            >
+            </p-inputNumber>
+            <app-form-control-error-message
+              [formGroup]="productCreateForm"
+              controlName="productVariantGroup.productVariantPrice"
+              errorType="required"
+              errorMessage="Потрібно ввести ціну"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-12">
+            <label for="images">Завантаження файлів</label>
+            <p-fileUpload
+              #fileUpload
+              name="images[]"
+              [customUpload]="true"
+              (uploadHandler)="onUpload($event)"
+              (onRemove)="onRemove($event)"
+              class="upload-files"
+              [multiple]="true"
+              [accept]="acceptedFiles"
+              [invalidFileTypeMessageDetail]="invalidFileTypeMessage"
+              [maxFileSize]="5000000"
+              [auto]="true"
+              [disabled]="productImagesDisabled"
+              chooseLabel="Завантажити файл"
+              data-cy="product-image-upload"
+            >
+              <ng-template pTemplate="content">
+                <ul *ngIf="productImagesControl?.value?.length">
+                  <li *ngFor="let file of productImagesControl?.value">
+                    {{ file.name }} - {{ file.size }} bytes
+                  </li>
+                </ul>
+              </ng-template>
+              <ng-template pTemplate="content">
+                <ul
+                  *ngIf="!productImagesControl?.value?.length"
+                  class="upload-files-no-files"
+                >
+                  <span class="upload-files-no-files-text"
+                    >Перетягніть файл для завантаження<i
+                      class="pi pi-upload"
+                      style="font-size: 1.5rem"
+                    ></i
+                  ></span>
+                </ul>
+              </ng-template>
+            </p-fileUpload>
+          </div>
+          <div class="grid justify-content-end col-12">
+            <div class="field col-3">
+              <button
+                type="submit"
+                pButton
+                label="Додати"
+                data-cy="product-save-button"
+              ></button>
             </div>
-        </form>
-      </div>
-    </div>
-    <div class="col-4">
-      <div class="card product-preview">
-        <div class="product-preview-header">
-          <div>Попередній перегляд</div>
+          </div>
         </div>
-        <app-product-item [product]="product$ | async" [hideAddToCartButton]="true" [previewImages]="previewImagesList"></app-product-item>
-      </div>
+      </form>
     </div>
+  </div>
+  <div class="col-4">
+    <div class="card product-preview">
+      <div class="product-preview-header">
+        <div>Попередній перегляд</div>
+      </div>
+      <app-product-item
+        [product]="product$ | async"
+        [hideAddToCartButton]="true"
+        [previewImages]="previewImagesList"
+      ></app-product-item>
+    </div>
+  </div>
 </div>

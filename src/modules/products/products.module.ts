@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
+import { ProductPropertiesEntity } from '@entities/product-properties.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 
 import { CaslModule } from '../casl/casl.module';
@@ -17,6 +18,7 @@ import { ProductsService } from './services/products.service';
       ProductCategoryEntity,
       ProductBaseEntity,
       ProductVariantEntity,
+      ProductPropertiesEntity,
     ]),
     CaslModule,
     CloudinaryModule,

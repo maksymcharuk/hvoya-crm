@@ -1,15 +1,20 @@
 import { File } from './file.interface';
 
-export interface ProductVariant {
+export interface ProductProperties {
   id: number;
-  sku: string;
   name: string;
   description: string;
   price: number;
   size: string;
   color: string;
-  availableItemCount: number;
   images: File[];
+}
+
+export interface ProductVariant {
+  id: number;
+  sku: string;
+  properties: ProductProperties;
+  availableItemCount: number;
 }
 
 export interface ProductCategory {

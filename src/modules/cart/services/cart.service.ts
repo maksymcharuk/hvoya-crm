@@ -18,7 +18,7 @@ export class CartService {
     try {
       let cart = await manager.findOne(CartEntity, {
         where: { owner: { id: userId } },
-        relations: ['items.product.images'],
+        relations: ['items.product'],
         order: {
           items: {
             product: {
@@ -113,7 +113,8 @@ export class CartService {
 
   private calculateTotal(cart: CartEntity): Decimal {
     return cart.items.reduce(
-      (total, item) => total.add(item.product.price.times(item.quantity)),
+      (total, item) =>
+        total.add(item.product.properties.price.times(item.quantity)),
       new Decimal(0),
     );
   }

@@ -4,6 +4,7 @@ import { Seeder } from 'typeorm-extension';
 import { FileEntity } from '../../../entities/file.entity';
 import { ProductBaseEntity } from '../../../entities/product-base.entity';
 import { ProductCategoryEntity } from '../../../entities/product-category.entity';
+import { ProductPropertiesEntity } from '../../../entities/product-properties.entity';
 import { ProductVariantEntity } from '../../../entities/product-variant.entity';
 
 export default class ProductSeeder implements Seeder {
@@ -14,6 +15,9 @@ export default class ProductSeeder implements Seeder {
     const productBaseRepository = dataSource.getRepository(ProductBaseEntity);
     const productVariantRepository =
       dataSource.getRepository(ProductVariantEntity);
+    const productPropertiesRepository = dataSource.getRepository(
+      ProductPropertiesEntity,
+    );
     const fileRepository = dataSource.getRepository(FileEntity);
     const productCategory = await productCategoryRepository.save([
       {
@@ -41,14 +45,13 @@ export default class ProductSeeder implements Seeder {
         category: productCategory[1],
       },
     ]);
-    await productVariantRepository.save([
+    const productProperties = await productPropertiesRepository.save([
       {
-        sku: '102/55/G',
         name: 'Вінок різдвяний литий Premium 55 см зелений',
         description: `Які ж новорічні свята без різдвяного віночка?
-          Такий віночок можна почепити на двері вдома, або прикрасити ним кімнату, або створити новорічний настрій в офісі.
-          Святковий вінок може стати чудовим новорічним подарунком.
-        `,
+        Такий віночок можна почепити на двері вдома, або прикрасити ним кімнату, або створити новорічний настрій в офісі.
+        Святковий вінок може стати чудовим новорічним подарунком.
+      `,
         size: '55 см',
         color: '#6DA35A',
         price: 455,
@@ -59,15 +62,13 @@ export default class ProductSeeder implements Seeder {
             url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675479850/vinok-rizdvyanii-litii-premium-55-sm-thumb_iazool.jpg',
           }),
         ],
-        baseProduct: productBase[0],
       },
       {
-        sku: '102/55/B',
         name: 'Вінок різдвяний литий Premium 55 см голубий',
         description: `Які ж новорічні свята без різдвяного віночка?
-          Такий віночок можна почепити на двері вдома, або прикрасити ним кімнату, або створити новорічний настрій в офісі.
-          Святковий вінок може стати чудовим новорічним подарунком.
-        `,
+        Такий віночок можна почепити на двері вдома, або прикрасити ним кімнату, або створити новорічний настрій в офісі.
+        Святковий вінок може стати чудовим новорічним подарунком.
+      `,
         size: '55 см',
         color: '#87e3ef',
         price: 455,
@@ -78,10 +79,8 @@ export default class ProductSeeder implements Seeder {
             url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675479851/vinochok-novorichnyj-lytyj-lux-52-sm-thumb_zbcur0.jpg',
           }),
         ],
-        baseProduct: productBase[0],
       },
       {
-        sku: '214/60/G',
         name: 'Гілка новорічнаTraditional 60 см зелена',
         description:
           'Традиційна гілка ялинки. Композиція з хвойних гілок може замінити новорічне дерево.',
@@ -95,10 +94,8 @@ export default class ProductSeeder implements Seeder {
             url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675479850/gilka-novorichnatraditional-60-sm-zelena-thumb_itfwrc.jpg',
           }),
         ],
-        baseProduct: productBase[1],
       },
       {
-        sku: '214/60/B',
         name: 'Гілка новорічнаTraditional 60 см блакитна',
         description:
           'Традиційна гілка ялинки. Композиція з хвойних гілок може замінити новорічне дерево.',
@@ -112,15 +109,13 @@ export default class ProductSeeder implements Seeder {
             url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675479851/gilka-novorichnatraditional-60-sm-blakitna-thumb_zyycdl.jpg',
           }),
         ],
-        baseProduct: productBase[1],
       },
       {
-        sku: '200/220/G',
         name: 'Ялинка лита Premium Mix 220 см зелена',
         description: `Одна з найпопулярніших новорічних ялинок усіх часів. Ялинка зібрана гілочок типу Premium.
-          Дерево створене таким чином, щоб імітувати точний вигляд справжньої ялинки — від кольору до виражених 
-          напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
-          Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
+        Дерево створене таким чином, щоб імітувати точний вигляд справжньої ялинки — від кольору до виражених 
+        напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
+        Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
         size: '220 см',
         color: '#6DA35A',
         price: 2843,
@@ -131,15 +126,13 @@ export default class ProductSeeder implements Seeder {
             url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675479851/yalynka-lyta-classic-2-2-thumb_w94vel.jpg',
           }),
         ],
-        baseProduct: productBase[2],
       },
       {
-        sku: '200/180/W',
         name: 'Ялинка лита Premium Mix 180 см біла',
         description: `Одна з найпопулярніших новорічних ялинок усіх часів. Ялинка зібрана гілочок типу Premium.
-          Дерево створене таким чином, щоб імітувати точний вигляд справжньої ялинки — від кольору до виражених 
-          напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
-          Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
+        Дерево створене таким чином, щоб імітувати точний вигляд справжньої ялинки — від кольору до виражених 
+        напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
+        Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
         size: '180 см',
         color: '#EDEEF4',
         price: 2843,
@@ -150,14 +143,12 @@ export default class ProductSeeder implements Seeder {
             url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675479851/%D0%A5%D0%B2%D0%BE%D1%8F0150_2_2_Lyta-thumb_cxg28v.jpg',
           }),
         ],
-        baseProduct: productBase[2],
       },
       {
-        sku: '100/70/B',
         name: 'Ялинка лита Premium 70 см в мішковині блакитна',
         description: `Елегантна подарункова ялинка, настільний варіант новорічного декору.
-          Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
-          Така ялинка підійде як в офіс так і в дім.`,
+        Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
+        Така ялинка підійде як в офіс так і в дім.`,
         size: '70 см',
         color: '#87e3ef',
         price: 614,
@@ -168,14 +159,12 @@ export default class ProductSeeder implements Seeder {
             url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675479850/yalinka-lita-premium-70-sm-v-mishkovini-thumb_iikl8p.jpg',
           }),
         ],
-        baseProduct: productBase[3],
       },
       {
-        sku: '100/90/G',
         name: 'Ялинка лита Premium 90 см в мішковині блакитна',
         description: `Елегантна подарункова ялинка, настільний варіант новорічного декору.
-          Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
-          Така ялинка підійде як в офіс так і в дім.`,
+        Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
+        Така ялинка підійде як в офіс так і в дім.`,
         size: '90 см',
         color: '#6DA35A',
         price: 864,
@@ -186,8 +175,60 @@ export default class ProductSeeder implements Seeder {
             url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675482162/blue-cast-christmas-tree-90-cm-in-burlap-thumb_vgxo9u.jpg',
           }),
         ],
+      },
+    ]);
+    const productVariants = await productVariantRepository.save([
+      {
+        sku: '102/55/G',
+        properties: productProperties[0],
+        baseProduct: productBase[0],
+      },
+      {
+        sku: '102/55/B',
+        properties: productProperties[1],
+        baseProduct: productBase[0],
+      },
+      {
+        sku: '214/60/G',
+
+        properties: productProperties[2],
+        baseProduct: productBase[1],
+      },
+      {
+        sku: '214/60/B',
+        properties: productProperties[3],
+        baseProduct: productBase[1],
+      },
+      {
+        sku: '200/220/G',
+        properties: productProperties[4],
+        baseProduct: productBase[2],
+      },
+      {
+        sku: '200/180/W',
+        properties: productProperties[5],
+        baseProduct: productBase[2],
+      },
+      {
+        sku: '100/70/B',
+        properties: productProperties[6],
         baseProduct: productBase[3],
       },
+      {
+        sku: '100/90/G',
+        properties: productProperties[7],
+        baseProduct: productBase[3],
+      },
+    ]);
+    await productPropertiesRepository.save([
+      { ...productProperties[0], product: productVariants[0] },
+      { ...productProperties[1], product: productVariants[1] },
+      { ...productProperties[2], product: productVariants[2] },
+      { ...productProperties[3], product: productVariants[3] },
+      { ...productProperties[4], product: productVariants[4] },
+      { ...productProperties[5], product: productVariants[5] },
+      { ...productProperties[6], product: productVariants[6] },
+      { ...productProperties[7], product: productVariants[7] },
     ]);
   }
 }
