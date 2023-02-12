@@ -49,7 +49,7 @@ export class DashboardProductListComponent {
       .subscribe(() => {
         this.messageService.add({
           severity: 'success',
-          detail: `${productVariant.name} added to cart`,
+          detail: `${productVariant.properties.name} added to cart`,
         });
       });
   }

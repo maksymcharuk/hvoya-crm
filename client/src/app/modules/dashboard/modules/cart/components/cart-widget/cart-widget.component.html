@@ -12,8 +12,8 @@
                 <td class="py-3">
                   <img
                     [src]="
-                      cartItem.product.images
-                        ? cartItem.product.images[0]?.url
+                      cartItem.product.properties.images
+                        ? cartItem.product.properties.images[0]?.url
                         : ''
                     "
                     class="w-4rem h-4rem flex-shrink-0 shadow-1"
@@ -21,7 +21,7 @@
                 </td>
                 <td class="pl-5 mr-8">
                   <span class="text-900 font-medium">
-                    {{ cartItem.product.name }}
+                    {{ cartItem.product.properties.name }}
                   </span>
                   <div class="text-600 mt-2">{{ cartItem.product.sku }}</div>
                 </td>
@@ -29,7 +29,10 @@
                   Qty: {{ cartItem.quantity }}
                 </td>
                 <td class="pl-5 text-900 font-medium">
-                  {{ cartItem.product.price * cartItem.quantity | currency }}
+                  {{
+                    cartItem.product.properties.price * cartItem.quantity
+                      | currency
+                  }}
                 </td>
               </tr>
             </ng-container>

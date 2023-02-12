@@ -16,7 +16,7 @@
     </div>
   </div>
   <span class="text-900 font-medium text-xl" data-cy="product-name">{{
-    selectedVariant?.name
+    selectedVariant?.properties?.name
   }}</span>
   <div class="my-2">
     <p-selectButton
@@ -30,10 +30,10 @@
   </div>
   <div class="my-4">
     <span
-      *ngIf="selectedVariant?.price"
+      *ngIf="selectedVariant?.properties?.price"
       class="font-bold text-900 ml-2"
       data-cy="product-price"
-      >{{ selectedVariant?.price | currency }}</span
+      >{{ selectedVariant?.properties?.price | currency }}</span
     >
   </div>
   <button

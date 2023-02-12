@@ -7,7 +7,11 @@ import {
   Output,
 } from '@angular/core';
 
-import { ProductBase, ProductVariant } from '@shared/interfaces/products';
+import {
+  ProductBase,
+  ProductProperties,
+  ProductVariant,
+} from '@shared/interfaces/products';
 
 @Component({
   selector: 'app-product-item',
@@ -39,7 +43,7 @@ export class ProductItemComponent implements OnInit, OnChanges {
       code: size,
     }));
     this.selectedSize = this.sizes[0]?.code || '';
-    this.selectedImage = this.selectedVariant?.images[0]?.url || '';
+    this.selectedImage = this.selectedVariant?.properties?.images[0]?.url || '';
 
     this.updateColors();
   }
@@ -76,19 +80,23 @@ export class ProductItemComponent implements OnInit, OnChanges {
 
     this.selectedVariant = this.variants.find(
       (variant) =>
-        variant.size === selectedSize && variant.color === selectedColor,
+        variant.properties.size === selectedSize &&
+        variant.properties.color === selectedColor,
     );
-    this.selectedImage = this.selectedVariant?.images[0]?.url || '';
+    this.selectedImage = this.selectedVariant?.properties?.images[0]?.url || '';
   }
 
   private updateColors(): void {
     this.colors = this.variants
-      .filter((variant) => variant.size === this.selectedSize)
-      .map((color) => ({ code: color.color }));
+      .filter((variant) => variant.properties.size === this.selectedSize)
+      .map((color) => ({ code: color.properties.color }));
     this.selectedColor = this.colors[0]?.code || '';
   }
 
-  private getUniqueArray(arr: any[], key: string): any[] {
-    return Array.from(new Set(arr.map((item) => item[key])));
+  private getUniqueArray(
+    arr: ProductVariant[],
+    key: keyof ProductProperties,
+  ): any[] {
+    return Array.from(new Set(arr.map((item) => item.properties[key])));
   }
 }

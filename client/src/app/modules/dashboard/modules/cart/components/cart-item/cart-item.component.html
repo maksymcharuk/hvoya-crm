@@ -2,7 +2,11 @@
   class="flex flex-column md:flex-row py-2 border-top-1 border-bottom-1 surface-border md:align-items-center"
 >
   <img
-    [src]="cartItem.product.images ? cartItem.product.images[0]?.url : ''"
+    [src]="
+      cartItem.product.properties.images
+        ? cartItem.product.properties.images[0]?.url
+        : ''
+    "
     class="w-12rem flex-shrink-0 mx-auto md:mx-0"
   />
   <div class="flex-auto py-5 md:pl-5">
@@ -11,7 +15,7 @@
     >
       <div class="w-full sm:w-6 flex flex-column">
         <span class="text-900 text-xl font-medium mb-3">
-          {{ cartItem.product.name }}
+          {{ cartItem.product.properties.name }}
         </span>
         <span class="text-600">{{ cartItem.product.sku }}</span>
       </div>
@@ -31,7 +35,9 @@
         <div class="flex flex-column sm:align-items-end">
           <span class="text-900 text-2xl font-medium mb-2 sm:mb-3">
             <ng-container *ngIf="(updating$ | async) === 0; else priceSkeleton">
-              {{ cartItem.product.price * cartItem.quantity | currency }}
+              {{
+                cartItem.product.properties.price * cartItem.quantity | currency
+              }}
             </ng-container>
             <ng-template #priceSkeleton>
               <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
