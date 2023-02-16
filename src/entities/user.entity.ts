@@ -1,9 +1,10 @@
 import * as bcrypt from 'bcrypt';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 
 import { Role } from '../enums/role.enum';
 import { BaseEntity } from './base.entity';
 import { CartEntity } from './cart.entity';
+import { OrderEntity } from './order.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -52,6 +53,9 @@ export class UserEntity extends BaseEntity {
   @OneToOne(() => CartEntity, (cart) => cart.owner)
   @JoinColumn()
   cart: CartEntity;
+
+  @OneToMany(() => OrderEntity, (order) => order.customer)
+  orders: OrderEntity[];
 
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);
