@@ -1,6 +1,14 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+
+import {
+  CanActivate,
+  ExecutionContext,
+  HttpException,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
+import { UserEntity } from '@entities/user.entity';
 import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 
 import {
@@ -15,6 +23,7 @@ export class PoliciesGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private caslAbilityFactory: CaslAbilityFactory,
+    private dataSource: DataSource,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -24,15 +33,24 @@ export class PoliciesGuard implements CanActivate {
         context.getHandler(),
       ) || [];
 
-    const { user } = context.switchToHttp().getRequest();
+    const token: JwtTokenPayload = context.switchToHttp().getRequest().user;
 
-    const ability = this.caslAbilityFactory.createForUser(
-      user as JwtTokenPayload,
-    );
+    let userEntity: UserEntity;
+    try {
+      userEntity = await this.dataSource
+        .createEntityManager()
+        .findOneOrFail(UserEntity, {
+          where: { id: token.user.id },
+        });
+    } catch (error) {
+      throw new HttpException('User not found', 404);
+    }
 
-    return policyHandlers.every((handler) =>
-      this.execPolicyHandler(handler, ability),
-    );
+    const ability = this.caslAbilityFactory.createForUser(userEntity);
+
+    return policyHandlers.every((handler) => {
+      return this.execPolicyHandler(handler, ability);
+    });
   }
 
   private execPolicyHandler(handler: PolicyHandler, ability: AppAbility) {

@@ -18,7 +18,7 @@ export class CartService {
     try {
       let cart = await manager.findOne(CartEntity, {
         where: { owner: { id: userId } },
-        relations: ['items.product'],
+        relations: ['items.product.properties'],
         order: {
           items: {
             product: {
@@ -33,6 +33,7 @@ export class CartService {
           items: [],
         });
       }
+      cart.total = this.calculateTotal(cart);
       return cart;
     } catch (error) {
       throw new HttpException(error.message, 500);

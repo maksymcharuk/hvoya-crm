@@ -10,10 +10,14 @@ export class OrderItemEntity extends BaseEntity {
   @Column()
   quantity: number;
 
-  @ManyToOne(() => ProductVariantEntity)
+  @ManyToOne(() => ProductVariantEntity, {
+    eager: true,
+  })
   product: ProductVariantEntity;
 
-  @ManyToOne(() => ProductPropertiesEntity)
+  @ManyToOne(() => ProductPropertiesEntity, {
+    eager: true,
+  })
   productProperties: ProductPropertiesEntity;
 
   @ManyToOne(() => OrderEntity, (order) => order.items)
