@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { OrderDeliveryStatus } from '../enums/order-delivery-status.enum';
 import { BaseEntity } from './base.entity';
@@ -16,6 +16,49 @@ export class OrderDeliveryEntity extends BaseEntity {
   })
   status: OrderDeliveryStatus;
 
-  @OneToOne(() => FileEntity)
+  @Column({
+    default: '',
+  })
+  email: string;
+
+  @Column({
+    default: '',
+  })
+  firstName: string;
+
+  @Column({
+    default: '',
+  })
+  lastName: string;
+
+  @Column({
+    default: '',
+  })
+  middleName: string;
+
+  @Column({
+    default: '',
+  })
+  phoneNumber: string;
+
+  @Column({
+    default: '',
+  })
+  deliveryType: string;
+
+  @Column({
+    default: '',
+  })
+  city: string;
+
+  @Column({
+    default: '',
+  })
+  postOffice: string;
+
+  @OneToOne(() => FileEntity, {
+    eager: true,
+  })
+  @JoinColumn()
   waybill: FileEntity;
 }

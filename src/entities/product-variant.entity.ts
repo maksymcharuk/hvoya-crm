@@ -14,13 +14,7 @@ export class ProductVariantEntity extends BaseEntity {
   })
   availableItemCount: number;
 
-  @ManyToOne(
-    () => ProductPropertiesEntity,
-    (properties) => properties.product,
-    {
-      eager: true,
-    },
-  )
+  @ManyToOne(() => ProductPropertiesEntity, (properties) => properties.product)
   properties: ProductPropertiesEntity;
 
   @ManyToOne(() => ProductBaseEntity, (productBase) => productBase.variants)
