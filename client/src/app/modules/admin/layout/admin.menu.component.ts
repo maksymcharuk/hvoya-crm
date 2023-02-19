@@ -3,10 +3,10 @@ import { MenuItem } from 'primeng/api';
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 
-@Component({
+@Component( {
   selector: 'admin-menu',
   templateUrl: './admin.menu.component.html',
-})
+} )
 export class AdminMenuComponent implements OnInit {
   model: MenuItem[] = [];
 
@@ -33,6 +33,11 @@ export class AdminMenuComponent implements OnInit {
                 label: 'Create',
                 icon: 'pi pi-fw pi-plus-circle',
                 routerLink: ['products/create'],
+              },
+              {
+                label: 'Edit',
+                icon: 'pi pi-fw pi-pencil',
+                routerLink: ['products/edit'],
               },
             ],
           },

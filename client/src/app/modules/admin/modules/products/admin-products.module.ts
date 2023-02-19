@@ -18,12 +18,14 @@ import { AdminProductsRoutingModule } from './admin-products-routing.module';
 import { AdminProductsComponent } from './admin-products.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { CreateProductComponent } from './pages/create-product/create-product.component';
+import { EditProductComponent } from './pages/edit-product/edit-product.component';
 
 @NgModule({
   declarations: [
     AdminProductsComponent,
     AdminProductListComponent,
     CreateProductComponent,
+    EditProductComponent,
   ],
   imports: [
     CommonModule,

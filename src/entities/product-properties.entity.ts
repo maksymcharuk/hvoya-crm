@@ -8,7 +8,7 @@ import { ProductVariantEntity } from './product-variant.entity';
 
 @Entity('product_properties')
 export class ProductPropertiesEntity extends BaseEntity {
-  @Column({ unique: true })
+  @Column()
   name: string;
 
   @Column()
