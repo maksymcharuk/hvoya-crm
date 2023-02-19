@@ -20,34 +20,31 @@ export class DashboardMenuComponent implements OnInit {
         label: '',
         items: [
           {
-            label: 'Home',
+            label: 'Головна',
             icon: 'pi pi-fw pi-home',
             routerLink: ['/'],
           },
           {
-            label: 'Products',
+            label: 'Продукти',
             icon: 'pi pi-fw pi-shopping-cart',
             routerLink: ['products'],
           },
           {
-            label: 'Order',
+            label: 'Замовлення',
             icon: 'pi pi-fw pi-shopping-bag',
-            routerLink: ['/'],
+            routerLink: ['orders'],
           },
           {
-            label: 'Requests',
+            label: 'Запити',
             icon: 'pi pi-fw pi-envelope',
-            routerLink: ['/'],
           },
           {
-            label: 'Favorites',
+            label: 'Улюблені',
             icon: 'pi pi-fw pi-heart',
-            routerLink: ['/'],
           },
           {
-            label: 'FAQ',
+            label: 'Запитання та відповіді',
             icon: 'pi pi-fw pi-question-circle',
-            routerLink: ['/'],
           },
         ],
       },

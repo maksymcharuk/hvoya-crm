@@ -65,7 +65,7 @@ export class OrdersService {
   async createOrder(
     userId: number,
     createOrderDto: CreateOrderDto,
-    waybill: Express.Multer.File,
+    waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
     let waybillScan: FileEntity | undefined;
@@ -75,9 +75,11 @@ export class OrdersService {
     try {
       const cart = await this.cartService.getCart(userId);
 
-      waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
-        folder: Folder.OrderFiles,
-      });
+      if (waybill) {
+        waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
+          folder: Folder.OrderFiles,
+        });
+      }
 
       let order = await queryRunner.manager.save(OrderEntity, {
         customer: { id: userId },
@@ -86,8 +88,8 @@ export class OrdersService {
       const orderItems = await queryRunner.manager.save(
         OrderItemEntity,
         cart.items.map((item) => ({
-          product: { id: item.product.id },
-          productProperties: { id: item.product.properties.id },
+          product: item.product,
+          productProperties: item.product.properties,
           quantity: item.quantity,
           price: item.product.properties.price,
           order: { id: order.id },
@@ -125,6 +127,8 @@ export class OrdersService {
         paymentTransaction,
         total: this.calculateTotal(orderItems),
       });
+
+      await this.cartService.clearCart(userId);
 
       await queryRunner.commitTransaction();
       return this.getOrder(userId, order.id);
@@ -260,7 +264,7 @@ export class OrdersService {
   private calculateTotal(orderItems: OrderItemEntity[]): Decimal {
     return orderItems.reduce(
       (total, item) =>
-        total.add(item.product.properties.price.times(item.quantity)),
+        total.add(item.productProperties.price.times(item.quantity)),
       new Decimal(0),
     );
   }

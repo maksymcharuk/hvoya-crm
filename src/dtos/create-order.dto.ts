@@ -1,8 +1,14 @@
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreateOrderDto {
-  @IsNotEmpty()
-  trackingId: string;
+  @IsOptional()
+  trackingId?: string;
 
   @IsNotEmpty()
   @IsEmail()

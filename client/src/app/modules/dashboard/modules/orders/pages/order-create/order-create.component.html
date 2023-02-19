@@ -1,0 +1,177 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <h4>Checkout</h4>
+      <ng-container *ngIf="cart$ | async as cart; else skeleton">
+        <ng-container *ngIf="cartNotEmpty$ | async; else emptyCart">
+          <app-order-cart-item
+            *ngFor="let cartItem of cart.items; trackBy: identify"
+            [cartItem]="cartItem"
+          ></app-order-cart-item>
+          <div class="flex">
+            <div class="w-12rem hidden md:block"></div>
+            <div class="md:pl-5 mt-2 flex-auto">
+              <div class="flex justify-content-end mb-4 pt-4">
+                <span class="text-xl text-900 font-bold text-3xl">Total:</span>
+                <span class="text-xl text-900 font-bold text-3xl ml-5">
+                  <ng-container
+                    *ngIf="
+                      (cartLoading$ | async) === 0;
+                      else totalPriceSkeleton
+                    "
+                  >
+                    {{ cart.total | currency }}
+                  </ng-container>
+                  <ng-template #totalPriceSkeleton>
+                    <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+                  </ng-template>
+                </span>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+      <form [formGroup]="orderCreateForm">
+        <div class="grid">
+          <div class="col-8">
+            <div class="p-fluid">
+              <h5>Інформація про отримувача</h5>
+              <div class="p-formgrid grid">
+                <div class="field col-4">
+                  <label for="email">Ел. пошта:</label>
+                  <input id="email" pInputText formControlName="email" />
+                </div>
+                <div class="field col-4">
+                  <label for="phone-number">Номер телефону:</label>
+                  <p-inputMask
+                    inputId="phone-number"
+                    formControlName="phoneNumber"
+                    mask="+38 (999) 999-9999"
+                    slotChar=" "
+                    [unmask]="true"
+                    [autoClear]="false"
+                  ></p-inputMask>
+                </div>
+              </div>
+              <div class="p-formgrid grid">
+                <div class="field col">
+                  <label for="first-name">Ім'я:</label>
+                  <input
+                    id="first-name"
+                    pInputText
+                    formControlName="firstName"
+                  />
+                </div>
+                <div class="field col">
+                  <label for="last-name">Прізвище:</label>
+                  <input id="last-name" pInputText formControlName="lastName" />
+                </div>
+                <div class="field col">
+                  <label for="middle-name">По-батькові:</label>
+                  <input
+                    id="middle-name"
+                    pInputText
+                    formControlName="middleName"
+                  />
+                </div>
+              </div>
+              <h5>Інформація про достаку</h5>
+              <div class="p-formgrid grid">
+                <div class="field col">
+                  <label for="delivery-type">Тип доставки:</label>
+                  <input
+                    id="delivery-type"
+                    pInputText
+                    formControlName="deliveryType"
+                  />
+                </div>
+                <div class="field col">
+                  <label for="city">Місто:</label>
+                  <input id="city" pInputText formControlName="city" />
+                </div>
+                <div class="field col">
+                  <label for="post-office">Відділення:</label>
+                  <input
+                    id="post-office"
+                    pInputText
+                    formControlName="postOffice"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="p-formgrid grid">
+              <div class="field col">
+                <label>ТТН:</label>
+                <p-fileUpload
+                  [customUpload]="true"
+                  [auto]="true"
+                  (uploadHandler)="onFileUpload($event)"
+                  [maxFileSize]="1000000"
+                >
+                </p-fileUpload>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div>
+        <button (click)="orderCreate()" pButton label="Оформити"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #skeleton>
+  <ng-container *ngFor="let _ of [].constructor(2)">
+    <div
+      class="flex flex-column md:flex-row py-2 border-top-1 border-bottom-1 surface-border md:align-items-center"
+    >
+      <p-skeleton height="4rem" width="4rem"></p-skeleton>
+      <div class="flex-auto py-1 md:pl-2">
+        <div
+          class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
+        >
+          <div class="w-full sm:w-6 flex flex-column">
+            <span class="mb-2">
+              <p-skeleton height="1.5rem" width="8rem"></p-skeleton>
+            </span>
+            <p-skeleton height="1rem" width="5rem"></p-skeleton>
+          </div>
+          <div
+            class="w-full sm:w-6 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
+          >
+            <div class="p-fluid sm:w-6rem">
+              <p-skeleton height="39px" width="84px"></p-skeleton>
+            </div>
+            <div class="flex flex-column sm:align-items-end">
+              <span class="mb-1 sm:mb-2">
+                <p-skeleton height="1.5rem" width="5rem"></p-skeleton>
+              </span>
+              <p-skeleton height="1rem" width="5rem"></p-skeleton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <div class="flex">
+    <div class="w-12rem hidden md:block"></div>
+    <div class="md:pl-5 mt-2 flex-auto">
+      <div class="flex justify-content-end mb-4 pt-4">
+        <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+        <span class="ml-5">
+          <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+        </span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #emptyCart>
+  <div
+    class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
+  >
+    <i class="pi pi-shopping-cart text-4xl"></i>
+    <span class="text-2xl mt-3">Cart is empty</span>
+  </div>
+</ng-template>

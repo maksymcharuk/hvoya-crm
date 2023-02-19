@@ -1,0 +1,138 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card p-0">
+      <p-table
+        #dt
+        dataKey="id"
+        currentPageReportTemplate="Показано {first} до {last} з {totalRecords} замовлень"
+        [value]="(orders$ | async) || []"
+        [rowHover]="true"
+        [rows]="50"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[25, 50, 100]"
+        [paginator]="true"
+        [filterDelay]="0"
+        [loading]="(ordersLoading$ | async) || false"
+        [globalFilterFields]="['status', 'total']"
+      >
+        <ng-template pTemplate="caption">
+          <div
+            class="table-header flex justify-content-between align-items-center"
+          >
+            Замовлення
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                (input)="filter($event)"
+                placeholder="Global Search"
+              />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>№</th>
+            <th style="width: 1%"></th>
+            <th>К-ть товарів</th>
+            <th pSortableColumn="createdAt" style="min-width: 10rem">
+              <div class="flex justify-content-between align-items-center">
+                Дата
+                <p-sortIcon field="createdAt"></p-sortIcon>
+                <p-columnFilter
+                  type="date"
+                  field="createdAt"
+                  display="menu"
+                  class="ml-auto"
+                ></p-columnFilter>
+              </div>
+            </th>
+            <th pSortableColumn="status" style="min-width: 10rem">
+              <div class="flex justify-content-between align-items-center">
+                Статус
+                <p-sortIcon field="status"></p-sortIcon>
+                <p-columnFilter
+                  field="status"
+                  matchMode="equals"
+                  display="menu"
+                  class="ml-auto"
+                >
+                  <ng-template
+                    pTemplate="filter"
+                    let-value
+                    let-filter="filterCallback"
+                  >
+                    <p-dropdown
+                      [ngModel]="value"
+                      [options]="orderStatuses"
+                      (onChange)="filter($event.value)"
+                      placeholder="Any"
+                    >
+                      <ng-template let-option pTemplate="item">
+                        <span class="status-badge" [ngClass]="option.label">{{
+                          option.label
+                        }}</span>
+                      </ng-template>
+                    </p-dropdown>
+                  </ng-template>
+                </p-columnFilter>
+              </div>
+            </th>
+            <th pSortableColumn="total" style="min-width: 10rem">
+              <div class="flex justify-content-between align-items-center">
+                Сума
+                <p-sortIcon field="total"></p-sortIcon>
+                <p-columnFilter
+                  type="numeric"
+                  field="total"
+                  display="menu"
+                  currency="UAH"
+                  class="ml-auto"
+                ></p-columnFilter>
+              </div>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
+          <tr class="p-selectable-row" [routerLink]="[order.id]">
+            <td>{{ order.id }}</td>
+            <td>
+              <div class="flex">
+                <img
+                  *ngFor="
+                    let image of getPreviewThumbs(order);
+                    let first = first
+                  "
+                  [src]="image"
+                  class="w-3rem border-circle border border-1 border-200"
+                  [ngClass]="{ '-ml-4': !first }"
+                />
+              </div>
+            </td>
+            <td>{{ getOrderItemsNumber(order) }}</td>
+            <td>
+              <span class="p-column-title">Дата</span>
+              {{ order.createdAt | date : 'short' }}
+            </td>
+            <td>
+              <span class="p-column-title">Статус</span>
+              <span [class]="'status-badge ' + order.status">{{
+                order.status
+              }}</span>
+            </td>
+            <td>
+              <span class="p-column-title">Сума</span>
+              {{ order.total | currency }}
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8">Замовлень не знайдено</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

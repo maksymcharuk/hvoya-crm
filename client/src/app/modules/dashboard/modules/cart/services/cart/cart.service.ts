@@ -15,6 +15,7 @@ import { RemoveFromCartResponse } from '@shared/interfaces/responses/remove-from
   providedIn: 'root',
 })
 export class CartService {
+  id: number;
   cart$ = new BehaviorSubject<Cart | null>(null);
   cartLoading$ = new BehaviorSubject<number>(0);
   cartItemsNumber$ = this.cart$.pipe(
@@ -30,9 +31,9 @@ export class CartService {
   );
 
   constructor(private http: HttpClient) {
-    this.getCart().subscribe((cart) => {
-      this.cart$.next(cart);
-    });
+    this.id = new Date().getTime();
+    this.getCart().subscribe();
+    console.log('CartService: ' + this.id);
   }
 
   getCart(): Observable<GetCartResponse> {
@@ -40,7 +41,8 @@ export class CartService {
     const response$ = this.http
       .get<GetCartResponse>(`${environment.apiUrl}/cart`)
       .pipe(shareReplay());
-    response$.subscribe(() => {
+    response$.subscribe((cart) => {
+      this.cart$.next(cart);
       this.decrementCartLoading();
     });
     return response$;

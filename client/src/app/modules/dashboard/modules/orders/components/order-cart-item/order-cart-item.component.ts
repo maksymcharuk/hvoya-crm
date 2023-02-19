@@ -11,14 +11,14 @@ import { FormBuilder } from '@angular/forms';
 
 import { CartItem } from '@shared/interfaces/cart.interface';
 
-import { CartService } from '../../services/cart/cart.service';
+import { CartService } from '../../../cart/services/cart/cart.service';
 
 @Component({
-  selector: 'app-cart-item',
-  templateUrl: './cart-item.component.html',
-  styleUrls: ['./cart-item.component.scss'],
+  selector: 'app-order-cart-item',
+  templateUrl: './order-cart-item.component.html',
+  styleUrls: ['./order-cart-item.component.scss'],
 })
-export class CartItemComponent implements AfterViewInit, OnDestroy {
+export class OrderCartItemComponent implements AfterViewInit, OnDestroy {
   @Input() cartItem!: CartItem;
 
   updating$ = new BehaviorSubject<number>(0);
