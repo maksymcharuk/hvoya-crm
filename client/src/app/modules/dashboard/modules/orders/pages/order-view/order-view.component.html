@@ -1,0 +1,9 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <div *ngIf="order$ | async as order">
+        {{ order.id }}
+      </div>
+    </div>
+  </div>
+</div>

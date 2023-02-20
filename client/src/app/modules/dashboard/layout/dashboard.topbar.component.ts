@@ -15,7 +15,7 @@ import { NavigationStart, Router } from '@angular/router';
 import { LayoutService } from '@shared/layout/services/layout.service';
 import { AuthService } from '@shared/services/auth.service';
 
-import { CartService } from '../modules/cart/services/cart.service';
+import { CartService } from '../modules/cart/services/cart/cart.service';
 
 @Component({
   selector: 'dashboard-topbar',

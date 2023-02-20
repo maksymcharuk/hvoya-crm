@@ -6,7 +6,9 @@ import { FileEntity } from './file.entity';
 
 @Entity('order_delivery')
 export class OrderDeliveryEntity extends BaseEntity {
-  @Column()
+  @Column({
+    default: '',
+  })
   trackingId: string;
 
   @Column({
@@ -60,5 +62,5 @@ export class OrderDeliveryEntity extends BaseEntity {
     eager: true,
   })
   @JoinColumn()
-  waybill: FileEntity;
+  waybill: FileEntity | null;
 }

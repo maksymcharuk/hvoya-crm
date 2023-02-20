@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { LayoutConfigModule } from '@shared/layout/layout-config.module';
+import { SharedModule } from '@shared/shared.module';
 
 import { CartModule } from '../modules/cart/cart.module';
 import { DashboardFooterComponent } from './dashboard.footer.component';
@@ -47,6 +48,7 @@ import { DashboardTopBarComponent } from './dashboard.topbar.component';
     LayoutConfigModule,
     ButtonModule,
     CartModule,
+    SharedModule,
   ],
   exports: [DashboardLayoutComponent],
 })

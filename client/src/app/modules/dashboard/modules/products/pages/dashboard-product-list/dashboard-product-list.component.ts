@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 import { ProductVariant } from '@shared/interfaces/products';
 import { ProductsService } from '@shared/services/products.service';
 
-import { CartService } from '../../../cart/services/cart.service';
+import { CartService } from '../../../cart/services/cart/cart.service';
 
 @Component({
   selector: 'app-dashboard-product-list',

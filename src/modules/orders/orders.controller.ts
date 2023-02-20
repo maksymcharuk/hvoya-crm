@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  FileTypeValidator,
   Get,
   MaxFileSizeValidator,
   Param,
@@ -57,10 +56,7 @@ export class OrdersController {
     @Body() updateOrderDto: UpdateOrderDto,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5000000 }),
-          new FileTypeValidator({ fileType: '(pdf|jpg|png)$' }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 5000000 })],
         fileIsRequired: false,
       }),
     )
@@ -79,10 +75,7 @@ export class OrdersController {
     @Param('id') orderId: number,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5000000 }),
-          new FileTypeValidator({ fileType: '(pdf|jpg|png)$' }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 5000000 })],
       }),
     )
     waybill: Express.Multer.File,
@@ -100,13 +93,11 @@ export class OrdersController {
     @Body() createOrderDto: CreateOrderDto,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5000000 }),
-          new FileTypeValidator({ fileType: '(pdf|jpg|png)$' }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 5000000 })],
+        fileIsRequired: false,
       }),
     )
-    waybill: Express.Multer.File,
+    waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
     return this.ordersService.createOrder(userId, createOrderDto, waybill);
   }

@@ -52,7 +52,13 @@
             type="button"
             label="View Cart"
           ></button>
-          <button pButton class="ml-2" type="button" label="Check Out"></button>
+          <button
+            [routerLink]="['/dashboard', 'orders', 'checkout']"
+            pButton
+            class="ml-2"
+            type="button"
+            label="Check Out"
+          ></button>
         </div>
       </ng-container>
     </ng-container>

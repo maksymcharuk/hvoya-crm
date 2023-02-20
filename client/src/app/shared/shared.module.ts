@@ -9,14 +9,14 @@ import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 import { ProductItemComponent } from './components/product-item/product-item.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
-import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 
-registerLocaleData( localeUk );
+registerLocaleData(localeUk);
 
 const COMPONENTS = [
   VerticalMenuComponent,
@@ -27,7 +27,7 @@ const COMPONENTS = [
 
 const PRIMENG_MODULES = [SelectButtonModule, SkeletonModule, ButtonModule];
 
-@NgModule( {
+@NgModule({
   declarations: [...COMPONENTS, FormControlErrorMessageComponent],
   imports: [
     CommonModule,
@@ -51,5 +51,5 @@ const PRIMENG_MODULES = [SelectButtonModule, SkeletonModule, ButtonModule];
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'UAH' },
   ],
   exports: [...COMPONENTS],
-} )
-export class SharedModule { }
+})
+export class SharedModule {}

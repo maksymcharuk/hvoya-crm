@@ -7,11 +7,6 @@ import { DashboardMainComponent } from './pages/main/main.component';
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'main',
-  },
-  {
-    path: '',
     component: DashboardComponent,
     children: [
       {
@@ -36,6 +31,11 @@ const routes: Routes = [
         path: 'cart',
         loadChildren: () =>
           import('./modules/cart/cart.module').then((m) => m.CartModule),
+      },
+      {
+        path: 'orders',
+        loadChildren: () =>
+          import('./modules/orders/orders.module').then((m) => m.OrdersModule),
       },
     ],
   },

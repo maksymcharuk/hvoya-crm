@@ -28,7 +28,11 @@
                 </span>
               </div>
               <div class="flex justify-content-end">
-                <button pButton label="Check Out"></button>
+                <button
+                  [routerLink]="['/dashboard', 'orders', 'checkout']"
+                  pButton
+                  label="Check Out"
+                ></button>
               </div>
             </div>
           </div>

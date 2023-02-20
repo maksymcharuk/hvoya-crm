@@ -1,0 +1,57 @@
+<div
+  class="flex flex-column md:flex-row py-1 border-top-1 border-bottom-1 surface-border md:align-items-center"
+>
+  <img
+    [src]="
+      cartItem.product.properties.images
+        ? cartItem.product.properties.images[0]?.url
+        : ''
+    "
+    class="w-4rem flex-shrink-0 mx-auto md:mx-0"
+  />
+  <div class="flex-auto py-1 md:pl-2">
+    <div
+      class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
+    >
+      <div class="w-full sm:w-6 flex flex-column">
+        <span class="text-900 text-l font-medium mb-2">
+          {{ cartItem.product.properties.name }}
+        </span>
+        <span class="text-600">{{ cartItem.product.sku }}</span>
+      </div>
+      <div
+        class="w-full sm:w-4 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
+      >
+        <div class="p-fluid sm:w-6rem">
+          <form [formGroup]="quantityForm">
+            <p-inputNumber
+              mode="decimal"
+              formControlName="quantity"
+              [showButtons]="true"
+              [min]="1"
+            ></p-inputNumber>
+          </form>
+        </div>
+        <div class="flex flex-column sm:align-items-end">
+          <span class="text-900 text-xl font-medium mb-1 sm:mb-2">
+            <ng-container *ngIf="(updating$ | async) === 0; else priceSkeleton">
+              {{
+                cartItem.product.properties.price * cartItem.quantity | currency
+              }}
+            </ng-container>
+            <ng-template #priceSkeleton>
+              <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+            </ng-template>
+          </span>
+          <a
+            (click)="removeCartItem()"
+            tabindex="0"
+            class="cursor-pointer text-pink-500 font-medium hover:text-pink-600 transition-colors transition-duration-300"
+          >
+            Remove
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

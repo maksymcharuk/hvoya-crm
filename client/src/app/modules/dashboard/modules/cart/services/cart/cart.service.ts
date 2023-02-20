@@ -30,9 +30,7 @@ export class CartService {
   );
 
   constructor(private http: HttpClient) {
-    this.getCart().subscribe((cart) => {
-      this.cart$.next(cart);
-    });
+    this.getCart().subscribe();
   }
 
   getCart(): Observable<GetCartResponse> {
@@ -40,7 +38,8 @@ export class CartService {
     const response$ = this.http
       .get<GetCartResponse>(`${environment.apiUrl}/cart`)
       .pipe(shareReplay());
-    response$.subscribe(() => {
+    response$.subscribe((cart) => {
+      this.cart$.next(cart);
       this.decrementCartLoading();
     });
     return response$;
