@@ -27,72 +27,62 @@ import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';
 import { ProductsService } from './services/products.service';
 
-@Controller( 'products' )
-@UseGuards( JwtAuthGuard, PoliciesGuard )
+@Controller('products')
+@UseGuards(JwtAuthGuard, PoliciesGuard)
 export class ProductsController {
-  constructor( private productsService: ProductsService ) { }
+  constructor(private productsService: ProductsService) { }
 
   @Post()
-  @UseInterceptors( FilesInterceptor( 'images' ) )
+  @UseInterceptors(FilesInterceptor('images'))
   @CheckPolicies(
-    ( ability: AppAbility ) =>
-      ability.can( Action.Create, ProductCategoryEntity ) &&
-      ability.can( Action.Create, ProductBaseEntity ) &&
-      ability.can( Action.Create, ProductVariantEntity ),
+    (ability: AppAbility) =>
+      ability.can(Action.Create, ProductCategoryEntity) &&
+      ability.can(Action.Create, ProductBaseEntity) &&
+      ability.can(Action.Create, ProductVariantEntity),
   )
   createProduct(
     @Body() body: CreateProductDto,
     @UploadedFiles(
-      new ParseFilePipe( {
+      new ParseFilePipe({
         validators: [
-          new MaxFilesSizeValidator( { maxSize: 5000000 } ),
-          new FileTypeValidator( { fileType: '(jpeg|jpg|png)$' } ),
+          new MaxFilesSizeValidator({ maxSize: 5000000 }),
+          new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
-      } ),
+      }),
     )
     images: Array<Express.Multer.File>,
   ) {
-    return this.productsService.createProduct( body, images );
+    return this.productsService.createProduct(body, images);
   }
 
   @Put()
-  @UseInterceptors( FilesInterceptor( 'images' ) )
+  @UseInterceptors(FilesInterceptor('images'))
   @CheckPolicies(
-    ( ability: AppAbility ) =>
-      ability.can( Action.Edit, ProductCategoryEntity ) &&
-      ability.can( Action.Edit, ProductBaseEntity ) &&
-      ability.can( Action.Edit, ProductVariantEntity ),
+    (ability: AppAbility) =>
+      ability.can(Action.Edit, ProductCategoryEntity) &&
+      ability.can(Action.Edit, ProductBaseEntity) &&
+      ability.can(Action.Edit, ProductVariantEntity),
   )
   editProduct(
     @Body() body: EditProductDto,
     @UploadedFiles(
-      new ParseFilePipe( {
+      new ParseFilePipe({
         validators: [
-          new MaxFilesSizeValidator( { maxSize: 5000000 } ),
-          new FileTypeValidator( { fileType: '(jpeg|jpg|png)$' } ),
+          new MaxFilesSizeValidator({ maxSize: 5000000 }),
+          new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
-      } ),
+      }),
     )
     images: Array<Express.Multer.File>,
   ) {
-    return this.productsService.editProduct( body, images );
+    return this.productsService.editProduct(body, images);
   }
 
   @Get()
-  @CheckPolicies( ( ability: AppAbility ) =>
-    ability.can( Action.Read, ProductBaseEntity ),
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, ProductBaseEntity),
   )
   getProducts() {
     return this.productsService.getProducts();
-  }
-
-  @Get( 'base' )
-  @CheckPolicies(
-    ( ability: AppAbility ) =>
-      ability.can( Action.Read, ProductBaseEntity ) &&
-      ability.can( Action.Read, ProductCategoryEntity ),
-  )
-  getProductsForCrete() {
-    return this.productsService.getProductsForCrete();
   }
 }

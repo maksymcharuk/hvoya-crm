@@ -223,10 +223,4 @@ export class ProductsService {
       ],
     });
   }
-
-  getProductsForCrete(): Promise<ProductBaseEntity[]> {
-    return this.dataSource.manager.find(ProductBaseEntity, {
-      relations: ['category'],
-    });
-  }
 }

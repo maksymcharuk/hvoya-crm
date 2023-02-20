@@ -1,5 +1,3 @@
-import { ProductBase, ProductBaseForCreation } from '../products';
+import { ProductBase } from '../products';
 
 export type GetProductsResponse = ProductBase[];
-
-export type GetProductsForCreationResponse = ProductBaseForCreation[];

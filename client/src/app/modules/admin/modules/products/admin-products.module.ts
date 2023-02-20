@@ -19,6 +19,8 @@ import { AdminProductsComponent } from './admin-products.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { CreateProductComponent } from './pages/create-product/create-product.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
+import { ProductStateChangesComponent } from './pages/product-state-changes/product-state-changes.component';
+import { UpsertProductFormComponent } from './pages/upsert-product-form/upsert-product-form.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import { EditProductComponent } from './pages/edit-product/edit-product.componen
     AdminProductListComponent,
     CreateProductComponent,
     EditProductComponent,
+    ProductStateChangesComponent,
+    UpsertProductFormComponent,
   ],
   imports: [
     CommonModule,
