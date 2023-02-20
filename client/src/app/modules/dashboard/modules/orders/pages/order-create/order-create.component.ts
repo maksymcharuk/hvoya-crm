@@ -2,6 +2,7 @@ import { MessageService } from 'primeng/api';
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { CartItem } from '@shared/interfaces/cart.interface';
 import {
@@ -43,6 +44,7 @@ export class OrderCreateComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private router: Router,
     private cartService: CartService,
     private orderService: OrdersService,
     private accountService: AccountService,
@@ -88,6 +90,7 @@ export class OrderCreateComponent implements OnInit {
         summary: 'Замовлення успішно створено',
         detail: `Ваше замовлення №${order.id} успішно створено`,
       });
+      this.router.navigate(['/dashboard/orders', order.id]);
     });
   }
 }

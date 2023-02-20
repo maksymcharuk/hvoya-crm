@@ -1,6 +1,7 @@
+import { Table } from 'primeng/table';
 import { BehaviorSubject, finalize, map } from 'rxjs';
 
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Order } from '@shared/interfaces/order.interface';
@@ -13,6 +14,8 @@ import { OrdersService } from '../../services/orders/orders.service';
   styleUrls: ['./order-list.component.scss'],
 })
 export class OrderListComponent {
+  @ViewChild('ordersTable') ordersTable!: Table;
+
   ordersLoading$ = new BehaviorSubject<boolean>(true);
   orders$ = this.ordersService.getOrders().pipe(
     map((orders: Order[]) =>
@@ -34,8 +37,9 @@ export class OrderListComponent {
 
   constructor(private ordersService: OrdersService) {}
 
-  filter(event: any) {
-    console.log(event.target.value);
+  search(event: Event) {
+    const target = event.target as HTMLTextAreaElement;
+    this.ordersTable.filterGlobal(target.value, 'contains');
   }
 
   getPreviewThumbs(order: Order) {

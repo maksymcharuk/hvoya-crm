@@ -15,7 +15,6 @@ import { RemoveFromCartResponse } from '@shared/interfaces/responses/remove-from
   providedIn: 'root',
 })
 export class CartService {
-  id: number;
   cart$ = new BehaviorSubject<Cart | null>(null);
   cartLoading$ = new BehaviorSubject<number>(0);
   cartItemsNumber$ = this.cart$.pipe(
@@ -31,9 +30,7 @@ export class CartService {
   );
 
   constructor(private http: HttpClient) {
-    this.id = new Date().getTime();
     this.getCart().subscribe();
-    console.log('CartService: ' + this.id);
   }
 
   getCart(): Observable<GetCartResponse> {

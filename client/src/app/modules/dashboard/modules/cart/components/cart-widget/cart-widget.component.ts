@@ -12,7 +12,5 @@ export class CartWidgetComponent {
   cartLoading$ = this.cartService.cartLoading$;
   cartNotEmpty$ = this.cartService.cartNotEmpty$;
 
-  constructor(private cartService: CartService) {
-    this.cart$.subscribe(console.log);
-  }
+  constructor(private cartService: CartService) {}
 }

@@ -75,6 +75,10 @@ export class OrdersService {
     try {
       const cart = await this.cartService.getCart(userId);
 
+      if (cart.items.length === 0) {
+        throw new HttpException('Cart is empty', HttpStatus.BAD_REQUEST);
+      }
+
       if (waybill) {
         waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
           folder: Folder.OrderFiles,
