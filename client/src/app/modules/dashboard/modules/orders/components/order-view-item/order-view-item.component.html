@@ -1,0 +1,36 @@
+<div
+  class="flex flex-column md:flex-row py-1 border-top-1 border-bottom-1 surface-border md:align-items-center"
+>
+  <img
+    [src]="
+      orderItem.productProperties.images
+        ? orderItem.productProperties.images[0]?.url
+        : ''
+    "
+    class="w-4rem flex-shrink-0 mx-auto md:mx-0"
+  />
+  <div class="flex-auto py-1 md:pl-2">
+    <div
+      class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
+    >
+      <div class="w-full sm:w-6 flex flex-column">
+        <span class="text-900 text-l font-medium mb-2">
+          {{ orderItem.productProperties.name }}
+        </span>
+        <span class="text-600">{{ orderItem.product.sku }}</span>
+      </div>
+      <div
+        class="w-full sm:w-4 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
+      >
+        <div class="p-fluid sm:w-6rem">К-ть: {{ orderItem.quantity }}</div>
+        <div class="flex flex-column sm:align-items-end">
+          <span class="text-900 text-xl font-medium mb-1 sm:mb-2">
+            {{
+              orderItem.productProperties.price * orderItem.quantity | currency
+            }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

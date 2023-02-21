@@ -5,6 +5,7 @@ import { DataSource } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateOrderDto } from '@dtos/create-order.dto';
+import { UpdateOrderWaybillDto } from '@dtos/update-order-waybill.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
@@ -44,7 +45,7 @@ export class OrdersService {
       );
     }
 
-    return await this.getOrderWhere({ id: orderId });
+    return order;
   }
 
   async getOrders(userId: number): Promise<OrderEntity[]> {
@@ -218,8 +219,9 @@ export class OrdersService {
   async updateOrderWaybill(
     userId: number,
     orderId: number,
-    waybill: Express.Multer.File,
-  ) {
+    updateOrderWaybillDto: UpdateOrderWaybillDto,
+    waybill?: Express.Multer.File,
+  ): Promise<OrderEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
     let waybillScan: FileEntity | undefined;
     let order: OrderEntity;
@@ -242,10 +244,13 @@ export class OrdersService {
         );
       }
 
-      waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
-        folder: Folder.OrderFiles,
-      });
+      if (waybill) {
+        waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
+          folder: Folder.OrderFiles,
+        });
+      }
       await queryRunner.manager.update(OrderDeliveryEntity, order.delivery.id, {
+        trackingId: updateOrderWaybillDto.trackingId,
         waybill: waybillScan,
       });
 
@@ -298,6 +303,7 @@ export class OrdersService {
         'delivery.waybill',
         'paymentTransactions',
       ],
+      order: { createdAt: 'DESC' },
     });
   }
 }

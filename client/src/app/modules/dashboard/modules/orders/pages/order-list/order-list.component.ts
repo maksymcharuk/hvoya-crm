@@ -1,5 +1,5 @@
 import { Table } from 'primeng/table';
-import { BehaviorSubject, finalize, map } from 'rxjs';
+import { map, share } from 'rxjs';
 
 import { Component, ViewChild } from '@angular/core';
 
@@ -16,7 +16,6 @@ import { OrdersService } from '../../services/orders/orders.service';
 export class OrderListComponent {
   @ViewChild('ordersTable') ordersTable!: Table;
 
-  ordersLoading$ = new BehaviorSubject<boolean>(true);
   orders$ = this.ordersService.getOrders().pipe(
     map((orders: Order[]) =>
       orders.map((order) => ({
@@ -24,7 +23,7 @@ export class OrderListComponent {
         createdAt: new Date(order.createdAt),
       })),
     ),
-    finalize(() => this.ordersLoading$.next(false)),
+    share(),
   );
   orderStatuses = Object.entries(OrderStatus).map((key) => {
     const [label, value] = key;
@@ -44,7 +43,10 @@ export class OrderListComponent {
 
   getPreviewThumbs(order: Order) {
     return order.items
-      .map((item) => item.productProperties.images[0]?.url)
+      .map((item) => ({
+        url: item.productProperties.images[0]?.url,
+        alt: item.productProperties.name,
+      }))
       .slice(0, 3);
   }
 

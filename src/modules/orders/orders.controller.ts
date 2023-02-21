@@ -16,6 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { User } from '@decorators/user.decorator';
 import { CreateOrderDto } from '@dtos/create-order.dto';
+import { UpdateOrderWaybillDto } from '@dtos/update-order-waybill.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
 import { OrderEntity } from '@entities/order.entity';
 import { Action } from '@enums/action.enum';
@@ -73,14 +74,21 @@ export class OrdersController {
   async updateOrderWaybill(
     @User('id') userId: number,
     @Param('id') orderId: number,
+    @Body() updateOrderWaybillDto: UpdateOrderWaybillDto,
     @UploadedFile(
       new ParseFilePipe({
         validators: [new MaxFileSizeValidator({ maxSize: 5000000 })],
+        fileIsRequired: false,
       }),
     )
     waybill: Express.Multer.File,
   ): Promise<OrderEntity> {
-    return this.ordersService.updateOrderWaybill(userId, orderId, waybill);
+    return this.ordersService.updateOrderWaybill(
+      userId,
+      orderId,
+      updateOrderWaybillDto,
+      waybill,
+    );
   }
 
   @Post()
