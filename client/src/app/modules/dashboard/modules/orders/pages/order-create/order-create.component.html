@@ -40,6 +40,12 @@
                 <div class="field col-4">
                   <label for="email">Ел. пошта:</label>
                   <input id="email" pInputText formControlName="email" />
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="email"
+                    errorType="required"
+                    errorMessage="Потрібно ввести електронну пошту"
+                  ></app-form-control-error-message>
                 </div>
                 <div class="field col-4">
                   <label for="phone-number">Номер телефону:</label>
@@ -51,6 +57,12 @@
                     [unmask]="true"
                     [autoClear]="false"
                   ></p-inputMask>
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="phoneNumber"
+                    errorType="required"
+                    errorMessage="Потрібно ввести номер телефону"
+                  ></app-form-control-error-message>
                 </div>
               </div>
               <div class="p-formgrid grid">
@@ -61,10 +73,22 @@
                     pInputText
                     formControlName="firstName"
                   />
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="phoneNumber"
+                    errorType="required"
+                    errorMessage="Це є обов'язковим полем"
+                  ></app-form-control-error-message>
                 </div>
                 <div class="field col">
                   <label for="last-name">Прізвище:</label>
                   <input id="last-name" pInputText formControlName="lastName" />
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="phoneNumber"
+                    errorType="required"
+                    errorMessage="Це є обов'язковим полем"
+                  ></app-form-control-error-message>
                 </div>
                 <div class="field col">
                   <label for="middle-name">По-батькові:</label>
@@ -73,6 +97,12 @@
                     pInputText
                     formControlName="middleName"
                   />
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="phoneNumber"
+                    errorType="required"
+                    errorMessage="Це є обов'язковим полем"
+                  ></app-form-control-error-message>
                 </div>
               </div>
               <h5>Інформація про достаку</h5>
@@ -84,11 +114,25 @@
                     pInputText
                     formControlName="deliveryType"
                   />
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="phoneNumber"
+                    errorType="required"
+                    errorMessage="Це є обов'язковим полем"
+                  ></app-form-control-error-message>
                 </div>
                 <div class="field col">
                   <label for="city">Місто:</label>
                   <input id="city" pInputText formControlName="city" />
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="city"
+                    errorType="required"
+                    errorMessage="Це є обов'язковим полем"
+                  ></app-form-control-error-message>
                 </div>
+              </div>
+              <div class="p-formgrid grid">
                 <div class="field col">
                   <label for="post-office">Відділення:</label>
                   <input
@@ -96,6 +140,26 @@
                     pInputText
                     formControlName="postOffice"
                   />
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="postOffice"
+                    errorType="required"
+                    errorMessage="Це є обов'язковим полем"
+                  ></app-form-control-error-message>
+                </div>
+                <div class="field col">
+                  <label for="tracking-id">Номер ТТН:</label>
+                  <input
+                    id="tracking-id"
+                    pInputText
+                    formControlName="trackingId"
+                  />
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="trackingId"
+                    errorType="required"
+                    errorMessage="Це є обов'язковим полем"
+                  ></app-form-control-error-message>
                 </div>
               </div>
             </div>
@@ -115,7 +179,12 @@
         </div>
       </form>
       <div>
-        <button (click)="orderCreate()" pButton label="Оформити"></button>
+        <button
+          pButton
+          (click)="orderCreate()"
+          [disabled]="submitting"
+          label="Оформити"
+        ></button>
       </div>
     </div>
   </div>

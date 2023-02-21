@@ -1,4 +1,5 @@
 import { MessageService } from 'primeng/api';
+import { finalize } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -24,6 +25,7 @@ export class OrderCreateComponent implements OnInit {
   cartLoading$ = this.cartService.cartLoading$;
   cartNotEmpty$ = this.cartService.cartNotEmpty$;
   profile$ = this.accountService.profile$;
+  submitting = false;
 
   orderCreateForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -31,7 +33,7 @@ export class OrderCreateComponent implements OnInit {
     lastName: ['', Validators.required],
     middleName: ['', Validators.required],
     phoneNumber: ['', Validators.required],
-    trackingId: [''],
+    trackingId: ['', Validators.required],
     deliveryType: ['', Validators.required],
     city: ['', Validators.required],
     postOffice: ['', Validators.required],
@@ -70,9 +72,11 @@ export class OrderCreateComponent implements OnInit {
   }
 
   orderCreate() {
-    if (this.orderCreateForm.invalid) {
+    if (!this.orderCreateForm.valid) {
+      this.orderCreateForm.markAllAsTouched();
       return;
     }
+    this.submitting = true;
 
     const formData = new FormData();
     const value = this.orderCreateForm.value;
@@ -83,14 +87,21 @@ export class OrderCreateComponent implements OnInit {
       }
     });
 
-    this.orderService.orderCreate(formData).subscribe((order) => {
-      this.cartService.getCart();
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Замовлення успішно створено',
-        detail: `Ваше замовлення №${order.id} успішно створено`,
+    this.orderService
+      .orderCreate(formData)
+      .pipe(
+        finalize(() => {
+          this.submitting = false;
+        }),
+      )
+      .subscribe((order) => {
+        this.cartService.getCart();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Замовлення успішно створено',
+          detail: `Ваше замовлення №${order.id} успішно створено`,
+        });
+        this.router.navigate(['/dashboard/orders', order.id]);
       });
-      this.router.navigate(['/dashboard/orders', order.id]);
-    });
   }
 }

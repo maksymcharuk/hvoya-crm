@@ -7,6 +7,7 @@ import { environment } from '@environment/environment';
 import { OrderCreateResponse } from '@shared/interfaces/responses/create-order.response';
 import { GetOrderResponse } from '@shared/interfaces/responses/get-order.response';
 import { GetOrdersResponse } from '@shared/interfaces/responses/get-orders.response';
+import { UpdateWaybillResponse } from '@shared/interfaces/responses/update-waybill.response';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,16 @@ export class OrdersService {
     return this.http.post<OrderCreateResponse>(
       `${environment.apiUrl}/orders`,
       orderCreateFormData,
+    );
+  }
+
+  updateWaybill(
+    id: number,
+    updateWaybillFormData: FormData,
+  ): Observable<UpdateWaybillResponse> {
+    return this.http.put<UpdateWaybillResponse>(
+      `${environment.apiUrl}/orders/${id}/update-waybill`,
+      updateWaybillFormData,
     );
   }
 

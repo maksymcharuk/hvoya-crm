@@ -79,9 +79,13 @@ export class CaslAbilityFactory {
       // Cart
       can([Action.Read, Action.AddTo, Action.RemoveFrom], CartEntity);
       // Orders
-      can([Action.Manage], OrderEntity, ({ customer }: OrderEntity) => {
-        return customer.id === user.id;
-      }); // can manage only his own orders
+      can(
+        [Action.Read, Action.Update, Action.Create],
+        OrderEntity,
+        ({ customer }: OrderEntity) => {
+          return customer.id === user.id;
+        },
+      ); // can manage only his own orders
     }
 
     if (user.role === Role.SuperAdmin || user.role === Role.Admin) {
