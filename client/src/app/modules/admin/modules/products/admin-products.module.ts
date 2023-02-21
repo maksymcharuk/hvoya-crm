@@ -18,12 +18,18 @@ import { AdminProductsRoutingModule } from './admin-products-routing.module';
 import { AdminProductsComponent } from './admin-products.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { CreateProductComponent } from './pages/create-product/create-product.component';
+import { EditProductComponent } from './pages/edit-product/edit-product.component';
+import { ProductStateChangesComponent } from './components/product-state-changes/product-state-changes.component';
+import { UpsertProductFormComponent } from './components/upsert-product-form/upsert-product-form.component';
 
 @NgModule({
   declarations: [
     AdminProductsComponent,
     AdminProductListComponent,
     CreateProductComponent,
+    EditProductComponent,
+    ProductStateChangesComponent,
+    UpsertProductFormComponent,
   ],
   imports: [
     CommonModule,
@@ -41,4 +47,4 @@ import { CreateProductComponent } from './pages/create-product/create-product.co
     EditorModule,
   ],
 })
-export class AdminProductsModule {}
+export class AdminProductsModule { }

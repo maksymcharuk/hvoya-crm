@@ -34,6 +34,11 @@ export class AdminMenuComponent implements OnInit {
                 icon: 'pi pi-fw pi-plus-circle',
                 routerLink: ['products/create'],
               },
+              {
+                label: 'Edit',
+                icon: 'pi pi-fw pi-pencil',
+                routerLink: ['products/edit'],
+              },
             ],
           },
           {

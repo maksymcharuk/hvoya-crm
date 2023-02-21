@@ -28,9 +28,3 @@ export interface ProductBase {
   category: ProductCategory;
   variants: ProductVariant[];
 }
-
-export interface ProductBaseForCreation {
-  id: number;
-  name: string;
-  category: ProductCategory;
-}

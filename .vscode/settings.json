@@ -19,6 +19,5 @@
   },
   "javascript.format.enable": false,
   "editor.tabSize": 2,
-  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
   "editor.formatOnSave": true
 }

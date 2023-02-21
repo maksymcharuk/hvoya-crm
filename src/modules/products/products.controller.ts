@@ -7,6 +7,7 @@ import {
   Get,
   ParseFilePipe,
   Post,
+  Put,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -14,6 +15,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { CreateProductDto } from '@dtos/create-product.dto';
+import { EditProductDto } from '@dtos/edit-product.dto';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
@@ -28,7 +30,7 @@ import { ProductsService } from './services/products.service';
 @Controller('products')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class ProductsController {
-  constructor(private productsService: ProductsService) {}
+  constructor(private productsService: ProductsService) { }
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
@@ -46,11 +48,36 @@ export class ProductsController {
           new MaxFilesSizeValidator({ maxSize: 5000000 }),
           new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
+        fileIsRequired: false,
       }),
     )
-    images: Array<Express.Multer.File>,
+    images?: Array<Express.Multer.File>,
   ) {
     return this.productsService.createProduct(body, images);
+  }
+
+  @Put()
+  @UseInterceptors(FilesInterceptor('images'))
+  @CheckPolicies(
+    (ability: AppAbility) =>
+      ability.can(Action.Update, ProductCategoryEntity) &&
+      ability.can(Action.Update, ProductBaseEntity) &&
+      ability.can(Action.Update, ProductVariantEntity),
+  )
+  editProduct(
+    @Body() body: EditProductDto,
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [
+          new MaxFilesSizeValidator({ maxSize: 5000000 }),
+          new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    images?: Array<Express.Multer.File>,
+  ) {
+    return this.productsService.editProduct(body, images);
   }
 
   @Get()
@@ -59,15 +86,5 @@ export class ProductsController {
   )
   getProducts() {
     return this.productsService.getProducts();
-  }
-
-  @Get('base')
-  @CheckPolicies(
-    (ability: AppAbility) =>
-      ability.can(Action.Read, ProductBaseEntity) &&
-      ability.can(Action.Read, ProductCategoryEntity),
-  )
-  getProductsForCrete() {
-    return this.productsService.getProductsForCrete();
   }
 }
