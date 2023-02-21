@@ -239,12 +239,15 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
   }
 
   onBaseProductChange(value: any) {
+    if (value.productBaseId || value.productBaseName) {
+      this.productForm.get('productVariantGroup')?.enable();
+      this.productImagesDisabled = false;
+    } else {
+      this.productForm.get('productVariantGroup')?.disable();
+      this.productImagesDisabled = true;
+    }
+
     if (this.isEdit) {
-      if (value.productBaseId || value.productBaseName) {
-        this.productImagesDisabled = false;
-      } else {
-        this.productImagesDisabled = true;
-      }
       if (value.productBaseId) {
         this.selectedBaseProduct = this.allBaseProducts.find((base) => base.id === value.productBaseId);
       } else {
@@ -252,14 +255,6 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
       }
       this.baseProductChanges();
       this.productVariantChanges();
-    } else {
-      if (value.productBaseId || value.productBaseName) {
-        this.productForm.get('productVariantGroup')?.enable();
-        this.productImagesDisabled = false;
-      } else {
-        this.productForm.get('productVariantGroup')?.disable();
-        this.productImagesDisabled = true;
-      }
     }
   }
 
@@ -440,10 +435,11 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
 
 
   private productVariantChanges() {
-    if (!this.selectedBaseProduct?.variants?.find((variant) => variant.id === this.selectedProductVariant?.id) || this.newProductBase) {
+    if (this.selectedProductVariant &&
+      (!this.selectedBaseProduct?.variants?.find((variant) => variant.id === this.selectedProductVariant?.id) || this.newProductBase)) {
       this.productBaseProductChange = {
         title: 'Базовий продукт',
-        old: this.selectedProductVariantDefaultBaseProduct.name,
+        old: this.selectedProductVariantDefaultBaseProduct?.name,
         new: this.selectedBaseProduct?.name
       }
     } else {

@@ -22,7 +22,7 @@ export class ProductsService {
 
   async createProduct(
     createProductDto: CreateProductDto,
-    images: Array<Express.Multer.File>,
+    images?: Array<Express.Multer.File>,
   ): Promise<ProductVariantEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
     const productCategoryId = createProductDto.productCategoryId;
@@ -65,13 +65,15 @@ export class ProductsService {
         )) as ProductBaseEntity;
       }
 
-      productImages = await Promise.all(
-        images.map((image) => {
-          return this.filesService.uploadFile(queryRunner, image, {
-            folder: Folder.ProductImages,
-          });
-        }),
-      );
+      if (images?.length) {
+        productImages = await Promise.all(
+          images.map((image) => {
+            return this.filesService.uploadFile(queryRunner, image, {
+              folder: Folder.ProductImages,
+            });
+          }),
+        );
+      }
 
       const productProperties = await queryRunner.manager.save(
         ProductPropertiesEntity,
@@ -114,7 +116,7 @@ export class ProductsService {
 
   async editProduct(
     editProductDto: EditProductDto,
-    images: Array<Express.Multer.File>,
+    images?: Array<Express.Multer.File>,
   ): Promise<ProductVariantEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
     const productCategoryId = editProductDto.productCategoryId;
@@ -158,13 +160,15 @@ export class ProductsService {
         );
       }
 
-      productImages = await Promise.all(
-        images.map((image) => {
-          return this.filesService.uploadFile(queryRunner, image, {
-            folder: Folder.ProductImages,
-          });
-        }),
-      );
+      if (images?.length) {
+        productImages = await Promise.all(
+          images.map((image) => {
+            return this.filesService.uploadFile(queryRunner, image, {
+              folder: Folder.ProductImages,
+            });
+          }),
+        );
+      }
       productImages = [...productImages, ...JSON.parse(editProductDto.existingImages)]
 
       const productProperties = await queryRunner.manager.save(

@@ -3,10 +3,10 @@ import { MenuItem } from 'primeng/api';
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 
-@Component( {
+@Component({
   selector: 'admin-menu',
   templateUrl: './admin.menu.component.html',
-} )
+})
 export class AdminMenuComponent implements OnInit {
   model: MenuItem[] = [];
 

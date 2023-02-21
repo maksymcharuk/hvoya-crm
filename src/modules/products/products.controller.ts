@@ -48,9 +48,10 @@ export class ProductsController {
           new MaxFilesSizeValidator({ maxSize: 5000000 }),
           new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
+        fileIsRequired: false,
       }),
     )
-    images: Array<Express.Multer.File>,
+    images?: Array<Express.Multer.File>,
   ) {
     return this.productsService.createProduct(body, images);
   }
@@ -59,9 +60,9 @@ export class ProductsController {
   @UseInterceptors(FilesInterceptor('images'))
   @CheckPolicies(
     (ability: AppAbility) =>
-      ability.can(Action.Edit, ProductCategoryEntity) &&
-      ability.can(Action.Edit, ProductBaseEntity) &&
-      ability.can(Action.Edit, ProductVariantEntity),
+      ability.can(Action.Update, ProductCategoryEntity) &&
+      ability.can(Action.Update, ProductBaseEntity) &&
+      ability.can(Action.Update, ProductVariantEntity),
   )
   editProduct(
     @Body() body: EditProductDto,
@@ -71,9 +72,10 @@ export class ProductsController {
           new MaxFilesSizeValidator({ maxSize: 5000000 }),
           new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
+        fileIsRequired: false,
       }),
     )
-    images: Array<Express.Multer.File>,
+    images?: Array<Express.Multer.File>,
   ) {
     return this.productsService.editProduct(body, images);
   }
