@@ -53,7 +53,7 @@ export default class ProductSeeder implements Seeder {
         Святковий вінок може стати чудовим новорічним подарунком.
       `,
         size: '55 см',
-        color: '#6DA35A',
+        color: 'red',
         price: 455,
         availableItemCount: 10,
         images: [
@@ -70,7 +70,7 @@ export default class ProductSeeder implements Seeder {
         Святковий вінок може стати чудовим новорічним подарунком.
       `,
         size: '55 см',
-        color: '#87e3ef',
+        color: 'blue',
         price: 455,
         availableItemCount: 10,
         images: [
@@ -85,7 +85,7 @@ export default class ProductSeeder implements Seeder {
         description:
           'Традиційна гілка ялинки. Композиція з хвойних гілок може замінити новорічне дерево.',
         size: '60 см',
-        color: '#6DA35A',
+        color: 'red',
         price: 197,
         availableItemCount: 10,
         images: [
@@ -100,7 +100,7 @@ export default class ProductSeeder implements Seeder {
         description:
           'Традиційна гілка ялинки. Композиція з хвойних гілок може замінити новорічне дерево.',
         size: '60 см',
-        color: '#87e3ef',
+        color: 'blue',
         price: 197,
         availableItemCount: 10,
         images: [
@@ -117,7 +117,7 @@ export default class ProductSeeder implements Seeder {
         напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
         Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
         size: '220 см',
-        color: '#6DA35A',
+        color: 'red',
         price: 2843,
         availableItemCount: 10,
         images: [
@@ -134,7 +134,7 @@ export default class ProductSeeder implements Seeder {
         напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
         Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
         size: '180 см',
-        color: '#EDEEF4',
+        color: 'green',
         price: 2843,
         availableItemCount: 10,
         images: [
@@ -150,7 +150,7 @@ export default class ProductSeeder implements Seeder {
         Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
         Така ялинка підійде як в офіс так і в дім.`,
         size: '70 см',
-        color: '#87e3ef',
+        color: 'blue',
         price: 614,
         availableItemCount: 10,
         images: [
@@ -166,13 +166,13 @@ export default class ProductSeeder implements Seeder {
         Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
         Така ялинка підійде як в офіс так і в дім.`,
         size: '90 см',
-        color: '#6DA35A',
+        color: 'red',
         price: 864,
         availableItemCount: 10,
         images: [
           await fileRepository.save({
             public_id: 'id-8',
-            url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675482162/blue-cast-christmas-tree-90-cm-in-burlap-thumb_vgxo9u.jpg',
+            url: 'https://res.cloudinary.com/djwybydjd/image/upload/v1675482162/green-cast-christmas-tree-90-cm-in-burlap-thumb_vgxo9u.jpg',
           }),
         ],
       },

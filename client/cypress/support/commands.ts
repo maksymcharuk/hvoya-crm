@@ -34,11 +34,14 @@ declare global {
       openProfilePage(): typeof openProfilePage;
       openSettingsPage(): typeof openSettingsPage;
       openProductCreatePage(): typeof openProductCreatePage;
-      selectFromDropdown(
-        dropdownId: string,
-        value: string,
-      ): typeof selectFromDropdown;
-      fillProductForm(product: any): typeof fillProductForm;
+      openProductEditPage(): typeof openProductEditPage;
+      selectFromDropdown(dropdownId: string, value: string): typeof selectFromDropdown;
+      fillProductForm(product: any, uploadImage?: boolean): typeof fillProductForm;
+      compareProductVariantFields(product: any): typeof compareProductVariantFields;
+      compareProductCategoryAndBase(testProductCategory: string, testProductBase: string): typeof compareProductCategoryAndBase;
+      uploadImageToProduct(): typeof uploadImageToProduct;
+      checkImagesAmount(length: number): typeof checkImagesAmount;
+      markFirstImageToBeRemoved(): typeof markFirstImageToBeRemoved;
     }
   }
 }
@@ -135,6 +138,11 @@ function openProductCreatePage(): void {
   cy.get('li').contains('Створити').click();
 }
 
+function openProductEditPage(): void {
+  cy.openProductsMenu();
+  cy.get('li').contains('Редагувати').click();
+}
+
 function registerNewUser(email: string, password: string): void {
   cy.signUp(email, password);
   cy.contains(email);
@@ -161,54 +169,75 @@ function registerNewAdmin(email: string, password: string): void {
 }
 
 function selectFromDropdown(dropdownId: string, value: string): void {
-  cy.get(dropdownId).click();
-  cy.get('.p-dropdown-item').contains(value).click();
+  cy.get(dropdownId).click('right');
+  cy.get('li[role="option"]').contains(value).click();
 }
 
-function fillProductForm(form: any): void {
+function fillProductForm(form: any, uploadImage: boolean = true): void {
+
+  if (form.selectedProduct) {
+    cy.selectFromDropdown('[data-cy="product-list"]', form.selectedProduct);
+  }
+
   if (form.categoryName && form.baseProductName) {
-    cy.get('[data-cy="new-product-category-toggle"]').click();
+    cy.get('[data-cy="new-product-category-toggle"]').click()
     cy.get('[data-cy="product-category-name"]').clear().type(form.categoryName);
-    cy.get('[data-cy="product-base-product-name"]')
-      .clear()
-      .type(form.baseProductName);
+    cy.get('[data-cy="product-base-product-name"]').clear().type(form.baseProductName);
   } else if (form.categorySelect && form.baseProductSelect) {
-    cy.selectFromDropdown(
-      '[data-cy="product-category-id"]',
-      form.categorySelect,
-    );
-    cy.selectFromDropdown(
-      '[data-cy="product-base-product-id"]',
-      form.baseProductSelect,
-    );
-  } else {
-    cy.selectFromDropdown(
-      '[data-cy="product-category-id"]',
-      form.categorySelect,
-    );
-    cy.get('[data-cy="new-base-product-toggle"]').click();
-    cy.get('[data-cy="product-base-product-name"]')
-      .clear()
-      .type(form.baseProductName);
+    cy.selectFromDropdown('[data-cy="product-category-id"]', form.categorySelect);
+    cy.selectFromDropdown('[data-cy="product-base-product-id"]', form.baseProductSelect);
+  } else if (form.categorySelect && form.baseProductName) {
+    cy.selectFromDropdown('[data-cy="product-category-id"]', form.categorySelect);
+    cy.get('[data-cy="new-base-product-toggle"]').click()
+    cy.get('[data-cy="product-base-product-name"]').clear().type(form.baseProductName);
   }
 
   cy.get('[data-cy="product-sku"]').clear().type(form.sku);
   cy.get('[data-cy="product-name-field"]').clear().type(form.name);
-  cy.get('[data-cy="product-description"]')
-    .get('div[class="ql-editor ql-blank"]')
-    .focus()
-    .type(form.description);
+  cy.get('[data-cy="product-description"]').get('div[data-placeholder="Введіть опис для продукту"]').focus().clear().type(form.description);
 
   cy.selectFromDropdown('[data-cy="product-size"]', form.size);
   cy.selectFromDropdown('[data-cy="product-color"]', form.color);
 
-  cy.get('[data-cy="product-prize"]')
+  cy.get('[data-cy="product-prize"] input')
     .type(Cypress._.repeat('{leftArrow}', 5))
+    .type(Cypress._.repeat('{del}', 1))
     .type(form.prize);
 
+  if (uploadImage) {
+    uploadImageToProduct();
+  }
+}
+
+function uploadImageToProduct() {
   cy.get('[data-cy="product-image-upload"]')
     .get('div[class="p-fileupload-content"]')
     .selectFile('cypress/files/product.jpeg', { action: 'drag-drop' });
+}
+
+function compareProductVariantFields(compareForm: any): void {
+  cy.get('[data-cy="product-sku"]').should('have.value', compareForm.sku);
+  cy.get('[data-cy="product-name-field"]').should('have.value', compareForm.name);
+  cy.get('[data-cy="product-description"]').get('div[data-placeholder="Введіть опис для продукту"]').should('have.text', compareForm.description);
+  cy.get('[data-cy="product-size"]').should('have.text', compareForm.size);
+  cy.get('[data-cy="product-color"]').should('have.text', compareForm.color);
+  cy.get('[data-cy="product-prize"] input').invoke('val')
+    .then((value) => {
+      expect(parseInt(value as string)).to.eq(compareForm.prize)
+    })
+}
+
+function compareProductCategoryAndBase(testProductCategory: string, testProductBase: string) {
+  cy.get('[data-cy="product-category-id"]').should('have.text', testProductCategory);
+  cy.get('[data-cy="product-base-product-id"]').should('have.text', testProductBase);
+}
+
+function checkImagesAmount(length: number) {
+  cy.get('[data-cy="product-images"]').find('img').should('have.length', length);
+}
+
+function markFirstImageToBeRemoved() {
+  cy.get('[data-cy="product-images"]').find('[data-cy="product-image-remove"]').first().click();
 }
 
 // ***********************************************
@@ -252,5 +281,11 @@ Cypress.Commands.add('openAccountPage', openAccountPage);
 Cypress.Commands.add('openProfilePage', openProfilePage);
 Cypress.Commands.add('openSettingsPage', openSettingsPage);
 Cypress.Commands.add('openProductCreatePage', openProductCreatePage);
+Cypress.Commands.add('openProductEditPage', openProductEditPage);
 Cypress.Commands.add('selectFromDropdown', selectFromDropdown);
 Cypress.Commands.add('fillProductForm', fillProductForm);
+Cypress.Commands.add('compareProductVariantFields', compareProductVariantFields);
+Cypress.Commands.add('compareProductCategoryAndBase', compareProductCategoryAndBase);
+Cypress.Commands.add('uploadImageToProduct', uploadImageToProduct);
+Cypress.Commands.add('checkImagesAmount', checkImagesAmount);
+Cypress.Commands.add('markFirstImageToBeRemoved', markFirstImageToBeRemoved);
