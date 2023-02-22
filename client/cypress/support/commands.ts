@@ -135,12 +135,12 @@ function openSettingsPage(): void {
 
 function openProductCreatePage(): void {
   cy.openProductsMenu();
-  cy.get('li').contains('Create').click();
+  cy.get('li').contains('Створити').click();
 }
 
 function openProductEditPage(): void {
   cy.openProductsMenu();
-  cy.get('li').contains('Edit').click();
+  cy.get('li').contains('Редагувати').click();
 }
 
 function registerNewUser(email: string, password: string): void {

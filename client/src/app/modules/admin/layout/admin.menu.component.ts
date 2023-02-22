@@ -16,50 +16,47 @@ export class AdminMenuComponent implements OnInit {
         label: '',
         items: [
           {
-            label: 'Home',
+            label: 'Головна',
             icon: 'pi pi-fw pi-home',
             routerLink: ['/'],
           },
           {
-            label: 'Products',
+            label: 'Продукти',
             icon: 'pi pi-fw pi-shopping-cart',
             items: [
               {
-                label: 'Products',
+                label: 'Список продуктів',
                 icon: 'pi pi-fw pi-book',
                 routerLink: ['products'],
               },
               {
-                label: 'Create',
+                label: 'Створити',
                 icon: 'pi pi-fw pi-plus-circle',
                 routerLink: ['products/create'],
               },
               {
-                label: 'Edit',
+                label: 'Редагувати',
                 icon: 'pi pi-fw pi-pencil',
                 routerLink: ['products/edit'],
               },
             ],
           },
           {
-            label: 'Order',
+            label: 'Замовлення',
             icon: 'pi pi-fw pi-shopping-bag',
-            routerLink: ['/'],
+            routerLink: ['orders'],
           },
           {
-            label: 'Requests',
+            label: 'Запити',
             icon: 'pi pi-fw pi-envelope',
-            routerLink: ['/'],
           },
           {
-            label: 'Favorites',
+            label: 'Улюблені',
             icon: 'pi pi-fw pi-heart',
-            routerLink: ['/'],
           },
           {
-            label: 'FAQ',
+            label: 'Запитання і відповіді',
             icon: 'pi pi-fw pi-question-circle',
-            routerLink: ['/'],
           },
         ],
       },

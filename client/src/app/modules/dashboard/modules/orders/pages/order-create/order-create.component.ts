@@ -11,9 +11,9 @@ import {
   OrderCreateFormGroup,
 } from '@shared/interfaces/dto/create-order.dto';
 import { AccountService } from '@shared/services/account.service';
+import { OrdersService } from '@shared/services/orders.service';
 
 import { CartService } from '../../../cart/services/cart/cart.service';
-import { OrdersService } from '../../services/orders/orders.service';
 
 @Component({
   selector: 'app-order-create',

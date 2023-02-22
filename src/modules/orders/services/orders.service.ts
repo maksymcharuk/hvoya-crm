@@ -302,6 +302,7 @@ export class OrdersService {
         'items.productProperties',
         'delivery.waybill',
         'paymentTransactions',
+        'customer',
       ],
       order: { createdAt: 'DESC' },
     });

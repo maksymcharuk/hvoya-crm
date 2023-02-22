@@ -15,7 +15,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
 
 import { OrderCartItemComponent } from './components/order-cart-item/order-cart-item.component';
-import { OrderViewItemComponent } from './components/order-view-item/order-view-item.component';
 import { OrdersRoutingModule } from './orders-routing.module';
 import { OrderCreateComponent } from './pages/order-create/order-create.component';
 import { OrderListComponent } from './pages/order-list/order-list.component';
@@ -27,7 +26,6 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     OrderCreateComponent,
     OrderCartItemComponent,
     OrderViewComponent,
-    OrderViewItemComponent,
   ],
   imports: [
     CommonModule,
