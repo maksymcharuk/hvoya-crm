@@ -297,7 +297,7 @@
         </div>
       
         <div class="col-12 selected-product-images-wrapper" *ngIf="isEdit && selectedProductImages.length">
-          <div class="selected-product-images-wrapper-image" *ngFor="let image of selectedProductImages">
+          <div class="selected-product-images-wrapper-image" *ngFor="let image of selectedProductImages" data-cy="product-images">
             <img [src]="image?.url" class="w-full" [class.open-preview]="image?.active" [class.remove]="image?.remove"
              (click)="setImageActive(image)" />
             <button
@@ -305,6 +305,7 @@
             pButton
             pRipple
             type="button"
+            data-cy="product-image-remove"
             [icon]="image?.remove ? 'pi pi-check' : 'pi pi-times'"
             [class]="image?.remove ? 'restore' : 'remove'"
             (click)="removeProductImage(image)"
