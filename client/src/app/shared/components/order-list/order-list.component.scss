@@ -1,0 +1,13 @@
+:host ::ng-deep {
+  .card {
+    overflow: hidden;
+  }
+
+  .p-datatable .p-datatable-header {
+    border-top: 0;
+  }
+
+  .p-datatable .p-paginator-bottom {
+    border-bottom: 0;
+  }
+}
