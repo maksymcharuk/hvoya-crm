@@ -1,0 +1,180 @@
+<ng-container *ngIf="!loading; else skeleton">
+  <p-table
+    #ordersTable
+    dataKey="id"
+    currentPageReportTemplate="Показано {first} до {last} з {totalRecords} замовлень"
+    [value]="orders"
+    [rowHover]="true"
+    [rows]="50"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[25, 50, 100]"
+    [paginator]="true"
+    [filterDelay]="0"
+    [globalFilterFields]="globalFilterFields"
+  >
+    <ng-template pTemplate="caption">
+      <div class="table-header flex justify-content-between align-items-center">
+        Замовлення
+        <form [formGroup]="searchForm" class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            formControlName="search"
+            type="text"
+            placeholder="Global Search"
+          />
+        </form>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>№</th>
+        <th style="width: 1%"></th>
+        <th>К-ть товарів</th>
+        <th pSortableColumn="createdAt">
+          <div class="flex justify-content-between align-items-center">
+            Дата
+            <p-sortIcon field="createdAt"></p-sortIcon>
+            <p-columnFilter
+              type="date"
+              field="createdAt"
+              display="menu"
+              class="ml-auto"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="status">
+          <div class="flex justify-content-between align-items-center">
+            Статус
+            <p-sortIcon field="status"></p-sortIcon>
+            <p-columnFilter
+              field="status"
+              matchMode="equals"
+              display="menu"
+              class="ml-auto"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <p-dropdown
+                  [ngModel]="value"
+                  [options]="orderStatuses"
+                  (onChange)="filter($event.value)"
+                  placeholder="Any"
+                >
+                  <ng-template let-option pTemplate="item">
+                    <app-order-status-badge
+                      [status]="option.label"
+                    ></app-order-status-badge>
+                  </ng-template>
+                </p-dropdown>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+        </th>
+        <th pSortableColumn="total">
+          <div class="flex justify-content-between align-items-center">
+            Сума
+            <p-sortIcon field="total"></p-sortIcon>
+            <p-columnFilter
+              type="numeric"
+              field="total"
+              display="menu"
+              currency="UAH"
+              class="ml-auto"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <ng-container *ngIf="adminView">
+          <th pSortableColumn="total">
+            <div class="flex justify-content-between align-items-center">
+              ПІБ
+              <p-sortIcon field="total"></p-sortIcon>
+              <p-columnFilter
+                type="numeric"
+                field="total"
+                display="menu"
+                currency="UAH"
+                class="ml-auto"
+              ></p-columnFilter>
+            </div>
+          </th>
+        </ng-container>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+      <tr class="p-selectable-row" [routerLink]="[order.id]">
+        <td>{{ order.id }}</td>
+        <td>
+          <div class="flex">
+            <img
+              *ngFor="let image of getPreviewThumbs(order); let first = first"
+              [src]="image.url"
+              [ngClass]="{ '-ml-4': !first }"
+              [alt]="image.alt"
+              class="w-3rem border-circle border border-1 border-200"
+            />
+          </div>
+        </td>
+        <td>{{ getOrderItemsNumber(order) }}</td>
+        <td>
+          <span class="p-column-title">Дата</span>
+          {{ order.createdAt | date : 'short' }}
+        </td>
+        <td>
+          <span class="p-column-title">Статус</span>
+          <app-order-status-badge
+            [status]="order.status"
+          ></app-order-status-badge>
+        </td>
+        <td>
+          <span class="p-column-title">Сума</span>
+          {{ order.total | currency }}
+        </td>
+        <ng-container *ngIf="adminView">
+          <td>
+            <span class="p-column-title">ПІБ</span>
+            {{ order.customer.firstName }} {{ order.customer.lastName }}
+            {{ order.customer.middleName }}
+          </td>
+        </ng-container>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8">Замовлень не знайдено</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-container>
+
+<ng-template #skeleton>
+  <div class="p-4 border-bottom-1 border-300">
+    <div class="flex justify-content-between align-items-center">
+      <p-skeleton height="16px" width="85px"></p-skeleton>
+      <p-skeleton height="39px" width="228px"></p-skeleton>
+    </div>
+  </div>
+  <div class="p-4 border-bottom-1 border-300">
+    <div class="flex justify-content-between align-items-center">
+      <p-skeleton height="28px" width="28px"></p-skeleton>
+      <p-skeleton height="28px" width="85px"></p-skeleton>
+      <p-skeleton height="28px" width="175px"></p-skeleton>
+      <p-skeleton height="28px" width="175px"></p-skeleton>
+      <p-skeleton height="28px" width="175px"></p-skeleton>
+    </div>
+  </div>
+  <ng-container *ngFor="let _ of [].constructor(5)">
+    <div class="p-4 border-bottom-1 border-300">
+      <div class="flex justify-content-between align-items-center">
+        <p-skeleton height="28px" width="28px"></p-skeleton>
+        <p-skeleton height="28px" width="85px"></p-skeleton>
+        <p-skeleton height="16px" width="98px"></p-skeleton>
+        <p-skeleton height="19px" width="86px"></p-skeleton>
+        <p-skeleton height="16px" width="55px"></p-skeleton>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

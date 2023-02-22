@@ -1,0 +1,138 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <div *ngIf="order$ | async as order">
+        <h4 class="flex align-items-center">
+          <span>Замовлення №{{ order.id }}</span>
+          <app-order-status-badge
+            class="ml-5"
+            [status]="order.status"
+          ></app-order-status-badge>
+        </h4>
+        <div class="my-5">
+          <ul class="list-none p-0 m-0 border-top-1 border-300">
+            <li
+              class="flex align-items-center py-3 px-2 flex-wrap surface-ground"
+            >
+              <div class="text-500 w-full md:w-2 font-medium">Дата</div>
+              <div class="text-900 w-full md:w-10">
+                {{ order.createdAt | date : 'short' }}
+              </div>
+            </li>
+            <li class="flex align-items-center py-3 px-2 flex-wrap">
+              <div class="text-500 w-full md:w-2 font-medium">ПІБ</div>
+              <div class="text-900 w-full md:w-10 line-height-3">
+                {{ order.delivery.firstName }} {{ order.delivery.lastName }}
+                {{ order.delivery.middleName }}
+              </div>
+            </li>
+            <li
+              class="flex align-items-center py-3 px-2 flex-wrap surface-ground"
+            >
+              <div class="text-500 w-full md:w-2 font-medium">Місто</div>
+              <div class="text-900 w-full md:w-10">
+                {{ order.delivery.city }}
+              </div>
+            </li>
+            <li class="flex align-items-center py-3 px-2 flex-wrap">
+              <div class="text-500 w-full md:w-2 font-medium">Відділення</div>
+              <div class="text-900 w-full md:w-10 line-height-3">
+                {{ order.delivery.postOffice }}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="my-5">
+          <h5>Дані доставки</h5>
+          <ul class="list-none p-0 m-0 border-top-1 border-300">
+            <li
+              class="flex align-items-center py-3 px-2 flex-wrap surface-ground"
+            >
+              <div class="text-500 w-full md:w-2 font-medium">Скан ТТН</div>
+              <div class="text-900 w-full md:w-10">
+                <a
+                  *ngIf="order.delivery.waybill?.url; else noWaybill"
+                  [href]="order.delivery.waybill?.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Завантажити накладну</a
+                >
+                <ng-template #noWaybill>
+                  <span>-</span>
+                </ng-template>
+              </div>
+            </li>
+            <li class="flex align-items-center py-3 px-2 flex-wrap">
+              <div class="text-500 w-full md:w-2 font-medium">
+                Статус доставки
+              </div>
+              <div class="text-900 w-full md:w-10 line-height-3">
+                <app-order-delivery-status-badge
+                  [status]="order.delivery.status"
+                ></app-order-delivery-status-badge>
+              </div>
+            </li>
+            <li class="flex py-3 px-2 flex-wrap surface-ground">
+              <div class="text-500 w-full md:w-2 font-medium"></div>
+              <form [formGroup]="updateWaybillForm" class="w-full md:w-10">
+                <div class="p-fluid">
+                  <div class="p-formgrid grid">
+                    <div class="field col-6">
+                      <label for="tracking-id">Номер ТТН:</label>
+                      <input
+                        id="tracking-id"
+                        pInputText
+                        formControlName="trackingId"
+                      />
+                      <app-form-control-error-message
+                        [formGroup]="updateWaybillForm"
+                        controlName="trackingId"
+                        errorType="required"
+                        errorMessage="Потрібно ввести номер ТТН"
+                      ></app-form-control-error-message>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-formgrid grid">
+                  <div class="field col-12 md:col-6">
+                    <p-fileUpload
+                      #waybillUpload
+                      [customUpload]="true"
+                      [auto]="true"
+                      (uploadHandler)="onFileUpload($event)"
+                      [maxFileSize]="1000000"
+                    >
+                    </p-fileUpload>
+                  </div>
+                </div>
+                <button
+                  (click)="updateWaybill()"
+                  pButton
+                  label="Оновини накладну"
+                ></button>
+              </form>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h5>Товари</h5>
+          <app-order-view-item
+            *ngFor="let orderItem of order.items"
+            [orderItem]="orderItem"
+          ></app-order-view-item>
+          <div class="flex">
+            <div class="w-12rem hidden md:block"></div>
+            <div class="md:pl-5 mt-2 flex-auto">
+              <div class="flex justify-content-end mb-4 pt-4">
+                <span class="text-xl text-900 font-bold text-3xl">Сума:</span>
+                <span class="text-xl text-900 font-bold text-3xl ml-5">
+                  {{ order.total | currency }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

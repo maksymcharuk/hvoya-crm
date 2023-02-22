@@ -1,17 +1,22 @@
 import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
+import { TableModule } from 'primeng/table';
 
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import localeUk from '@angular/common/locales/uk';
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 import { OrderDeliveryStatusBadgeComponent } from './components/order-delivery-status-badge/order-delivery-status-badge.component';
+import { OrderListComponent } from './components/order-list/order-list.component';
 import { OrderStatusBadgeComponent } from './components/order-status-badge/order-status-badge.component';
+import { OrderViewItemComponent } from './components/order-view-item/order-view-item.component';
 import { ProductItemComponent } from './components/product-item/product-item.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
@@ -29,9 +34,18 @@ const COMPONENTS = [
   StatusBadgeComponent,
   OrderStatusBadgeComponent,
   OrderDeliveryStatusBadgeComponent,
+  OrderListComponent,
+  OrderViewItemComponent,
 ];
 
-const PRIMENG_MODULES = [SelectButtonModule, SkeletonModule, ButtonModule];
+const PRIMENG_MODULES = [
+  SelectButtonModule,
+  SkeletonModule,
+  ButtonModule,
+  TableModule,
+  DropdownModule,
+  InputTextModule,
+];
 
 @NgModule({
   declarations: [
@@ -44,6 +58,7 @@ const PRIMENG_MODULES = [SelectButtonModule, SkeletonModule, ButtonModule];
     HttpClientModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     ...PRIMENG_MODULES,
   ],
   providers: [
