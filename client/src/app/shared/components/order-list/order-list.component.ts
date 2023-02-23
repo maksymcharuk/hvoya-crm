@@ -77,14 +77,6 @@ export class OrderListComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  test() {
-    console.log('test');
-  }
-
-  onPage(event: any) {
-    console.log(event);
-  }
-
   getPreviewThumbs(order: Order) {
     return order.items
       .map((item) => ({
