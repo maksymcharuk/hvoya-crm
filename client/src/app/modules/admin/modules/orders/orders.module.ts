@@ -1,3 +1,4 @@
+import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
 
@@ -21,6 +22,7 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     ReactiveFormsModule,
     InputTextModule,
     FileUploadModule,
+    DropdownModule,
   ],
 })
 export class OrdersModule {}

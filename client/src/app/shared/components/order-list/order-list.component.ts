@@ -1,7 +1,13 @@
 import { Table } from 'primeng/table';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 
-import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
 import { OrderStatus } from '@shared/enums/order-status.enum';
@@ -11,6 +17,7 @@ import { Order } from '@shared/interfaces/order.interface';
   selector: 'app-order-list',
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderListComponent implements OnDestroy {
   loading = true;
@@ -26,7 +33,7 @@ export class OrderListComponent implements OnDestroy {
     };
   });
 
-  private orderInternal: Order[] = [];
+  private orderInternal: any[] = [];
   private destroy$ = new Subject();
 
   @Input() adminView = false;
@@ -34,16 +41,16 @@ export class OrderListComponent implements OnDestroy {
     if (!orders) {
       return;
     }
-    this.orderInternal = orders;
+    this.orderInternal = orders.map((order) => ({
+      ...order,
+      createdAt: new Date(order.createdAt),
+    }));
     this.loading = false;
   }
   @ViewChild('ordersTable') ordersTable!: Table;
 
   get orders(): any[] {
-    return this.orderInternal.map((order) => ({
-      ...order,
-      createdAt: new Date(order.createdAt),
-    }));
+    return this.orderInternal;
   }
 
   get globalFilterFields() {
@@ -68,6 +75,14 @@ export class OrderListComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  test() {
+    console.log('test');
+  }
+
+  onPage(event: any) {
+    console.log(event);
   }
 
   getPreviewThumbs(order: Order) {

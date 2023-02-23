@@ -4,10 +4,50 @@
       <div *ngIf="order$ | async as order">
         <h4 class="flex align-items-center">
           <span>Замовлення №{{ order.id }}</span>
-          <app-order-status-badge
-            class="ml-5"
-            [status]="order.status"
-          ></app-order-status-badge>
+          <form
+            [formGroup]="updateOrderStatusForm"
+            class="flex align-items-center ml-5"
+          >
+            <ng-container *ngIf="!statusEdit; else statusEditView">
+              <app-order-status-badge
+                [status]="order.status"
+              ></app-order-status-badge>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-pencil"
+                class="p-button-sm p-button-link ml-1"
+                (click)="statusEdit = true"
+              ></button>
+            </ng-container>
+            <ng-template #statusEditView>
+              <p-dropdown
+                formControlName="orderStatus"
+                placeholder="Статус"
+                [options]="orderStatuses"
+                (onChange)="updateStatus()"
+              >
+                <ng-template let-selected pTemplate="selectedItem">
+                  <app-order-status-badge
+                    [status]="selected.label"
+                  ></app-order-status-badge>
+                </ng-template>
+                <ng-template let-option pTemplate="item">
+                  <app-order-status-badge
+                    [status]="option.label"
+                  ></app-order-status-badge>
+                </ng-template>
+              </p-dropdown>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-check"
+                class="ml-2"
+                (click)="statusEdit = false"
+                [disabled]="statusSubmitting$ | async"
+              ></button>
+            </ng-template>
+          </form>
         </h4>
         <div class="my-5">
           <ul class="list-none p-0 m-0 border-top-1 border-300">
@@ -101,6 +141,7 @@
                       [auto]="true"
                       (uploadHandler)="onFileUpload($event)"
                       [maxFileSize]="1000000"
+                      [disabled]="(waybillSubmitting$ | async)!"
                     >
                     </p-fileUpload>
                   </div>
@@ -109,6 +150,7 @@
                   (click)="updateWaybill()"
                   pButton
                   label="Оновини накладну"
+                  [disabled]="waybillSubmitting$ | async"
                 ></button>
               </form>
             </li>

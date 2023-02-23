@@ -20,7 +20,7 @@ export class OrderViewComponent {
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
 
   order$ = new BehaviorSubject<GetOrderResponse | null>(null);
-  submitting = false;
+  waybillSubmitting$ = new BehaviorSubject<boolean>(false);
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: ['', Validators.required],
@@ -46,6 +46,12 @@ export class OrderViewComponent {
         trackingId: order.delivery.trackingId,
       });
     });
+
+    this.waybillSubmitting$.subscribe((submitting) => {
+      submitting
+        ? this.updateWaybillForm.disable()
+        : this.updateWaybillForm.enable();
+    });
   }
 
   onFileUpload(event: any) {
@@ -68,11 +74,10 @@ export class OrderViewComponent {
     );
     formData.append('waybill', this.updateWaybillForm.get('waybill')?.value);
 
-    this.submitting = true;
-
+    this.waybillSubmitting$.next(true);
     this.ordersService
       .updateWaybill(this.route.snapshot.params['id'], formData)
-      .pipe(finalize(() => (this.submitting = false)))
+      .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((order: UpdateWaybillResponse) => {
         this.order$.next(order);
         this.waybillUpload.clear();

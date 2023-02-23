@@ -101,14 +101,16 @@
                       [auto]="true"
                       (uploadHandler)="onFileUpload($event)"
                       [maxFileSize]="1000000"
+                      [disabled]="(waybillSubmitting$ | async)!"
                     >
                     </p-fileUpload>
                   </div>
                 </div>
                 <button
-                  (click)="updateWaybill()"
                   pButton
                   label="Оновини накладну"
+                  (click)="updateWaybill()"
+                  [disabled]="waybillSubmitting$ | async"
                 ></button>
               </form>
             </li>

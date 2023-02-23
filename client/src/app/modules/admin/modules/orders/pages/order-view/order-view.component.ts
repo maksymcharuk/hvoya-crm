@@ -6,6 +6,8 @@ import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { OrderStatus } from '@shared/enums/order-status.enum';
+import { OrderUpdateFormGroup } from '@shared/interfaces/dto/update-order.dto copy';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
 import { GetOrderResponse } from '@shared/interfaces/responses/get-order.response';
 import { UpdateWaybillResponse } from '@shared/interfaces/responses/update-waybill.response';
@@ -20,12 +22,22 @@ export class OrderViewComponent {
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
 
   order$ = new BehaviorSubject<GetOrderResponse | null>(null);
-  submitting = false;
+  waybillSubmitting$ = new BehaviorSubject<boolean>(false);
+  statusSubmitting$ = new BehaviorSubject<boolean>(false);
+  statusEdit = false;
+  orderStatuses = Object.entries(OrderStatus).map(([key, value]) => ({
+    label: key,
+    value,
+  }));
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: ['', Validators.required],
     waybill: [''],
   }) as UpdateWaybillFormGroup;
+
+  updateOrderStatusForm = this.formBuilder.group({
+    orderStatus: ['', Validators.required],
+  }) as OrderUpdateFormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -45,6 +57,21 @@ export class OrderViewComponent {
       this.updateWaybillForm.patchValue({
         trackingId: order.delivery.trackingId,
       });
+      this.updateOrderStatusForm.patchValue({
+        orderStatus: order.status,
+      });
+    });
+
+    this.waybillSubmitting$.subscribe((submitting) => {
+      submitting
+        ? this.updateWaybillForm.disable()
+        : this.updateWaybillForm.enable();
+    });
+
+    this.statusSubmitting$.subscribe((submitting) => {
+      submitting
+        ? this.updateOrderStatusForm.disable()
+        : this.updateOrderStatusForm.enable();
     });
   }
 
@@ -54,6 +81,27 @@ export class OrderViewComponent {
     });
   }
 
+  updateStatus() {
+    const formData = new FormData();
+    formData.append(
+      'orderStatus',
+      this.updateOrderStatusForm.get('orderStatus')?.value,
+    );
+
+    this.statusSubmitting$.next(true);
+    this.ordersService
+      .orderUpdate(this.route.snapshot.params['id'], formData)
+      .pipe(finalize(() => this.statusSubmitting$.next(false)))
+      .subscribe((order: GetOrderResponse) => {
+        this.order$.next(order);
+        this.statusEdit = false;
+        this.messageService.add({
+          severity: 'success',
+          detail: 'Статус замовлення успішно оновлено',
+        });
+      });
+  }
+
   updateWaybill() {
     if (!this.updateWaybillForm.valid) {
       this.updateWaybillForm.markAllAsTouched();
@@ -61,18 +109,16 @@ export class OrderViewComponent {
     }
 
     const formData = new FormData();
-
     formData.append(
       'trackingId',
       this.updateWaybillForm.get('trackingId')?.value,
     );
     formData.append('waybill', this.updateWaybillForm.get('waybill')?.value);
 
-    this.submitting = true;
-
+    this.waybillSubmitting$.next(true);
     this.ordersService
       .updateWaybill(this.route.snapshot.params['id'], formData)
-      .pipe(finalize(() => (this.submitting = false)))
+      .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((order: UpdateWaybillResponse) => {
         this.order$.next(order);
         this.waybillUpload.clear();
