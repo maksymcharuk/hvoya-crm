@@ -21,7 +21,7 @@ export class AuthService {
     private http: HttpClient,
     private tokenService: TokenService,
     private router: Router,
-  ) {}
+  ) { }
 
   signIn(value: SignInDTO) {
     return this.http

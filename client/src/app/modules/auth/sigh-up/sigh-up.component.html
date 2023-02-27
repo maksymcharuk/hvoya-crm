@@ -1,74 +1,199 @@
-<div class="sign-up-wrapper">
-  <h3>Sign up</h3>
-  <form
-    class="sign-up-wrapper-form"
-    [formGroup]="signUpForm"
-    (ngSubmit)="onSubmit(signUpForm.value)"
-  >
-    <span class="p-float-label sign-up-wrapper-element p-input-icon-right">
-      <i class="pi pi-user"></i>
-      <input
-        name="email"
-        formControlName="email"
-        id="float-input-invalid"
-        type="email"
-        pInputText
-      />
-      <label for="float-input-invalid">Email</label>
-    </span>
-    <span class="p-float-label sign-up-wrapper-element">
-      <p-password
-        name="password"
-        formControlName="password"
-        id="float-input-invalid"
-        [toggleMask]="true"
-      >
-        <ng-template pTemplate="footer">
-          <p-divider></p-divider>
-          <p class="mt-2">Requirements</p>
-          <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-            <li [ngClass]="{ valid: !hasLowerCase }">
-              At least one lowercase
-              <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
-            </li>
-            <li [ngClass]="{ valid: !hasUpperCase }">
-              At least one uppercase
-              <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
-            </li>
-            <li [ngClass]="{ valid: !hasNumeric }">
-              At least one numeric
-              <i class="pi pi-check" *ngIf="!hasNumeric"></i>
-            </li>
-            <li [ngClass]="{ valid: !hasMinLength }">
-              Minimum 8 characters
-              <i class="pi pi-check" *ngIf="!hasMinLength"></i>
-            </li>
-          </ul>
-        </ng-template>
-      </p-password>
-      <label for="float-input-invalid">Password</label>
-    </span>
-    <span class="p-float-label sign-up-wrapper-element">
-      <p-password
-        name="confirmPassword"
-        formControlName="confirmPassword"
-        id="float-input-invalid"
-        [toggleMask]="true"
-        [feedback]="false"
-      >
-      </p-password>
-      <label for="float-input-invalid">Confirm password</label>
-    </span>
-    <div class="sign-up-wrapper-confirm-secttion">
-      <a [routerLink]="['/', 'auth', 'sign-in']">sign in</a>
-      <button
-        [disabled]="!signUpForm.valid"
-        type="submit"
-        pButton
-        label="Sign Up"
-      ></button>
+<div class="sign-up">
+  <img src="assets/images/logo.svg" alt="logo" />
+  <div class="sign-up-wrapper">
+    <div class="sign-up-wrapper-title">
+      <h3>Реєстрація</h3>
     </div>
-  </form>
+    <form [formGroup]="signUpForm" (ngSubmit)="onSubmit(signUpForm.value)">
+      <div class="grid sign-up-wrapper-form">
+        <div class="p-fluid p-formgrid grid">
+          <div class="field col-6 md:col-6">
+            <label for="email">Пошта</label>
+            <div class="p-input-icon-right">
+              <i class="pi pi-user"></i>
+              <input
+                name="email"
+                formControlName="email"
+                type="email"
+                pInputText
+                placeholder="Введіть пошту"
+              />
+            </div>
+            <app-form-control-error-message
+              [formGroup]="signUpForm"
+              controlName="email"
+              errorType="required"
+              errorMessage="Потрібно ввести пошту"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-6 md:col-6">
+            <label for="phoneNumber">Номер телефону</label>
+            <p-inputMask
+              name="phoneNumber"
+              inputId="phone-number"
+              formControlName="phoneNumber"
+              mask="+38 (999) 999-9999"
+              slotChar=" "
+              [unmask]="true"
+              [autoClear]="false"
+              placeholder="Введіть номер телефону"
+            ></p-inputMask>
+            <app-form-control-error-message
+              [formGroup]="signUpForm"
+              controlName="phoneNumber"
+              errorType="required"
+              errorMessage="Потрібно ввести номер телефону"
+            >
+            </app-form-control-error-message>
+          </div>
+        </div>
+        <div class="p-fluid p-formgrid grid">
+          <div class="field col-4 md:col-4">
+            <label for="firstName">Ім'я</label>
+            <input
+              name="firstName"
+              formControlName="firstName"
+              type="text"
+              pInputText
+              placeholder="Введіть ваше ім'я"
+            />
+            <app-form-control-error-message
+              [formGroup]="signUpForm"
+              controlName="firstName"
+              errorType="required"
+              errorMessage="Потрібно ввести ім'я"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-4 md:col-4">
+            <label for="middleName">По батькові</label>
+            <input
+              name="middleName"
+              formControlName="middleName"
+              type="text"
+              pInputText
+              placeholder="Введіть ваші по батькові"
+            />
+            <app-form-control-error-message
+              [formGroup]="signUpForm"
+              controlName="middleName"
+              errorType="required"
+              errorMessage="Потрібно ввести ваше по батькові"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-4 md:col-4">
+            <label for="lastName">Прізвище</label>
+            <input
+              name="lastName"
+              formControlName="lastName"
+              type="text"
+              pInputText
+              placeholder="Введіть прізвище"
+            />
+            <app-form-control-error-message
+              [formGroup]="signUpForm"
+              controlName="lastName"
+              errorType="required"
+              errorMessage="Потрібно ввести прізвище"
+            >
+            </app-form-control-error-message>
+          </div>
+        </div>
+        <div class="p-fluid p-formgrid grid">
+          <div class="field col-12 md:col-12">
+            <label for="bio">Опис організації</label>
+            <textarea
+              rows="5"
+              cols="80"
+              pInputTextarea
+              [autoResize]="true"
+              name="bio"
+              formControlName="bio"
+              placeholder="Введіть опис вашої організації"
+            >
+            </textarea>
+            <app-form-control-error-message
+              [formGroup]="signUpForm"
+              controlName="bio"
+              errorType="required"
+              errorMessage="Потрібно ввести опис"
+            >
+            </app-form-control-error-message>
+          </div>
+        </div>
+        <div class="p-fluid p-formgrid grid">
+          <div class="field col-6 md:col-6">
+            <label for="password">Пароль</label>
+            <p-password
+              name="password"
+              formControlName="password"
+              [toggleMask]="true"
+              placeholder="Введіть пароль"
+            >
+              <ng-template pTemplate="footer">
+                <p-divider></p-divider>
+                <p class="mt-2">Requirements</p>
+                <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                  <li [ngClass]="{ valid: !hasLowerCase }">
+                    At least one lowercase
+                    <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
+                  </li>
+                  <li [ngClass]="{ valid: !hasUpperCase }">
+                    At least one uppercase
+                    <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
+                  </li>
+                  <li [ngClass]="{ valid: !hasNumeric }">
+                    At least one numeric
+                    <i class="pi pi-check" *ngIf="!hasNumeric"></i>
+                  </li>
+                  <li [ngClass]="{ valid: !hasMinLength }">
+                    Minimum 8 characters
+                    <i class="pi pi-check" *ngIf="!hasMinLength"></i>
+                  </li>
+                </ul>
+              </ng-template>
+            </p-password>
+            <app-form-control-error-message
+              [formGroup]="signUpForm"
+              controlName="password"
+              errorType="required"
+              errorMessage="Потрібно ввести пароль"
+            >
+            </app-form-control-error-message>
+          </div>
+          <div class="field col-6 md:col-6">
+            <label for="confirmPassword">Підтвердіть пароль</label>
+            <p-password
+              name="confirmPassword"
+              formControlName="confirmPassword"
+              [toggleMask]="true"
+              [feedback]="false"
+              placeholder="Підтвердіть пароль"
+            >
+            </p-password>
+            <app-form-control-error-message
+              [formGroup]="signUpForm"
+              controlName="password"
+              errorType="required"
+              errorMessage="Потрібно підтвердити пароль"
+            >
+            </app-form-control-error-message>
+          </div>
+        </div>
+        <div class="row sign-up-wrapper-confirm-section">
+          <a [routerLink]="['/', 'auth', 'sign-in']">Вхід</a>
+          <button
+            type="submit"
+            pButton
+            label="Зареєструватися"
+            [disabled]="isLoading"
+          ></button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 <p-dialog
@@ -81,9 +206,10 @@
   [resizable]="false"
 >
   <p class="confirm-email-dialog-text">
-    Thank you for signing up. We have sent you an email with a link to confirm
-    your email address. If you don't see the email, please check your spam
-    folder.
+    Дякуємо за реєстрацію. Ми відправили вам листа з посиланням для
+    підтвердження вашої електронної адреси. Якщо ви не бачите листа, будь ласка,
+    перевірте папку спам. Також наш менеджер зв'яжеться з вами для підтвердження
+    вашої організації та отримання доступу до системи.
   </p>
   <p class="confirm-email-dialog-email">{{ confirmEmailValue }}</p>
 </p-dialog>

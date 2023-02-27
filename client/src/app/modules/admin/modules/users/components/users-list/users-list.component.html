@@ -1,0 +1,114 @@
+<ng-container *ngIf="!loading; else skeleton">
+  <p-table
+    #usersTable
+    dataKey="id"
+    currentPageReportTemplate="Показано {first} до {last} з {totalRecords} користувачів"
+    [value]="users"
+    [rowHover]="true"
+    [rows]="50"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[25, 50, 100]"
+    [paginator]="true"
+    [filterDelay]="0"
+    [globalFilterFields]="globalFilterFields"
+    rowGroupMode="subheader"
+    [groupRowsBy]="('SuperUpdate' | able : 'UsersPage') ? 'role' : null"
+  >
+    <ng-template pTemplate="caption">
+      <div class="table-header flex justify-content-between align-items-center">
+        Користувач
+        <form [formGroup]="searchForm" class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            formControlName="search"
+            type="text"
+            placeholder="Global Search"
+          />
+        </form>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th pSortableColumn="firstName">
+          <div class="flex justify-content-between align-items-center">
+            ПІБ
+            <p-sortIcon field="firstName"></p-sortIcon>
+            <p-columnFilter
+              type="text"
+              field="firstName"
+              display="menu"
+              class="ml-auto"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th>Пошта</th>
+        <th>Номер телефону</th>
+        <th>Підтверджений</th>
+        <th>Пошта підтверджена</th>
+        <th>Заморожений</th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="groupheader"
+      let-user
+      *ngIf="'SuperUpdate' | able : 'UsersPage'"
+    >
+      <tr pRowGroupHeader>
+        <td colspan="7">
+          <span class="font-bold ml-2">{{ user.role }}</span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr class="p-selectable-row" [routerLink]="[user.id]">
+        <td>{{ user.id }}</td>
+        <td>
+          <span class="p-column-title">ПІБ</span>
+          {{ user.lastName }} {{ user.firstName }}
+          {{ user.middleName }}
+        </td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phoneNumber }}</td>
+        <td>{{ user.userConfirmed ? 'Так' : 'Ні' }}</td>
+        <td>{{ user.emailConfirmed ? 'Так' : 'Ні' }}</td>
+        <td>{{ user.userFreezed ? 'Так' : 'Ні' }}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8">Користувачів не знайдено</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-container>
+
+<ng-template #skeleton>
+  <div class="p-4 border-bottom-1 border-300">
+    <div class="flex justify-content-between align-items-center">
+      <p-skeleton height="16px" width="85px"></p-skeleton>
+      <p-skeleton height="39px" width="228px"></p-skeleton>
+    </div>
+  </div>
+  <div class="p-4 border-bottom-1 border-300">
+    <div class="flex justify-content-between align-items-center">
+      <p-skeleton height="28px" width="28px"></p-skeleton>
+      <p-skeleton height="28px" width="85px"></p-skeleton>
+      <p-skeleton height="28px" width="175px"></p-skeleton>
+      <p-skeleton height="28px" width="175px"></p-skeleton>
+      <p-skeleton height="28px" width="175px"></p-skeleton>
+    </div>
+  </div>
+  <ng-container *ngFor="let _ of [].constructor(5)">
+    <div class="p-4 border-bottom-1 border-300">
+      <div class="flex justify-content-between align-items-center">
+        <p-skeleton height="28px" width="28px"></p-skeleton>
+        <p-skeleton height="28px" width="85px"></p-skeleton>
+        <p-skeleton height="16px" width="98px"></p-skeleton>
+        <p-skeleton height="19px" width="86px"></p-skeleton>
+        <p-skeleton height="16px" width="55px"></p-skeleton>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

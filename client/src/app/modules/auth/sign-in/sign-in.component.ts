@@ -35,9 +35,14 @@ export class SignInComponent {
     private userService: UserService,
     private policiesService: PoliciesService,
     private readonly messageService: MessageService,
-  ) {}
+  ) { }
 
   onSubmit(value: SignInDTO) {
+    if (!this.signInForm.valid) {
+      this.signInForm.markAllAsTouched();
+      return;
+    }
+
     this.isLoading = true;
     this.authService
       .signIn(value)

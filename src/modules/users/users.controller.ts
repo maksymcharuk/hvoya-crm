@@ -15,6 +15,8 @@ import { CreateUserDto } from '@dtos/create-user.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 
+import { User } from '@decorators/user.decorator';
+
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
@@ -27,7 +29,7 @@ export class UsersController {
   constructor(
     private dataSource: DataSource,
     private usersService: UsersService,
-  ) {}
+  ) { }
 
   @Post()
   @CheckPolicies((ability: AppAbility) =>
@@ -61,7 +63,19 @@ export class UsersController {
 
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
-  async getUsers() {
-    return this.usersService.getAll();
+  async getUsers(@User('id') userId: number) {
+    return this.usersService.getAll(userId);
+  }
+
+  @Post('confirm')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.SuperUpdate, UserEntity))
+  async confirmUser(@Body('userId') userId: number) {
+    return this.usersService.confirmUser(userId);
+  }
+
+  @Post('freeze-toggle')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.SuperUpdate, UserEntity))
+  async freezeToggleUser(@Body('userId') userId: number) {
+    return this.usersService.freezeToggleUser(userId);
   }
 }

@@ -15,6 +15,9 @@ export class UserEntity extends BaseEntity {
   firstName: string;
 
   @Column({ default: '' })
+  middleName: string;
+
+  @Column({ default: '' })
   lastName: string;
 
   @Column({
@@ -49,6 +52,16 @@ export class UserEntity extends BaseEntity {
     default: false,
   })
   emailConfirmed: boolean;
+
+  @Column({
+    default: false,
+  })
+  userConfirmed: boolean;
+
+  @Column({
+    default: false,
+  })
+  userFreezed: boolean;
 
   @OneToOne(() => CartEntity, (cart) => cart.owner)
   @JoinColumn()

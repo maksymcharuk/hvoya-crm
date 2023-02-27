@@ -1,17 +1,23 @@
-import { QueryRunner, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateUserDto } from '@dtos/create-user.dto';
 import { UserEntity } from '@entities/user.entity';
+import { Role } from '@enums/role.enum';
+import { Action } from '@enums/action.enum';
+
+import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-  ) {}
+    private dataSource: DataSource,
+    private caslAbilityFactory: CaslAbilityFactory,
+  ) { }
 
   async create(
     queryRunner: QueryRunner,
@@ -50,8 +56,36 @@ export class UsersService {
     return await this.usersRepository.findOneBy({ email });
   }
 
-  async getAll(): Promise<UserEntity[]> {
-    return await this.usersRepository.find();
+  async getAll(userId: number): Promise<UserEntity[]> {
+    const manager = this.dataSource.createEntityManager();
+    const user = await manager.findOneOrFail(UserEntity, {
+      where: { id: userId },
+    });
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (ability.can(Action.SuperRead, UserEntity)) {
+      return await this.usersRepository.find();
+    } else {
+      return await this.usersRepository.findBy({ role: Role.User });
+    }
+  }
+
+  async getAllAdmins(): Promise<UserEntity[]> {
+    return await this.usersRepository.findBy({ role: Role.SuperAdmin });
+  }
+
+  async confirmUser(userId: number): Promise<UserEntity> {
+    const user = await this.usersRepository.findOneByOrFail({ id: userId });
+    return await this.usersRepository.save({ ...user, userConfirmed: true });
+  }
+
+  async freezeToggleUser(userId: number): Promise<UserEntity> {
+    const user = await this.usersRepository.findOneByOrFail({ id: userId });
+    return await this.usersRepository.save({
+      ...user,
+      userFreezed: !user.userFreezed,
+    });
   }
 
   private sanitizeUser(user: UserEntity): UserEntity {

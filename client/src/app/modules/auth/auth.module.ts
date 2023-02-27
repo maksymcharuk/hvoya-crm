@@ -3,6 +3,8 @@ import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { InputMaskModule } from 'primeng/inputmask';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -16,6 +18,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { SighUpComponent } from './sigh-up/sigh-up.component';
 import { SignInComponent } from './sign-in/sign-in.component';
+import { SharedModule } from '@shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,10 @@ import { SignInComponent } from './sign-in/sign-in.component';
     ButtonModule,
     DividerModule,
     DialogModule,
+    InputMaskModule,
+    InputTextareaModule,
+    SharedModule,
   ],
   exports: [RouterModule],
 })
-export class AuthModule {}
+export class AuthModule { }
