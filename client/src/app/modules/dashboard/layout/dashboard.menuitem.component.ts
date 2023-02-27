@@ -69,6 +69,7 @@ import { MenuService } from '../../../shared/layout/services/menu.service';
         [state]="item.state"
         [queryParams]="item.queryParams"
         [attr.target]="item.target"
+        data-cy="menu-item"
         tabindex="0"
         pRipple
       >

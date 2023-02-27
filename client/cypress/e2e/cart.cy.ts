@@ -2,25 +2,17 @@ describe('Cart', () => {
   const productListPageUrl = '/dashboard/products';
   const cartPageUrl = '/dashboard/cart';
 
-  function getShoppingCartWidget(): Cypress.Chainable {
-    return cy.get('.layout-topbar-button .pi-shopping-cart');
-  }
-
-  function openShoppingCartWidget() {
-    getShoppingCartWidget().click();
-  }
-
   describe('Admins', () => {
     describe('Cart widget', () => {
       it('Cart widget is available for users', () => {
         it('Cart widget is not available for super admins', () => {
           cy.signInAsSuperAdmin({ full: true });
-          getShoppingCartWidget().should('not.exist');
+          cy.getShoppingCartWidgetMenuButton().should('not.exist');
         });
 
         it('Cart widget is not available for admins', () => {
           cy.signInAsAdmin({ full: true });
-          getShoppingCartWidget().should('not.exist');
+          cy.getShoppingCartWidgetMenuButton().should('not.exist');
         });
       });
     });
@@ -40,12 +32,11 @@ describe('Cart', () => {
 
     describe('Cart widget', () => {
       it('Cart widget is available for users', () => {
-        getShoppingCartWidget().should('exist');
+        cy.getShoppingCartWidgetMenuButton().should('exist');
       });
     });
 
     describe('Add to cart', () => {
-      let product: Cypress.Chainable;
       let productName: string;
       let productPrice: string;
       let productAddToCartButton: Cypress.Chainable;
@@ -53,7 +44,6 @@ describe('Cart', () => {
       beforeEach(() => {
         cy.visit(productListPageUrl);
 
-        product = cy.get('app-product-item').first();
         productAddToCartButton = cy
           .get('[data-cy="product-add-to-cart-button"]')
           .first();
@@ -69,9 +59,11 @@ describe('Cart', () => {
 
       it('Adds product to cart from product list page and change number', () => {
         // Cart widget should not have badge
-        getShoppingCartWidget().get('.p-badge').should('not.exist');
+        cy.getShoppingCartWidgetMenuButton()
+          .get('.p-badge')
+          .should('not.exist');
         // Cart widget should be empty
-        openShoppingCartWidget();
+        cy.openShoppingCartWidget();
         cy.get('app-cart-widget').contains('Cart is empty');
 
         // Add product to cart
@@ -79,9 +71,9 @@ describe('Cart', () => {
         cy.get('[role="alert"]').contains(productName);
 
         // Cart widget should have badge with product count
-        getShoppingCartWidget().should('contain', '1');
+        cy.getShoppingCartWidgetMenuButton().should('contain', '1');
         // Should be added to cart widget
-        openShoppingCartWidget();
+        cy.openShoppingCartWidget();
         cy.get('[data-cy="cart-widget-item"]').first().contains(productName);
 
         // Should be added to cart page
@@ -92,7 +84,7 @@ describe('Cart', () => {
         cy.get('p-inputnumber input').first().clear().type('2').blur();
 
         // Cart widget should have badge with product count
-        getShoppingCartWidget().should('contain', '2');
+        cy.getShoppingCartWidgetMenuButton().should('contain', '2');
 
         // Remove all products from cart
         cy.contains('a', 'Remove')
@@ -108,9 +100,11 @@ describe('Cart', () => {
         cy.contains('Cart is empty');
 
         // Cart widget should not have badge
-        getShoppingCartWidget().get('.p-badge').should('not.exist');
+        cy.getShoppingCartWidgetMenuButton()
+          .get('.p-badge')
+          .should('not.exist');
         // Cart widget should be empty
-        openShoppingCartWidget();
+        cy.openShoppingCartWidget();
         cy.get('app-cart-widget').contains('Cart is empty');
       });
     });
