@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 
 import {
   ConflictException,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -20,6 +21,7 @@ import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 import { appOrigin } from '../../../config';
 import { ConfirmEmailMail } from '../../../modules/mail/mails/confirm-email.mail';
 import { ResetPasswordEmailMail } from '../../../modules/mail/mails/reset-password-email.mail';
+import { ConfirmUserMail } from '../../../modules/mail/mails/confirm-user.mail';
 import { MailService } from '../../../modules/mail/services/mail.service';
 import { UsersService } from '../../../modules/users/services/users.service';
 
@@ -31,7 +33,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
@@ -42,6 +44,10 @@ export class AuthService {
 
     if (user.emailConfirmed === false) {
       throw new ConflictException('Email is not confirmed');
+    } else if (user.userConfirmed === false) {
+      throw new ForbiddenException('User is not confirmed');
+    } else if (user.userFreezed === true) {
+      throw new ForbiddenException('User is freezed');
     }
 
     return this.signToken(user);
@@ -52,12 +58,20 @@ export class AuthService {
     const { email } = authSignUpDto;
 
     let user = await this.usersService.findByEmail(email);
+    let adminUsers = await this.usersService.getAllAdmins();
     if (user) {
       throw new HttpException(
         'User with such email already exists',
         HttpStatus.CONFLICT,
       );
     }
+    if (adminUsers.length === 0) {
+      throw new HttpException(
+        'No admin users found. Please create an admin user first.',
+        HttpStatus.CONFLICT,
+      );
+    }
+    let adminEmails = adminUsers.map((user) => user.email);
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -68,7 +82,11 @@ export class AuthService {
       const url = `${appOrigin.get(
         this.configService.get('NODE_ENV') || Env.Development,
       )}/auth/confirm-email?token=${access_token}`;
+      const userUrl = `${appOrigin.get(
+        this.configService.get('NODE_ENV') || Env.Development,
+      )}/users/${user.id}`;
       await this.mailService.send(new ConfirmEmailMail(user, url), user.email);
+      await this.mailService.send(new ConfirmUserMail(user, userUrl), adminEmails);
       await queryRunner.commitTransaction();
     } catch (err) {
       await queryRunner.rollbackTransaction();

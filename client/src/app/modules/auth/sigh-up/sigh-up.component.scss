@@ -1,20 +1,29 @@
-.sign-up-wrapper {
+.sign-up {
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    &-element {
-        margin: 15px;
+    img {
+        margin-bottom: 20px;
+    }
+}
 
-        li {
-            font-size: 12px;
-        }
 
-        .valid {
-            color: green;
-        }
+.sign-up-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    height: 80vh;
+    padding: 0 50px;
+    border-radius: 50px;
+    border: 3px solid var(--primary-color);
+    
+    &-title {
+        margin-bottom: 20px;
     }
 
     &-form {
@@ -22,14 +31,13 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        width: 300px;
     }
 
-    &-confirm-secttion {
+    &-confirm-section {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 70%;
+        width: 30%;
     }
 
     a {
@@ -52,4 +60,8 @@
         font-size: 20px;
         font-weight: bold;
     }
+}
+
+::ng-deep .p-inputmask {
+    width: 100%;
 }

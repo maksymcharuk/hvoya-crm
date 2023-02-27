@@ -3,6 +3,11 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 export interface SignUpDTO {
   email: string;
   password: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  phoneNumber: string;
+  bio: string;
 }
 
 export interface SignUpDTOFormGroup extends FormGroup {
@@ -11,5 +16,10 @@ export interface SignUpDTOFormGroup extends FormGroup {
   controls: {
     email: AbstractControl;
     password: AbstractControl;
+    firstName: AbstractControl;
+    middleName: AbstractControl;
+    lastName: AbstractControl;
+    phoneNumber: AbstractControl;
+    bio: AbstractControl;
   };
 }

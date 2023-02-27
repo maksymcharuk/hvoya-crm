@@ -18,9 +18,9 @@ export class MailService {
   constructor(
     private readonly configService: ConfigService,
     private readonly templateService: TemplateService,
-  ) {}
+  ) { }
 
-  async send(mail: Mail, to: string): Promise<void> {
+  async send(mail: Mail, to: string | string[]): Promise<void> {
     // Don't send emails in test environment
     if (this.configService.get('NODE_ENV') === Env.Test) {
       return Promise.resolve();

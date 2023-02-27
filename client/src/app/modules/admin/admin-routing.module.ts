@@ -37,6 +37,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./modules/orders/orders.module').then((m) => m.OrdersModule),
       },
+      {
+        path: 'users',
+        loadChildren: () =>
+          import('./modules/users/users.module').then((m) => m.UsersModule),
+      },
     ],
   },
 ];
@@ -45,4 +50,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AdminRoutingModule {}
+export class AdminRoutingModule { }

@@ -9,7 +9,7 @@ import { UserService } from './user.service';
   providedIn: 'root',
 })
 export class PoliciesService {
-  constructor(private ability: AppAbility, private userService: UserService) {}
+  constructor(private ability: AppAbility, private userService: UserService) { }
 
   updateAbility() {
     const user = this.userService.getUser();
@@ -20,6 +20,7 @@ export class PoliciesService {
     switch (user.role) {
       case 'SuperAdmin':
         can('allowed', 'AdminPage');
+        can('SuperUpdate', 'UsersPage');
         break;
       case 'Admin':
         can('allowed', 'AdminPage');

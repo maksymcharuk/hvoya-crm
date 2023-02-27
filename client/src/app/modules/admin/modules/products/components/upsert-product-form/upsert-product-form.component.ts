@@ -58,7 +58,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     }),
     productBaseGroup: this.formBuilder.group({
       productBaseName: [''],
-      productBaseId: ['' as any, Validators.required],
+      productBaseId: [{ value: '', disabled: true } as any, Validators.required],
     }),
     productVariantGroup: this.formBuilder.group({
       productVariantSku: [{ value: '', disabled: true }, Validators.required],
@@ -86,6 +86,10 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getProducts();
     this.subscribeToFormChanges();
+
+    if (this.isEdit) {
+      this.productForm.get('productBaseGroup')?.enable();
+    }
   }
 
   ngOnDestroy(): void {

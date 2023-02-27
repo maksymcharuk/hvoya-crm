@@ -9,6 +9,8 @@ import {
 import { AuthService } from '@shared/services/auth.service';
 import { PasswordValidators } from '@shared/validators/password-validator';
 
+import { finalize } from 'rxjs';
+
 @Component({
   selector: 'app-sigh-up',
   templateUrl: './sigh-up.component.html',
@@ -21,6 +23,7 @@ export class SighUpComponent implements OnInit {
   hasMinLength: boolean | undefined = true;
   displayConfirmEmailModal: boolean = false;
   confirmEmailValue: string = '';
+  isLoading: boolean = false;
 
   signUpForm = this.formBuilder.group(
     {
@@ -36,6 +39,11 @@ export class SighUpComponent implements OnInit {
         ],
       ],
       confirmPassword: ['', Validators.required],
+      firstName: ['', Validators.required],
+      middleName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
+      bio: ['', Validators.required],
     },
     {
       validator: PasswordValidators.MatchValidator,
@@ -45,7 +53,7 @@ export class SighUpComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.signUpForm.valueChanges.subscribe(() => {
@@ -54,11 +62,19 @@ export class SighUpComponent implements OnInit {
   }
 
   onSubmit(value: SignUpDTO) {
-    this.authService.signUp(value).subscribe(() => {
-      this.displayConfirmEmailModal = true;
-      this.confirmEmailValue = this.signUpForm.get('email')?.value;
-      this.signUpForm.reset();
-    });
+    if (!this.signUpForm.valid) {
+      this.signUpForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+    this.authService.signUp(value)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe(() => {
+        this.displayConfirmEmailModal = true;
+        this.confirmEmailValue = this.signUpForm.get('email')?.value;
+        this.signUpForm.reset();
+      });
   }
 
   getPasswordErrors() {
