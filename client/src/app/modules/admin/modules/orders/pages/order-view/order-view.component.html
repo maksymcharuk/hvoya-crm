@@ -1,4 +1,4 @@
-<div class="grid">
+<div class="grid" data-cy="order-view-page">
   <div class="col-12">
     <div class="card">
       <div *ngIf="order$ | async as order">
@@ -10,6 +10,7 @@
           >
             <ng-container *ngIf="!statusEdit; else statusEditView">
               <app-order-status-badge
+                data-cy="order-status-current"
                 [status]="order.status"
               ></app-order-status-badge>
               <button
@@ -17,6 +18,7 @@
                 type="button"
                 icon="pi pi-pencil"
                 class="p-button-sm p-button-link ml-1"
+                data-cy="order-status-edit-button"
                 (click)="statusEdit = true"
               ></button>
             </ng-container>
@@ -24,6 +26,7 @@
               <p-dropdown
                 formControlName="orderStatus"
                 placeholder="Статус"
+                data-cy="order-status-edit-dropdown"
                 [options]="orderStatuses"
                 (onChange)="updateStatus()"
               >
@@ -41,7 +44,7 @@
               <button
                 pButton
                 type="button"
-                icon="pi pi-check"
+                icon="pi pi-times"
                 class="ml-2"
                 (click)="statusEdit = false"
                 [disabled]="statusSubmitting$ | async"

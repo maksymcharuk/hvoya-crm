@@ -3,7 +3,7 @@ import { FileUpload } from 'primeng/fileupload';
 import { BehaviorSubject, finalize } from 'rxjs';
 
 import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
@@ -26,6 +26,10 @@ export class OrderViewComponent {
     trackingId: ['', Validators.required],
     waybill: [''],
   }) as UpdateWaybillFormGroup;
+
+  get waybillControl(): AbstractControl {
+    return this.updateWaybillForm.controls.waybill;
+  }
 
   constructor(
     private formBuilder: FormBuilder,
@@ -55,9 +59,7 @@ export class OrderViewComponent {
   }
 
   onFileUpload(event: any) {
-    this.updateWaybillForm.patchValue({
-      waybill: event.files[0],
-    });
+    this.waybillControl.patchValue(event.files[0]);
   }
 
   updateWaybill() {
@@ -81,6 +83,7 @@ export class OrderViewComponent {
       .subscribe((order: UpdateWaybillResponse) => {
         this.order$.next(order);
         this.waybillUpload.clear();
+        this.waybillControl.reset();
         this.messageService.add({
           severity: 'success',
           detail: 'ТТП успішно оновлено',

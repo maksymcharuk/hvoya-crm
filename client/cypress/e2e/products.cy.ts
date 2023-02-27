@@ -1,5 +1,11 @@
 describe('Products', () => {
-  let sku: string, name: string, description: string, size: string, color: string, prize: number, baseProductName: string;
+  let sku: string,
+    name: string,
+    description: string,
+    size: string,
+    color: string,
+    prize: number,
+    baseProductName: string;
   let testProductName: string = `Product-${Date.now()}`;
   let testProductBase: string;
   let testProductCategory: string;
@@ -21,7 +27,7 @@ describe('Products', () => {
     });
 
     it('Open product create page', () => {
-      cy.get('[data-cy="product-category-id"]')
+      cy.get('[data-cy="product-category-id"]');
     });
 
     it('Create product with valid data', () => {
@@ -40,9 +46,7 @@ describe('Products', () => {
       });
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains(
-        'Продукт успішно створено',
-      );
+      cy.get('[role="alert"]').contains('Продукт успішно створено');
     });
 
     it('Create product with value duplicate', () => {
@@ -82,9 +86,7 @@ describe('Products', () => {
       });
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains(
-        'Продукт успішно створено',
-      );
+      cy.get('[role="alert"]').contains('Продукт успішно створено');
     });
 
     it('Create product with new base product', () => {
@@ -102,9 +104,7 @@ describe('Products', () => {
       });
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains(
-        'Продукт успішно створено',
-      );
+      cy.get('[role="alert"]').contains('Продукт успішно створено');
     });
   });
 
@@ -114,27 +114,28 @@ describe('Products', () => {
     });
 
     it('Open product edit page', () => {
-      cy.get('[data-cy="product-category-id"]')
+      cy.get('[data-cy="product-category-id"]');
     });
 
     it('Edit product variant data', () => {
-      cy.fillProductForm({
-        selectedProduct: testProductName,
-        sku,
-        name: testProductName,
-        description,
-        size,
-        color,
-        prize,
-      }, false);
-
-      cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains(
-        'Продукт успішно змінено',
+      cy.fillProductForm(
+        {
+          selectedProduct: testProductName,
+          sku,
+          name: testProductName,
+          description,
+          size,
+          color,
+          prize,
+        },
+        false,
       );
 
+      cy.get('[data-cy="product-save-button"]').click();
+      cy.get('[role="alert"]').contains('Продукт успішно змінено');
+
       cy.reload();
-      cy.selectFromDropdown('[data-cy="product-list"]', testProductName)
+      cy.selectFromDropdown('product-list', testProductName);
       cy.compareProductVariantFields({
         sku,
         name: testProductName,
@@ -146,55 +147,51 @@ describe('Products', () => {
     });
 
     it('Edit product category and base', () => {
-      cy.fillProductForm({
-        selectedProduct: testProductName,
-        categorySelect: testProductCategory,
-        baseProductSelect: testProductBase,
-        sku,
-        name: testProductName,
-        description,
-        size,
-        color,
-        prize,
-      }, false);
-
-      cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains(
-        'Продукт успішно змінено',
+      cy.fillProductForm(
+        {
+          selectedProduct: testProductName,
+          categorySelect: testProductCategory,
+          baseProductSelect: testProductBase,
+          sku,
+          name: testProductName,
+          description,
+          size,
+          color,
+          prize,
+        },
+        false,
       );
 
+      cy.get('[data-cy="product-save-button"]').click();
+      cy.get('[role="alert"]').contains('Продукт успішно змінено');
+
       cy.reload();
-      cy.selectFromDropdown('[data-cy="product-list"]', testProductName)
+      cy.selectFromDropdown('product-list', testProductName);
       cy.compareProductCategoryAndBase(testProductCategory, testProductBase);
     });
 
     it('Add image to product', () => {
-      cy.selectFromDropdown('[data-cy="product-list"]', testProductName)
+      cy.selectFromDropdown('product-list', testProductName);
       cy.uploadImageToProduct();
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains(
-        'Продукт успішно змінено',
-      );
+      cy.get('[role="alert"]').contains('Продукт успішно змінено');
 
       cy.reload();
-      cy.selectFromDropdown('[data-cy="product-list"]', testProductName)
+      cy.selectFromDropdown('product-list', testProductName);
       cy.checkImagesAmount(2);
     });
 
     it('Remove existing image from product', () => {
-      cy.selectFromDropdown('[data-cy="product-list"]', testProductName)
+      cy.selectFromDropdown('product-list', testProductName);
       cy.markFirstImageToBeRemoved();
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains(
-        'Продукт успішно змінено',
-      );
+      cy.get('[role="alert"]').contains('Продукт успішно змінено');
 
       cy.reload();
-      cy.selectFromDropdown('[data-cy="product-list"]', testProductName)
+      cy.selectFromDropdown('product-list', testProductName);
       cy.checkImagesAmount(1);
     });
   });
-
 });
