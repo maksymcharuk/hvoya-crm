@@ -24,6 +24,9 @@ describe('Cart', () => {
 
     before(() => {
       cy.registerNewUser(testUserEmail, testUserPassword);
+      cy.signInAsSuperAdmin();
+      cy.confirmUser(testUserEmail);
+      cy.logout();
     });
 
     beforeEach(() => {
@@ -88,7 +91,7 @@ describe('Cart', () => {
 
         // Remove all products from cart
         cy.contains('a', 'Remove')
-          .should((_) => {})
+          .should((_) => { })
           .then(($links) => {
             if ($links.length) {
               $links.each((_i, $el) => {

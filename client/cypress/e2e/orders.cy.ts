@@ -7,6 +7,9 @@ describe('Orders', () => {
 
     before(() => {
       cy.registerNewUser(testUserEmail, testUserPassword);
+      cy.signInAsSuperAdmin();
+      cy.confirmUser(testUserEmail);
+      cy.logout();
     });
 
     beforeEach(() => {

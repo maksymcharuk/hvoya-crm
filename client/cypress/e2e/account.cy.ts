@@ -7,6 +7,9 @@ describe('Account', () => {
       before(() => {
         testUserEmail = `user+${Date.now()}@email.com`;
         cy.registerNewUser(testUserEmail, testUserPassword);
+        cy.signInAsSuperAdmin();
+        cy.confirmUser(testUserEmail);
+        cy.logout();
       });
 
       beforeEach(() => {
@@ -92,6 +95,9 @@ describe('Account', () => {
         before(() => {
           testUserEmail = `user+${Date.now()}@email.com`;
           cy.registerNewUser(testUserEmail, testUserPassword);
+          cy.signInAsSuperAdmin();
+          cy.confirmUser(testUserEmail);
+          cy.logout();
         });
 
         it('Sign up as user and change password', () => {
@@ -127,6 +133,9 @@ describe('Account', () => {
       before(() => {
         testAdminEmail = `admin+${Date.now()}@email.com`;
         cy.registerNewAdmin(testAdminEmail, testAdminPassword);
+        cy.signInAsSuperAdmin();
+        cy.confirmUser(testAdminEmail);
+        cy.logout();
       });
 
       beforeEach(() => {
@@ -182,6 +191,9 @@ describe('Account', () => {
         before(() => {
           testAdminEmail = `admin+${Date.now()}@email.com`;
           cy.registerNewAdmin(testAdminEmail, testAdminPassword);
+          cy.signInAsSuperAdmin();
+          cy.confirmUser(testAdminEmail);
+          cy.logout();
         });
 
         it('Sign up as admin and change password', () => {

@@ -12,11 +12,11 @@ import { PasswordValidators } from '@shared/validators/password-validator';
 import { finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-sigh-up',
-  templateUrl: './sigh-up.component.html',
-  styleUrls: ['./sigh-up.component.scss'],
+  selector: 'app-sign-up',
+  templateUrl: './sign-up.component.html',
+  styleUrls: ['./sign-up.component.scss'],
 })
-export class SighUpComponent implements OnInit {
+export class SignUpComponent implements OnInit {
   hasLowerCase: boolean | undefined = true;
   hasUpperCase: boolean | undefined = true;
   hasNumeric: boolean | undefined = true;
