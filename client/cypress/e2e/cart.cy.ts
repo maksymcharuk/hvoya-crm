@@ -23,10 +23,7 @@ describe('Cart', () => {
     const testUserPassword = 'Test12345';
 
     before(() => {
-      cy.registerNewUser(testUserEmail, testUserPassword);
-      cy.signInAsSuperAdmin();
-      cy.confirmUser(testUserEmail);
-      cy.logout();
+      cy.registerNewUser(testUserEmail, testUserPassword, { confirm: true });
     });
 
     beforeEach(() => {
@@ -71,7 +68,7 @@ describe('Cart', () => {
 
         // Add product to cart
         productAddToCartButton.click();
-        cy.get('[role="alert"]').contains(productName);
+        cy.checkToastMessage(productName);
 
         // Cart widget should have badge with product count
         cy.getShoppingCartWidgetMenuButton().should('contain', '1');

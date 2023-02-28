@@ -40,7 +40,7 @@ declare global {
         email: string,
         password: string,
       ): typeof registerNewAdmin;
-      registerNewUser(email: string, password: string): typeof registerNewUser;
+      registerNewUser(email: string, password: string, options: any): typeof registerNewUser;
       logout(): typeof logout;
       openUserMenu(): typeof openUserMenu;
       openProductsMenu(): typeof openProductsMenu;
@@ -187,7 +187,7 @@ function openProductEditPage(): void {
   cy.get('li').contains('Редагувати').click();
 }
 
-function registerNewUser(email: string, password: string): void {
+function registerNewUser(email: string, password: string, options: any): void {
   cy.signUp(email, password);
   cy.contains(email);
   cy.contains('Дякуємо за реєстрацію');
@@ -200,10 +200,19 @@ function registerNewUser(email: string, password: string): void {
 
     cy.visit(`/auth/confirm-email?token=${token}`);
   });
+
+  if (options.confirm) {
+    cy.task<any[]>(
+      'connectDB',
+      `UPDATE public."user" 
+        SET "userConfirmed" = true
+        WHERE id = (SELECT max(id) FROM public."user")`,
+    );
+  }
 }
 
 function registerNewAdmin(email: string, password: string): void {
-  cy.registerNewUser(email, password);
+  cy.registerNewUser(email, password, { confirm: true });
   cy.task<any[]>(
     'connectDB',
     `UPDATE public."user" 
@@ -376,25 +385,29 @@ function confirmUser(email: string): void {
   cy.get('input[formcontrolname="search"]').type(email);
   cy.get('td').contains(email).click();
   cy.getCyEl('confirm-user-button').click();
-  cy.get('[role="alert"]').contains('Користувача підтверджено');
+  cy.checkToastMessage('Користувача підтверджено');
 }
 
 function freezeUser(email: string): void {
+  cy.signInAsSuperAdmin();
   cy.get('li').contains('Користувачі').click();
   cy.get('input[formcontrolname="search"]').type(email);
   cy.get('td').contains(email).click();
   cy.getCyEl('freeze-user-button').click();
-  cy.get('button[ng-reflect-label="Так"]').click();
-  cy.get('[role="alert"]').contains('Користувача заморожено');
+  cy.get('button').contains('Так').click();
+  cy.checkToastMessage('Користувача заморожено');
+  cy.logout();
 }
 
 function unFreezeUser(email: string): void {
+  cy.signInAsSuperAdmin();
   cy.get('li').contains('Користувачі').click();
   cy.get('input[formcontrolname="search"]').type(email);
   cy.get('td').contains(email).click();
   cy.getCyEl('unfreeze-user-button').click();
-  cy.get('button[ng-reflect-label="Так"]').click();
-  cy.get('[role="alert"]').contains('Користувача розморожено');
+  cy.get('button').contains('Так').click();
+  cy.checkToastMessage('Користувача розморожено');
+  cy.logout();
 }
 
 // ***********************************************

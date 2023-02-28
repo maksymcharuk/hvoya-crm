@@ -43,7 +43,7 @@ describe('Auth', () => {
     it('Sign in with invalid credentials', () => {
       const uniqueEmail = `test+${Date.now()}@email.com`;
       cy.signIn(uniqueEmail, '12345');
-      cy.get('[role="alert"]').contains('User not found');
+      cy.checkToastMessage('User not found');
     });
   });
 
@@ -67,21 +67,21 @@ describe('Auth', () => {
       cy.contains('Дякуємо за реєстрацію');
 
       cy.signIn(uniqueEmail, 'Test12345');
-      cy.get('[role="alert"]').contains('Email is not confirmed');
+      cy.checkToastMessage('Email is not confirmed');
     });
 
     it('Register new user, confirm email and try to sign in without user confirmation', () => {
       const email = `test+${Date.now()}@email.com`;
       const password = 'Test12345';
-      cy.registerNewUser(email, password);
+      cy.registerNewUser(email, password, { confirm: false });
       cy.signIn(email, password);
-      cy.get('[role="alert"]').contains('User is not confirmed');
+      cy.checkToastMessage('User is not confirmed');
     });
 
     it('Register new user, confirm email, confirm user as SuperAdmin and sign in', () => {
       const email = `test+${Date.now()}@email.com`;
       const password = 'Test12345';
-      cy.registerNewUser(email, password);
+      cy.registerNewUser(email, password, { confirm: false });
       cy.signInAsSuperAdmin();
       cy.confirmUser(email);
       cy.logout();
@@ -181,7 +181,7 @@ describe('Auth', () => {
       cy.contains('Дякуємо за реєстрацію');
 
       cy.signIn(uniqueEmail, 'Test12345');
-      cy.get('[role="alert"]').contains(
+      cy.checkToastMessage(
         'Please check your email to confirm your account',
       );
     });
@@ -192,19 +192,14 @@ describe('Auth', () => {
     const password = 'Test12345';
 
     it('Freeze user', () => {
-      cy.registerNewUser(email, password);
-      cy.signInAsSuperAdmin();
-      cy.confirmUser(email);
+      cy.registerNewUser(email, password, { confirm: true });
       cy.freezeUser(email);
-      cy.logout();
       cy.signIn(email, password);
-      cy.get('[role="alert"]').contains('User is freezed');
+      cy.checkToastMessage('User is freezed');
     });
 
-    it('unfreeze user', () => {
-      cy.signInAsSuperAdmin();
+    it('Unfreeze user', () => {
       cy.unFreezeUser(email);
-      cy.logout();
       cy.signIn(email, password);
       cy.contains('Hello user');
     });

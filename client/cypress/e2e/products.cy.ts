@@ -46,7 +46,7 @@ describe('Products', () => {
       });
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains('Продукт успішно створено');
+      cy.checkToastMessage('Продукт успішно створено');
     });
 
     it('Create product with value duplicate', () => {
@@ -64,7 +64,7 @@ describe('Products', () => {
       });
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains(
+      cy.checkToastMessage(
         'duplicate key value violates unique constraint',
       );
     });
@@ -86,7 +86,7 @@ describe('Products', () => {
       });
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains('Продукт успішно створено');
+      cy.checkToastMessage('Продукт успішно створено');
     });
 
     it('Create product with new base product', () => {
@@ -104,7 +104,7 @@ describe('Products', () => {
       });
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains('Продукт успішно створено');
+      cy.checkToastMessage('Продукт успішно створено');
     });
   });
 
@@ -132,7 +132,7 @@ describe('Products', () => {
       );
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains('Продукт успішно змінено');
+      cy.checkToastMessage('Продукт успішно змінено');
 
       cy.reload();
       cy.selectFromDropdown('product-list', testProductName);
@@ -163,7 +163,7 @@ describe('Products', () => {
       );
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains('Продукт успішно змінено');
+      cy.checkToastMessage('Продукт успішно змінено');
 
       cy.reload();
       cy.selectFromDropdown('product-list', testProductName);
@@ -175,7 +175,7 @@ describe('Products', () => {
       cy.uploadImageToProduct();
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains('Продукт успішно змінено');
+      cy.checkToastMessage('Продукт успішно змінено');
 
       cy.reload();
       cy.selectFromDropdown('product-list', testProductName);
@@ -187,7 +187,7 @@ describe('Products', () => {
       cy.markFirstImageToBeRemoved();
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.get('[role="alert"]').contains('Продукт успішно змінено');
+      cy.checkToastMessage('Продукт успішно змінено');
 
       cy.reload();
       cy.selectFromDropdown('product-list', testProductName);
