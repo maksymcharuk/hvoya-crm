@@ -6,7 +6,7 @@ describe('Orders', () => {
     const testUserPassword = 'Test12345';
 
     before(() => {
-      cy.registerNewUser(testUserEmail, testUserPassword);
+      cy.registerNewUser(testUserEmail, testUserPassword, { confirm: true });
     });
 
     beforeEach(() => {

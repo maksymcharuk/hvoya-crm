@@ -40,7 +40,7 @@ declare global {
         email: string,
         password: string,
       ): typeof registerNewAdmin;
-      registerNewUser(email: string, password: string): typeof registerNewUser;
+      registerNewUser(email: string, password: string, options: any): typeof registerNewUser;
       logout(): typeof logout;
       openUserMenu(): typeof openUserMenu;
       openProductsMenu(): typeof openProductsMenu;
@@ -75,6 +75,9 @@ declare global {
         data: CreateOrderForm,
       ): typeof fillAndSubmitCreateOrderForm;
       checkToastMessage(message: string): typeof checkToastMessage;
+      confirmUser(email: string): typeof confirmUser;
+      freezeUser(email: string): typeof freezeUser;
+      unFreezeUser(email: string): typeof unFreezeUser;
     }
   }
 }
@@ -127,10 +130,14 @@ function signInAsUser(options?: SignInOptions): void {
 
 function signUp(email: string, password: string): void {
   cy.visit('/auth/sign-up');
-  cy.get('input[type=email]').type(email);
-  cy.get('input[type=password]').first().type(password);
-  cy.get('input[type=password]').first().blur();
-  cy.get('input[type=password]').last().type(password);
+  cy.getCyEl('email').type(email);
+  cy.getCyEl('phone-number').type('1234567890');
+  cy.getCyEl('first-name').type('test-firstName');
+  cy.getCyEl('middle-name').type('test-middleName');
+  cy.getCyEl('last-name').type('test-lastName');
+  cy.getCyEl('bio').type('test-bio');
+  cy.getCyEl('password').type(password);
+  cy.getCyEl('confirm-password').type(password);
   cy.get('button[type=submit]').click();
 }
 
@@ -180,10 +187,10 @@ function openProductEditPage(): void {
   cy.get('li').contains('Редагувати').click();
 }
 
-function registerNewUser(email: string, password: string): void {
+function registerNewUser(email: string, password: string, options: any): void {
   cy.signUp(email, password);
   cy.contains(email);
-  cy.contains('Thank you for signing up');
+  cy.contains('Дякуємо за реєстрацію');
 
   cy.task<any[]>(
     'connectDB',
@@ -193,10 +200,19 @@ function registerNewUser(email: string, password: string): void {
 
     cy.visit(`/auth/confirm-email?token=${token}`);
   });
+
+  if (options.confirm) {
+    cy.task<any[]>(
+      'connectDB',
+      `UPDATE public."user" 
+        SET "userConfirmed" = true
+        WHERE id = (SELECT max(id) FROM public."user")`,
+    );
+  }
 }
 
 function registerNewAdmin(email: string, password: string): void {
-  cy.registerNewUser(email, password);
+  cy.registerNewUser(email, password, { confirm: true });
   cy.task<any[]>(
     'connectDB',
     `UPDATE public."user" 
@@ -364,6 +380,36 @@ function checkToastMessage(message: string): void {
   cy.get('p-toast').should('contain', message);
 }
 
+function confirmUser(email: string): void {
+  cy.get('li').contains('Користувачі').click();
+  cy.get('input[formcontrolname="search"]').type(email);
+  cy.get('td').contains(email).click();
+  cy.getCyEl('confirm-user-button').click();
+  cy.checkToastMessage('Користувача підтверджено');
+}
+
+function freezeUser(email: string): void {
+  cy.signInAsSuperAdmin();
+  cy.get('li').contains('Користувачі').click();
+  cy.get('input[formcontrolname="search"]').type(email);
+  cy.get('td').contains(email).click();
+  cy.getCyEl('freeze-user-button').click();
+  cy.get('button').contains('Так').click();
+  cy.checkToastMessage('Користувача заморожено');
+  cy.logout();
+}
+
+function unFreezeUser(email: string): void {
+  cy.signInAsSuperAdmin();
+  cy.get('li').contains('Користувачі').click();
+  cy.get('input[formcontrolname="search"]').type(email);
+  cy.get('td').contains(email).click();
+  cy.getCyEl('unfreeze-user-button').click();
+  cy.get('button').contains('Так').click();
+  cy.checkToastMessage('Користувача розморожено');
+  cy.logout();
+}
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -431,3 +477,6 @@ Cypress.Commands.add(
   fillAndSubmitCreateOrderForm,
 );
 Cypress.Commands.add('checkToastMessage', checkToastMessage);
+Cypress.Commands.add('confirmUser', confirmUser);
+Cypress.Commands.add('freezeUser', freezeUser);
+Cypress.Commands.add('unFreezeUser', unFreezeUser);

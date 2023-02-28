@@ -6,7 +6,7 @@ describe('Account', () => {
 
       before(() => {
         testUserEmail = `user+${Date.now()}@email.com`;
-        cy.registerNewUser(testUserEmail, testUserPassword);
+        cy.registerNewUser(testUserEmail, testUserPassword, { confirm: true });
       });
 
       beforeEach(() => {
@@ -34,7 +34,7 @@ describe('Account', () => {
 
         cy.get('button[type=submit]').click();
 
-        cy.get('[role="alert"]').contains('Profile updated successfully');
+        cy.checkToastMessage('Profile updated successfully');
         cy.get('.user-info .user-info__name').contains(
           `${firstName} ${lastName}`,
         );
@@ -64,7 +64,7 @@ describe('Account', () => {
 
         cy.get('input[id="phone-number"]').clear().type(phoneNumber);
         cy.get('button[type=submit]').click();
-        cy.get('[role="alert"]').contains('Phone number is not valid');
+        cy.checkToastMessage('Phone number is not valid');
       });
 
       it('Sign in as user and try to update profile with invalid card data', () => {
@@ -72,14 +72,14 @@ describe('Account', () => {
 
         cy.get('input[id="card-number"]').clear().type(invalidCardNumber);
         cy.get('button[type=submit]').click();
-        cy.get('[role="alert"]').contains('Card number is not valid');
+        cy.checkToastMessage('Card number is not valid');
 
         const validCardNumber = '5218 5722 2223 2634';
 
         cy.get('input[id="card-number"]').clear().type(validCardNumber);
         cy.get('input[id="cardholder-name"]').clear();
         cy.get('button[type=submit]').click();
-        cy.get('[role="alert"]').contains('Cardholder name is required');
+        cy.checkToastMessage('Cardholder name is required');
       });
     });
 
@@ -91,7 +91,7 @@ describe('Account', () => {
 
         before(() => {
           testUserEmail = `user+${Date.now()}@email.com`;
-          cy.registerNewUser(testUserEmail, testUserPassword);
+          cy.registerNewUser(testUserEmail, testUserPassword, { confirm: true });
         });
 
         it('Sign up as user and change password', () => {
@@ -107,7 +107,7 @@ describe('Account', () => {
             .clear()
             .type(userUpdatedPassword);
           cy.get('button[type=submit]').click();
-          cy.get('[role="alert"]').contains(
+          cy.checkToastMessage(
             'Password was changed successfully',
           );
         });
@@ -146,7 +146,7 @@ describe('Account', () => {
 
         cy.get('button[type=submit]').click();
 
-        cy.get('[role="alert"]').contains('Profile updated successfully');
+        cy.checkToastMessage('Profile updated successfully');
         cy.get('.user-info .user-info__name').contains(
           `${firstName} ${lastName}`,
         );
@@ -169,7 +169,7 @@ describe('Account', () => {
 
         cy.get('input[id="phone-number"]').clear().type(phoneNumber);
         cy.get('button[type=submit]').click();
-        cy.get('[role="alert"]').contains('Phone number is not valid');
+        cy.checkToastMessage('Phone number is not valid');
       });
     });
 
@@ -198,7 +198,7 @@ describe('Account', () => {
             .clear()
             .type(adminUpdatedPassword);
           cy.get('button[type=submit]').click();
-          cy.get('[role="alert"]').contains(
+          cy.checkToastMessage(
             'Password was changed successfully',
           );
         });

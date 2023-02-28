@@ -4,12 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { SighUpComponent } from './sigh-up/sigh-up.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 
 const routes: Routes = [
   { path: 'sign-in', component: SignInComponent },
-  { path: 'sign-up', component: SighUpComponent },
+  { path: 'sign-up', component: SignUpComponent },
   { path: 'confirm-email', component: ConfirmEmailComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
@@ -19,4 +19,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AuthRoutingModule {}
+export class AuthRoutingModule { }

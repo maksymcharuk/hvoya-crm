@@ -17,6 +17,7 @@
                 type="email"
                 pInputText
                 placeholder="Введіть пошту"
+                data-cy="email"
               />
             </div>
             <app-form-control-error-message
@@ -38,6 +39,7 @@
               [unmask]="true"
               [autoClear]="false"
               placeholder="Введіть номер телефону"
+              data-cy="phone-number"
             ></p-inputMask>
             <app-form-control-error-message
               [formGroup]="signUpForm"
@@ -57,6 +59,7 @@
               type="text"
               pInputText
               placeholder="Введіть ваше ім'я"
+              data-cy="first-name"
             />
             <app-form-control-error-message
               [formGroup]="signUpForm"
@@ -74,6 +77,7 @@
               type="text"
               pInputText
               placeholder="Введіть ваші по батькові"
+              data-cy="middle-name"
             />
             <app-form-control-error-message
               [formGroup]="signUpForm"
@@ -91,6 +95,7 @@
               type="text"
               pInputText
               placeholder="Введіть прізвище"
+              data-cy="last-name"
             />
             <app-form-control-error-message
               [formGroup]="signUpForm"
@@ -112,6 +117,7 @@
               name="bio"
               formControlName="bio"
               placeholder="Введіть опис вашої організації"
+              data-cy="bio"
             >
             </textarea>
             <app-form-control-error-message
@@ -131,6 +137,7 @@
               formControlName="password"
               [toggleMask]="true"
               placeholder="Введіть пароль"
+              data-cy="password"
             >
               <ng-template pTemplate="footer">
                 <p-divider></p-divider>
@@ -171,6 +178,7 @@
               [toggleMask]="true"
               [feedback]="false"
               placeholder="Підтвердіть пароль"
+              data-cy="confirm-password"
             >
             </p-password>
             <app-form-control-error-message

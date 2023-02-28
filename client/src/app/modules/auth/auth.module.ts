@@ -16,14 +16,14 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { SighUpComponent } from './sigh-up/sigh-up.component';
+import { SignUpComponent } from './sign-up/sign-up.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SharedModule } from '@shared/shared.module';
 
 @NgModule({
   declarations: [
     SignInComponent,
-    SighUpComponent,
+    SignUpComponent,
     ConfirmEmailComponent,
     ResetPasswordComponent,
     ForgotPasswordComponent,

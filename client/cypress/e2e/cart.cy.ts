@@ -23,7 +23,7 @@ describe('Cart', () => {
     const testUserPassword = 'Test12345';
 
     before(() => {
-      cy.registerNewUser(testUserEmail, testUserPassword);
+      cy.registerNewUser(testUserEmail, testUserPassword, { confirm: true });
     });
 
     beforeEach(() => {
@@ -68,7 +68,7 @@ describe('Cart', () => {
 
         // Add product to cart
         productAddToCartButton.click();
-        cy.get('[role="alert"]').contains(productName);
+        cy.checkToastMessage(productName);
 
         // Cart widget should have badge with product count
         cy.getShoppingCartWidgetMenuButton().should('contain', '1');
@@ -88,7 +88,7 @@ describe('Cart', () => {
 
         // Remove all products from cart
         cy.contains('a', 'Remove')
-          .should((_) => {})
+          .should((_) => { })
           .then(($links) => {
             if ($links.length) {
               $links.each((_i, $el) => {

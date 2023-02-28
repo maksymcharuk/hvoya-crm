@@ -62,6 +62,7 @@
                   label="Надати доступ до системи"
                   (click)="confirmUser()"
                   class="p-button-success mr-4"
+                  data-cy="confirm-user-button"
                 ></button>
                 <p-confirmDialog
                   rejectButtonStyleClass="p-button-text"
@@ -85,6 +86,7 @@
                   (click)="confirmFreezeToggle()"
                   class="p-button-success"
                   icon="pi pi-unlock"
+                  data-cy="unfreeze-user-button"
                 ></button>
                 <ng-template #freeze>
                   <button
@@ -94,6 +96,7 @@
                     (click)="confirmFreezeToggle()"
                     class="p-button-danger"
                     icon="pi pi-lock"
+                    data-cy="freeze-user-button"
                   ></button>
                 </ng-template>
               </div>

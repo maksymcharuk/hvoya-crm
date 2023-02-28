@@ -4,7 +4,7 @@ describe('Auth', () => {
   describe('Sign in', () => {
     it('Visits Sign In page', () => {
       cy.visit('/');
-      cy.contains('Sign in');
+      cy.contains('Вхід');
     });
 
     it('Sign in as super admin', () => {
@@ -43,37 +43,48 @@ describe('Auth', () => {
     it('Sign in with invalid credentials', () => {
       const uniqueEmail = `test+${Date.now()}@email.com`;
       cy.signIn(uniqueEmail, '12345');
-      cy.get('[role="alert"]').contains('User not found');
+      cy.checkToastMessage('User not found');
     });
   });
 
   describe('Sign up', () => {
     it('Visits Sign Up page', () => {
       cy.visit('/auth/sign-up');
-      cy.contains('Sign up');
+      cy.contains('Реєстрація');
     });
 
     it('Register new user', () => {
       const uniqueEmail = `test+${Date.now()}@email.com`;
       cy.signUp(uniqueEmail, 'Test12345');
       cy.contains(uniqueEmail);
-      cy.contains('Thank you for signing up');
+      cy.contains('Дякуємо за реєстрацію');
     });
 
     it('Register new user and try to sign in without confirmation', () => {
       const uniqueEmail = `test+${Date.now()}@email.com`;
       cy.signUp(uniqueEmail, 'Test12345');
       cy.contains(uniqueEmail);
-      cy.contains('Thank you for signing up');
+      cy.contains('Дякуємо за реєстрацію');
 
       cy.signIn(uniqueEmail, 'Test12345');
-      cy.get('[role="alert"]').contains('Email is not confirmed');
+      cy.checkToastMessage('Email is not confirmed');
     });
 
-    it('Register new user, confirm and sign in', () => {
+    it('Register new user, confirm email and try to sign in without user confirmation', () => {
       const email = `test+${Date.now()}@email.com`;
       const password = 'Test12345';
-      cy.registerNewUser(email, password);
+      cy.registerNewUser(email, password, { confirm: false });
+      cy.signIn(email, password);
+      cy.checkToastMessage('User is not confirmed');
+    });
+
+    it('Register new user, confirm email, confirm user as SuperAdmin and sign in', () => {
+      const email = `test+${Date.now()}@email.com`;
+      const password = 'Test12345';
+      cy.registerNewUser(email, password, { confirm: false });
+      cy.signInAsSuperAdmin();
+      cy.confirmUser(email);
+      cy.logout();
       cy.signIn(email, password);
       cy.contains('Hello user');
     });
@@ -167,12 +178,30 @@ describe('Auth', () => {
       const uniqueEmail = `test+${Date.now()}@email.com`;
       cy.signUp(uniqueEmail, 'Test12345');
       cy.contains(uniqueEmail);
-      cy.contains('Thank you for signing up');
+      cy.contains('Дякуємо за реєстрацію');
 
       cy.signIn(uniqueEmail, 'Test12345');
-      cy.get('[role="alert"]').contains(
+      cy.checkToastMessage(
         'Please check your email to confirm your account',
       );
+    });
+  });
+
+  describe('Freezed user', () => {
+    const email = `test+${Date.now()}@email.com`;
+    const password = 'Test12345';
+
+    it('Freeze user', () => {
+      cy.registerNewUser(email, password, { confirm: true });
+      cy.freezeUser(email);
+      cy.signIn(email, password);
+      cy.checkToastMessage('User is freezed');
+    });
+
+    it('Unfreeze user', () => {
+      cy.unFreezeUser(email);
+      cy.signIn(email, password);
+      cy.contains('Hello user');
     });
   });
 });
