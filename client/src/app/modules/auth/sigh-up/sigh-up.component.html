@@ -5,8 +5,8 @@
       <h3>Реєстрація</h3>
     </div>
     <form [formGroup]="signUpForm" (ngSubmit)="onSubmit(signUpForm.value)">
-      <div class="grid sign-up-wrapper-form">
-        <div class="p-fluid p-formgrid grid">
+      <div class="sign-up-wrapper-form">
+        <div class="p-fluid formgrid grid">
           <div class="field col-6 md:col-6">
             <label for="email">Пошта</label>
             <div class="p-input-icon-right">
@@ -48,7 +48,7 @@
             </app-form-control-error-message>
           </div>
         </div>
-        <div class="p-fluid p-formgrid grid">
+        <div class="p-fluid formgrid grid">
           <div class="field col-4 md:col-4">
             <label for="firstName">Ім'я</label>
             <input
@@ -101,7 +101,7 @@
             </app-form-control-error-message>
           </div>
         </div>
-        <div class="p-fluid p-formgrid grid">
+        <div class="p-fluid formgrid grid">
           <div class="field col-12 md:col-12">
             <label for="bio">Опис організації</label>
             <textarea
@@ -123,7 +123,7 @@
             </app-form-control-error-message>
           </div>
         </div>
-        <div class="p-fluid p-formgrid grid">
+        <div class="p-fluid formgrid grid">
           <div class="field col-6 md:col-6">
             <label for="password">Пароль</label>
             <p-password

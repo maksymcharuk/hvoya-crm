@@ -5,8 +5,8 @@
       <h3>Вхід</h3>
     </div>
     <form [formGroup]="signInForm" (ngSubmit)="onSubmit(signInForm.value)">
-      <div class="grid sign-in-wrapper-form">
-        <div class="p-fluid p-formgrid grid">
+      <div class="sign-in-wrapper-form">
+        <div class="p-fluid formgrid grid">
           <div class="field col-12 md:col-12">
             <label>Пошта</label>
             <input
@@ -44,15 +44,17 @@
             </app-form-control-error-message>
           </div>
         </div>
-        <div class="p-fluid p-formgrid grid sign-in-wrapper-form-confirm">
-          <div class="col-6 md:col-6">
-            <a [routerLink]="['/', 'auth', 'sign-up']">реєстрація</a>
+        <div class="p-fluid formgrid grid sign-in-wrapper-form-confirm">
+          <div class="field col-6 md:col-6">
+            <a [routerLink]="['/', 'auth', 'sign-up']">Реєстрація</a>
           </div>
-          <div class="col-6 md:col-6">
-            <a [routerLink]="['/', 'auth', 'forgot-password']">забув пароль</a>
+          <div class="field col-6 md:col-6 text-right">
+            <a [routerLink]="['/', 'auth', 'forgot-password']"
+              >Нагадати пароль</a
+            >
           </div>
         </div>
-        <div class="p-fluid p-formgrid grid sign-in-wrapper-form-confirm">
+        <div class="p-fluid formgrid grid sign-in-wrapper-form-confirm">
           <div class="col-12 md:col-12">
             <button
               [disabled]="isLoading"
