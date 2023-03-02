@@ -4,6 +4,7 @@ import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,6 +16,9 @@ import { DatabaseModule } from './modules/database/database.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { UsersModule } from './modules/users/users.module';
+import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
+import { UserEntity } from '@entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -40,8 +44,15 @@ import { UsersModule } from './modules/users/users.module';
     ProductsModule,
     CartModule,
     OrdersModule,
+    TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: UserFreezeInterceptor,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule { }
