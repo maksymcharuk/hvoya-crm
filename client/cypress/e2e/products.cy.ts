@@ -64,9 +64,7 @@ describe('Products', () => {
       });
 
       cy.get('[data-cy="product-save-button"]').click();
-      cy.checkToastMessage(
-        'duplicate key value violates unique constraint',
-      );
+      cy.checkToastMessage('duplicate key value violates unique constraint');
     });
 
     it('Create product with new category and base product', () => {
@@ -133,7 +131,9 @@ describe('Products', () => {
 
       cy.get('[data-cy="product-save-button"]').click();
       cy.checkToastMessage('Продукт успішно змінено');
+      cy.getCyEl('product-view-page').should('exist');
 
+      cy.go('back');
       cy.reload();
       cy.selectFromDropdown('product-list', testProductName);
       cy.compareProductVariantFields({
@@ -164,7 +164,9 @@ describe('Products', () => {
 
       cy.get('[data-cy="product-save-button"]').click();
       cy.checkToastMessage('Продукт успішно змінено');
+      cy.getCyEl('product-view-page').should('exist');
 
+      cy.go('back');
       cy.reload();
       cy.selectFromDropdown('product-list', testProductName);
       cy.compareProductCategoryAndBase(testProductCategory, testProductBase);
@@ -176,7 +178,9 @@ describe('Products', () => {
 
       cy.get('[data-cy="product-save-button"]').click();
       cy.checkToastMessage('Продукт успішно змінено');
+      cy.getCyEl('product-view-page').should('exist');
 
+      cy.go('back');
       cy.reload();
       cy.selectFromDropdown('product-list', testProductName);
       cy.checkImagesAmount(2);
@@ -188,7 +192,9 @@ describe('Products', () => {
 
       cy.get('[data-cy="product-save-button"]').click();
       cy.checkToastMessage('Продукт успішно змінено');
+      cy.getCyEl('product-view-page').should('exist');
 
+      cy.go('back');
       cy.reload();
       cy.selectFromDropdown('product-list', testProductName);
       cy.checkImagesAmount(1);
