@@ -1,0 +1,8 @@
+<div class="card">
+  <app-product-view
+    *ngIf="product$ | async as product"
+    [product]="product"
+    [selectedVariantId]="selectedVariantId"
+    [hideAddToCartButton]="true"
+  ></app-product-view>
+</div>

@@ -1,7 +1,11 @@
+import { BaseEntity } from './base-entity.interface';
 import { File } from './file.interface';
 
-export interface ProductProperties {
-  id: number;
+interface ProductBaseWithOutRelations extends BaseEntity {
+  name: string;
+}
+
+export interface ProductProperties extends BaseEntity {
   name: string;
   description: string;
   price: number;
@@ -10,21 +14,18 @@ export interface ProductProperties {
   images: File[];
 }
 
-export interface ProductVariant {
-  id: number;
+export interface ProductVariant extends BaseEntity {
   sku: string;
   properties: ProductProperties;
   availableItemCount: number;
+  baseProduct: ProductBaseWithOutRelations;
 }
 
-export interface ProductCategory {
-  id: number;
+export interface ProductCategory extends BaseEntity {
   name: string;
 }
 
-export interface ProductBase {
-  id: number;
-  name: string;
+export interface ProductBase extends ProductBaseWithOutRelations {
   category: ProductCategory;
   variants: ProductVariant[];
 }

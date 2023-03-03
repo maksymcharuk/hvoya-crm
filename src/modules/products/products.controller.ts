@@ -5,7 +5,9 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   ParseFilePipe,
+  ParseIntPipe,
   Post,
   Put,
   UploadedFiles,
@@ -30,7 +32,7 @@ import { ProductsService } from './services/products.service';
 @Controller('products')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class ProductsController {
-  constructor(private productsService: ProductsService) { }
+  constructor(private productsService: ProductsService) {}
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
@@ -86,5 +88,13 @@ export class ProductsController {
   )
   getProducts() {
     return this.productsService.getProducts();
+  }
+
+  @Get(':id')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, ProductBaseEntity),
+  )
+  getProduct(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.getProduct({ id });
   }
 }

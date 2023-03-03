@@ -1,0 +1,6 @@
+<app-product-view
+  *ngIf="product$ | async as product"
+  [product]="product"
+  [selectedVariantId]="selectedVariantId"
+  (addToCart)="addToCart($event)"
+></app-product-view>

@@ -1,0 +1,81 @@
+<div class="grid">
+  <div class="col-12 lg:col-6">
+    <p-galleria
+      #galleria
+      *ngIf="selectedVariant?.properties?.images as images"
+      [value]="images || null"
+      [showItemNavigators]="images.length > 1"
+      [showThumbnailNavigators]="images.length > 3"
+      [showThumbnails]="images.length > 2"
+    >
+      <ng-template pTemplate="item" let-item>
+        <img class="gallery-image" [src]="item.url" />
+      </ng-template>
+      <ng-template pTemplate="thumbnail" let-item>
+        <img class="gallery-thumbnail" [src]="item.url" />
+      </ng-template>
+    </p-galleria>
+  </div>
+  <div class="col-12 lg:col-6 py-5 lg:py-3 lg:pl-5">
+    <ol
+      class="flex list-none m-0 pt-0 px-0 pb-3 align-items-center text-sm text-600 mb-3 overflow-x-auto"
+    >
+      <li class="mr-2 inline-flex align-items-center">
+        <a [routerLink]="['../../../products']">Всі продукти</a>
+      </li>
+      <li class="mr-2"><i class="pi pi-angle-right text-sm"></i></li>
+      <li>{{ product.category?.name }}</li>
+    </ol>
+    <div class="flex align-items-center justify-content-between mb-4">
+      <span class="text-xl font-medium text-900">{{
+        selectedVariant?.properties?.name
+      }}</span
+      ><span class="text-xl font-medium text-900 ml-6">{{
+        selectedVariant?.properties?.price | currency
+      }}</span>
+    </div>
+    <p
+      class="p-0 mt-0 mb-5 line-height-3 text-700"
+      [innerHTML]="selectedVariant?.properties?.description"
+    ></p>
+    <div class="font-bold text-900 mb-3">Колір</div>
+    <div class="flex align-items-center mb-5">
+      <p-selectButton
+        *ngIf="selectedColor"
+        [options]="colors"
+        [(ngModel)]="selectedColor"
+        (onChange)="onVariantChange($event, 'color')"
+        optionValue="code"
+        class="colors"
+      >
+        <ng-template let-color>
+          <i
+            class="color-circle pi pi-circle-fill"
+            [style.color]="color.code"
+          ></i>
+        </ng-template>
+      </p-selectButton>
+    </div>
+    <div class="mb-3 flex align-items-center justify-content-between">
+      <span class="font-bold text-900">Розмір</span>
+    </div>
+    <div class="flex align-items-center mb-5">
+      <p-selectButton
+        *ngIf="selectedSize"
+        [options]="sizes"
+        [(ngModel)]="selectedSize"
+        (onChange)="onVariantChange($event, 'size')"
+        optionLabel="code"
+        optionValue="code"
+      ></p-selectButton>
+    </div>
+    <button
+      *ngIf="!hideAddToCartButton"
+      pButton
+      icon="pi pi-shopping-cart"
+      label="Додати в кошик"
+      class="p-element p-ripple w-full mb-5 p-button p-component"
+      (click)="onAddToCart()"
+    ></button>
+  </div>
+</div>

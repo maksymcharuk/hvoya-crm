@@ -16,11 +16,12 @@ import { SharedModule } from '@shared/shared.module';
 
 import { AdminProductsRoutingModule } from './admin-products-routing.module';
 import { AdminProductsComponent } from './admin-products.component';
+import { ProductStateChangesComponent } from './components/product-state-changes/product-state-changes.component';
+import { UpsertProductFormComponent } from './components/upsert-product-form/upsert-product-form.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { CreateProductComponent } from './pages/create-product/create-product.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
-import { ProductStateChangesComponent } from './components/product-state-changes/product-state-changes.component';
-import { UpsertProductFormComponent } from './components/upsert-product-form/upsert-product-form.component';
+import { ViewProductComponent } from './pages/view-product/view-product.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { UpsertProductFormComponent } from './components/upsert-product-form/ups
     EditProductComponent,
     ProductStateChangesComponent,
     UpsertProductFormComponent,
+    ViewProductComponent,
   ],
   imports: [
     CommonModule,
@@ -47,4 +49,4 @@ import { UpsertProductFormComponent } from './components/upsert-product-form/ups
     EditorModule,
   ],
 })
-export class AdminProductsModule { }
+export class AdminProductsModule {}

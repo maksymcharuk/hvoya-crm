@@ -1,0 +1,44 @@
+.gallery-image,
+.gallery-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gallery-thumbnail {
+  max-height: 120px;
+}
+
+:host ::ng-deep {
+  .p-galleria .p-galleria-thumbnail-container {
+    background-color: transparent;
+  }
+
+  .p-galleria .p-galleria-item-nav,
+  .p-galleria .p-galleria-item-nav:not(.p-disabled):hover,
+  .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-prev,
+  .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-next {
+    color: var(--primary-color);
+  }
+
+  .colors {
+    .color-circle {
+      font-size: 2rem;
+    }
+
+    .p-selectbutton {
+      display: flex;
+
+      .p-button {
+        border: 0;
+        border-radius: 50% !important;
+        flex: none;
+        padding: 0.3rem;
+
+        & + .p-button {
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
+}
