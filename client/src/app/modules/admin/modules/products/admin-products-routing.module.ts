@@ -5,13 +5,9 @@ import { AdminProductsComponent } from './admin-products.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { CreateProductComponent } from './pages/create-product/create-product.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
+import { ViewProductComponent } from './pages/view-product/view-product.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    pathMatch: 'full',
-    redirectTo: 'products',
-  },
   {
     path: '',
     component: AdminProductsComponent,
@@ -28,12 +24,16 @@ const routes: Routes = [
         path: 'edit',
         component: EditProductComponent,
       },
+      {
+        path: ':baseId/:variantId',
+        component: ViewProductComponent,
+      },
     ],
   },
 ];
 
-@NgModule( {
-  imports: [RouterModule.forChild( routes )],
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-} )
-export class AdminProductsRoutingModule { }
+})
+export class AdminProductsRoutingModule {}

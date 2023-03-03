@@ -18,7 +18,7 @@ export class CartService {
     try {
       let cart = await manager.findOne(CartEntity, {
         where: { owner: { id: userId } },
-        relations: ['items.product.properties'],
+        relations: ['items.product.properties', 'items.product.baseProduct'],
         order: {
           items: {
             product: {

@@ -1,5 +1,6 @@
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { GalleriaModule } from 'primeng/galleria';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -19,6 +20,7 @@ import { OrderStatusBadgeComponent } from './components/order-status-badge/order
 import { OrderViewItemComponent } from './components/order-view-item/order-view-item.component';
 import { ProductItemComponent } from './components/product-item/product-item.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
+import { ProductViewComponent } from './components/product-view/product-view.component';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -36,6 +38,7 @@ const COMPONENTS = [
   OrderDeliveryStatusBadgeComponent,
   OrderListComponent,
   OrderViewItemComponent,
+  ProductViewComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -45,6 +48,7 @@ const PRIMENG_MODULES = [
   TableModule,
   DropdownModule,
   InputTextModule,
+  GalleriaModule,
 ];
 
 @NgModule({
@@ -52,6 +56,7 @@ const PRIMENG_MODULES = [
     ...COMPONENTS,
     FormControlErrorMessageComponent,
     OrderDeliveryStatusBadgeComponent,
+    ProductViewComponent,
   ],
   imports: [
     CommonModule,

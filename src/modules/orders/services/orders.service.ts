@@ -286,6 +286,7 @@ export class OrdersService {
       where: params,
       relations: [
         'items.product',
+        'items.product.baseProduct',
         'items.productProperties',
         'delivery.waybill',
         'paymentTransactions',
@@ -299,6 +300,7 @@ export class OrdersService {
       where: params,
       relations: [
         'items.product',
+        'items.product.baseProduct',
         'items.productProperties',
         'delivery.waybill',
         'paymentTransactions',

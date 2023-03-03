@@ -1,6 +1,11 @@
 <div class="p-2">
   <div class="wrapper mb-3">
-    <img [src]="selectedImage" class="wrapper__img w-full" />
+    <a
+      *ngIf="selectedImage"
+      [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]"
+    >
+      <img [src]="selectedImage" class="wrapper__img" />
+    </a>
     <div class="colors my-2">
       <p-selectButton
         *ngIf="selectedColor"
@@ -15,9 +20,13 @@
       </p-selectButton>
     </div>
   </div>
-  <span class="text-900 font-medium text-xl" data-cy="product-name">{{
-    selectedVariant?.properties?.name
-  }}</span>
+  <a
+    [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]"
+    class="text-900 font-medium text-xl"
+    data-cy="product-name"
+  >
+    {{ selectedVariant?.properties?.name }}
+  </a>
   <div class="my-2">
     <p-selectButton
       *ngIf="selectedSize"

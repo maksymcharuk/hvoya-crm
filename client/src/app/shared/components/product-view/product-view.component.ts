@@ -1,10 +1,13 @@
+import { Galleria } from 'primeng/galleria';
+
+import { Location } from '@angular/common';
 import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 
 import {
@@ -14,16 +17,18 @@ import {
 } from '@shared/interfaces/products';
 
 @Component({
-  selector: 'app-product-item',
-  templateUrl: './product-item.component.html',
-  styleUrls: ['./product-item.component.scss'],
+  selector: 'app-product-view',
+  templateUrl: './product-view.component.html',
+  styleUrls: ['./product-view.component.scss'],
 })
-export class ProductItemComponent implements OnInit, OnChanges {
+export class ProductViewComponent implements OnInit {
   @Input() product!: Partial<ProductBase>;
+  @Input() selectedVariantId!: number;
   @Input() hideAddToCartButton = false;
   @Input() previewImages: string[] = [];
 
   @Output() addToCart = new EventEmitter<ProductVariant>();
+  @ViewChild('galleria') galleria!: Galleria;
 
   variants: ProductVariant[] = [];
   selectedVariant: ProductVariant | undefined;
@@ -34,35 +39,19 @@ export class ProductItemComponent implements OnInit, OnChanges {
   colors: { code: string }[] = [];
   selectedColor = '';
 
-  selectedImage = '';
+  constructor(private location: Location) {}
 
   ngOnInit(): void {
     this.variants = this.product.variants || [];
-    this.selectedVariant = this.variants[0];
+    this.selectedVariant = this.variants.find(
+      (variant) => variant.id === this.selectedVariantId,
+    );
     this.sizes = this.getUniqueArray(this.variants, 'size').map((size) => ({
       code: size,
     }));
-    this.selectedSize = this.sizes[0]?.code || '';
-    this.selectedImage = this.selectedVariant?.properties?.images[0]?.url || '';
+    this.selectedSize = this.selectedVariant?.properties.size || '';
 
     this.updateColors();
-  }
-
-  ngOnChanges(changes: any): void {
-    if (changes.product) {
-      this.variants = changes.product.currentValue.variants;
-      this.selectedVariant = changes.product.currentValue.variants[0];
-      this.sizes = this.getUniqueArray(this.variants, 'size').map((size) => ({
-        code: size,
-      }));
-      this.selectedSize = this.sizes[0]?.code || '';
-
-      this.updateColors();
-    }
-
-    if (changes.previewImages && changes.previewImages.currentValue) {
-      this.selectedImage = changes.previewImages.currentValue[0] || '';
-    }
   }
 
   onAddToCart(): void {
@@ -75,6 +64,9 @@ export class ProductItemComponent implements OnInit, OnChanges {
   onVariantChange({ value }: any, type: 'color' | 'size'): void {
     const selectedSize = type === 'size' ? value : this.selectedSize;
     const selectedColor = type === 'color' ? value : this.selectedColor;
+
+    this.galleria.activeIndex = 0;
+    this.galleria.numVisible = 3;
 
     this.selectedVariant = this.variants.find(
       (variant) =>
@@ -89,7 +81,12 @@ export class ProductItemComponent implements OnInit, OnChanges {
     }
 
     this.updateColors();
-    this.selectedImage = this.selectedVariant?.properties?.images[0]?.url || '';
+
+    this.location.replaceState(
+      `/${this.location.path().split('/')[1]}/products/${this.product.id}/${
+        this.selectedVariant?.id
+      }`,
+    );
   }
 
   private updateColors(): void {

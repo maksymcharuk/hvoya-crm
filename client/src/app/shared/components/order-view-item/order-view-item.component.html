@@ -1,22 +1,39 @@
 <div
   class="flex flex-column md:flex-row py-1 border-top-1 border-bottom-1 surface-border md:align-items-center"
 >
-  <img
-    [src]="
-      orderItem.productProperties.images
-        ? orderItem.productProperties.images[0]?.url
-        : ''
-    "
-    class="w-4rem flex-shrink-0 mx-auto md:mx-0"
-  />
+  <a
+    [routerLink]="[
+      '../..',
+      'products',
+      orderItem.product.baseProduct.id,
+      orderItem.product.id
+    ]"
+  >
+    <img
+      [src]="
+        orderItem.productProperties.images
+          ? orderItem.productProperties.images[0]?.url
+          : ''
+      "
+      class="w-4rem flex-shrink-0 mx-auto md:mx-0"
+    />
+  </a>
   <div class="flex-auto py-1 md:pl-2">
     <div
       class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
     >
       <div class="w-full sm:w-6 flex flex-column">
-        <span class="text-900 text-l font-medium mb-2">
+        <a
+          [routerLink]="[
+            '../..',
+            'products',
+            orderItem.product.baseProduct.id,
+            orderItem.product.id
+          ]"
+          class="text-900 text-l font-medium mb-2"
+        >
           {{ orderItem.productProperties.name }}
-        </span>
+        </a>
         <span class="text-600">{{ orderItem.product.sku }}</span>
       </div>
       <div

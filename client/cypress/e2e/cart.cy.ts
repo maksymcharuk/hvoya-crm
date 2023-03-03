@@ -4,16 +4,14 @@ describe('Cart', () => {
 
   describe('Admins', () => {
     describe('Cart widget', () => {
-      it('Cart widget is available for users', () => {
-        it('Cart widget is not available for super admins', () => {
-          cy.signInAsSuperAdmin({ full: true });
-          cy.getShoppingCartWidgetMenuButton().should('not.exist');
-        });
+      it('Is not available for super admins', () => {
+        cy.signInAsSuperAdmin({ full: true });
+        cy.getShoppingCartWidgetMenuButton().should('not.exist');
+      });
 
-        it('Cart widget is not available for admins', () => {
-          cy.signInAsAdmin({ full: true });
-          cy.getShoppingCartWidgetMenuButton().should('not.exist');
-        });
+      it('Is not available for admins', () => {
+        cy.signInAsAdmin({ full: true });
+        cy.getShoppingCartWidgetMenuButton().should('not.exist');
       });
     });
   });
@@ -31,7 +29,7 @@ describe('Cart', () => {
     });
 
     describe('Cart widget', () => {
-      it('Cart widget is available for users', () => {
+      it('Is available for users', () => {
         cy.getShoppingCartWidgetMenuButton().should('exist');
       });
     });
@@ -68,7 +66,7 @@ describe('Cart', () => {
 
         // Add product to cart
         productAddToCartButton.click();
-        cy.checkToastMessage(productName);
+        cy.checkToastMessage(productName.trim());
 
         // Cart widget should have badge with product count
         cy.getShoppingCartWidgetMenuButton().should('contain', '1');
@@ -88,7 +86,7 @@ describe('Cart', () => {
 
         // Remove all products from cart
         cy.contains('a', 'Remove')
-          .should((_) => { })
+          .should((_) => {})
           .then(($links) => {
             if ($links.length) {
               $links.each((_i, $el) => {

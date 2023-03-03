@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { DashboardProductsComponent } from './dashboard-products.component';
 import { DashboardProductListComponent } from './pages/dashboard-product-list/dashboard-product-list.component';
+import { ViewProductComponent } from './pages/view-product/view-product.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
       {
         path: '',
         component: DashboardProductListComponent,
+      },
+      {
+        path: ':baseId/:variantId',
+        component: ViewProductComponent,
       },
     ],
   },

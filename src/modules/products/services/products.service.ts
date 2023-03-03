@@ -18,7 +18,7 @@ export class ProductsService {
   constructor(
     private dataSource: DataSource,
     private filesService: FilesService,
-  ) { }
+  ) {}
 
   async createProduct(
     createProductDto: CreateProductDto,
@@ -101,7 +101,7 @@ export class ProductsService {
       });
 
       await queryRunner.commitTransaction();
-      return savedProductVariant;
+      return this.getProductVariant({ id: savedProductVariant.id });
     } catch (err) {
       try {
         await this.filesService.deleteFilesCloudinary(productImages);
@@ -130,10 +130,10 @@ export class ProductsService {
     try {
       if (!productBaseId) {
         if (!productCategoryId) {
-          savedProductCategory = await queryRunner.manager.save(
+          savedProductCategory = (await queryRunner.manager.save(
             ProductCategoryEntity,
             { name: editProductDto.productCategoryName },
-          ) as ProductCategoryEntity;
+          )) as ProductCategoryEntity;
         } else {
           savedProductCategory = await queryRunner.manager.findOneByOrFail(
             ProductCategoryEntity,
@@ -141,13 +141,10 @@ export class ProductsService {
           );
         }
 
-        savedProductBase = await queryRunner.manager.save(
-          ProductBaseEntity,
-          {
-            name: editProductDto.productBaseName,
-            category: savedProductCategory,
-          }
-        )
+        savedProductBase = await queryRunner.manager.save(ProductBaseEntity, {
+          name: editProductDto.productBaseName,
+          category: savedProductCategory,
+        });
       } else {
         await queryRunner.manager.update(
           ProductBaseEntity,
@@ -169,7 +166,10 @@ export class ProductsService {
           }),
         );
       }
-      productImages = [...productImages, ...JSON.parse(editProductDto.existingImages)]
+      productImages = [
+        ...productImages,
+        ...JSON.parse(editProductDto.existingImages),
+      ];
 
       const productProperties = await queryRunner.manager.save(
         ProductPropertiesEntity,
@@ -204,7 +204,7 @@ export class ProductsService {
       });
 
       await queryRunner.commitTransaction();
-      return savedProductVariant;
+      return this.getProductVariant({ id: savedProductVariant.id });
     } catch (err) {
       try {
         await this.filesService.deleteFilesCloudinary(productImages);
@@ -225,6 +225,25 @@ export class ProductsService {
         'variants.properties',
         'variants.properties.images',
       ],
+    });
+  }
+
+  getProduct(params: { id: number }): Promise<ProductBaseEntity> {
+    return this.dataSource.manager.findOneOrFail(ProductBaseEntity, {
+      where: params,
+      relations: [
+        'category',
+        'variants',
+        'variants.properties',
+        'variants.properties.images',
+      ],
+    });
+  }
+
+  getProductVariant(params: { id: number }): Promise<ProductVariantEntity> {
+    return this.dataSource.manager.findOneOrFail(ProductVariantEntity, {
+      where: params,
+      relations: ['properties', 'baseProduct'],
     });
   }
 }
