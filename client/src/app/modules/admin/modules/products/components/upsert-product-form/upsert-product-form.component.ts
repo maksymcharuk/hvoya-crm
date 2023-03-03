@@ -1,15 +1,23 @@
-import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
-import { ProductBase, ProductCategory, ProductProperties, ProductVariant } from '@shared/interfaces/products';
-import { ProductsService } from '@shared/services/products.service';
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { BehaviorSubject, finalize, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, finalize, takeUntil } from 'rxjs';
+
+import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import {
+  ProductBase,
+  ProductCategory,
+  ProductProperties,
+  ProductVariant,
+} from '@shared/interfaces/products';
+import { ProductsService } from '@shared/services/products.service';
 
 @Component({
   selector: 'app-upsert-product-form',
   templateUrl: './upsert-product-form.component.html',
-  styleUrls: ['./upsert-product-form.component.scss']
+  styleUrls: ['./upsert-product-form.component.scss'],
 })
 export class UpsertProductFormComponent implements OnInit, OnDestroy {
   emptyProduct = {
@@ -58,12 +66,18 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     }),
     productBaseGroup: this.formBuilder.group({
       productBaseName: [''],
-      productBaseId: [{ value: '', disabled: true } as any, Validators.required],
+      productBaseId: [
+        { value: '', disabled: true } as any,
+        Validators.required,
+      ],
     }),
     productVariantGroup: this.formBuilder.group({
       productVariantSku: [{ value: '', disabled: true }, Validators.required],
       productVariantName: [{ value: '', disabled: true }, Validators.required],
-      productVariantDescription: [{ value: '', disabled: true }, Validators.required],
+      productVariantDescription: [
+        { value: '', disabled: true },
+        Validators.required,
+      ],
       productVariantSize: [{ value: '', disabled: true }, Validators.required],
       productVariantColor: [{ value: '', disabled: true }, Validators.required],
       productVariantPrice: [{ value: '', disabled: true }, Validators.required],
@@ -75,10 +89,13 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
 
   @Input() isEdit: boolean = false;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(
+    private formBuilder: FormBuilder,
     private zone: NgZone,
     private productsService: ProductsService,
-    private readonly messageService: MessageService
+    private readonly messageService: MessageService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {
     this.productImagesControl = this.productForm.get('images');
   }
@@ -119,7 +136,9 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     };
 
     if (this.isEdit) {
-      value.existingImages = this.selectedProductImages.filter((image: any) => !image.remove);
+      value.existingImages = this.selectedProductImages.filter(
+        (image: any) => !image.remove,
+      );
       value.productVariantId = this.selectedProductVariant?.id;
     }
 
@@ -131,28 +150,38 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
           formData.append('images', image);
         });
       } else if (this.isEdit && key === 'existingImages') {
-        formData.append(key, JSON.stringify(value[key]))
+        formData.append(key, JSON.stringify(value[key]));
       } else {
         formData.append(key, value[key]);
       }
     });
 
     if (this.isEdit) {
-      this.productsService.editProduct(formData).subscribe(() => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Продукт змінено',
-          detail: 'Продукт успішно змінено',
+      this.productsService
+        .editProduct(formData)
+        .subscribe((product: ProductVariant) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Продукт змінено',
+            detail: 'Продукт успішно змінено',
+          });
+          this.router.navigate(['..', product.baseProduct.id, product.id], {
+            relativeTo: this.route,
+          });
         });
-      });
     } else {
-      this.productsService.createProduct(formData).subscribe(() => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Продукт створено',
-          detail: 'Продукт успішно створено',
+      this.productsService
+        .createProduct(formData)
+        .subscribe((product: ProductVariant) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Продукт створено',
+            detail: 'Продукт успішно створено',
+          });
+          this.router.navigate(['..', product.baseProduct.id, product.id], {
+            relativeTo: this.route,
+          });
         });
-      });
     }
   }
 
@@ -170,9 +199,9 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
 
         data.forEach((item: ProductBase) => {
           item.variants.forEach((variant: ProductVariant) => {
-            this.productsList.push(variant)
-          })
-        })
+            this.productsList.push(variant);
+          });
+        });
 
         this.allBaseProducts = data;
       });
@@ -222,7 +251,9 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
 
   onCategoryChange(value: any) {
     if (this.isEdit) {
-      this.selectedCategory = this.productsCategories.find((category) => category.id === value.productCategoryId);
+      this.selectedCategory = this.productsCategories.find(
+        (category) => category.id === value.productCategoryId,
+      );
       this.baseProductChanges();
     } else {
       this.productForm.get('productBaseGroup')?.patchValue({
@@ -253,9 +284,13 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
 
     if (this.isEdit) {
       if (value.productBaseId) {
-        this.selectedBaseProduct = this.allBaseProducts.find((base) => base.id === value.productBaseId);
+        this.selectedBaseProduct = this.allBaseProducts.find(
+          (base) => base.id === value.productBaseId,
+        );
       } else {
-        this.selectedBaseProduct = { name: value.productBaseName } as ProductBase;
+        this.selectedBaseProduct = {
+          name: value.productBaseName,
+        } as ProductBase;
       }
       this.baseProductChanges();
       this.productVariantChanges();
@@ -278,22 +313,34 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
             this.selectedProductVariant = variant;
             this.selectedProductVariantDefaultBaseProduct = base;
             if (!this.newCategory) {
-              this.productForm.get('productCategoryGroup')?.get('productCategoryId')?.patchValue(base.category.id);
+              this.productForm
+                .get('productCategoryGroup')
+                ?.get('productCategoryId')
+                ?.patchValue(base.category.id);
             }
             if (!this.newProductBase) {
-              this.productForm.get('productBaseGroup')?.get('productBaseId')?.patchValue(base.id);
+              this.productForm
+                .get('productBaseGroup')
+                ?.get('productBaseId')
+                ?.patchValue(base.id);
             }
           }
-        })
-      })
+        });
+      });
 
-      this.previewImagesList = this.previewImagesList.filter((el) => !this.selectedProductImagesUrls.includes(el));
-      this.previewImagesList = [...this.previewImagesList, ...product.value.properties.images.map((image: any) => image.url)]
+      this.previewImagesList = this.previewImagesList.filter(
+        (el) => !this.selectedProductImagesUrls.includes(el),
+      );
+      this.previewImagesList = [
+        ...this.previewImagesList,
+        ...product.value.properties.images.map((image: any) => image.url),
+      ];
       this.selectedProductImages = product.value.properties.images;
-      this.selectedProductImagesUrls = product.value.properties.images.map((image: any) => image.url);
+      this.selectedProductImagesUrls = product.value.properties.images.map(
+        (image: any) => image.url,
+      );
       this.productForm.get('productVariantGroup')?.enable();
     } else {
-
       this.selectedProductImages = [];
       this.selectedProductImagesUrls = [];
       this.productForm.get('productVariantGroup')?.disable();
@@ -363,9 +410,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         ?.get('productCategoryName')
         ?.clearValidators();
     }
-    this.productForm
-      .get('productCategoryGroup')
-      ?.updateValueAndValidity();
+    this.productForm.get('productCategoryGroup')?.updateValueAndValidity();
   }
 
   onUpload(event: FileUpload) {
@@ -426,26 +471,34 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
   }
 
   private baseProductChanges() {
-    if (this.selectedCategory?.id && this.selectedBaseProduct?.category && this.selectedBaseProduct?.category?.id !== this.selectedCategory?.id) {
+    if (
+      this.selectedCategory?.id &&
+      this.selectedBaseProduct?.category &&
+      this.selectedBaseProduct?.category?.id !== this.selectedCategory?.id
+    ) {
       this.baseProductCategoryChange = {
         title: 'Категорію базового продукту',
         old: this.selectedBaseProduct.category.name,
-        new: this.selectedCategory.name
+        new: this.selectedCategory.name,
       };
     } else {
       this.baseProductCategoryChange = null;
     }
   }
 
-
   private productVariantChanges() {
-    if (this.selectedProductVariant &&
-      (!this.selectedBaseProduct?.variants?.find((variant) => variant.id === this.selectedProductVariant?.id) || this.newProductBase)) {
+    if (
+      this.selectedProductVariant &&
+      (!this.selectedBaseProduct?.variants?.find(
+        (variant) => variant.id === this.selectedProductVariant?.id,
+      ) ||
+        this.newProductBase)
+    ) {
       this.productBaseProductChange = {
         title: 'Базовий продукт',
         old: this.selectedProductVariantDefaultBaseProduct?.name,
-        new: this.selectedBaseProduct?.name
-      }
+        new: this.selectedBaseProduct?.name,
+      };
     } else {
       this.productBaseProductChange = null;
     }
