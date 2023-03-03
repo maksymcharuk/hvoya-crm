@@ -10,9 +10,14 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+import { AuthService } from '@shared/services/auth.service';
+
 @Injectable()
 export class HttpExceptionInterceptor implements HttpInterceptor {
-  constructor(private readonly messageService: MessageService) {}
+  constructor(
+    private readonly messageService: MessageService,
+    private authService: AuthService,
+  ) { }
 
   intercept(
     request: HttpRequest<unknown>,
@@ -22,11 +27,20 @@ export class HttpExceptionInterceptor implements HttpInterceptor {
       tap({
         next: () => null,
         error: (err: HttpErrorResponse) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Something went wrong.',
-            detail: err.error.message,
-          });
+          if (err.status === 406) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ваш аккаунт заморожено.',
+              detail: err.error.message,
+            });
+            this.authService.logout();
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Something went wrong.',
+              detail: err.error.message,
+            });
+          }
         },
       }),
     );
