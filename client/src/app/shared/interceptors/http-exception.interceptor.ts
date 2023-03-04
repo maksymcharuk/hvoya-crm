@@ -17,7 +17,7 @@ export class HttpExceptionInterceptor implements HttpInterceptor {
   constructor(
     private readonly messageService: MessageService,
     private authService: AuthService,
-  ) { }
+  ) {}
 
   intercept(
     request: HttpRequest<unknown>,
@@ -30,7 +30,7 @@ export class HttpExceptionInterceptor implements HttpInterceptor {
           if (err.status === 406) {
             this.messageService.add({
               severity: 'error',
-              summary: 'Ваш аккаунт заморожено.',
+              summary: 'Ваш аккаунт призупинено.',
               detail: err.error.message,
             });
             this.authService.logout();

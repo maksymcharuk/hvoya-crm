@@ -20,8 +20,8 @@ import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 
 import { appOrigin } from '../../../config';
 import { ConfirmEmailMail } from '../../../modules/mail/mails/confirm-email.mail';
-import { ResetPasswordEmailMail } from '../../../modules/mail/mails/reset-password-email.mail';
 import { ConfirmUserMail } from '../../../modules/mail/mails/confirm-user.mail';
+import { ResetPasswordEmailMail } from '../../../modules/mail/mails/reset-password-email.mail';
 import { MailService } from '../../../modules/mail/services/mail.service';
 import { UsersService } from '../../../modules/users/services/users.service';
 
@@ -33,21 +33,21 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Користувача на знайдено');
     }
 
     if (user.emailConfirmed === false) {
-      throw new ConflictException('Email is not confirmed');
+      throw new ConflictException('Електронну пошту не підтверджено');
     } else if (user.userConfirmed === false) {
-      throw new ForbiddenException('User is not confirmed');
+      throw new ForbiddenException('Ваш акаунт не підтверджено');
     } else if (user.userFreezed === true) {
-      throw new ForbiddenException('User is freezed');
+      throw new ForbiddenException('Ваш акаунт тимчасово призупинено');
     }
 
     return this.signToken(user);
@@ -61,13 +61,13 @@ export class AuthService {
     let adminUsers = await this.usersService.getAllAdmins();
     if (user) {
       throw new HttpException(
-        'User with such email already exists',
+        'Користувач з такою електронною поштою вже існує',
         HttpStatus.CONFLICT,
       );
     }
     if (adminUsers.length === 0) {
       throw new HttpException(
-        'No admin users found. Please create an admin user first.',
+        'Немає адміністраторів. Створіть адміністратора',
         HttpStatus.CONFLICT,
       );
     }
@@ -86,7 +86,10 @@ export class AuthService {
         this.configService.get('NODE_ENV') || Env.Development,
       )}/users/${user.id}`;
       await this.mailService.send(new ConfirmEmailMail(user, url), user.email);
-      await this.mailService.send(new ConfirmUserMail(user, userUrl), adminEmails);
+      await this.mailService.send(
+        new ConfirmUserMail(user, userUrl),
+        adminEmails,
+      );
       await queryRunner.commitTransaction();
     } catch (err) {
       await queryRunner.rollbackTransaction();
@@ -102,13 +105,13 @@ export class AuthService {
     ) as JwtTokenPayload;
 
     if (!decodedToken) {
-      throw new HttpException('Invalid confirm token', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Недійсний токен', HttpStatus.BAD_REQUEST);
     }
 
     const user = await this.usersService.findById(decodedToken.user.id);
     if (!user) {
       throw new HttpException(
-        'User with such confirm token does not exist',
+        'Користувача з таким токеном не знайдено',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -122,7 +125,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new HttpException(
-        'User with such email does not exist',
+        'Користувача з такою електронною поштою не знайдено',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -145,7 +148,7 @@ export class AuthService {
       decodedToken = this.jwtService.verify(token) as JwtTokenPayload;
     } catch (error) {
       throw new HttpException(
-        'Link was expired, try to reset password again',
+        'Посилання для зміни паролю недійсне або закінчився термін дії. Спробуйте змінити пароль ще раз',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -153,14 +156,14 @@ export class AuthService {
     const user = await this.usersService.findById(decodedToken.user.id);
     if (!user) {
       throw new HttpException(
-        'User with such confirm token does not exist',
+        'Користувача з таким токеном не знайдено',
         HttpStatus.NOT_FOUND,
       );
     }
 
     if (await user.validatePassword(password)) {
       throw new HttpException(
-        'New password should be different from old one',
+        'Новий пароль повинен відрізнятися від старого',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -174,7 +177,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new HttpException(
-        'User with such email does not exist',
+        'Користувача з такою електронною поштою не знайдено',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -192,11 +195,11 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Користувача не знайдено');
     }
 
     if (!(await user.validatePassword(password))) {
-      throw new UnauthorizedException('User email or password is incorrect');
+      throw new UnauthorizedException('Електронна пошта або пароль невірні');
     }
 
     return user;

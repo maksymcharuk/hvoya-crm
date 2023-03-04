@@ -43,7 +43,7 @@ export class PoliciesGuard implements CanActivate {
           where: { id: token.user.id },
         });
     } catch (error) {
-      throw new HttpException('User not found', 404);
+      throw new HttpException('Користувача не знайдено', 404);
     }
 
     const ability = this.caslAbilityFactory.createForUser(userEntity);

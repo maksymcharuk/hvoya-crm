@@ -3,9 +3,9 @@
   [formGroup]="updateProfileForm"
   (ngSubmit)="onSubmit(updateProfileForm.value)"
 >
-  <h5>Personal information</h5>
+  <h5>Персональні дані</h5>
   <div class="field">
-    <label for="phone-number">Phone number:</label>
+    <label for="phone-number">Номер телефону:</label>
     <p-inputMask
       inputId="phone-number"
       formControlName="phoneNumber"
@@ -16,15 +16,15 @@
     ></p-inputMask>
   </div>
   <div class="field">
-    <label for="first-name">First name:</label>
+    <label for="first-name">Ім'я:</label>
     <input id="first-name" pInputText formControlName="firstName" />
   </div>
   <div class="field">
-    <label for="last-name">Last name:</label>
+    <label for="last-name">Прізвище:</label>
     <input id="last-name" pInputText formControlName="lastName" />
   </div>
   <div class="field">
-    <label for="location">Location:</label>
+    <label for="location">Місцезнаходження:</label>
     <input
       id="location"
       pInputText
@@ -33,7 +33,7 @@
     />
   </div>
   <div class="field">
-    <label for="about">Bio:</label>
+    <label for="about">Про себе::</label>
     <textarea
       id="about"
       pInputTextarea
@@ -42,9 +42,9 @@
       formControlName="bio"
     ></textarea>
   </div>
-  <h5>Payment information</h5>
+  <h5>Дані оплати</h5>
   <div class="field">
-    <label for="card-number">Card number:</label>
+    <label for="card-number">Номер картки::</label>
     <p-inputMask
       inputId="card-number"
       formControlName="cardNumber"
@@ -54,8 +54,13 @@
     ></p-inputMask>
   </div>
   <div class="field">
-    <label for="cardholder-name">Cardholder name:</label>
+    <label for="cardholder-name">Ім'я власника картки:</label>
     <input id="cardholder-name" pInputText formControlName="cardholderName" />
   </div>
-  <button pButton type="submit" label="Save" [disabled]="isLoading"></button>
+  <button
+    pButton
+    type="submit"
+    label="Зберегти"
+    [disabled]="isLoading"
+  ></button>
 </form>

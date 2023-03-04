@@ -86,21 +86,21 @@ describe('Auth', () => {
       cy.confirmUser(email);
       cy.logout();
       cy.signIn(email, password);
-      cy.contains('Hello user');
+      cy.contains('Привіт користувач');
     });
   });
 
   describe('Logout', () => {
     it('Logout as admin', () => {
       cy.signInAsAdmin();
-      cy.contains('Hello admin');
+      cy.contains('Привіт адмін');
       cy.logout();
       cy.url().should('contain', '/auth/sign-in');
     });
 
     it('Logout as user', () => {
       cy.signInAsUser();
-      cy.contains('Hello user');
+      cy.contains('Привіт користувач');
       cy.logout();
       cy.url().should('contain', '/auth/sign-in');
     });
@@ -111,7 +111,7 @@ describe('Auth', () => {
 
     it('Visits Forgot password page', () => {
       cy.visit(forgotPasswordUrl);
-      cy.contains('Forgot password');
+      cy.contains('Відновити пароль');
     });
 
     it('Request password reset', () => {
@@ -168,7 +168,7 @@ describe('Auth', () => {
 
         cy.resetPassword(password, token);
         cy.signIn(user.email, password);
-        cy.contains('Hello user');
+        cy.contains('Привіт користувач');
       });
     });
   });
@@ -181,9 +181,7 @@ describe('Auth', () => {
       cy.contains('Дякуємо за реєстрацію');
 
       cy.signIn(uniqueEmail, 'Test12345');
-      cy.checkToastMessage(
-        'Please check your email to confirm your account',
-      );
+      cy.checkToastMessage('Please check your email to confirm your account');
     });
   });
 
@@ -201,7 +199,7 @@ describe('Auth', () => {
     it('Unfreeze user', () => {
       cy.unFreezeUser(email);
       cy.signIn(email, password);
-      cy.contains('Hello user');
+      cy.contains('Привіт користувач');
     });
   });
 });

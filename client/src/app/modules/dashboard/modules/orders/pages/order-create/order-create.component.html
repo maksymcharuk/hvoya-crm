@@ -1,7 +1,7 @@
 <div class="grid">
   <div class="col-12">
     <div class="card">
-      <h4>Checkout</h4>
+      <h4>Оформити</h4>
       <ng-container *ngIf="cart$ | async as cart; else skeleton">
         <ng-container *ngIf="cartNotEmpty$ | async; else emptyCart">
           <app-order-cart-item
@@ -12,7 +12,7 @@
             <div class="w-12rem hidden md:block"></div>
             <div class="md:pl-5 mt-2 flex-auto">
               <div class="flex justify-content-end mb-4 pt-4">
-                <span class="text-xl text-900 font-bold text-3xl">Total:</span>
+                <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
                 <span
                   class="text-xl text-900 font-bold text-3xl ml-5"
                   data-cy="order-total"
@@ -245,6 +245,6 @@
     class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
   >
     <i class="pi pi-shopping-cart text-4xl"></i>
-    <span class="text-2xl mt-3">Cart is empty</span>
+    <span class="text-2xl mt-3">Кошик пустий</span>
   </div>
 </ng-template>

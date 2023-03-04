@@ -51,7 +51,10 @@
             </li>
             <li
               class="flex align-items-center py-3 px-2 flex-wrap"
-              *ngIf="'SuperUpdate' | able : 'UsersPage'"
+              *ngIf="
+                ('SuperUpdate' | able : 'UsersPage') &&
+                user.role !== roleEnum.SuperAdmin
+              "
             >
               <div class="text-500 w-full md:w-2 font-medium">Керування</div>
               <div class="text-900 w-full md:w-10">
@@ -64,10 +67,6 @@
                   class="p-button-success mr-4"
                   data-cy="confirm-user-button"
                 ></button>
-                <p-confirmDialog
-                  rejectButtonStyleClass="p-button-text"
-                  header="Ви впевнені, що хочете заморозити цього користувача?"
-                ></p-confirmDialog>
                 <ng-template #confirmed>
                   <button
                     pButton
@@ -78,11 +77,19 @@
                   ></button>
                 </ng-template>
 
+                <p-confirmDialog
+                  rejectButtonStyleClass="p-button-text"
+                  [header]="
+                    'Ви впевнені, що хочете ' +
+                    (user.userFreezed ? 'відновити' : 'призупинити') +
+                    ' акаунт цього користувача?'
+                  "
+                ></p-confirmDialog>
                 <button
                   *ngIf="user.userFreezed; else freeze"
                   pButton
                   pRipple
-                  label="Розморозити"
+                  label="Відновити"
                   (click)="confirmFreezeToggle()"
                   class="p-button-success"
                   icon="pi pi-unlock"
@@ -92,7 +99,7 @@
                   <button
                     pButton
                     pRipple
-                    label="Заморозити"
+                    label="Призупинити"
                     (click)="confirmFreezeToggle()"
                     class="p-button-danger"
                     icon="pi pi-lock"

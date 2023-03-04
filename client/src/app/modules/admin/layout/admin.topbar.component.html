@@ -35,7 +35,7 @@
       <span class="topbar-button-text">Notifications</span>
     </button>
     <p-overlayPanel #overlayPanel #notifications>
-      <ng-template pTemplate> Notifications </ng-template>
+      <ng-template pTemplate>Сповіщення</ng-template>
     </p-overlayPanel>
 
     <button
@@ -43,7 +43,7 @@
       (click)="account.toggle($event)"
     >
       <i class="pi pi-user"></i>
-      <span class="topbar-button-text">Account</span>
+      <span class="topbar-button-text">Акаунт</span>
     </button>
     <p-overlayPanel #overlayPanel #account>
       <ng-template pTemplate>
@@ -52,7 +52,7 @@
             pButton
             pRipple
             type="button"
-            label="Account"
+            label="Акаунт"
             class="p-button-text"
             routerLink="account"
           ></button>
@@ -60,7 +60,7 @@
             pButton
             pRipple
             type="button"
-            label="Logout"
+            label="Вийти"
             class="p-button-text"
             (click)="logout()"
           ></button>

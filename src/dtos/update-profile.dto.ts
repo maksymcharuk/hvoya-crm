@@ -15,7 +15,7 @@ export class UpdateProfileDto {
 
   @ValidateIf((e) => e.phoneNumber)
   @IsOptional()
-  @IsPhoneNumber('UA', { message: 'Phone number is not valid' })
+  @IsPhoneNumber('UA', { message: 'Номер телефону недійсний' })
   phoneNumber?: string;
 
   @IsOptional()
@@ -26,10 +26,10 @@ export class UpdateProfileDto {
 
   @ValidateIf((e) => e.cardNumber)
   @IsOptional()
-  @IsCreditCard({ message: 'Card number is not valid' })
+  @IsCreditCard({ message: 'Номер картки недійсний' })
   cardNumber?: string;
 
   @ValidateIf((e) => e.cardNumber)
-  @IsNotEmpty({ message: 'Cardholder name is required' })
+  @IsNotEmpty({ message: "Потрібне ім'я власника картки" })
   cardholderName?: string;
 }

@@ -13,11 +13,11 @@ export class AccountComponent {
   constructor() {
     this.menu = [
       {
-        label: 'Profile',
+        label: 'Профіль',
         routerLink: ['profile'],
       },
       {
-        label: 'Settings',
+        label: 'Налаштування',
         routerLink: ['settings'],
       },
     ];

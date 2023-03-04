@@ -40,7 +40,11 @@ declare global {
         email: string,
         password: string,
       ): typeof registerNewAdmin;
-      registerNewUser(email: string, password: string, options: any): typeof registerNewUser;
+      registerNewUser(
+        email: string,
+        password: string,
+        options: any,
+      ): typeof registerNewUser;
       logout(): typeof logout;
       openUserMenu(): typeof openUserMenu;
       openProductsMenu(): typeof openProductsMenu;
@@ -159,22 +163,22 @@ function openProductsMenu(): void {
 
 function logout(): void {
   cy.openUserMenu();
-  cy.get('.p-button-label').contains('Logout').click();
+  cy.get('.p-button-label').contains('Вийти').click();
 }
 
 function openAccountPage(): void {
   cy.openUserMenu();
-  cy.get('.p-button-label').contains('Account').click();
+  cy.get('.p-button-label').contains('Акаунт').click();
 }
 
 function openProfilePage(): void {
   cy.openUserMenu();
-  cy.get('li').contains('Profile').click();
+  cy.get('li').contains('Профіль').click();
 }
 
 function openSettingsPage(): void {
   cy.openAccountPage();
-  cy.get('li').contains('Settings').click();
+  cy.get('li').contains('Налаштування').click();
 }
 
 function openProductCreatePage(): void {
@@ -395,7 +399,7 @@ function freezeUser(email: string): void {
   cy.get('td').contains(email).click();
   cy.getCyEl('freeze-user-button').click();
   cy.get('button').contains('Так').click();
-  cy.checkToastMessage('Користувача заморожено');
+  cy.checkToastMessage('Акаунт користувача призупинено');
   cy.logout();
 }
 

@@ -16,14 +16,14 @@
   >
     <ng-template pTemplate="caption">
       <div class="table-header flex justify-content-between align-items-center">
-        Користувач
+        Користувачі
         <form [formGroup]="searchForm" class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input
             pInputText
             formControlName="search"
             type="text"
-            placeholder="Global Search"
+            placeholder="Пошук"
           />
         </form>
       </div>
@@ -47,7 +47,7 @@
         <th>Номер телефону</th>
         <th>Підтверджений</th>
         <th>Пошта підтверджена</th>
-        <th>Заморожений</th>
+        <th>Призупинений</th>
       </tr>
     </ng-template>
     <ng-template
