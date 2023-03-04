@@ -1,14 +1,13 @@
 <div class="p-2">
-  <div class="wrapper mb-3">
-    <a
-      *ngIf="selectedImage"
-      [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]"
-    >
+  <div
+    class="wrapper mb-3"
+    *ngIf="selectedColor && selectedImage; else imageWrapperSkeleton"
+  >
+    <a [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]">
       <img [src]="selectedImage" class="wrapper__img" />
     </a>
     <div class="colors my-2">
       <p-selectButton
-        *ngIf="selectedColor"
         [options]="colors"
         [(ngModel)]="selectedColor"
         (onChange)="onVariantChange($event, 'color')"
@@ -20,16 +19,25 @@
       </p-selectButton>
     </div>
   </div>
-  <a
-    [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]"
-    class="text-900 font-medium text-xl"
-    data-cy="product-name"
-  >
-    {{ selectedVariant?.properties?.name }}
-  </a>
+  <ng-template #imageWrapperSkeleton>
+    <p-skeleton height="15rem" width="12.5rem"></p-skeleton>
+  </ng-template>
+  <div class="my-2">
+    <a
+      *ngIf="selectedVariant?.properties?.name; else productNameSkeleton"
+      [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]"
+      class="text-900 font-medium text-xl"
+      data-cy="product-name"
+    >
+      {{ selectedVariant?.properties?.name }}
+    </a>
+  </div>
+  <ng-template #productNameSkeleton>
+    <p-skeleton height="2rem" width="12.5rem"></p-skeleton>
+  </ng-template>
   <div class="my-2">
     <p-selectButton
-      *ngIf="selectedSize"
+      *ngIf="selectedSize; else sizeSkeleton"
       [options]="sizes"
       [(ngModel)]="selectedSize"
       (onChange)="onVariantChange($event, 'size')"
@@ -37,14 +45,20 @@
       optionValue="code"
     ></p-selectButton>
   </div>
+  <ng-template #sizeSkeleton>
+    <p-skeleton height="2rem" width="12.5rem"></p-skeleton>
+  </ng-template>
   <div class="my-4">
     <span
-      *ngIf="selectedVariant?.properties?.price"
+      *ngIf="selectedVariant?.properties?.price; else priceSkeleton"
       class="font-bold text-900 ml-2"
       data-cy="product-price"
       >{{ selectedVariant?.properties?.price | currency }}</span
     >
   </div>
+  <ng-template #priceSkeleton>
+    <p-skeleton height="2rem" width="12.5rem"></p-skeleton>
+  </ng-template>
   <button
     *ngIf="!hideAddToCartButton"
     pButton

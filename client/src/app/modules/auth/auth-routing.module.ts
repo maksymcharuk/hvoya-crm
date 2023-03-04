@@ -6,6 +6,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { SignInComponent } from './sign-in/sign-in.component';
+import { FreezedComponent } from './freezed/freezed.component';
 
 const routes: Routes = [
   { path: 'sign-in', component: SignInComponent },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'confirm-email', component: ConfirmEmailComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'freezed', component: FreezedComponent },
 ];
 
 @NgModule({

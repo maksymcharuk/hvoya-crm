@@ -19,6 +19,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SharedModule } from '@shared/shared.module';
+import { FreezedComponent } from './freezed/freezed.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { SharedModule } from '@shared/shared.module';
     ConfirmEmailComponent,
     ResetPasswordComponent,
     ForgotPasswordComponent,
+    FreezedComponent,
   ],
   imports: [
     HttpClientModule,
