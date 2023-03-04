@@ -9,6 +9,7 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthService } from '@shared/services/auth.service';
 
@@ -17,7 +18,8 @@ export class HttpExceptionInterceptor implements HttpInterceptor {
   constructor(
     private readonly messageService: MessageService,
     private authService: AuthService,
-  ) {}
+    private router: Router,
+  ) { }
 
   intercept(
     request: HttpRequest<unknown>,
@@ -30,14 +32,15 @@ export class HttpExceptionInterceptor implements HttpInterceptor {
           if (err.status === 406) {
             this.messageService.add({
               severity: 'error',
-              summary: 'Ваш аккаунт призупинено.',
+              summary: 'Ваш акаунт тимчасово призупинено.',
               detail: err.error.message,
             });
             this.authService.logout();
+            this.router.navigateByUrl('auth/freezed');
           } else {
             this.messageService.add({
               severity: 'error',
-              summary: 'Something went wrong.',
+              summary: 'Щось пішло не так.',
               detail: err.error.message,
             });
           }

@@ -33,7 +33,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
@@ -47,7 +47,7 @@ export class AuthService {
     } else if (user.userConfirmed === false) {
       throw new ForbiddenException('Ваш акаунт не підтверджено');
     } else if (user.userFreezed === true) {
-      throw new ForbiddenException('Ваш акаунт тимчасово призупинено');
+      throw new HttpException('Ваш акаунт тимчасово призупинено', 406);
     }
 
     return this.signToken(user);

@@ -47,7 +47,7 @@ export class UsersController {
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw new HttpException(
-        'Something went wrong. Please, try again later.',
+        'Щось пішло не так. Будь ласка спробуйте пізніше.',
         500,
       );
     } finally {

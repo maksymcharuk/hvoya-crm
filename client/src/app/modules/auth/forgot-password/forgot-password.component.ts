@@ -7,6 +7,8 @@ import {
 } from '@shared/interfaces/dto/forgot-password.dto';
 import { AuthService } from '@shared/services/auth.service';
 
+import { finalize } from 'rxjs';
+
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
@@ -15,6 +17,7 @@ import { AuthService } from '@shared/services/auth.service';
 export class ForgotPasswordComponent {
   displayConfirmDialog = false;
   userEmail = '';
+  isLoading: boolean = false;
 
   forgotPasswordForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -23,12 +26,20 @@ export class ForgotPasswordComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   onSubmit(value: ForgotPasswordDTO) {
-    this.authService.forgotPassword(value).subscribe(() => {
-      this.displayConfirmDialog = true;
-      this.userEmail = this.forgotPasswordForm.get('email')?.value;
-    });
+    if (!this.forgotPasswordForm.valid) {
+      this.forgotPasswordForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading = true;
+    this.authService.forgotPassword(value)
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe(() => {
+        this.displayConfirmDialog = true;
+        this.userEmail = this.forgotPasswordForm.get('email')?.value;
+      });
   }
 }
