@@ -1,15 +1,15 @@
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class ChangePasswordDto {
-  @IsNotEmpty({ message: 'Current password is required' })
+  @IsNotEmpty({ message: 'Потрібен поточний пароль' })
   currentPassword: string;
 
   @IsString()
-  @MinLength(8, { message: 'Password must be at least 8 characters' })
-  @IsNotEmpty({ message: 'Password is required' })
+  @MinLength(8, { message: 'Пароль має бути не менше 8 символів' })
+  @IsNotEmpty({ message: 'Необхідно ввести пароль' })
   password: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'Confirm password is required' })
+  @IsNotEmpty({ message: 'Потрібно підтвердити пароль' })
   confirmPassword: string;
 }

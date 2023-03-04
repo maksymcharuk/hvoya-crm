@@ -77,7 +77,7 @@ export class OrdersService {
       const cart = await this.cartService.getCart(userId);
 
       if (cart.items.length === 0) {
-        throw new HttpException('Cart is empty', HttpStatus.BAD_REQUEST);
+        throw new HttpException('Кошик пустий', HttpStatus.BAD_REQUEST);
       }
 
       if (waybill) {

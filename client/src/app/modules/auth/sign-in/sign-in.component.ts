@@ -35,7 +35,7 @@ export class SignInComponent {
     private userService: UserService,
     private policiesService: PoliciesService,
     private readonly messageService: MessageService,
-  ) { }
+  ) {}
 
   onSubmit(value: SignInDTO) {
     if (!this.signInForm.valid) {
@@ -75,14 +75,14 @@ export class SignInComponent {
                   this.messageService.add({
                     severity: 'success',
                     summary: 'Confirmation email sent',
-                    detail: 'Please check your email to confirm your account',
+                    detail: 'Будь ласка, перевірте свою електронну пошту',
                   });
                 });
             } else {
               this.messageService.add({
                 severity: 'info',
                 summary: 'Confirmation email sent',
-                detail: 'Please check your email to confirm your account',
+                detail: 'Будь ласка, перевірте свою електронну пошту',
               });
             }
           }

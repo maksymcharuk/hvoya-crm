@@ -49,7 +49,7 @@ export class CloudinaryService {
     try {
       await this.removeImages(publicIds);
     } catch (error) {
-      throw new BadRequestException('File cannot be removed.');
+      throw new BadRequestException('Виникла помилка при видаленні файлу');
     }
   }
 }

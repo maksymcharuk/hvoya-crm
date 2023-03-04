@@ -1,6 +1,6 @@
 <div class="p-fluid">
   <div class="field">
-    <label for="email">Email:</label>
+    <label for="email">Ел. пошта:</label>
     <input
       id="email"
       [value]="(profile$ | async)?.email"
@@ -16,9 +16,9 @@
   [formGroup]="changePasswordForm"
   (ngSubmit)="onChangePasswordSubmit(changePasswordForm.value)"
 >
-  <h5>Change password</h5>
+  <h5>Змінити пароль</h5>
   <div class="field">
-    <label for="current-password">Current password:</label>
+    <label for="current-password">Поточний пароль:</label>
     <p-password
       inputId="current-password"
       formControlName="currentPassword"
@@ -27,7 +27,7 @@
     ></p-password>
   </div>
   <div class="field">
-    <label for="password">New password:</label>
+    <label for="password">Новий пароль:</label>
     <p-password
       inputId="password"
       formControlName="password"
@@ -58,7 +58,7 @@
     </p-password>
   </div>
   <div class="field">
-    <label for="confirm-password">Confirm new password:</label>
+    <label for="confirm-password">Підтвердити новий пароль:</label>
     <p-password
       formControlName="confirmPassword"
       inputId="confirm-password"
@@ -66,5 +66,10 @@
       [feedback]="false"
     ></p-password>
   </div>
-  <button pButton type="submit" label="Save" [disabled]="isLoading"></button>
+  <button
+    pButton
+    type="submit"
+    label="Зберегти"
+    [disabled]="isLoading"
+  ></button>
 </form>

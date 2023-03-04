@@ -50,7 +50,7 @@ export class ProfileComponent implements OnInit {
       .subscribe(() => {
         this.messageService.add({
           severity: 'success',
-          detail: 'Profile updated successfully',
+          detail: 'Профіль було успішно оновлено',
         });
       });
   }

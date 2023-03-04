@@ -43,7 +43,7 @@ describe('Auth', () => {
     it('Sign in with invalid credentials', () => {
       const uniqueEmail = `test+${Date.now()}@email.com`;
       cy.signIn(uniqueEmail, '12345');
-      cy.checkToastMessage('User not found');
+      cy.checkToastMessage('Користувача на знайдено');
     });
   });
 
@@ -67,7 +67,7 @@ describe('Auth', () => {
       cy.contains('Дякуємо за реєстрацію');
 
       cy.signIn(uniqueEmail, 'Test12345');
-      cy.checkToastMessage('Email is not confirmed');
+      cy.checkToastMessage('Електронну пошту не підтверджено');
     });
 
     it('Register new user, confirm email and try to sign in without user confirmation', () => {
@@ -75,7 +75,7 @@ describe('Auth', () => {
       const password = 'Test12345';
       cy.registerNewUser(email, password, { confirm: false });
       cy.signIn(email, password);
-      cy.checkToastMessage('User is not confirmed');
+      cy.checkToastMessage('Ваш акаунт не підтверджено');
     });
 
     it('Register new user, confirm email, confirm user as SuperAdmin and sign in', () => {
@@ -86,21 +86,21 @@ describe('Auth', () => {
       cy.confirmUser(email);
       cy.logout();
       cy.signIn(email, password);
-      cy.contains('Hello user');
+      cy.contains('Привіт користувач');
     });
   });
 
   describe('Logout', () => {
     it('Logout as admin', () => {
       cy.signInAsAdmin();
-      cy.contains('Hello admin');
+      cy.contains('Привіт адмін');
       cy.logout();
       cy.url().should('contain', '/auth/sign-in');
     });
 
     it('Logout as user', () => {
       cy.signInAsUser();
-      cy.contains('Hello user');
+      cy.contains('Привіт користувач');
       cy.logout();
       cy.url().should('contain', '/auth/sign-in');
     });
@@ -111,7 +111,7 @@ describe('Auth', () => {
 
     it('Visits Forgot password page', () => {
       cy.visit(forgotPasswordUrl);
-      cy.contains('Forgot password');
+      cy.contains('Відновити пароль');
     });
 
     it('Request password reset', () => {
@@ -122,7 +122,7 @@ describe('Auth', () => {
           cy.get('input[type=email]').type(credentials.user.email);
           cy.get('button[type=submit]').click();
           cy.contains(
-            `Reset password set to your email ${credentials.user.email}`,
+            `Інструкцію з відновлення паролю було надіслано на вашу пошту: ${credentials.user.email}`,
           );
         });
     });
@@ -132,7 +132,7 @@ describe('Auth', () => {
       const uniqueEmail = `test+${Date.now()}@email.com`;
       cy.get('input[type=email]').type(uniqueEmail);
       cy.get('button[type=submit]').click();
-      cy.contains('User with such email does not exist');
+      cy.contains('Користувача з такою електронною поштою не знайдено');
     });
   });
 
@@ -168,7 +168,7 @@ describe('Auth', () => {
 
         cy.resetPassword(password, token);
         cy.signIn(user.email, password);
-        cy.contains('Hello user');
+        cy.contains('Привіт користувач');
       });
     });
   });
@@ -181,9 +181,7 @@ describe('Auth', () => {
       cy.contains('Дякуємо за реєстрацію');
 
       cy.signIn(uniqueEmail, 'Test12345');
-      cy.checkToastMessage(
-        'Please check your email to confirm your account',
-      );
+      cy.checkToastMessage('Будь ласка, перевірте свою електронну пошту');
     });
   });
 
@@ -195,13 +193,13 @@ describe('Auth', () => {
       cy.registerNewUser(email, password, { confirm: true });
       cy.freezeUser(email);
       cy.signIn(email, password);
-      cy.checkToastMessage('User is freezed');
+      cy.checkToastMessage('Ваш акаунт тимчасово призупинено');
     });
 
     it('Unfreeze user', () => {
       cy.unFreezeUser(email);
       cy.signIn(email, password);
-      cy.contains('Hello user');
+      cy.contains('Привіт користувач');
     });
   });
 });

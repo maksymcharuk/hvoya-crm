@@ -1,7 +1,5 @@
 <div class="cart-widget">
-  <div class="text-900 text-xl pb-3 border-bottom-1 surface-border">
-    Your Cart
-  </div>
+  <div class="text-900 text-xl pb-3 border-bottom-1 surface-border">Кошик</div>
   <ng-container *ngIf="(cartLoading$ | async) === 0; else skeleton">
     <ng-container *ngIf="cart$ | async as cart">
       <ng-container *ngIf="cartNotEmpty$ | async; else emptyCart">
@@ -43,7 +41,7 @@
                   <div class="text-600 mt-2">{{ cartItem.product.sku }}</div>
                 </td>
                 <td class="pl-5 font-medium ml-auto mr-2">
-                  Qty: {{ cartItem.quantity }}
+                  К-ть: {{ cartItem.quantity }}
                 </td>
                 <td class="pl-5 text-900 font-medium">
                   {{
@@ -57,7 +55,7 @@
         </div>
         <div class="py-3 border-bottom-1 surface-border">
           <div class="flex align-items-center justify-content-between">
-            <span class="text-900 font-bold"> Total </span>
+            <span class="text-900 font-bold"> Всього </span>
             <div class="text-900 font-bold">{{ cart.total | currency }}</div>
           </div>
         </div>
@@ -67,14 +65,14 @@
             pButton
             class="p-button-outlined mr-2"
             type="button"
-            label="View Cart"
+            label="Кошик"
           ></button>
           <button
             [routerLink]="['/dashboard', 'orders', 'checkout']"
             pButton
             class="ml-2"
             type="button"
-            label="Check Out"
+            label="Оформити"
             data-cy="cart-widget-checkout-button"
           ></button>
         </div>
@@ -108,6 +106,6 @@
     class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
   >
     <i class="pi pi-shopping-cart text-4xl"></i>
-    <span class="text-2xl mt-3">Cart is empty</span>
+    <span class="text-2xl mt-3">Кошик пустий</span>
   </div>
 </ng-template>

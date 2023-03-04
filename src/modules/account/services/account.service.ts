@@ -21,7 +21,7 @@ export class AccountService {
     let user = await this.usersRepository.findOneByOrFail({ id: userId });
 
     if (!(await user.validatePassword(changePasswordDto.currentPassword))) {
-      throw new HttpException('Current password is incorrect', 400);
+      throw new HttpException('Поточний пароль неправильний', 400);
     }
 
     try {

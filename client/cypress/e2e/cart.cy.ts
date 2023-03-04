@@ -62,7 +62,7 @@ describe('Cart', () => {
           .should('not.exist');
         // Cart widget should be empty
         cy.openShoppingCartWidget();
-        cy.get('app-cart-widget').contains('Cart is empty');
+        cy.get('app-cart-widget').contains('Кошик пустий');
 
         // Add product to cart
         productAddToCartButton.click();
@@ -85,7 +85,7 @@ describe('Cart', () => {
         cy.getShoppingCartWidgetMenuButton().should('contain', '2');
 
         // Remove all products from cart
-        cy.contains('a', 'Remove')
+        cy.contains('a', 'Видалити')
           .should((_) => {})
           .then(($links) => {
             if ($links.length) {
@@ -95,7 +95,7 @@ describe('Cart', () => {
               return;
             }
           });
-        cy.contains('Cart is empty');
+        cy.contains('Кошик пустий');
 
         // Cart widget should not have badge
         cy.getShoppingCartWidgetMenuButton()
@@ -103,7 +103,7 @@ describe('Cart', () => {
           .should('not.exist');
         // Cart widget should be empty
         cy.openShoppingCartWidget();
-        cy.get('app-cart-widget').contains('Cart is empty');
+        cy.get('app-cart-widget').contains('Кошик пустий');
       });
     });
   });
