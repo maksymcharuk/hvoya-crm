@@ -21,7 +21,7 @@ export class CreateOrderDto {
   middleName: string;
 
   @IsNotEmpty()
-  @IsPhoneNumber('UA', { message: 'Номер телефону is not valid' })
+  @IsPhoneNumber('UA', { message: 'Номер телефону недійсний' })
   phoneNumber: string;
 
   @IsNotEmpty()

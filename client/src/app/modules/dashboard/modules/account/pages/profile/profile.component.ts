@@ -58,7 +58,7 @@ export class ProfileComponent implements OnInit {
       .subscribe(() => {
         this.messageService.add({
           severity: 'success',
-          detail: 'Профіль updated successfully',
+          detail: 'Профіль було успішно оновлено',
         });
       });
   }

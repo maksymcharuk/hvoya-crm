@@ -61,7 +61,7 @@ export class AuthService {
     let adminUsers = await this.usersService.getAllAdmins();
     if (user) {
       throw new HttpException(
-        'Користувач з такою електронною поштою вже існує',
+        'Користувача з такою електронною поштою не знайдено',
         HttpStatus.CONFLICT,
       );
     }

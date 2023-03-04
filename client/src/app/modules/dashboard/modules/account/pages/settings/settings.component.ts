@@ -63,7 +63,7 @@ export class SettingsComponent {
       .subscribe(() => {
         this.messageService.add({
           severity: 'success',
-          detail: 'Password was changed successfully',
+          detail: 'Пароль було успішно оновлено',
         });
       });
   }

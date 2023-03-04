@@ -34,7 +34,7 @@ describe('Account', () => {
 
         cy.get('button[type=submit]').click();
 
-        cy.checkToastMessage('Profile updated successfully');
+        cy.checkToastMessage('Профіль було успішно оновлено');
         cy.get('.user-info .user-info__name').contains(
           `${firstName} ${lastName}`,
         );
@@ -64,7 +64,7 @@ describe('Account', () => {
 
         cy.get('input[id="phone-number"]').clear().type(phoneNumber);
         cy.get('button[type=submit]').click();
-        cy.checkToastMessage('Номер телефону is not valid');
+        cy.checkToastMessage('Номер телефону недійсний');
       });
 
       it('Sign in as user and try to update profile with invalid card data', () => {
@@ -72,14 +72,14 @@ describe('Account', () => {
 
         cy.get('input[id="card-number"]').clear().type(invalidCardNumber);
         cy.get('button[type=submit]').click();
-        cy.checkToastMessage('Номер картки: is not valid');
+        cy.checkToastMessage('Номер картки недійсний');
 
         const validCardNumber = '5218 5722 2223 2634';
 
         cy.get('input[id="card-number"]').clear().type(validCardNumber);
         cy.get('input[id="cardholder-name"]').clear();
         cy.get('button[type=submit]').click();
-        cy.checkToastMessage("Ім'я власника картки is required");
+        cy.checkToastMessage("Потрібне ім'я власника картки");
       });
     });
 
@@ -109,7 +109,7 @@ describe('Account', () => {
             .clear()
             .type(userUpdatedPassword);
           cy.get('button[type=submit]').click();
-          cy.checkToastMessage('Password was changed successfully');
+          cy.checkToastMessage('Пароль було успішно оновлено');
         });
 
         it('Sign in as user with new password', () => {
@@ -146,7 +146,7 @@ describe('Account', () => {
 
         cy.get('button[type=submit]').click();
 
-        cy.checkToastMessage('Profile updated successfully');
+        cy.checkToastMessage('Профіль було успішно оновлено');
         cy.get('.user-info .user-info__name').contains(
           `${firstName} ${lastName}`,
         );
@@ -169,7 +169,7 @@ describe('Account', () => {
 
         cy.get('input[id="phone-number"]').clear().type(phoneNumber);
         cy.get('button[type=submit]').click();
-        cy.checkToastMessage('Номер телефону is not valid');
+        cy.checkToastMessage('Номер телефону недійсний');
       });
     });
 
@@ -198,7 +198,7 @@ describe('Account', () => {
             .clear()
             .type(adminUpdatedPassword);
           cy.get('button[type=submit]').click();
-          cy.checkToastMessage('Password was changed successfully');
+          cy.checkToastMessage('Пароль було успішно оновлено');
         });
 
         it('Sign in as admin with new password', () => {
