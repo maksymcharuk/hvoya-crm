@@ -4,6 +4,7 @@ import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -48,6 +49,7 @@ import { UsersModule } from './modules/users/users.module';
     OrdersModule,
     TypeOrmModule.forFeature([UserEntity]),
     IntegrationsModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [
