@@ -3,22 +3,25 @@ import { join } from 'path';
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { UserEntity } from '@entities/user.entity';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
 import { AccountModule } from './modules/account/account.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { DatabaseModule } from './modules/database/database.module';
+import { IntegrationsModule } from './modules/integrations/integrations.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { UsersModule } from './modules/users/users.module';
-import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
-import { UserEntity } from '@entities/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -45,6 +48,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     CartModule,
     OrdersModule,
     TypeOrmModule.forFeature([UserEntity]),
+    IntegrationsModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [
@@ -55,4 +60,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

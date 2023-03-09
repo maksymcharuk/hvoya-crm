@@ -19,11 +19,15 @@ export class OrderDeliveryStatusBadgeComponent {
         return 'default';
       case OrderDeliveryStatus.Processing:
         return 'accent';
-      case OrderDeliveryStatus.OutForDelivery:
+      case OrderDeliveryStatus.Accepted:
+        return 'warn';
+      case OrderDeliveryStatus.Sent:
         return 'warn';
       case OrderDeliveryStatus.Received:
         return 'success';
-      case OrderDeliveryStatus.Cancelled:
+      case OrderDeliveryStatus.Declined:
+        return 'danger';
+      case OrderDeliveryStatus.Returned:
         return 'danger';
       default:
         return 'default';
@@ -36,12 +40,16 @@ export class OrderDeliveryStatusBadgeComponent {
         return 'В очікуванні';
       case OrderDeliveryStatus.Processing:
         return 'Опрацьовується';
-      case OrderDeliveryStatus.OutForDelivery:
-        return 'Доставляється';
+      case OrderDeliveryStatus.Sent:
+        return 'Відправлено';
+      case OrderDeliveryStatus.Accepted:
+        return 'Прийнято';
       case OrderDeliveryStatus.Received:
         return 'Отримано';
-      case OrderDeliveryStatus.Cancelled:
+      case OrderDeliveryStatus.Declined:
         return 'Скасовано';
+      case OrderDeliveryStatus.Returned:
+        return 'Повернуто';
       default:
         return 'В очікуванні';
     }
