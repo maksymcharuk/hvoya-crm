@@ -19,6 +19,8 @@ export class OrderStatusBadgeComponent {
         return 'default';
       case OrderStatus.Processing:
         return 'accent';
+      case OrderStatus.TransferedToDelivery:
+        return 'accent';
       case OrderStatus.Fulfilled:
         return 'success';
       case OrderStatus.Cancelled:
@@ -36,6 +38,8 @@ export class OrderStatusBadgeComponent {
         return 'В очікуванні';
       case OrderStatus.Processing:
         return 'Опрацьовується';
+      case OrderStatus.TransferedToDelivery:
+        return 'Передано до служби доставки';
       case OrderStatus.Fulfilled:
         return 'Виконано';
       case OrderStatus.Cancelled:
