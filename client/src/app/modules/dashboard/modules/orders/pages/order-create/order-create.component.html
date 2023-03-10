@@ -11,7 +11,7 @@
           <div class="flex">
             <div class="w-12rem hidden md:block"></div>
             <div class="md:pl-5 mt-2 flex-auto">
-              <div class="flex justify-content-end mb-4 pt-4">
+              <div class="flex justify-content-end mb-6 pt-4">
                 <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
                 <span
                   class="text-xl text-900 font-bold text-3xl ml-5"
@@ -36,11 +36,11 @@
       </ng-container>
       <form [formGroup]="orderCreateForm">
         <div class="grid">
-          <div class="col-8">
+          <div class="col-6">
             <div class="p-fluid">
               <h5>Інформація про отримувача</h5>
-              <div class="p-formgrid grid">
-                <div class="field col-4">
+              <div class="formgrid grid">
+                <div class="field col-12">
                   <label for="email">Ел. пошта:</label>
                   <input id="email" pInputText formControlName="email" />
                   <app-form-control-error-message
@@ -50,7 +50,7 @@
                     errorMessage="Потрібно ввести електронну пошту"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col-4">
+                <div class="field col-12">
                   <label for="phone-number">Номер телефону:</label>
                   <p-inputMask
                     inputId="phone-number"
@@ -68,8 +68,8 @@
                   ></app-form-control-error-message>
                 </div>
               </div>
-              <div class="p-formgrid grid">
-                <div class="field col">
+              <div class="formgrid grid">
+                <div class="field col-12">
                   <label for="first-name">Ім'я:</label>
                   <input
                     id="first-name"
@@ -83,7 +83,7 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col">
+                <div class="field col-12">
                   <label for="last-name">Прізвище:</label>
                   <input id="last-name" pInputText formControlName="lastName" />
                   <app-form-control-error-message
@@ -93,7 +93,7 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col">
+                <div class="field col-12">
                   <label for="middle-name">По-батькові:</label>
                   <input
                     id="middle-name"
@@ -108,9 +108,13 @@
                   ></app-form-control-error-message>
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-fluid">
               <h5>Інформація про достаку</h5>
-              <div class="p-formgrid grid">
-                <div class="field col">
+              <div class="formgrid grid">
+                <div class="field col-12">
                   <label for="delivery-type">Тип доставки:</label>
                   <input
                     id="delivery-type"
@@ -124,7 +128,7 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col">
+                <div class="field col-12">
                   <label for="city">Місто:</label>
                   <input id="city" pInputText formControlName="city" />
                   <app-form-control-error-message
@@ -135,8 +139,8 @@
                   ></app-form-control-error-message>
                 </div>
               </div>
-              <div class="p-formgrid grid">
-                <div class="field col">
+              <div class="formgrid grid">
+                <div class="field col-12">
                   <label for="post-office">Відділення:</label>
                   <input
                     id="post-office"
@@ -150,7 +154,7 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col">
+                <div class="field col-12">
                   <label for="tracking-id">Номер ТТН:</label>
                   <input
                     id="tracking-id"
@@ -166,8 +170,8 @@
                 </div>
               </div>
             </div>
-            <div class="p-formgrid grid">
-              <div class="field col">
+            <div class="formgrid grid">
+              <div class="field col-12">
                 <label>ТТН:</label>
                 <p-fileUpload
                   [customUpload]="true"

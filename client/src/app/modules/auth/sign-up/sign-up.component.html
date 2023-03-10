@@ -7,192 +7,194 @@
     <form [formGroup]="signUpForm" (ngSubmit)="onSubmit(signUpForm.value)">
       <div class="sign-up-wrapper-form">
         <div class="p-fluid formgrid grid">
-          <div class="field col-6 md:col-6">
-            <label for="email">Пошта</label>
-            <div class="p-input-icon-right">
-              <i class="pi pi-user"></i>
-              <input
-                name="email"
-                formControlName="email"
-                type="email"
-                pInputText
-                placeholder="Введіть пошту"
-                data-cy="email"
-              />
+          <!-- Left column -->
+          <div class="col-6">
+            <div class="field">
+              <label for="email">Пошта</label>
+              <div class="p-input-icon-right">
+                <i class="pi pi-user"></i>
+                <input
+                  name="email"
+                  formControlName="email"
+                  type="email"
+                  pInputText
+                  placeholder="Введіть пошту"
+                  data-cy="email"
+                />
+              </div>
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="email"
+                errorType="required"
+                errorMessage="Потрібно ввести пошту"
+              >
+              </app-form-control-error-message>
             </div>
-            <app-form-control-error-message
-              [formGroup]="signUpForm"
-              controlName="email"
-              errorType="required"
-              errorMessage="Потрібно ввести пошту"
-            >
-            </app-form-control-error-message>
+            <div class="field">
+              <label for="phoneNumber">Номер телефону</label>
+              <p-inputMask
+                name="phoneNumber"
+                inputId="phone-number"
+                formControlName="phoneNumber"
+                mask="+38 (999) 999-9999"
+                slotChar=" "
+                [unmask]="true"
+                [autoClear]="false"
+                placeholder="Введіть номер телефону"
+                data-cy="phone-number"
+              ></p-inputMask>
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="phoneNumber"
+                errorType="required"
+                errorMessage="Потрібно ввести номер телефону"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="firstName">Ім'я</label>
+              <input
+                name="firstName"
+                formControlName="firstName"
+                type="text"
+                pInputText
+                placeholder="Введіть ваше ім'я"
+                data-cy="first-name"
+              />
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="firstName"
+                errorType="required"
+                errorMessage="Потрібно ввести ім'я"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="lastName">Прізвище</label>
+              <input
+                name="lastName"
+                formControlName="lastName"
+                type="text"
+                pInputText
+                placeholder="Введіть прізвище"
+                data-cy="last-name"
+              />
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="lastName"
+                errorType="required"
+                errorMessage="Потрібно ввести прізвище"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="middleName">По батькові</label>
+              <input
+                name="middleName"
+                formControlName="middleName"
+                type="text"
+                pInputText
+                placeholder="Введіть ваші по батькові"
+                data-cy="middle-name"
+              />
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="middleName"
+                errorType="required"
+                errorMessage="Потрібно ввести ваше по батькові"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="password">Пароль</label>
+              <p-password
+                name="password"
+                formControlName="password"
+                [toggleMask]="true"
+                placeholder="Введіть пароль"
+                data-cy="password"
+              >
+                <ng-template pTemplate="footer">
+                  <p-divider></p-divider>
+                  <p class="mt-2">Requirements</p>
+                  <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                    <li [ngClass]="{ valid: !hasLowerCase }">
+                      At least one lowercase
+                      <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
+                    </li>
+                    <li [ngClass]="{ valid: !hasUpperCase }">
+                      At least one uppercase
+                      <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
+                    </li>
+                    <li [ngClass]="{ valid: !hasNumeric }">
+                      At least one numeric
+                      <i class="pi pi-check" *ngIf="!hasNumeric"></i>
+                    </li>
+                    <li [ngClass]="{ valid: !hasMinLength }">
+                      Minimum 8 characters
+                      <i class="pi pi-check" *ngIf="!hasMinLength"></i>
+                    </li>
+                  </ul>
+                </ng-template>
+              </p-password>
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="password"
+                errorType="required"
+                errorMessage="Потрібно ввести пароль"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="confirmPassword">Підтвердіть пароль</label>
+              <p-password
+                name="confirmPassword"
+                formControlName="confirmPassword"
+                [toggleMask]="true"
+                [feedback]="false"
+                placeholder="Підтвердіть пароль"
+                data-cy="confirm-password"
+              >
+              </p-password>
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="password"
+                errorType="required"
+                errorMessage="Потрібно підтвердити пароль"
+              >
+              </app-form-control-error-message>
+            </div>
           </div>
-          <div class="field col-6 md:col-6">
-            <label for="phoneNumber">Номер телефону</label>
-            <p-inputMask
-              name="phoneNumber"
-              inputId="phone-number"
-              formControlName="phoneNumber"
-              mask="+38 (999) 999-9999"
-              slotChar=" "
-              [unmask]="true"
-              [autoClear]="false"
-              placeholder="Введіть номер телефону"
-              data-cy="phone-number"
-            ></p-inputMask>
-            <app-form-control-error-message
-              [formGroup]="signUpForm"
-              controlName="phoneNumber"
-              errorType="required"
-              errorMessage="Потрібно ввести номер телефону"
-            >
-            </app-form-control-error-message>
-          </div>
-        </div>
-        <div class="p-fluid formgrid grid">
-          <div class="field col-4 md:col-4">
-            <label for="firstName">Ім'я</label>
-            <input
-              name="firstName"
-              formControlName="firstName"
-              type="text"
-              pInputText
-              placeholder="Введіть ваше ім'я"
-              data-cy="first-name"
-            />
-            <app-form-control-error-message
-              [formGroup]="signUpForm"
-              controlName="firstName"
-              errorType="required"
-              errorMessage="Потрібно ввести ім'я"
-            >
-            </app-form-control-error-message>
-          </div>
-          <div class="field col-4 md:col-4">
-            <label for="middleName">По батькові</label>
-            <input
-              name="middleName"
-              formControlName="middleName"
-              type="text"
-              pInputText
-              placeholder="Введіть ваші по батькові"
-              data-cy="middle-name"
-            />
-            <app-form-control-error-message
-              [formGroup]="signUpForm"
-              controlName="middleName"
-              errorType="required"
-              errorMessage="Потрібно ввести ваше по батькові"
-            >
-            </app-form-control-error-message>
-          </div>
-          <div class="field col-4 md:col-4">
-            <label for="lastName">Прізвище</label>
-            <input
-              name="lastName"
-              formControlName="lastName"
-              type="text"
-              pInputText
-              placeholder="Введіть прізвище"
-              data-cy="last-name"
-            />
-            <app-form-control-error-message
-              [formGroup]="signUpForm"
-              controlName="lastName"
-              errorType="required"
-              errorMessage="Потрібно ввести прізвище"
-            >
-            </app-form-control-error-message>
-          </div>
-        </div>
-        <div class="p-fluid formgrid grid">
-          <div class="field col-12 md:col-12">
-            <label for="bio">Опис організації</label>
-            <textarea
-              rows="5"
-              cols="80"
-              pInputTextarea
-              [autoResize]="true"
-              name="bio"
-              formControlName="bio"
-              placeholder="Введіть опис вашої організації"
-              data-cy="bio"
-            >
-            </textarea>
-            <app-form-control-error-message
-              [formGroup]="signUpForm"
-              controlName="bio"
-              errorType="required"
-              errorMessage="Потрібно ввести опис"
-            >
-            </app-form-control-error-message>
-          </div>
-        </div>
-        <div class="p-fluid formgrid grid">
-          <div class="field col-6 md:col-6">
-            <label for="password">Пароль</label>
-            <p-password
-              name="password"
-              formControlName="password"
-              [toggleMask]="true"
-              placeholder="Введіть пароль"
-              data-cy="password"
-            >
-              <ng-template pTemplate="footer">
-                <p-divider></p-divider>
-                <p class="mt-2">Requirements</p>
-                <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                  <li [ngClass]="{ valid: !hasLowerCase }">
-                    At least one lowercase
-                    <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
-                  </li>
-                  <li [ngClass]="{ valid: !hasUpperCase }">
-                    At least one uppercase
-                    <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
-                  </li>
-                  <li [ngClass]="{ valid: !hasNumeric }">
-                    At least one numeric
-                    <i class="pi pi-check" *ngIf="!hasNumeric"></i>
-                  </li>
-                  <li [ngClass]="{ valid: !hasMinLength }">
-                    Minimum 8 characters
-                    <i class="pi pi-check" *ngIf="!hasMinLength"></i>
-                  </li>
-                </ul>
-              </ng-template>
-            </p-password>
-            <app-form-control-error-message
-              [formGroup]="signUpForm"
-              controlName="password"
-              errorType="required"
-              errorMessage="Потрібно ввести пароль"
-            >
-            </app-form-control-error-message>
-          </div>
-          <div class="field col-6 md:col-6">
-            <label for="confirmPassword">Підтвердіть пароль</label>
-            <p-password
-              name="confirmPassword"
-              formControlName="confirmPassword"
-              [toggleMask]="true"
-              [feedback]="false"
-              placeholder="Підтвердіть пароль"
-              data-cy="confirm-password"
-            >
-            </p-password>
-            <app-form-control-error-message
-              [formGroup]="signUpForm"
-              controlName="password"
-              errorType="required"
-              errorMessage="Потрібно підтвердити пароль"
-            >
-            </app-form-control-error-message>
+          <!-- Right column -->
+          <div class="col-6 flex">
+            <div class="field flex flex-column">
+              <label for="bio" class="flex-none">Опис організації</label>
+              <textarea
+                class="flex-auto"
+                rows="5"
+                cols="80"
+                pInputTextarea
+                [autoResize]="true"
+                name="bio"
+                formControlName="bio"
+                placeholder="Введіть опис вашої організації"
+                data-cy="bio"
+              >
+              </textarea>
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="bio"
+                errorType="required"
+                errorMessage="Потрібно ввести опис"
+              >
+              </app-form-control-error-message>
+            </div>
           </div>
         </div>
-        <div class="row sign-up-wrapper-confirm-section">
+        <div class="flex align-items-center mt-5">
           <a [routerLink]="['/', 'auth', 'sign-in']">Вхід</a>
           <button
+            class="ml-5"
             type="submit"
             pButton
             label="Зареєструватися"
