@@ -11,7 +11,7 @@ import { ProductPropertiesEntity } from '@entities/product-properties.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { Folder } from '@enums/folder.enum';
 
-import { FilesService } from '../../../modules/files/services/files.service';
+import { FilesService } from '../../../../modules/files/services/files.service';
 
 @Injectable()
 export class ProductsService {
@@ -81,7 +81,7 @@ export class ProductsService {
           name: createProductDto.productVariantName,
           description: createProductDto.productVariantDescription,
           size: createProductDto.productVariantSize,
-          color: createProductDto.productVariantColor,
+          color: { id: createProductDto.productVariantColorId },
           price: createProductDto.productVariantPrice,
           images: productImages,
         },
@@ -177,7 +177,7 @@ export class ProductsService {
           name: editProductDto.productVariantName,
           description: editProductDto.productVariantDescription,
           size: editProductDto.productVariantSize,
-          color: editProductDto.productVariantColor,
+          color: { id: editProductDto.productVariantColorId },
           price: editProductDto.productVariantPrice,
           images: productImages,
         },

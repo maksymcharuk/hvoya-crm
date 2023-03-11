@@ -4,6 +4,7 @@ import { Seeder } from 'typeorm-extension';
 import { FileEntity } from '../../../entities/file.entity';
 import { ProductBaseEntity } from '../../../entities/product-base.entity';
 import { ProductCategoryEntity } from '../../../entities/product-category.entity';
+import { ProductColorEntity } from '../../../entities/product-color.entity';
 import { ProductPropertiesEntity } from '../../../entities/product-properties.entity';
 import { ProductVariantEntity } from '../../../entities/product-variant.entity';
 
@@ -15,10 +16,25 @@ export default class ProductSeeder implements Seeder {
     const productBaseRepository = dataSource.getRepository(ProductBaseEntity);
     const productVariantRepository =
       dataSource.getRepository(ProductVariantEntity);
+    const productColorRepository = dataSource.getRepository(ProductColorEntity);
     const productPropertiesRepository = dataSource.getRepository(
       ProductPropertiesEntity,
     );
     const fileRepository = dataSource.getRepository(FileEntity);
+    const productColors = await productColorRepository.save([
+      {
+        name: 'Зелений',
+        hex: '#008000',
+      },
+      {
+        name: 'Блакитний',
+        hex: '#A6CAF0',
+      },
+      {
+        name: 'Білий',
+        hex: '#EDEEF4',
+      },
+    ]);
     const productCategory = await productCategoryRepository.save([
       {
         name: 'Віночки і гірлянди',
@@ -53,7 +69,7 @@ export default class ProductSeeder implements Seeder {
         Святковий вінок може стати чудовим новорічним подарунком.
       `,
         size: '55 см',
-        color: 'red',
+        color: productColors[0],
         price: 455,
         availableItemCount: 10,
         images: [
@@ -70,7 +86,7 @@ export default class ProductSeeder implements Seeder {
         Святковий вінок може стати чудовим новорічним подарунком.
       `,
         size: '55 см',
-        color: 'blue',
+        color: productColors[1],
         price: 455,
         availableItemCount: 10,
         images: [
@@ -85,7 +101,7 @@ export default class ProductSeeder implements Seeder {
         description:
           'Традиційна гілка ялинки. Композиція з хвойних гілок може замінити новорічне дерево.',
         size: '60 см',
-        color: 'red',
+        color: productColors[0],
         price: 197,
         availableItemCount: 10,
         images: [
@@ -100,7 +116,7 @@ export default class ProductSeeder implements Seeder {
         description:
           'Традиційна гілка ялинки. Композиція з хвойних гілок може замінити новорічне дерево.',
         size: '60 см',
-        color: 'blue',
+        color: productColors[1],
         price: 197,
         availableItemCount: 10,
         images: [
@@ -117,7 +133,7 @@ export default class ProductSeeder implements Seeder {
         напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
         Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
         size: '220 см',
-        color: 'red',
+        color: productColors[0],
         price: 2843,
         availableItemCount: 10,
         images: [
@@ -134,7 +150,7 @@ export default class ProductSeeder implements Seeder {
         напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
         Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
         size: '180 см',
-        color: 'green',
+        color: productColors[2],
         price: 2843,
         availableItemCount: 10,
         images: [
@@ -150,7 +166,7 @@ export default class ProductSeeder implements Seeder {
         Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
         Така ялинка підійде як в офіс так і в дім.`,
         size: '70 см',
-        color: 'blue',
+        color: productColors[1],
         price: 614,
         availableItemCount: 10,
         images: [
@@ -166,7 +182,7 @@ export default class ProductSeeder implements Seeder {
         Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
         Така ялинка підійде як в офіс так і в дім.`,
         size: '90 см',
-        color: 'red',
+        color: productColors[1],
         price: 864,
         availableItemCount: 10,
         images: [
@@ -190,7 +206,6 @@ export default class ProductSeeder implements Seeder {
       },
       {
         sku: '214/60/G',
-
         properties: productProperties[2],
         baseProduct: productBase[1],
       },

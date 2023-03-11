@@ -1,14 +1,20 @@
-:host ::ng-deep .p-rowgroup-footer td {
-  font-weight: 700;
-}
-
-:host ::ng-deep .p-rowgroup-header {
-  span {
+:host ::ng-deep {
+  .p-rowgroup-header {
+    span {
       font-weight: 700;
+    }
+
+    .p-row-toggler {
+      vertical-align: middle;
+      margin-right: 0.25rem;
+    }
   }
 
-  .p-row-toggler {
-      vertical-align: middle;
-      margin-right: .25rem;
+  .p-rowgroup-footer td {
+    font-weight: 700;
+  }
+
+  .p-datatable .p-datatable-header {
+    border-top: 0;
   }
 }

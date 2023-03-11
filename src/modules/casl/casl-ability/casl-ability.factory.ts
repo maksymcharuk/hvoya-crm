@@ -12,6 +12,7 @@ import { CartEntity } from '@entities/cart.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
+import { ProductColorEntity } from '@entities/product-color.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
@@ -23,6 +24,7 @@ type Subjects =
       | typeof ProductCategoryEntity
       | typeof ProductBaseEntity
       | typeof ProductVariantEntity
+      | typeof ProductColorEntity
       | typeof CartEntity
       | typeof OrderEntity
     >
@@ -57,6 +59,7 @@ export class CaslAbilityFactory {
       can([Action.Read, Action.Create, Action.Update], ProductCategoryEntity);
       can([Action.Read, Action.Create, Action.Update], ProductBaseEntity);
       can([Action.Read, Action.Create, Action.Update], ProductVariantEntity);
+      can([Action.Read, Action.Create, Action.Update], ProductColorEntity);
       // Orders
       can(
         [

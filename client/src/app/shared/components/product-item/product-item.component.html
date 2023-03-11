@@ -1,7 +1,10 @@
 <div class="card">
   <div
     class="wrapper mb-3"
-    *ngIf="selectedColor && selectedImage; else imageWrapperSkeleton"
+    *ngIf="
+      selectedColorId !== undefined && selectedImage;
+      else imageWrapperSkeleton
+    "
   >
     <a [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]">
       <img [src]="selectedImage" class="wrapper__img" />
@@ -9,12 +12,12 @@
     <div class="colors my-2">
       <p-selectButton
         [options]="colors"
-        [(ngModel)]="selectedColor"
+        [(ngModel)]="selectedColorId"
         (onChange)="onVariantChange($event, 'color')"
-        optionValue="code"
+        optionValue="id"
       >
         <ng-template let-color>
-          <i class="pi pi-circle-fill" [style.color]="color.code"></i>
+          <i class="pi pi-circle-fill" [style.color]="color.hex"></i>
         </ng-template>
       </p-selectButton>
     </div>
