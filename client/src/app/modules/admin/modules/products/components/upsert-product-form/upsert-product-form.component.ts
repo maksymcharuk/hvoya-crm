@@ -9,10 +9,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   ProductBase,
   ProductCategory,
+  ProductColor,
   ProductProperties,
   ProductVariant,
 } from '@shared/interfaces/products';
 import { ProductsService } from '@shared/services/products.service';
+
+import { ProductColorsService } from '../../services/product-colors.service';
 
 @Component({
   selector: 'app-upsert-product-form',
@@ -29,7 +32,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
           description: '',
           price: 0,
           size: '',
-          color: '',
+          color: { name: '', hex: '' } as ProductColor,
           images: [],
         } as Partial<ProductProperties>,
       },
@@ -38,7 +41,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
   product$: BehaviorSubject<any> = new BehaviorSubject(this.emptyProduct);
   acceptedFiles = '.jpg, .png, .jpeg';
   invalidFileTypeMessage = `Некоректний тип файлу. Дозволено файли тільки таких типів: ${this.acceptedFiles}.`;
-  colors: any[] = [{ name: 'red' }, { name: 'green' }, { name: 'blue' }];
+  colors$ = this.productColorsService.getAllColors();
   sizes: any[] = [{ name: '1m' }, { name: '1.5m' }, { name: '2m' }];
   isLoading = false;
   allBaseProducts: ProductBase[] = [];
@@ -79,8 +82,11 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         Validators.required,
       ],
       productVariantSize: [{ value: '', disabled: true }, Validators.required],
-      productVariantColor: [{ value: '', disabled: true }, Validators.required],
-      productVariantPrice: [{ value: '', disabled: true }, Validators.required],
+      productVariantColorId: [
+        { value: 0, disabled: true },
+        Validators.required,
+      ],
+      productVariantPrice: [{ value: 0, disabled: true }, Validators.required],
     }),
     images: [[]],
   });
@@ -96,6 +102,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     private readonly messageService: MessageService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
+    private readonly productColorsService: ProductColorsService,
   ) {
     this.productImagesControl = this.productForm.get('images');
   }
@@ -238,7 +245,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
                     value.productVariantGroup.productVariantDescription,
                   price: value.productVariantGroup.productVariantPrice,
                   size: value.productVariantGroup.productVariantSize,
-                  color: value.productVariantGroup.productVariantColor,
+                  color: value.productVariantGroup.productVariantColorId,
                 },
               },
             ],
@@ -297,19 +304,21 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  onProductSelected(product: any) {
-    if (product.value) {
+  onProductSelected(event: { value: ProductVariant }) {
+    const product = event.value;
+
+    if (product) {
       this.productForm.get('productVariantGroup')?.patchValue({
-        productVariantSku: product.value.sku,
-        productVariantName: product.value.properties.name,
-        productVariantDescription: product.value.properties.description,
-        productVariantSize: product.value.properties.size,
-        productVariantColor: product.value.properties.color,
-        productVariantPrice: product.value.properties.price,
+        productVariantSku: product.sku,
+        productVariantName: product.properties.name,
+        productVariantDescription: product.properties.description,
+        productVariantSize: product.properties.size,
+        productVariantColorId: product.properties.color.id,
+        productVariantPrice: product.properties.price,
       });
       this.allBaseProducts.forEach((base: ProductBase) => {
         base.variants.map((variant: ProductVariant) => {
-          if (variant.id === product.value.id) {
+          if (variant.id === product.id) {
             this.selectedProductVariant = variant;
             this.selectedProductVariantDefaultBaseProduct = base;
             if (!this.newCategory) {
@@ -333,10 +342,10 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
       );
       this.previewImagesList = [
         ...this.previewImagesList,
-        ...product.value.properties.images.map((image: any) => image.url),
+        ...product.properties.images.map((image: any) => image.url),
       ];
-      this.selectedProductImages = product.value.properties.images;
-      this.selectedProductImagesUrls = product.value.properties.images.map(
+      this.selectedProductImages = product.properties.images;
+      this.selectedProductImagesUrls = product.properties.images.map(
         (image: any) => image.url,
       );
       this.productForm.get('productVariantGroup')?.enable();

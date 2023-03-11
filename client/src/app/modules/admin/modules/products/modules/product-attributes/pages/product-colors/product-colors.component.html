@@ -1,0 +1,126 @@
+<p-toast></p-toast>
+
+<p-toolbar styleClass="mb-4 gap-2">
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      label="New"
+      icon="pi pi-plus"
+      class="p-button-success mr-2"
+      (click)="openNew()"
+    ></button>
+  </ng-template>
+</p-toolbar>
+
+<p-table
+  #productColorsTable
+  dataKey="id"
+  currentPageReportTemplate="Показано від {first} до {last} з {totalRecords} кольорів"
+  class="block border-300 border-left-1 border-right-1"
+  [value]="colors"
+  [rows]="5"
+  [paginator]="true"
+  [globalFilterFields]="['name', 'hex']"
+  [(selection)]="selectedProducts"
+  [rowHover]="true"
+  [showCurrentPageReport]="true"
+  [filterDelay]="0"
+>
+  <ng-template pTemplate="caption">
+    <div class="flex align-items-center justify-content-between">
+      <h5 class="m-0">Кольори</h5>
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="filterColors($event)"
+          placeholder="Пошук..."
+        />
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 1%"></th>
+      <th pSortableColumn="name">
+        Назва <p-sortIcon field="name"></p-sortIcon>
+      </th>
+      <th pSortableColumn="hex">HEX <p-sortIcon field="hex"></p-sortIcon></th>
+      <th style="width: 1%"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-color>
+    <tr>
+      <td>
+        <div
+          class="w-3rem h-3rem border-circle border-1 border-400"
+          [style]="{ backgroundColor: color.hex }"
+        ></div>
+      </td>
+      <td>{{ color.name }}</td>
+      <td>{{ color.hex }}</td>
+      <td>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-success mr-2"
+          (click)="editColor(color)"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [(visible)]="colorDialog"
+  [style]="{ width: '450px' }"
+  header="Колір"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="flex justify-content-center">
+      <div
+        class="w-3rem h-3rem border-circle mb-4 border-1 border-400"
+        [style]="{ backgroundColor: color.hex }"
+      ></div>
+    </div>
+    <div class="field">
+      <label for="name">Назва</label>
+      <input
+        type="text"
+        pInputText
+        id="name"
+        [(ngModel)]="color.name"
+        required
+        autofocus
+      />
+    </div>
+    <div class="field">
+      <label for="description">HEX</label>
+      <input type="text" pInputText id="hex" [(ngModel)]="color.hex" required />
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      label="Відмінити"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideDialog()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      label="Зберегти"
+      icon="pi pi-check"
+      class="p-button-text"
+      (click)="saveColor()"
+    ></button>
+  </ng-template>
+</p-dialog>

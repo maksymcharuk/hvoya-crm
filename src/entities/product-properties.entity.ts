@@ -4,6 +4,7 @@ import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BaseEntity } from './base.entity';
 import { FileEntity } from './file.entity';
+import { ProductColorEntity } from './product-color.entity';
 import { ProductVariantEntity } from './product-variant.entity';
 
 @Entity('product_properties')
@@ -16,9 +17,6 @@ export class ProductPropertiesEntity extends BaseEntity {
 
   @Column()
   size: string;
-
-  @Column()
-  color: string;
 
   @Column({
     type: 'decimal',
@@ -34,6 +32,11 @@ export class ProductPropertiesEntity extends BaseEntity {
   })
   @JoinTable()
   images: FileEntity[];
+
+  @ManyToOne(() => ProductColorEntity, {
+    eager: true,
+  })
+  color: ProductColorEntity;
 
   @ManyToOne(
     () => ProductVariantEntity,

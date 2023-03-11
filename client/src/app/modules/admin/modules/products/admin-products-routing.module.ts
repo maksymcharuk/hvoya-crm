@@ -25,6 +25,13 @@ const routes: Routes = [
         component: EditProductComponent,
       },
       {
+        path: 'attributes',
+        loadChildren: () =>
+          import('./modules/product-attributes/product-attributes.module').then(
+            (m) => m.ProductAttributesModule,
+          ),
+      },
+      {
         path: ':baseId/:variantId',
         component: ViewProductComponent,
       },

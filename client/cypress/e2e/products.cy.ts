@@ -16,7 +16,7 @@ describe('Products', () => {
     name = `Product-${Date.now()}`;
     description = 'Product test description';
     size = '1m';
-    color = 'red';
+    color = 'Зелений';
     prize = 1;
     baseProductName = `Base product-${Date.now()}`;
   });

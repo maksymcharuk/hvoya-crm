@@ -1,6 +1,11 @@
 import { BaseEntity } from './base-entity.interface';
 import { File } from './file.interface';
 
+export interface ProductColor extends BaseEntity {
+  name: string;
+  hex: string;
+}
+
 interface ProductBaseWithOutRelations extends BaseEntity {
   name: string;
 }
@@ -10,7 +15,7 @@ export interface ProductProperties extends BaseEntity {
   description: string;
   price: number;
   size: string;
-  color: string;
+  color: ProductColor;
   images: File[];
 }
 

@@ -41,17 +41,17 @@
     <div class="font-bold text-900 mb-3">Колір</div>
     <div class="flex align-items-center mb-5">
       <p-selectButton
-        *ngIf="selectedColor"
+        *ngIf="selectedColorId"
         [options]="colors"
-        [(ngModel)]="selectedColor"
+        [(ngModel)]="selectedColorId"
         (onChange)="onVariantChange($event, 'color')"
-        optionValue="code"
+        optionValue="id"
         class="colors"
       >
         <ng-template let-color>
           <i
             class="color-circle pi pi-circle-fill"
-            [style.color]="color.code"
+            [style.color]="color.hex"
           ></i>
         </ng-template>
       </p-selectButton>

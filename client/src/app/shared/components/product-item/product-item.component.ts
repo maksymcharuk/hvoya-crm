@@ -9,6 +9,7 @@ import {
 
 import {
   ProductBase,
+  ProductColor,
   ProductProperties,
   ProductVariant,
 } from '@shared/interfaces/products';
@@ -31,8 +32,8 @@ export class ProductItemComponent implements OnInit, OnChanges {
   sizes: { code: string }[] = [];
   selectedSize = '';
 
-  colors: { code: string }[] = [];
-  selectedColor = '';
+  colors: ProductColor[] = [];
+  selectedColorId: number | undefined;
 
   selectedImage = '';
 
@@ -74,12 +75,12 @@ export class ProductItemComponent implements OnInit, OnChanges {
 
   onVariantChange({ value }: any, type: 'color' | 'size'): void {
     const selectedSize = type === 'size' ? value : this.selectedSize;
-    const selectedColor = type === 'color' ? value : this.selectedColor;
+    const selectedColorId = type === 'color' ? value : this.selectedColorId;
 
     this.selectedVariant = this.variants.find(
       (variant) =>
         variant.properties.size === selectedSize &&
-        variant.properties.color === selectedColor,
+        variant.properties.color.id === selectedColorId,
     );
 
     if (!this.selectedVariant) {
@@ -95,8 +96,8 @@ export class ProductItemComponent implements OnInit, OnChanges {
   private updateColors(): void {
     this.colors = this.variants
       .filter((variant) => variant.properties.size === this.selectedSize)
-      .map((color) => ({ code: color.properties.color }));
-    this.selectedColor = this.selectedVariant?.properties.color || '';
+      .map((product) => product.properties.color);
+    this.selectedColorId = this.selectedVariant?.properties.color?.id;
   }
 
   private getUniqueArray(

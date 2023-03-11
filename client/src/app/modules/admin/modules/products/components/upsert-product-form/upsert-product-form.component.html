@@ -259,26 +259,38 @@
             </app-form-control-error-message>
           </div>
           <div class="field col-4">
-            <label for="productVariantColor">Колір</label>
+            <label for="productVariantColorId">Колір</label>
             <p-dropdown
-              [options]="colors"
-              optionLabel="name"
-              formControlName="productVariantColor"
+              [options]="(colors$ | async)!"
+              formControlName="productVariantColorId"
               [showClear]="true"
-              optionValue="name"
-              id="productVariantColor"
+              optionValue="id"
+              id="productVariantColorId"
               placeholder="Виберіть колір"
               data-cy="product-color"
             >
+              <ng-template let-color pTemplate="selectedItem">
+                <div class="flex align-items-center">
+                  <div
+                    class="w-1rem h-1rem border-circle border-400 mr-2"
+                    [style]="{ backgroundColor: color.hex }"
+                  ></div>
+                  <div>{{ color.name }}</div>
+                </div>
+              </ng-template>
               <ng-template let-color pTemplate="item">
-                <div>
+                <div class="flex align-items-center">
+                  <div
+                    class="w-1rem h-1rem border-circle border-400 mr-2"
+                    [style]="{ backgroundColor: color.hex }"
+                  ></div>
                   <div>{{ color.name }}</div>
                 </div>
               </ng-template>
             </p-dropdown>
             <app-form-control-error-message
               [formGroup]="productForm"
-              controlName="productVariantGroup.productVariantColor"
+              controlName="productVariantGroup.productVariantColorId"
               errorType="required"
               errorMessage="Потрібно вибрати колір"
             >
@@ -391,8 +403,8 @@
     </div>
   </div>
   <div class="col-4">
-    <div class="card product-preview">
-      <div class="product-preview-header">
+    <div class="product-preview">
+      <div class="product-preview-header mb-4">
         <div>Попередній перегляд</div>
       </div>
       <app-product-item
