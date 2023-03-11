@@ -5,64 +5,62 @@
       <h3>Вхід</h3>
     </div>
     <form [formGroup]="signInForm" (ngSubmit)="onSubmit(signInForm.value)">
-      <div class="sign-in-wrapper-form">
-        <div class="p-fluid formgrid grid">
-          <div class="field col-12 md:col-12">
-            <label>Пошта</label>
-            <input
-              name="email"
-              formControlName="email"
-              id="float-input-invalid"
-              type="email"
-              placeholder="Введіть пошту"
-              pInputText
-            />
-            <app-form-control-error-message
-              [formGroup]="signInForm"
-              controlName="email"
-              errorType="required"
-              errorMessage="Потрібно ввести пошту"
-            >
-            </app-form-control-error-message>
-          </div>
-          <div class="field col-12 md:col-12">
-            <label for="float-input-invalid">Пароль</label>
-            <p-password
-              name="password"
-              formControlName="password"
-              id="float-input-invalid"
-              placeholder="Введіть пароль"
-              [toggleMask]="true"
-              [feedback]="false"
-            ></p-password>
-            <app-form-control-error-message
-              [formGroup]="signInForm"
-              controlName="password"
-              errorType="required"
-              errorMessage="Потрібно ввести пароль"
-            >
-            </app-form-control-error-message>
-          </div>
+      <div class="p-fluid formgrid grid">
+        <div class="field col-12 md:col-12">
+          <label>Пошта</label>
+          <input
+            name="email"
+            formControlName="email"
+            id="float-input-invalid"
+            type="email"
+            placeholder="Введіть пошту"
+            pInputText
+          />
+          <app-form-control-error-message
+            [formGroup]="signInForm"
+            controlName="email"
+            errorType="required"
+            errorMessage="Потрібно ввести пошту"
+          >
+          </app-form-control-error-message>
         </div>
-        <div class="p-fluid formgrid grid sign-in-wrapper-form-confirm">
-          <div class="field col-6 md:col-6">
-            <a [routerLink]="['/', 'auth', 'sign-up']">Реєстрація</a>
-          </div>
-          <div class="field col-6 md:col-6 text-right">
-            <a [routerLink]="['/', 'auth', 'forgot-password']"
-              >Відновити пароль</a
-            >
-          </div>
+        <div class="field col-12 md:col-12">
+          <label for="float-input-invalid">Пароль</label>
+          <p-password
+            name="password"
+            formControlName="password"
+            id="float-input-invalid"
+            placeholder="Введіть пароль"
+            [toggleMask]="true"
+            [feedback]="false"
+          ></p-password>
+          <app-form-control-error-message
+            [formGroup]="signInForm"
+            controlName="password"
+            errorType="required"
+            errorMessage="Потрібно ввести пароль"
+          >
+          </app-form-control-error-message>
         </div>
-        <div class="p-fluid formgrid grid sign-in-wrapper-form-confirm">
-          <div class="col-12 md:col-12">
-            <button
-              [disabled]="isLoading"
-              type="submit"
-              pButton
-              label="Вхід"
-            ></button>
-          </div>
+      </div>
+      <div class="p-fluid formgrid grid">
+        <div class="field col-6 md:col-6">
+          <a [routerLink]="['/', 'auth', 'sign-up']">Реєстрація</a>
+        </div>
+        <div class="field col-6 md:col-6 text-right">
+          <a [routerLink]="['/', 'auth', 'forgot-password']"
+            >Відновити пароль</a
+          >
+        </div>
+      </div>
+      <div class="p-fluid formgrid grid">
+        <div class="col-12 md:col-12">
+          <button
+            [disabled]="isLoading"
+            type="submit"
+            pButton
+            label="Вхід"
+          ></button>
         </div>
       </div>
     </form>

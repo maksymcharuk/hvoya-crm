@@ -1,9 +1,11 @@
 .sign-in {
-  height: 100vh;
+  background-color: var(--primary-color);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 50px 30px;
 
   img {
     margin-bottom: 30px;
@@ -16,16 +18,12 @@
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  padding: 50px 50px 80px;
-  border-radius: 50px;
-  border: 3px solid var(--primary-color);
+  padding: 30px 30px 50px;
+  max-width: 100%;
+  width: 400px;
 
   &-title {
     margin-bottom: 10px;
-  }
-
-  &-form {
-    width: 300px;
   }
 
   a {

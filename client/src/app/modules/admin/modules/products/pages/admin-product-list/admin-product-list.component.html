@@ -1,7 +1,5 @@
-<div class="card">
-  <app-product-list
-    [productList]="(productList$ | async) || []"
-    [isLoading]="isLoading"
-    [hideAddToCartButton]="true"
-  ></app-product-list>
-</div>
+<app-product-list
+  [productList]="(productList$ | async) || []"
+  [isLoading]="isLoading"
+  [hideAddToCartButton]="true"
+></app-product-list>

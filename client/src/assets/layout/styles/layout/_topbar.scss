@@ -28,7 +28,7 @@
       margin-right: 0.5rem;
     }
 
-    &:focus {
+    &:focus-visible {
       @include focused();
     }
   }
@@ -50,7 +50,7 @@
       background-color: var(--surface-hover);
     }
 
-    &:focus {
+    &:focus-visible {
       @include focused();
     }
 

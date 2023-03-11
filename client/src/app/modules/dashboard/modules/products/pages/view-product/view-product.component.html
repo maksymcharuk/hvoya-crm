@@ -1,6 +1,12 @@
-<app-product-view
-  *ngIf="product$ | async as product"
-  [product]="product"
-  [selectedVariantId]="selectedVariantId"
-  (addToCart)="addToCart($event)"
-></app-product-view>
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <app-product-view
+        *ngIf="product$ | async as product"
+        [product]="product"
+        [selectedVariantId]="selectedVariantId"
+        (addToCart)="addToCart($event)"
+      ></app-product-view>
+    </div>
+  </div>
+</div>
