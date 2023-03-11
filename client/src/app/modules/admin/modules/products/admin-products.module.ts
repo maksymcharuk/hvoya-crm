@@ -1,4 +1,3 @@
-import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { EditorModule } from 'primeng/editor';
@@ -11,7 +10,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -36,7 +35,6 @@ import { ViewProductComponent } from './pages/view-product/view-product.componen
   ],
   imports: [
     CommonModule,
-    FormsModule,
     AdminProductsRoutingModule,
     SharedModule,
     TabViewModule,
@@ -50,6 +48,5 @@ import { ViewProductComponent } from './pages/view-product/view-product.componen
     InputNumberModule,
     EditorModule,
   ],
-  providers: [MessageService],
 })
 export class AdminProductsModule {}

@@ -97,8 +97,7 @@ export class ProductItemComponent implements OnInit, OnChanges {
     this.colors = this.variants
       .filter((variant) => variant.properties.size === this.selectedSize)
       .map((product) => product.properties.color);
-    this.selectedColorId =
-      this.selectedVariant?.properties.color.id || undefined;
+    this.selectedColorId = this.selectedVariant?.properties.color?.id;
   }
 
   private getUniqueArray(

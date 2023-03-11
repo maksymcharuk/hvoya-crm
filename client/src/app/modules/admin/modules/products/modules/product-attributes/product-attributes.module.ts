@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -29,5 +30,6 @@ import { ProductAttributesComponent } from './product-attributes.component';
     ToastModule,
     ToolbarModule,
   ],
+  providers: [MessageService],
 })
 export class ProductAttributesModule {}

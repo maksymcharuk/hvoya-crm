@@ -140,15 +140,14 @@ function signUp(email: string, password: string): void {
   cy.getCyEl('middle-name').type('test-middleName');
   cy.getCyEl('last-name').type('test-lastName');
   cy.getCyEl('bio').type('test-bio');
-  cy.getCyEl('password').type(password);
+  cy.getCyEl('password').type(password).find('input').blur();
   cy.getCyEl('confirm-password').type(password);
   cy.get('button[type=submit]').click();
 }
 
 function resetPassword(password: string, token: string): void {
   cy.visit(`/auth/reset-password?token=${token}`);
-  cy.get('input[type=password]').first().type(password);
-  cy.get('input[type=password]').first().blur();
+  cy.get('input[type=password]').first().type(password).blur();
   cy.get('input[type=password]').last().type(password);
   cy.get('button[type=submit]').click();
 }
