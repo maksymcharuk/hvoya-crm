@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { ProductSizeSubscriber } from './subscribers/product-size.subscriber';
 import { UserSubscriber } from './subscribers/user.subscriber';
 
 @Module({
@@ -16,10 +17,10 @@ import { UserSubscriber } from './subscribers/user.subscriber';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        subscribers: [UserSubscriber],
+        subscribers: [UserSubscriber, ProductSizeSubscriber],
         autoLoadEntities: true,
       }),
     }),
   ],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}
