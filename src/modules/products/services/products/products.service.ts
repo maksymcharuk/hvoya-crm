@@ -80,7 +80,7 @@ export class ProductsService {
         {
           name: createProductDto.productVariantName,
           description: createProductDto.productVariantDescription,
-          size: createProductDto.productVariantSize,
+          size: { id: createProductDto.productVariantSizeId },
           color: { id: createProductDto.productVariantColorId },
           price: createProductDto.productVariantPrice,
           images: productImages,
@@ -176,7 +176,7 @@ export class ProductsService {
         {
           name: editProductDto.productVariantName,
           description: editProductDto.productVariantDescription,
-          size: editProductDto.productVariantSize,
+          size: { id: editProductDto.productVariantSizeId },
           color: { id: editProductDto.productVariantColorId },
           price: editProductDto.productVariantPrice,
           images: productImages,

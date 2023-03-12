@@ -1,0 +1,194 @@
+<p-toast></p-toast>
+
+<p-toolbar styleClass="mb-4 gap-2">
+  <ng-template pTemplate="left">
+    <button
+      pButton
+      pRipple
+      label="New"
+      icon="pi pi-plus"
+      class="p-button-success mr-2"
+      (click)="openNew()"
+    ></button>
+  </ng-template>
+</p-toolbar>
+
+<p-table
+  #productSizesTable
+  dataKey="id"
+  currentPageReportTemplate="Показано від {first} до {last} з {totalRecords} розмірів"
+  class="block border-300 border-left-1 border-right-1"
+  [value]="sizes"
+  [rows]="5"
+  [paginator]="true"
+  [globalFilterFields]="[
+    'height',
+    'width',
+    'depth',
+    'diameter',
+    'packageHeight',
+    'packageWidth',
+    'packageDepth'
+  ]"
+  [rowHover]="true"
+  [showCurrentPageReport]="true"
+  [filterDelay]="0"
+>
+  <ng-template pTemplate="caption">
+    <div class="flex align-items-center justify-content-between">
+      <h5 class="m-0">Розміри (см)</h5>
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="filterSizes($event)"
+          placeholder="Пошук..."
+        />
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="height">
+        Висота <p-sortIcon field="height"></p-sortIcon>
+      </th>
+      <th pSortableColumn="width">
+        Ширина <p-sortIcon field="width"></p-sortIcon>
+      </th>
+      <th pSortableColumn="depth">
+        Глибина <p-sortIcon field="depth"></p-sortIcon>
+      </th>
+      <th pSortableColumn="diameter">
+        Діаметр <p-sortIcon field="diameter"></p-sortIcon>
+      </th>
+      <th pSortableColumn="packageHeight">
+        Висота в уп. <p-sortIcon field="packageHeight"></p-sortIcon>
+      </th>
+      <th pSortableColumn="packageWidth">
+        Ширина в уп. <p-sortIcon field="packageWidth"></p-sortIcon>
+      </th>
+      <th pSortableColumn="packageDepth">
+        Глибина в уп. <p-sortIcon field="packageDepth"></p-sortIcon>
+      </th>
+      <th style="width: 1%"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-size>
+    <tr>
+      <td>{{ size.height }}</td>
+      <td>{{ size.width ?? '-' }}</td>
+      <td>{{ size.depth ?? '-' }}</td>
+      <td>{{ size.diameter ?? '-' }}</td>
+      <td>{{ size.packageHeight }}</td>
+      <td>{{ size.packageWidth }}</td>
+      <td>{{ size.packageDepth }}</td>
+      <td>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-pencil"
+          class="p-button-rounded p-button-success mr-2"
+          (click)="editSize(size)"
+        ></button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [(visible)]="sizeDialog"
+  [style]="{ width: '450px' }"
+  header="Розмір (см)"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="field">
+      <label for="height">Висота</label>
+      <p-inputNumber
+        autofocus
+        id="height"
+        mode="decimal"
+        [(ngModel)]="size.height"
+        [required]="true"
+      ></p-inputNumber>
+    </div>
+    <div class="field">
+      <label for="width">Ширина</label>
+      <p-inputNumber
+        autofocus
+        id="width"
+        mode="decimal"
+        [(ngModel)]="size.width"
+      ></p-inputNumber>
+    </div>
+    <div class="field">
+      <label for="depth">Глибина</label>
+      <p-inputNumber
+        autofocus
+        id="depth"
+        mode="decimal"
+        [(ngModel)]="size.depth"
+      ></p-inputNumber>
+    </div>
+    <div class="field">
+      <label for="diameter">Діаметр (для вінків)</label>
+      <p-inputNumber
+        autofocus
+        id="diameter"
+        mode="decimal"
+        [(ngModel)]="size.diameter"
+      ></p-inputNumber>
+    </div>
+    <div class="field">
+      <label for="packageHeight">Висота в упаковці</label>
+      <p-inputNumber
+        autofocus
+        id="packageHeight"
+        mode="decimal"
+        [(ngModel)]="size.packageHeight"
+        [required]="true"
+      ></p-inputNumber>
+    </div>
+    <div class="field">
+      <label for="packageWidth">Ширина в упаковці</label>
+      <p-inputNumber
+        autofocus
+        id="packageWidth"
+        mode="decimal"
+        [(ngModel)]="size.packageWidth"
+        [required]="true"
+      ></p-inputNumber>
+    </div>
+    <div class="field">
+      <label for="packageDepth">Глибина в упаковці</label>
+      <p-inputNumber
+        autofocus
+        id="packageDepth"
+        mode="decimal"
+        [(ngModel)]="size.packageDepth"
+        [required]="true"
+      ></p-inputNumber>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      label="Відмінити"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideDialog()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      label="Зберегти"
+      icon="pi pi-check"
+      class="p-button-text"
+      (click)="saveSize()"
+    ></button>
+  </ng-template>
+</p-dialog>

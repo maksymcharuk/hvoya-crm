@@ -27,7 +27,7 @@ export class CreateProductDto {
   productVariantDescription: string;
 
   @IsNotEmpty()
-  productVariantSize: string;
+  productVariantSizeId: number;
 
   @IsNotEmpty()
   productVariantColorId: number;

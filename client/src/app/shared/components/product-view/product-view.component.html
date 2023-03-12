@@ -61,13 +61,18 @@
     </div>
     <div class="flex align-items-center mb-5">
       <p-selectButton
-        *ngIf="selectedSize"
+        *ngIf="selectedSizeId !== undefined"
         [options]="sizes"
-        [(ngModel)]="selectedSize"
+        [(ngModel)]="selectedSizeId"
         (onChange)="onVariantChange($event, 'size')"
-        optionLabel="code"
-        optionValue="code"
-      ></p-selectButton>
+        optionValue="id"
+      >
+        <ng-template let-size>
+          <span class="w-full text-center">
+            {{ size | productSize : 'short' }}
+          </span>
+        </ng-template>
+      </p-selectButton>
     </div>
     <button
       *ngIf="!hideAddToCartButton"

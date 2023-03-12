@@ -287,8 +287,8 @@ function compareProductVariantFields(compareForm: any): void {
   cy.get('[data-cy="product-description"]')
     .get('div[data-placeholder="Введіть опис для продукту"]')
     .should('have.text', compareForm.description);
-  cy.get('[data-cy="product-size"]').should('have.text', compareForm.size);
-  cy.get('[data-cy="product-color"]').should('have.text', compareForm.color);
+  cy.get('[data-cy="product-size"]').should('contain.text', compareForm.size);
+  cy.get('[data-cy="product-color"]').should('contain.text', compareForm.color);
   cy.get('[data-cy="product-prize"] input')
     .invoke('val')
     .then((value) => {

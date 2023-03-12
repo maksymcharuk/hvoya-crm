@@ -16,7 +16,6 @@ export class ProductColorsComponent {
   colorDialog!: boolean;
   colors!: ProductColor[];
   color!: ProductColor;
-  selectedProducts!: ProductColor[];
   submitted!: boolean;
 
   @ViewChild('productColorsTable') productColorsTable!: Table;

@@ -5,6 +5,7 @@ import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductColorEntity } from '@entities/product-color.entity';
 import { ProductPropertiesEntity } from '@entities/product-properties.entity';
+import { ProductSizeEntity } from '@entities/product-size.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 
 import { CaslModule } from '../casl/casl.module';
@@ -14,6 +15,8 @@ import { ProductColorsController } from './controllers/product-colors/product-co
 import { ProductsController } from './controllers/products/products.controller';
 import { ProductColorsService } from './services/product-colors/product-colors.service';
 import { ProductsService } from './services/products/products.service';
+import { ProductSizesService } from './services/product-sizes/product-sizes.service';
+import { ProductSizesController } from './controllers/product-sizes/product-sizes.controller';
 
 @Module({
   imports: [
@@ -23,12 +26,13 @@ import { ProductsService } from './services/products/products.service';
       ProductVariantEntity,
       ProductPropertiesEntity,
       ProductColorEntity,
+      ProductSizeEntity,
     ]),
     CaslModule,
     CloudinaryModule,
     FilesModule,
   ],
-  controllers: [ProductsController, ProductColorsController],
-  providers: [ProductsService, ProductColorsService],
+  controllers: [ProductsController, ProductColorsController, ProductSizesController],
+  providers: [ProductsService, ProductColorsService, ProductSizesService],
 })
 export class ProductsModule {}

@@ -16,6 +16,10 @@ export class ProductAttributesComponent {
         label: 'Кольори',
         routerLink: ['colors'],
       },
+      {
+        label: 'Розміри',
+        routerLink: ['sizes'],
+      },
     ];
   }
 }

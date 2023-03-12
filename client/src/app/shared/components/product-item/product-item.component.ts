@@ -10,9 +10,10 @@ import {
 import {
   ProductBase,
   ProductColor,
-  ProductProperties,
+  ProductSize,
   ProductVariant,
 } from '@shared/interfaces/products';
+import { getUniqueProductSizes } from '@shared/utils';
 
 @Component({
   selector: 'app-product-item',
@@ -29,8 +30,8 @@ export class ProductItemComponent implements OnInit, OnChanges {
   variants: ProductVariant[] = [];
   selectedVariant: ProductVariant | undefined;
 
-  sizes: { code: string }[] = [];
-  selectedSize = '';
+  sizes: ProductSize[] = [];
+  selectedSizeId: number | undefined;
 
   colors: ProductColor[] = [];
   selectedColorId: number | undefined;
@@ -40,10 +41,8 @@ export class ProductItemComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.variants = this.product.variants || [];
     this.selectedVariant = this.variants[0];
-    this.sizes = this.getUniqueArray(this.variants, 'size').map((size) => ({
-      code: size,
-    }));
-    this.selectedSize = this.sizes[0]?.code || '';
+    this.sizes = getUniqueProductSizes(this.variants);
+    this.selectedSizeId = this.sizes[0]?.id;
     this.selectedImage = this.selectedVariant?.properties?.images[0]?.url || '';
 
     this.updateColors();
@@ -53,10 +52,8 @@ export class ProductItemComponent implements OnInit, OnChanges {
     if (changes.product) {
       this.variants = changes.product.currentValue.variants;
       this.selectedVariant = changes.product.currentValue.variants[0];
-      this.sizes = this.getUniqueArray(this.variants, 'size').map((size) => ({
-        code: size,
-      }));
-      this.selectedSize = this.sizes[0]?.code || '';
+      this.sizes = getUniqueProductSizes(this.variants);
+      this.selectedSizeId = this.sizes[0]?.id;
 
       this.updateColors();
     }
@@ -74,18 +71,18 @@ export class ProductItemComponent implements OnInit, OnChanges {
   }
 
   onVariantChange({ value }: any, type: 'color' | 'size'): void {
-    const selectedSize = type === 'size' ? value : this.selectedSize;
+    const selectedSizeId = type === 'size' ? value : this.selectedSizeId;
     const selectedColorId = type === 'color' ? value : this.selectedColorId;
 
     this.selectedVariant = this.variants.find(
       (variant) =>
-        variant.properties.size === selectedSize &&
+        variant.properties.size.id === selectedSizeId &&
         variant.properties.color.id === selectedColorId,
     );
 
     if (!this.selectedVariant) {
       this.selectedVariant = this.variants.find(
-        (variant) => variant.properties.size === selectedSize,
+        (variant) => variant.properties.size.id === selectedSizeId,
       );
     }
 
@@ -95,15 +92,8 @@ export class ProductItemComponent implements OnInit, OnChanges {
 
   private updateColors(): void {
     this.colors = this.variants
-      .filter((variant) => variant.properties.size === this.selectedSize)
+      .filter((variant) => variant.properties.size.id === this.selectedSizeId)
       .map((product) => product.properties.color);
     this.selectedColorId = this.selectedVariant?.properties.color?.id;
-  }
-
-  private getUniqueArray(
-    arr: ProductVariant[],
-    key: keyof ProductProperties,
-  ): any[] {
-    return Array.from(new Set(arr.map((item) => item.properties[key])));
   }
 }
