@@ -51,13 +51,18 @@
   </ng-template>
   <div class="my-3">
     <p-selectButton
-      *ngIf="selectedSize; else sizeSkeleton"
+      *ngIf="selectedSizeId !== undefined; else sizeSkeleton"
       [options]="sizes"
-      [(ngModel)]="selectedSize"
+      [(ngModel)]="selectedSizeId"
       (onChange)="onVariantChange($event, 'size')"
-      optionLabel="code"
-      optionValue="code"
-    ></p-selectButton>
+      optionValue="id"
+    >
+      <ng-template let-size>
+        <span class="w-full text-center">
+          {{ size | productSize : 'short' }}
+        </span>
+      </ng-template>
+    </p-selectButton>
   </div>
   <ng-template #sizeSkeleton>
     <p-skeleton height="2rem" width="100%"></p-skeleton>

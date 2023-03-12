@@ -25,8 +25,11 @@ import { StatusBadgeComponent } from './components/status-badge/status-badge.com
 import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
+import { ProductSizePipe } from './pipes';
 
 registerLocaleData(localeUk);
+
+const PIPES = [ProductSizePipe];
 
 const COMPONENTS = [
   VerticalMenuComponent,
@@ -54,6 +57,7 @@ const PRIMENG_MODULES = [
 @NgModule({
   declarations: [
     ...COMPONENTS,
+    ...PIPES,
     FormControlErrorMessageComponent,
     OrderDeliveryStatusBadgeComponent,
     ProductViewComponent,
@@ -80,6 +84,6 @@ const PRIMENG_MODULES = [
     { provide: LOCALE_ID, useValue: 'uk' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'UAH' },
   ],
-  exports: [...COMPONENTS],
+  exports: [...COMPONENTS, ...PIPES],
 })
 export class SharedModule {}

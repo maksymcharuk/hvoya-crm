@@ -11,11 +11,13 @@ import {
   ProductCategory,
   ProductColor,
   ProductProperties,
+  ProductSize,
   ProductVariant,
 } from '@shared/interfaces/products';
 import { ProductsService } from '@shared/services/products.service';
 
 import { ProductColorsService } from '../../services/product-colors.service';
+import { ProductSizesService } from '../../services/product-sizes.service';
 
 @Component({
   selector: 'app-upsert-product-form',
@@ -31,7 +33,12 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
           name: '',
           description: '',
           price: 0,
-          size: '',
+          size: {
+            height: 0,
+            width: 0,
+            depth: 0,
+            diameter: 0,
+          } as ProductSize,
           color: { name: '', hex: '' } as ProductColor,
           images: [],
         } as Partial<ProductProperties>,
@@ -41,8 +48,8 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
   product$: BehaviorSubject<any> = new BehaviorSubject(this.emptyProduct);
   acceptedFiles = '.jpg, .png, .jpeg';
   invalidFileTypeMessage = `Некоректний тип файлу. Дозволено файли тільки таких типів: ${this.acceptedFiles}.`;
-  colors$ = this.productColorsService.getAllColors();
-  sizes: any[] = [{ name: '1m' }, { name: '1.5m' }, { name: '2m' }];
+  colors: ProductColor[] = [];
+  sizes: ProductSize[] = [];
   isLoading = false;
   allBaseProducts: ProductBase[] = [];
   destroy$: Subject<boolean> = new Subject();
@@ -81,7 +88,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         { value: '', disabled: true },
         Validators.required,
       ],
-      productVariantSize: [{ value: '', disabled: true }, Validators.required],
+      productVariantSizeId: [{ value: 0, disabled: true }, Validators.required],
       productVariantColorId: [
         { value: 0, disabled: true },
         Validators.required,
@@ -103,6 +110,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly productColorsService: ProductColorsService,
+    private readonly productSizesService: ProductSizesService,
   ) {
     this.productImagesControl = this.productForm.get('images');
   }
@@ -114,6 +122,13 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     if (this.isEdit) {
       this.productForm.get('productBaseGroup')?.enable();
     }
+
+    this.productColorsService.getAllColors().subscribe((colors) => {
+      this.colors = colors;
+    });
+    this.productSizesService.getAllSizes().subscribe((sizes) => {
+      this.sizes = sizes;
+    });
   }
 
   ngOnDestroy(): void {
@@ -244,8 +259,17 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
                   description:
                     value.productVariantGroup.productVariantDescription,
                   price: value.productVariantGroup.productVariantPrice,
-                  size: value.productVariantGroup.productVariantSize,
-                  color: value.productVariantGroup.productVariantColorId,
+                  size: this.sizes.find((size) => {
+                    return (
+                      size.id === value.productVariantGroup.productVariantSizeId
+                    );
+                  }),
+                  color: this.colors.find((color) => {
+                    return (
+                      color.id ===
+                      value.productVariantGroup.productVariantColorId
+                    );
+                  }),
                 },
               },
             ],
@@ -312,7 +336,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         productVariantSku: product.sku,
         productVariantName: product.properties.name,
         productVariantDescription: product.properties.description,
-        productVariantSize: product.properties.size,
+        productVariantSizeId: product.properties.size.id,
         productVariantColorId: product.properties.color.id,
         productVariantPrice: product.properties.price,
       });

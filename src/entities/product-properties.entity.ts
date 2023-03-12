@@ -5,6 +5,7 @@ import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BaseEntity } from './base.entity';
 import { FileEntity } from './file.entity';
 import { ProductColorEntity } from './product-color.entity';
+import { ProductSizeEntity } from './product-size.entity';
 import { ProductVariantEntity } from './product-variant.entity';
 
 @Entity('product_properties')
@@ -14,9 +15,6 @@ export class ProductPropertiesEntity extends BaseEntity {
 
   @Column()
   description: string;
-
-  @Column()
-  size: string;
 
   @Column({
     type: 'decimal',
@@ -37,6 +35,11 @@ export class ProductPropertiesEntity extends BaseEntity {
     eager: true,
   })
   color: ProductColorEntity;
+
+  @ManyToOne(() => ProductSizeEntity, {
+    eager: true,
+  })
+  size: ProductSizeEntity;
 
   @ManyToOne(
     () => ProductVariantEntity,

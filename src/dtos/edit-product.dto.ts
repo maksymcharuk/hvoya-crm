@@ -30,7 +30,7 @@ export class EditProductDto {
   productVariantDescription: string;
 
   @IsNotEmpty()
-  productVariantSize: string;
+  productVariantSizeId: number;
 
   @IsNotEmpty()
   productVariantColorId: number;

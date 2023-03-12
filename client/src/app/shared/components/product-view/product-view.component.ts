@@ -13,9 +13,10 @@ import {
 import {
   ProductBase,
   ProductColor,
-  ProductProperties,
+  ProductSize,
   ProductVariant,
 } from '@shared/interfaces/products';
+import { getUniqueProductSizes } from '@shared/utils';
 
 @Component({
   selector: 'app-product-view',
@@ -34,8 +35,8 @@ export class ProductViewComponent implements OnInit {
   variants: ProductVariant[] = [];
   selectedVariant: ProductVariant | undefined;
 
-  sizes: { code: string }[] = [];
-  selectedSize = '';
+  sizes: ProductSize[] = [];
+  selectedSizeId: number | undefined;
 
   colors: ProductColor[] = [];
   selectedColorId: number | undefined;
@@ -47,10 +48,8 @@ export class ProductViewComponent implements OnInit {
     this.selectedVariant = this.variants.find(
       (variant) => variant.id === this.selectedVariantId,
     );
-    this.sizes = this.getUniqueArray(this.variants, 'size').map((size) => ({
-      code: size,
-    }));
-    this.selectedSize = this.selectedVariant?.properties.size || '';
+    this.sizes = getUniqueProductSizes(this.variants);
+    this.selectedSizeId = this.selectedVariant?.properties.size.id;
 
     this.updateColors();
   }
@@ -63,7 +62,7 @@ export class ProductViewComponent implements OnInit {
   }
 
   onVariantChange({ value }: any, type: 'color' | 'size'): void {
-    const selectedSize = type === 'size' ? value : this.selectedSize;
+    const selectedSizeId = type === 'size' ? value : this.selectedSizeId;
     const selectedColorId = type === 'color' ? value : this.selectedColorId;
 
     this.galleria.activeIndex = 0;
@@ -71,13 +70,13 @@ export class ProductViewComponent implements OnInit {
 
     this.selectedVariant = this.variants.find(
       (variant) =>
-        variant.properties.size === selectedSize &&
+        variant.properties.size.id === selectedSizeId &&
         variant.properties.color.id === selectedColorId,
     );
 
     if (!this.selectedVariant) {
       this.selectedVariant = this.variants.find(
-        (variant) => variant.properties.size === selectedSize,
+        (variant) => variant.properties.size.id === selectedSizeId,
       );
     }
 
@@ -92,16 +91,9 @@ export class ProductViewComponent implements OnInit {
 
   private updateColors(): void {
     this.colors = this.variants
-      .filter((variant) => variant.properties.size === this.selectedSize)
+      .filter((variant) => variant.properties.size.id === this.selectedSizeId)
       .map((product) => product.properties.color);
     this.selectedColorId =
       this.selectedVariant?.properties.color.id || undefined;
-  }
-
-  private getUniqueArray(
-    arr: ProductVariant[],
-    key: keyof ProductProperties,
-  ): any[] {
-    return Array.from(new Set(arr.map((item) => item.properties[key])));
   }
 }

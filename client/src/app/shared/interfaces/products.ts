@@ -6,6 +6,16 @@ export interface ProductColor extends BaseEntity {
   hex: string;
 }
 
+export interface ProductSize extends BaseEntity {
+  height: number;
+  width?: number | null;
+  depth?: number | null;
+  diameter?: number | null;
+  packageHeight: number;
+  packageWidth: number;
+  packageDepth: number;
+}
+
 interface ProductBaseWithOutRelations extends BaseEntity {
   name: string;
 }
@@ -14,7 +24,7 @@ export interface ProductProperties extends BaseEntity {
   name: string;
   description: string;
   price: number;
-  size: string;
+  size: ProductSize;
   color: ProductColor;
   images: File[];
 }

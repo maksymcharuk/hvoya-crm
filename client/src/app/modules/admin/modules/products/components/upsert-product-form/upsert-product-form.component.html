@@ -233,26 +233,26 @@
             </app-form-control-error-message>
           </div>
           <div class="field col-4">
-            <label for="productVariantSize">Розмір</label>
+            <label for="productVariantSizeId">Розмір</label>
             <p-dropdown
               [options]="sizes"
-              optionLabel="name"
-              formControlName="productVariantSize"
+              formControlName="productVariantSizeId"
               [showClear]="true"
-              optionValue="name"
-              id="productVariantSize"
+              optionValue="id"
+              id="productVariantSizeId"
               placeholder="Виберіть розмір"
               data-cy="product-size"
             >
+              <ng-template let-size pTemplate="selectedItem">
+                {{ size | productSize }}
+              </ng-template>
               <ng-template let-size pTemplate="item">
-                <div>
-                  <div>{{ size.name }}</div>
-                </div>
+                {{ size | productSize }}
               </ng-template>
             </p-dropdown>
             <app-form-control-error-message
               [formGroup]="productForm"
-              controlName="productVariantGroup.productVariantSize"
+              controlName="productVariantGroup.productVariantSizeId"
               errorType="required"
               errorMessage="Потрібно вибрати розмір"
             >
@@ -261,7 +261,7 @@
           <div class="field col-4">
             <label for="productVariantColorId">Колір</label>
             <p-dropdown
-              [options]="(colors$ | async)!"
+              [options]="colors"
               formControlName="productVariantColorId"
               [showClear]="true"
               optionValue="id"
@@ -272,7 +272,7 @@
               <ng-template let-color pTemplate="selectedItem">
                 <div class="flex align-items-center">
                   <div
-                    class="w-1rem h-1rem border-circle border-400 mr-2"
+                    class="flex-none w-1rem h-1rem border-circle border-400 mr-2"
                     [style]="{ backgroundColor: color.hex }"
                   ></div>
                   <div>{{ color.name }}</div>
