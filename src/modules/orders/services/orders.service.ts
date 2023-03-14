@@ -105,6 +105,7 @@ export class OrdersService {
         OrderDeliveryEntity,
         {
           trackingId: createOrderDto.trackingId,
+          deliveryService: createOrderDto.deliveryService,
           firstName: createOrderDto.firstName,
           lastName: createOrderDto.lastName,
           middleName: createOrderDto.middleName,
@@ -189,7 +190,6 @@ export class OrdersService {
             phoneNumber: updateOrderDto.phoneNumber,
             email: updateOrderDto.email,
             deliveryType: updateOrderDto.deliveryType,
-            status: updateOrderDto.deliveryStatus,
             city: updateOrderDto.city,
             postOffice: updateOrderDto.postOffice,
           },

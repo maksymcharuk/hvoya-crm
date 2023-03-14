@@ -11,5 +11,5 @@ export const NovaPoshtaStatusMap: { [n: string]: OrderDeliveryStatus } = {
 };
 
 export const getStatus: GetStatusFn = (status: string): OrderDeliveryStatus => {
-  return NovaPoshtaStatusMap[status] || OrderDeliveryStatus.Pending;
+  return NovaPoshtaStatusMap[status] || OrderDeliveryStatus.Processing;
 };

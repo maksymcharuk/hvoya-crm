@@ -8,9 +8,9 @@ import { OrderEntity } from '@entities/order.entity';
 import { DeliveryService } from '@enums/delivery-service.enum';
 import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
+import { GetDeliveryStatusesResponse } from '@interfaces/delivery';
 
 import { DeliveryServiceFactory } from '../../factories/delivery-service/delivery-service.factory';
-import { getStatus } from '../../maps/nova-poshta-status.map';
 
 @Injectable()
 export class DeliveryTasksService {
@@ -27,7 +27,6 @@ export class DeliveryTasksService {
       where: {
         status: Not(
           In([
-            OrderStatus.Pending,
             OrderStatus.Cancelled,
             OrderStatus.Fulfilled,
             OrderStatus.Refunded,
@@ -37,25 +36,52 @@ export class DeliveryTasksService {
       relations: ['delivery'],
     });
 
-    const deliveryService = this.deliveryServiceFactory.getDeliveryService(
-      DeliveryService.NovaPoshta,
-    );
-    const trackingInfo = orders.map((order) => ({
-      trackingId: order.delivery.trackingId,
-    }));
-    const deliveryStatuses = await deliveryService?.getDeliveryStatuses({
-      trackingInfo,
-    });
+    if (!orders || orders.length === 0) {
+      return;
+    }
+
+    let deliveryStatusesRes: GetDeliveryStatusesResponse = { statuses: [] };
+
+    for (let deliveryServiceName of Object.values(DeliveryService)) {
+      const deliveryService =
+        this.deliveryServiceFactory.getDeliveryService(deliveryServiceName);
+
+      if (!deliveryService) {
+        continue;
+      }
+
+      const trackingInfo = orders
+        .filter(
+          (order) =>
+            order.delivery.deliveryService === deliveryServiceName &&
+            order.delivery.trackingId,
+        )
+        .map((order) => ({
+          trackingId: order.delivery.trackingId,
+        }));
+
+      if (!trackingInfo || trackingInfo.length === 0) {
+        continue;
+      }
+
+      const statuses = await deliveryService?.getDeliveryStatuses({
+        trackingInfo,
+      });
+
+      if (statuses) {
+        deliveryStatusesRes.statuses.push(...statuses.statuses);
+      }
+    }
 
     for (let order of orders) {
-      const deliveryStatus = deliveryStatuses?.statuses.find(
+      const deliveryStatus = deliveryStatusesRes?.statuses.find(
         (status) => status.trackingId === order.delivery.trackingId,
       );
       if (deliveryStatus) {
-        const status = getStatus(deliveryStatus.status);
+        const status = deliveryStatus.status;
 
         await manager.update(OrderDeliveryEntity, order.delivery.id, {
-          status: status,
+          status,
         });
 
         if (

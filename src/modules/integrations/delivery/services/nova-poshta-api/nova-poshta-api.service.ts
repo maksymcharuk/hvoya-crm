@@ -14,6 +14,7 @@ import {
   NovaPoshtaGetDeliveryStatusesResponse,
 } from '@interfaces/delivery/nova-poshta';
 
+import { getStatus } from '../../maps/nova-poshta-status.map';
 import { DeliveryApiService } from '../delivery-api/delivery-api.service';
 
 const NOVA_POSHTA_API_URL = 'https://api.novaposhta.ua/v2.0/json/';
@@ -59,8 +60,8 @@ export class NovaPoshtaApiService extends DeliveryApiService {
               return new GetDeliveryStatusesResponse({
                 statuses: response.data.data.map((status) => ({
                   trackingId: status.Number,
-                  date: status.TrackingUpdateDate,
-                  status: status.Status,
+                  date: new Date(status.TrackingUpdateDate).toString(),
+                  status: getStatus(status.Status),
                 })),
               });
             },

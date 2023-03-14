@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { CartItem } from '@shared/interfaces/cart.interface';
 import {
   OrderCreateDTO,
@@ -26,6 +27,10 @@ export class OrderCreateComponent implements OnInit {
   cartNotEmpty$ = this.cartService.cartNotEmpty$;
   profile$ = this.accountService.profile$;
   submitting = false;
+  deliveryServices = [
+    { label: 'Нова пошта', value: DeliveryService.NovaPoshta },
+    { label: 'Укрпошта', value: DeliveryService.UkrPoshta },
+  ];
 
   orderCreateForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -33,6 +38,7 @@ export class OrderCreateComponent implements OnInit {
     lastName: ['', Validators.required],
     middleName: ['', Validators.required],
     phoneNumber: ['', Validators.required],
+    deliveryService: [this.deliveryServices[0]?.value, Validators.required],
     trackingId: ['', Validators.required],
     deliveryType: ['', Validators.required],
     city: ['', Validators.required],

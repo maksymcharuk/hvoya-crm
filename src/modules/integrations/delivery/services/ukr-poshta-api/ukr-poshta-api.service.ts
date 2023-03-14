@@ -14,6 +14,7 @@ import {
   UkrPoshtaGetDeliveryStatusesResponse,
 } from '@interfaces/delivery/ukr-poshta';
 
+import { getStatus } from '../../maps/ukr-poshta-status.map';
 import { DeliveryApiService } from '../delivery-api/delivery-api.service';
 
 const UKR_POSHTA_API_URL = 'https://www.ukrposhta.ua/status-tracking/0.0.1/';
@@ -37,7 +38,7 @@ export class UkrPoshtaApiService extends DeliveryApiService {
     return this.makeApiCall(
       this.httpService
         .post<UkrPoshtaGetDeliveryStatusesResponse[]>(
-          `${this.apiUrl}statuses?lang=en`,
+          `${this.apiUrl}statuses/last`,
           new UkrPoshtaGetDeliveryStatusesRequest({
             trackingIds: getDeliveryStatusesDto.trackingInfo.map(
               ({ trackingId }) => trackingId,
@@ -54,7 +55,7 @@ export class UkrPoshtaApiService extends DeliveryApiService {
                 statuses: response.data.map((status) => ({
                   trackingId: status.barcode,
                   date: new Date(status.date).toString(),
-                  status: status.eventName,
+                  status: getStatus(status.eventName),
                 })),
               });
             },

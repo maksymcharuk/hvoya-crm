@@ -1,8 +1,20 @@
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
+
+import { DeliveryService } from '@enums/delivery-service.enum';
 
 export class CreateOrderDto {
   @IsNotEmpty()
-  trackingId?: string;
+  trackingId: string;
+
+  @IsEnum(DeliveryService)
+  @IsNotEmpty()
+  deliveryService: DeliveryService;
 
   @IsNotEmpty()
   @IsEmail()
