@@ -74,6 +74,37 @@
             </p-columnFilter>
           </div>
         </th>
+        <th pSortableColumn="delivery.status">
+          <div class="flex justify-content-between align-items-center">
+            Статус доставки
+            <p-sortIcon field="delivery.status"></p-sortIcon>
+            <p-columnFilter
+              field="delivery.status"
+              matchMode="equals"
+              display="menu"
+              class="ml-auto"
+            >
+              <ng-template
+                pTemplate="filter"
+                let-value
+                let-filter="filterCallback"
+              >
+                <p-dropdown
+                  [ngModel]="value"
+                  [options]="orderDeliveryStatuses"
+                  (onChange)="filter($event.value)"
+                  placeholder="Any"
+                >
+                  <ng-template let-option pTemplate="item">
+                    <app-order-delivery-status-badge
+                      [status]="option.label"
+                    ></app-order-delivery-status-badge>
+                  </ng-template>
+                </p-dropdown>
+              </ng-template>
+            </p-columnFilter>
+          </div>
+        </th>
         <th pSortableColumn="total">
           <div class="flex justify-content-between align-items-center">
             Сума
@@ -132,6 +163,12 @@
           <app-order-status-badge
             [status]="order.status"
           ></app-order-status-badge>
+        </td>
+        <td>
+          <span class="p-column-title">Статус доставки</span>
+          <app-order-delivery-status-badge
+            [status]="order.delivery.status"
+          ></app-order-delivery-status-badge>
         </td>
         <td>
           <span class="p-column-title">Сума</span>

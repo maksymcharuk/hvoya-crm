@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
+import { DeliveryService } from '../enums/delivery-service.enum';
 import { OrderDeliveryStatus } from '../enums/order-delivery-status.enum';
 import { BaseEntity } from './base.entity';
 import { FileEntity } from './file.entity';
@@ -10,6 +11,13 @@ export class OrderDeliveryEntity extends BaseEntity {
     default: '',
   })
   trackingId: string;
+
+  @Column({
+    type: 'enum',
+    enum: DeliveryService,
+    nullable: true,
+  })
+  deliveryService: DeliveryService | null;
 
   @Column({
     type: 'enum',

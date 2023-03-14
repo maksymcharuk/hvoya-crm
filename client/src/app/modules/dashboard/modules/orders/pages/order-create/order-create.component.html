@@ -115,6 +115,21 @@
               <h5>Інформація про достаку</h5>
               <div class="formgrid grid">
                 <div class="field col-12">
+                  <label for="delivery-service">Служба доставки:</label>
+                  <p-dropdown
+                    id="delivery-service"
+                    [options]="deliveryServices"
+                    formControlName="deliveryService"
+                    optionValue="value"
+                  ></p-dropdown>
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="deliveryService"
+                    errorType="required"
+                    errorMessage="Це є обов'язковим полем"
+                  ></app-form-control-error-message>
+                </div>
+                <div class="field col-12">
                   <label for="delivery-type">Тип доставки:</label>
                   <input
                     id="delivery-type"

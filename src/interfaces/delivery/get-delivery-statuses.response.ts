@@ -1,5 +1,7 @@
 import { IsString } from 'class-validator';
 
+import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
+
 class Status {
   @IsString()
   trackingId: string;
@@ -8,7 +10,7 @@ class Status {
   date: string;
 
   @IsString()
-  status: string;
+  status: OrderDeliveryStatus;
 }
 
 export class GetDeliveryStatusesResponse {

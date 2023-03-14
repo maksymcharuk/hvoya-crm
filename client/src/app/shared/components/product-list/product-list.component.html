@@ -23,8 +23,9 @@
   </ng-container>
   <ng-container *ngIf="!isLoading">
     <ng-container *ngFor="let product of productList">
-      <div class="col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
+      <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
         <app-product-item
+          class="flex"
           [product]="product"
           [hideAddToCartButton]="hideAddToCartButton"
           (addToCart)="onAddToCart($event)"

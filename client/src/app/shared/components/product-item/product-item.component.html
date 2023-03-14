@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card flex flex-column">
   <div
     class="wrapper mb-3"
     *ngIf="
@@ -25,7 +25,7 @@
   <ng-template #imageWrapperSkeleton>
     <p-skeleton height="15rem" width="100%"></p-skeleton>
   </ng-template>
-  <div class="my-2">
+  <div class="flex-grow-1 my-2">
     <a
       *ngIf="selectedVariant?.properties?.name; else productNameSkeleton"
       [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]"
