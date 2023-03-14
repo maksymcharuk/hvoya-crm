@@ -29,6 +29,22 @@
   >
     <button
       class="p-link layout-topbar-button"
+      (click)="balance.toggle($event)"
+    >
+      <i class="pi pi-money-bill"></i>
+      <span class="topbar-button-text">Баланс</span>
+      <span class="ml-2 mr-4">{{
+        balance$ | async | currency : 'UAH' : 'symbol' : '1.2-20'
+      }}</span>
+    </button>
+    <p-overlayPanel #overlayPanel #balance>
+      <ng-template pTemplate
+        ><app-balance-widget></app-balance-widget
+      ></ng-template>
+    </p-overlayPanel>
+
+    <button
+      class="p-link layout-topbar-button"
       (click)="notifications.toggle($event)"
     >
       <i class="pi pi-bell"></i>
@@ -37,17 +53,6 @@
     <p-overlayPanel #overlayPanel #notifications>
       <ng-template pTemplate> Сповіщення </ng-template>
     </p-overlayPanel>
-
-    <!-- <button
-      class="p-link layout-topbar-button"
-      (click)="balance.toggle($event)"
-    >
-      <i class="pi pi-money-bill"></i>
-      <span class="topbar-button-text">Balance</span>
-    </button>
-    <p-overlayPanel #overlayPanel #balance>
-      <ng-template pTemplate> Balance </ng-template>
-    </p-overlayPanel> -->
 
     <button class="p-link layout-topbar-button" (click)="cart.toggle($event)">
       <i
