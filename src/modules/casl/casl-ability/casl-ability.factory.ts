@@ -9,6 +9,7 @@ import {
 import { Injectable } from '@nestjs/common';
 
 import { CartEntity } from '@entities/cart.entity';
+import { FaqEntity } from '@entities/faq.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
@@ -29,6 +30,7 @@ type Subjects =
       | typeof ProductSizeEntity
       | typeof CartEntity
       | typeof OrderEntity
+      | typeof FaqEntity
     >
   | 'all';
 
@@ -74,6 +76,8 @@ export class CaslAbilityFactory {
         ],
         OrderEntity,
       );
+      // FAQ
+      can([Action.Read, Action.Create, Action.Update], FaqEntity);
     }
 
     if (user.role === Role.User) {
@@ -92,6 +96,8 @@ export class CaslAbilityFactory {
           return customer.id === user.id;
         },
       ); // can manage only his own orders
+      // FAQ
+      can([Action.Read], FaqEntity);
     }
 
     if (user.role === Role.SuperAdmin || user.role === Role.Admin) {
