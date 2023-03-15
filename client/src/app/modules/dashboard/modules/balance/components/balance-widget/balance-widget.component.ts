@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { UserBalanceService } from '../../services/user-balance.service';
 
@@ -9,19 +8,14 @@ import { UserBalanceService } from '../../services/user-balance.service';
   styleUrls: ['./balance-widget.component.scss']
 })
 export class BalanceWidgetComponent {
-  purchaseHistory$ = this.userBalance.purchaseHistory$;
+  transactionsHistory$ = this.userBalance.transactionsHistory$;
 
   constructor(
     private userBalance: UserBalanceService,
-    private router: Router,
   ) { }
 
 
   addFunds() {
     this.userBalance.addFunds();
-  }
-
-  navigateToHistory() {
-    this.router.navigate(['/dashboard/purchase-history']);
   }
 }

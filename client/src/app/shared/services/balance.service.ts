@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+
+import { Balance } from '@shared/interfaces/balance.interface';
+
 import { Observable, of } from 'rxjs';
 
 @Injectable({
@@ -13,7 +16,7 @@ export class BalanceService {
     return of(123);
   }
 
-  getUserPurchaseHistory(userId: number): Observable<any[]> {
+  getUserTransactionsHistory(userId: number): Observable<Balance[]> {
     console.log(userId);
     return of([
       { value: 123, info: 'info1', date: new Date() },

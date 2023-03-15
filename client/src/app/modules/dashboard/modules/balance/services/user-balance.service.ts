@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { BalanceService } from '@shared/services/balance.service';
 import { UserService } from '@shared/services/user.service';
+import { Balance } from '@shared/interfaces/balance.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { UserService } from '@shared/services/user.service';
 export class UserBalanceService {
 
   balance$ = new BehaviorSubject<number>(0);
-  purchaseHistory$ = new BehaviorSubject<any[]>([]);
+  transactionsHistory$ = new BehaviorSubject<Balance[]>([]);
 
   user
 
@@ -25,8 +26,8 @@ export class UserBalanceService {
         this.balance$.next(res);
       })
 
-      this.balanceService.getUserPurchaseHistory(this.user.id).subscribe((res) => {
-        this.purchaseHistory$.next(res);
+      this.balanceService.getUserTransactionsHistory(this.user.id).subscribe((res) => {
+        this.transactionsHistory$.next(res);
       })
     }
   }
