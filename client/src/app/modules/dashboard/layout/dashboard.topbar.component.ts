@@ -16,6 +16,7 @@ import { LayoutService } from '@shared/layout/services/layout.service';
 import { AuthService } from '@shared/services/auth.service';
 
 import { CartService } from '../modules/cart/services/cart/cart.service';
+import { UserBalanceService } from '../modules/balance/services/user-balance.service';
 
 @Component({
   selector: 'dashboard-topbar',
@@ -24,6 +25,7 @@ import { CartService } from '../modules/cart/services/cart/cart.service';
 export class DashboardTopBarComponent implements AfterViewInit {
   items!: MenuItem[];
   cartItemsNumber$ = this.cartService.cartItemsNumber$;
+  balance$ = this.userBalance.balance$;
 
   @ViewChild('menubutton') menuButton!: ElementRef;
   @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
@@ -40,7 +42,8 @@ export class DashboardTopBarComponent implements AfterViewInit {
     private cartService: CartService,
     private authService: AuthService,
     private router: Router,
-  ) {}
+    private userBalance: UserBalanceService,
+  ) { }
 
   ngAfterViewInit() {
     this.router.events

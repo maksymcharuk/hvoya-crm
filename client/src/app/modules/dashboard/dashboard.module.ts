@@ -28,4 +28,4 @@ import { DashboardMainComponent } from './pages/main/main.component';
     SharedModule,
   ],
 })
-export class DashboardModule {}
+export class DashboardModule { }

@@ -23,6 +23,7 @@ import { DashboardMenuComponent } from './dashboard.menu.component';
 import { DashboardMenuitemComponent } from './dashboard.menuitem.component';
 import { DashboardSidebarComponent } from './dashboard.sidebar.component';
 import { DashboardTopBarComponent } from './dashboard.topbar.component';
+import { BalanceModule } from '../modules/balance/balance.module';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { DashboardTopBarComponent } from './dashboard.topbar.component';
     ButtonModule,
     CartModule,
     SharedModule,
+    BalanceModule,
   ],
   exports: [DashboardLayoutComponent],
 })
-export class DashboardLayoutModule {}
+export class DashboardLayoutModule { }

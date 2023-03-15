@@ -1,0 +1,58 @@
+<div class="cart-widget w-30rem">
+  <div class="text-900 text-xl pb-3 border-bottom-1 surface-border">Баланс</div>
+  <ng-container *ngIf="transactionsHistory$ | async; else skeleton">
+    <div class="grid mt-2">
+      <div class="col-6 flex justify-content-start">
+        <p-button label="Поповнити баланс" (onClick)="addFunds()"></p-button>
+      </div>
+      <div class="col-6 flex justify-content-end">
+        <p-button
+          label="Історія транзакцій"
+          [routerLink]="['/', 'dashboard', 'transactions-history']"
+        ></p-button>
+      </div>
+      <div class="col-12">
+        <div class="grid border-1 surface-border mr-1 ml-1">
+          <div
+            *ngFor="
+              let item of transactionsHistory$ | async | slice : 0 : 3;
+              let first = first;
+              let last = last
+            "
+            class="col-12 surface-border"
+            [ngClass]="{
+              'border-bottom-1': first,
+              'border-top-1': last
+            }"
+          >
+            <div class="grid">
+              <div class="col-4 text-center">
+                {{ item.value }}
+              </div>
+              <div class="col-4 text-center">
+                {{ item.info }}
+              </div>
+              <div class="col-4 text-center">
+                {{ item.date | date : 'dd-MM-yyyy' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #skeleton>
+  <div class="py-3 grid">
+    <div class="col-6 pr-2 pb-0">
+      <p-skeleton height="39px"></p-skeleton>
+    </div>
+    <div class="col-6 pl-2 pb-0">
+      <p-skeleton height="39px"></p-skeleton>
+    </div>
+  </div>
+  <div class="py-3">
+    <p-skeleton height="6rem" width="30rem"></p-skeleton>
+  </div>
+</ng-template>
