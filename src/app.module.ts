@@ -22,6 +22,7 @@ import { IntegrationsModule } from './modules/integrations/integrations.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { UsersModule } from './modules/users/users.module';
+import { FaqModule } from './modules/faq/faq.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { UsersModule } from './modules/users/users.module';
     TypeOrmModule.forFeature([UserEntity]),
     IntegrationsModule,
     ScheduleModule.forRoot(),
+    FaqModule,
   ],
   controllers: [AppController],
   providers: [
