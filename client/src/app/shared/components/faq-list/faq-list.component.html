@@ -5,6 +5,7 @@
       *ngIf="'create' | able : 'faq.entity'"
       label="Додати"
       icon="pi pi-plus"
+      data-cy="add-faq-button"
       (onClick)="openNew()"
     ></p-button>
     <p-button
@@ -12,6 +13,7 @@
       class="ml-2"
       label="Зберегти порядок"
       icon="pi pi-save"
+      data-cy="save-faq-order-button"
       [styleClass]="
         isOrderChanged ? '' : 'p-button-outlined p-button-secondary'
       "
@@ -62,7 +64,7 @@
         id="question"
         name="question"
         placeholder="Введіть питання"
-        data-cy="faq-question"
+        data-cy="faq-question-input"
         [(ngModel)]="faq.question"
       />
     </div>
@@ -73,7 +75,7 @@
         id="answer"
         name="answer"
         placeholder="Введіть відповідь"
-        data-cy="faq-answer"
+        data-cy="faq-answer-input"
         [(ngModel)]="faq.answer"
       ></p-editor>
     </div>
@@ -89,6 +91,7 @@
     <p-button
       label="Зберегти"
       icon="pi pi-check"
+      data-cy="save-faq-button"
       (onClick)="saveFaq()"
     ></p-button>
   </ng-template>

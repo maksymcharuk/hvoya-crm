@@ -26,6 +26,7 @@ export class PoliciesService {
         break;
       case Role.Admin:
         can('visit', 'admin.page');
+        can(['create', 'update'], 'faq.entity');
         break;
       case Role.User:
         can('visit', 'dashboard.page');

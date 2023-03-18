@@ -66,7 +66,7 @@ export class AdminMenuComponent implements OnInit {
             icon: 'pi pi-fw pi-heart',
           },
           {
-            label: 'Запитання і відповіді',
+            label: 'Запитання та відповіді',
             icon: 'pi pi-fw pi-question-circle',
             routerLink: ['faq'],
           },
