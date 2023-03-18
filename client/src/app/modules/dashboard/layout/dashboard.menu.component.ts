@@ -45,6 +45,7 @@ export class DashboardMenuComponent implements OnInit {
           {
             label: 'Запитання та відповіді',
             icon: 'pi pi-fw pi-question-circle',
+            routerLink: ['faq'],
           },
         ],
       },

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AbilityBuilder } from '@casl/ability';
 
-import { AppAbility } from '@shared/roles/ability';
+import { Role } from '@shared/enums/role.enum';
+import { AppAbility } from '@shared/interfaces/casl.interface';
 
 import { UserService } from './user.service';
 
@@ -9,7 +10,7 @@ import { UserService } from './user.service';
   providedIn: 'root',
 })
 export class PoliciesService {
-  constructor(private ability: AppAbility, private userService: UserService) { }
+  constructor(private ability: AppAbility, private userService: UserService) {}
 
   updateAbility() {
     const user = this.userService.getUser();
@@ -18,15 +19,16 @@ export class PoliciesService {
     const { can, rules } = new AbilityBuilder(AppAbility);
 
     switch (user.role) {
-      case 'SuperAdmin':
-        can('allowed', 'AdminPage');
-        can('SuperUpdate', 'UsersPage');
+      case Role.SuperAdmin:
+        can('visit', 'admin.page');
+        can('update', 'user.entity');
+        can(['create', 'update'], 'faq.entity');
         break;
-      case 'Admin':
-        can('allowed', 'AdminPage');
+      case Role.Admin:
+        can('visit', 'admin.page');
         break;
-      case 'User':
-        can('allowed', 'DashboardPage');
+      case Role.User:
+        can('visit', 'dashboard.page');
         break;
     }
 

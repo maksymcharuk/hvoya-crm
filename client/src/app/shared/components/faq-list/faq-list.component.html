@@ -1,0 +1,100 @@
+<div class="flex align-items-center justify-content-between mb-5">
+  <h4 class="mb-0">Запитання та відповіді</h4>
+  <div>
+    <p-button
+      *ngIf="'create' | able : 'faq.entity'"
+      label="Додати"
+      icon="pi pi-plus"
+      (onClick)="openNew()"
+    ></p-button>
+    <p-button
+      *ngIf="'update' | able : 'faq.entity'"
+      class="ml-2"
+      label="Зберегти порядок"
+      icon="pi pi-save"
+      [styleClass]="
+        isOrderChanged ? '' : 'p-button-outlined p-button-secondary'
+      "
+      [disabled]="!isOrderChanged"
+      (onClick)="onOrderSave()"
+    ></p-button>
+  </div>
+</div>
+<ng-container *ngIf="'update' | able : 'faq.entity'; else regularList">
+  <app-faq-item
+    *ngFor="let faq of faqList; let index = index"
+    pDraggable="dd"
+    pDroppable="dd"
+    dragHandle=".p-panel-header"
+    class="block mb-4"
+    [faq]="faq"
+    (onDragStart)="onDragStart(index)"
+    (onDrop)="onDrop(index)"
+    (onUpdate)="editFaq($event)"
+    (onPublishToggle)="onFaqItemPublishToggle($event)"
+  ></app-faq-item>
+  <div *ngIf="faqList.length === 0" class="mt-5 mb-2">
+    <p class="text-center">Список питань порожній</p>
+  </div>
+</ng-container>
+
+<ng-template #regularList>
+  <app-faq-item
+    *ngFor="let faq of faqList"
+    class="block mb-4"
+    [faq]="faq"
+  ></app-faq-item
+></ng-template>
+
+<p-dialog
+  *ngIf="('create' | able : 'faq.entity') || ('update' | able : 'faq.entity')"
+  [(visible)]="faqDialog"
+  [modal]="true"
+  header="Запитання та відповідь"
+  styleClass="p-fluid"
+  [style]="{ width: '700px', maxWidth: '90%' }"
+>
+  <ng-template pTemplate="content">
+    <div class="field">
+      <label for="question">Запитання:</label>
+      <input
+        pInputText
+        id="question"
+        name="question"
+        placeholder="Введіть питання"
+        data-cy="faq-question"
+        [(ngModel)]="faq.question"
+      />
+    </div>
+    <div class="field">
+      <label for="answer">Відповідь:</label>
+      <p-editor
+        [autofocus]="true"
+        id="answer"
+        name="answer"
+        placeholder="Введіть відповідь"
+        data-cy="faq-answer"
+        [(ngModel)]="faq.answer"
+      ></p-editor>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Відмінити"
+      icon="pi pi-times"
+      styleClass="p-button-outlined p-button-secondary"
+      (onClick)="hideDialog()"
+    ></p-button>
+    <p-button
+      label="Зберегти"
+      icon="pi pi-check"
+      (onClick)="saveFaq()"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog
+  rejectButtonStyleClass="p-button-text"
+  header="У вас є незбережені зміни"
+></p-confirmDialog>

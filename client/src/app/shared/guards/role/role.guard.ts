@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate } from '@angular/router';
 
-import { AppAbility, Subjects } from '@shared/roles/ability';
+import { AppAbility, Subjects } from '@shared/interfaces/casl.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,7 @@ export class RoleGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const policies = route.data['policies'] as Array<Subjects>;
     const allowed = policies.every((policy) =>
-      this.ability.can('allowed', policy),
+      this.ability.can('visit', policy),
     );
 
     if (allowed) {
