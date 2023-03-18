@@ -52,7 +52,7 @@
             <li
               class="flex align-items-center py-3 px-2 flex-wrap"
               *ngIf="
-                ('SuperUpdate' | able : 'UsersPage') &&
+                ('update' | able : 'user.entity') &&
                 user.role !== roleEnum.SuperAdmin
               "
             >

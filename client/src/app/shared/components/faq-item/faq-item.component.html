@@ -1,0 +1,30 @@
+<p-panel [header]="faq.question" [toggleable]="true" [collapsed]="false">
+  <ng-template pTemplate="icons">
+    <ng-container *ngIf="'update' | able : 'faq.entity'">
+      <p-badge
+        class="mr-2"
+        [value]="faq.isPublished ? 'Опубліковано' : 'Не опубліковано'"
+        [severity]="faq.isPublished ? 'success' : 'danger'"
+      ></p-badge>
+      <button
+        pButton
+        class="p-panel-header-icon p-link"
+        (click)="menu.toggle($event)"
+      >
+        <span class="pi pi-cog"></span>
+      </button>
+      <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu>
+    </ng-container>
+  </ng-template>
+  <div [innerHTML]="faq.answer"></div>
+</p-panel>
+
+<p-confirmDialog
+  *ngIf="'update' | able : 'faq.entity'"
+  rejectButtonStyleClass="p-button-text"
+  [header]="
+    'Ви впевнені, що хочете ' +
+    (faq.isPublished ? 'зняти з публікації' : 'опоблікувати') +
+    ' це запитання?'
+  "
+></p-confirmDialog>

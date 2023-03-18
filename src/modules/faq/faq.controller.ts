@@ -10,7 +10,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { User } from '@decorators/user.decorator';
 import { CreateFaqDto } from '@dtos/create-faq.dto';
+import { UpdateFaqBatchDto } from '@dtos/update-faq-batch.dto';
 import { UpdateFaqDto } from '@dtos/update-faq.dto';
 import { FaqEntity } from '@entities/faq.entity';
 import { Action } from '@enums/action.enum';
@@ -28,14 +30,17 @@ export class FaqController {
 
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, FaqEntity))
-  getAll(): Promise<FaqEntity[]> {
-    return this.faqService.getAll();
+  getAll(@User('id') userId: number): Promise<FaqEntity[]> {
+    return this.faqService.getAll(userId);
   }
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, FaqEntity))
-  findById(@Param('id', ParseIntPipe) id: number): Promise<FaqEntity> {
-    return this.faqService.findById(id);
+  findById(
+    @User('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<FaqEntity> {
+    return this.faqService.findById(id, userId);
   }
 
   @Post()
@@ -53,9 +58,18 @@ export class FaqController {
     return this.faqService.update(id, faq);
   }
 
+  @Put()
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Update, FaqEntity))
+  updateBatch(@Body() faqList: UpdateFaqBatchDto[]): Promise<FaqEntity[]> {
+    return this.faqService.updateBatch(faqList);
+  }
+
   @Delete(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Delete, FaqEntity))
-  delete(@Param('id', ParseIntPipe) id: number): Promise<FaqEntity> {
-    return this.faqService.delete(id);
+  delete(
+    @User('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<FaqEntity> {
+    return this.faqService.delete(id, userId);
   }
 }

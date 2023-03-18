@@ -4684,8 +4684,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   padding: 1.25rem;
   background: #f8f9fa;
   color: #343a40;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-panel .p-panel-header .p-panel-title {
   font-weight: 700;
@@ -4717,8 +4717,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border: 1px solid #dee2e6;
   background: #ffffff;
   color: var(--text-color);
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
   border-top: 0 none;
 }
 .p-panel .p-panel-footer {

@@ -10,12 +10,9 @@ export class FaqEntity extends BaseEntity {
   @Column()
   answer: string;
 
-  @Column({ unique: true })
+  @Column()
   order: number;
 
   @Column({ default: false })
   isPublished: boolean;
-
-  @Column({ default: false })
-  isArchived: boolean;
 }
