@@ -121,7 +121,7 @@ export class OrdersService {
       );
 
       let balance = await queryRunner.manager.findOneOrFail(BalanceEntity, { where: { owner: { id: userId } } })
-      balance = await this.balanceService.update(balance.id, this.calculateTotal(orderItems), queryRunner.manager, order.id);
+      balance = await this.balanceService.update(balance.id, this.calculateTotal(orderItems).neg(), queryRunner.manager, order.id);
 
       order = await queryRunner.manager.save(OrderEntity, {
         id: order.id,
@@ -272,7 +272,7 @@ export class OrdersService {
   private calculateTotal(orderItems: OrderItemEntity[]): Decimal {
     return orderItems.reduce(
       (total, item) =>
-        total.add(-item.productProperties.price.times(item.quantity)),
+        total.add(item.productProperties.price.times(item.quantity)),
       new Decimal(0),
     );
   }

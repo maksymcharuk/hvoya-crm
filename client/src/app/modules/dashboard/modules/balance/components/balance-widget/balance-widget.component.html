@@ -14,7 +14,7 @@
       <div class="col-12">
         <p-table
           class="block"
-          [value]="balance.paymentTransactions | slice : 0 : 3"
+          [value]="balance.paymentTransactions | slice : -3"
           [rows]="3"
           [rowHover]="true"
         >

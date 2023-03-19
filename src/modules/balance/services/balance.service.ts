@@ -21,7 +21,7 @@ export class BalanceService {
   }
 
   async update(balanceId: number, amount: Decimal, manager: EntityManager, orderId?: number): Promise<BalanceEntity> {
-    let balance = await manager.findOneOrFail(BalanceEntity, { where: { id: balanceId }, relations: ['paymentTransactions'] });
+    let balance = await manager.findOneOrFail(BalanceEntity, { where: { id: balanceId } });
 
     const paymentTransaction = await manager.create(
       PaymentTransactionEntity,
