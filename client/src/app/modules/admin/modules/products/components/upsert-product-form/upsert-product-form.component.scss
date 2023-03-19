@@ -1,18 +1,18 @@
 .upload-files {
   &-no-files {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-      &-text {
-          font-size: 1.2rem;
-          font-weight: 700;
-          color: #6c757d;
-          
-          i {
-              margin-left: 10px;
-          }
+    &-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #6c757d;
+
+      i {
+        margin-left: 10px;
       }
+    }
   }
 }
 
@@ -22,97 +22,97 @@
   min-height: 400px;
 
   &-header {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0.75rem 1.25rem;
-      margin-bottom: 0;
-      background-color: rgba(0, 0, 0, 0.05);
-      border-radius: 10px;
-      font-size: 1.5rem;
-      font-weight: 700;
-      text-align : center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: var(--border-radius);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
   }
 }
 
 ::ng-deep {
   .p-fileupload {
-      .p-fileupload-highlight {
-          background-color: #1c1c1c34;
-      }
+    .p-fileupload-highlight {
+      background-color: #1c1c1c34;
+    }
   }
 
   .p-fluid .p-fileupload button.p-button {
-      width: 50%;
+    width: 50%;
   }
 }
 
 .selected-product-images-wrapper {
-    display: flex;
+  display: flex;
 
-    &-image {
-        position: relative;
-        width: 100px;
-        height: 100px;
-        margin: 5px;
-    
-        img {
-            transition: .3s ease-in-out;
-            display: block;
-            height: 100%;
-            width: 100%;
-    
-            &:hover:not(.open-preview, .remove) {
-                cursor: zoom-in;
-                opacity: .5;
-            }
-    
-            &.open-preview:not(.remove) {
-                cursor: zoom-out;
-                transform: scale(2.5);
-                transform-origin: bottom left;
-                position: absolute;
-                z-index: 1000;
-            }
-    
-            &.remove {
-                background-color: #1c1c1c34;
-                opacity: .5;
-            }
-        }
-    
-        button {
-            background-color: #ffffff;
-            padding: 1px;
-            position: absolute;
-            z-index: 100;
-            top: 5px;
-            right: 5px;
-            transition: .1s ease-in-out;
-            width: 20px;
-            border: none;
-    
-            &:hover {
-                background-color: #1c1c1c34;
-            }
-    
-            &.restore {
-                color: green;
-            }
-    
-            &.remove {
-                color: red;
-            }
-    
-            &:focus {
-                box-shadow: none;
-            }
-        }
+  &-image {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+
+    img {
+      transition: 0.3s ease-in-out;
+      display: block;
+      height: 100%;
+      width: 100%;
+
+      &:hover:not(.open-preview, .remove) {
+        cursor: zoom-in;
+        opacity: 0.5;
+      }
+
+      &.open-preview:not(.remove) {
+        cursor: zoom-out;
+        transform: scale(2.5);
+        transform-origin: bottom left;
+        position: absolute;
+        z-index: 1000;
+      }
+
+      &.remove {
+        background-color: #1c1c1c34;
+        opacity: 0.5;
+      }
     }
+
+    button {
+      background-color: #ffffff;
+      padding: 1px;
+      position: absolute;
+      z-index: 100;
+      top: 5px;
+      right: 5px;
+      transition: 0.1s ease-in-out;
+      width: 20px;
+      border: none;
+
+      &:hover {
+        background-color: #1c1c1c34;
+      }
+
+      &.restore {
+        color: green;
+      }
+
+      &.remove {
+        color: red;
+      }
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+  }
 }
 
 .changes-message {
-    margin-left: 30px;
-    color: red;
-    text-align: center;
+  margin-left: 30px;
+  color: red;
+  text-align: center;
 }
