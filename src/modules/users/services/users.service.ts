@@ -7,6 +7,7 @@ import { CreateUserDto } from '@dtos/create-user.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Role } from '@enums/role.enum';
 import { Action } from '@enums/action.enum';
+import { BalanceEntity } from '@entities/balance.entity';
 
 import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
 
@@ -24,7 +25,8 @@ export class UsersService {
     createUserDto: CreateUserDto,
   ): Promise<UserEntity> {
     try {
-      const user = await queryRunner.manager.create(UserEntity, createUserDto);
+      let user = await queryRunner.manager.create(UserEntity, createUserDto);
+      user.balance = await queryRunner.manager.save(BalanceEntity, new BalanceEntity());
       await queryRunner.manager.save(user);
       return this.sanitizeUser(user);
     } catch (error) {

@@ -17,21 +17,24 @@ import { ProductColorEntity } from '@entities/product-color.entity';
 import { ProductSizeEntity } from '@entities/product-size.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
+import { BalanceEntity } from '@entities/balance.entity';
+
 import { Action } from '@enums/action.enum';
 import { Role } from '@enums/role.enum';
 
 type Subjects =
   | InferSubjects<
-      | typeof UserEntity
-      | typeof ProductCategoryEntity
-      | typeof ProductBaseEntity
-      | typeof ProductVariantEntity
-      | typeof ProductColorEntity
-      | typeof ProductSizeEntity
-      | typeof CartEntity
-      | typeof OrderEntity
-      | typeof FaqEntity
-    >
+    | typeof UserEntity
+    | typeof ProductCategoryEntity
+    | typeof ProductBaseEntity
+    | typeof ProductVariantEntity
+    | typeof ProductColorEntity
+    | typeof ProductSizeEntity
+    | typeof CartEntity
+    | typeof OrderEntity
+    | typeof FaqEntity
+    | typeof BalanceEntity
+  >
   | 'all';
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
@@ -78,6 +81,8 @@ export class CaslAbilityFactory {
       );
       // FAQ
       can([Action.Read, Action.Create, Action.Update], FaqEntity);
+      // Balance
+      can([Action.Read, Action.Update], BalanceEntity);
     }
 
     if (user.role === Role.User) {
@@ -98,6 +103,8 @@ export class CaslAbilityFactory {
       ); // can manage only his own orders
       // FAQ
       can([Action.Read], FaqEntity);
+      // Balance
+      can([Action.Read], BalanceEntity);
     }
 
     if (user.role === Role.SuperAdmin || user.role === Role.Admin) {

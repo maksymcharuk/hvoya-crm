@@ -15,6 +15,7 @@ import { AccountService } from '@shared/services/account.service';
 import { OrdersService } from '@shared/services/orders.service';
 
 import { CartService } from '../../../cart/services/cart/cart.service';
+import { UserBalanceService } from '../../../balance/services/user-balance.service';
 
 @Component({
   selector: 'app-order-create',
@@ -57,7 +58,8 @@ export class OrderCreateComponent implements OnInit {
     private orderService: OrdersService,
     private accountService: AccountService,
     private messageService: MessageService,
-  ) {}
+    private userBalanceService: UserBalanceService
+  ) { }
 
   ngOnInit(): void {
     this.profile$.subscribe((profile) => {
@@ -102,6 +104,7 @@ export class OrderCreateComponent implements OnInit {
       )
       .subscribe((order) => {
         this.cartService.getCart();
+        this.userBalanceService.getUserBalance()
         this.messageService.add({
           severity: 'success',
           summary: 'Замовлення успішно створено',

@@ -13,6 +13,7 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { FilesModule } from '../files/files.module';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './services/orders.service';
+import { BalanceModule } from '../balance/balance.module';
 
 @Module({
   imports: [
@@ -27,8 +28,9 @@ import { OrdersService } from './services/orders.service';
     CartModule,
     CloudinaryModule,
     FilesModule,
+    BalanceModule,
   ],
   controllers: [OrdersController],
   providers: [OrdersService],
 })
-export class OrdersModule {}
+export class OrdersModule { }

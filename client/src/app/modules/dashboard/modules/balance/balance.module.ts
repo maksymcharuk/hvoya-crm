@@ -1,5 +1,6 @@
 import { SkeletonModule } from 'primeng/skeleton';
 import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -18,6 +19,7 @@ import { BalanceWidgetComponent } from './components/balance-widget/balance-widg
     SkeletonModule,
     ButtonModule,
     RouterModule,
+    TableModule,
   ],
   exports: [
     BalanceWidgetComponent,

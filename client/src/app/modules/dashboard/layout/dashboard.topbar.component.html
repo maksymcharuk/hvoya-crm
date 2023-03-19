@@ -28,13 +28,13 @@
     }"
   >
     <button
-      class="p-link layout-topbar-button"
+      class="p-link layout-topbar-button w-max"
       (click)="balance.toggle($event)"
     >
       <i class="pi pi-money-bill"></i>
       <span class="topbar-button-text">Баланс</span>
-      <span class="ml-2 mr-4">{{
-        balance$ | async | currency : 'UAH' : 'symbol' : '1.2-20'
+      <span class="ml-2" *ngIf="balance$ | async as balance">{{
+        balance.amount | currency : 'UAH' : 'symbol' : '1.2-20'
       }}</span>
     </button>
     <p-overlayPanel #overlayPanel #balance>
