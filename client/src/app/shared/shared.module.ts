@@ -1,7 +1,14 @@
+import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
+import { DragDropModule } from 'primeng/dragdrop';
 import { DropdownModule } from 'primeng/dropdown';
+import { EditorModule } from 'primeng/editor';
 import { GalleriaModule } from 'primeng/galleria';
 import { InputTextModule } from 'primeng/inputtext';
+import { MenuModule } from 'primeng/menu';
+import { PanelModule } from 'primeng/panel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
@@ -12,7 +19,10 @@ import localeUk from '@angular/common/locales/uk';
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AbilityModule } from '@casl/angular';
 
+import { FaqItemComponent } from './components/faq-item/faq-item.component';
+import { FaqListComponent } from './components/faq-list/faq-list.component';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 import { OrderDeliveryStatusBadgeComponent } from './components/order-delivery-status-badge/order-delivery-status-badge.component';
 import { OrderListComponent } from './components/order-list/order-list.component';
@@ -42,6 +52,8 @@ const COMPONENTS = [
   OrderListComponent,
   OrderViewItemComponent,
   ProductViewComponent,
+  FaqItemComponent,
+  FaqListComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -52,22 +64,24 @@ const PRIMENG_MODULES = [
   DropdownModule,
   InputTextModule,
   GalleriaModule,
+  PanelModule,
+  MenuModule,
+  DragDropModule,
+  ConfirmDialogModule,
+  DialogModule,
+  EditorModule,
+  BadgeModule,
 ];
 
 @NgModule({
-  declarations: [
-    ...COMPONENTS,
-    ...PIPES,
-    FormControlErrorMessageComponent,
-    OrderDeliveryStatusBadgeComponent,
-    ProductViewComponent,
-  ],
+  declarations: [...COMPONENTS, ...PIPES],
   imports: [
     CommonModule,
     HttpClientModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
+    AbilityModule,
     ...PRIMENG_MODULES,
   ],
   providers: [

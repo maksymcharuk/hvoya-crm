@@ -34,6 +34,7 @@
       "@decorators/*": ["src/decorators/*"],
       "@transformers/*": ["src/transformers/*"],
       "@validators/*": ["src/validators/*"],
-    },
-  },
+      "@utils/*": ["src/utils/*"]
+    }
+  }
 }

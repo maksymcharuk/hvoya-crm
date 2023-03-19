@@ -102,7 +102,11 @@ export class CaslAbilityFactory {
         },
       ); // can manage only his own orders
       // FAQ
-      can([Action.Read], FaqEntity);
+      can(
+        [Action.Read],
+        FaqEntity,
+        ({ isPublished }: FaqEntity) => isPublished,
+      ); // can read only published faq
       // Balance
       can([Action.Read], BalanceEntity);
     }

@@ -21,14 +21,14 @@ const routes: Routes = [
         (m) => m.DashboardModule,
       ),
     canActivate: [SignedInGuard, RoleGuard],
-    data: { policies: ['DashboardPage'] },
+    data: { policies: ['dashboard.page'] },
   },
   {
     path: 'admin',
     loadChildren: () =>
       import('./modules/admin/admin.module').then((m) => m.AdminModule),
     canActivate: [SignedInGuard, RoleGuard],
-    data: { policies: ['AdminPage'] },
+    data: { policies: ['admin.page'] },
   },
 ];
 
