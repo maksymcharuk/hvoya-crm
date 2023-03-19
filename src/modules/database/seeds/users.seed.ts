@@ -1,12 +1,14 @@
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 
+import { BalanceEntity } from '../../../entities/balance.entity';
 import { UserEntity } from '../../../entities/user.entity';
 import { Role } from '../../../enums/role.enum';
 
 export default class UserSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
     const repository = dataSource.getRepository(UserEntity);
+    const balanceRepository = dataSource.getRepository(BalanceEntity);
     const usersData: Partial<UserEntity>[] = [
       {
         firstName: 'John',
@@ -23,6 +25,7 @@ export default class UserSeeder implements Seeder {
         bio: 'I am a super admin',
         cardNumber: '5218 5722 2223 2634',
         cardholderName: 'John SuperAdmin',
+        balance: await balanceRepository.save({})
       },
       {
         firstName: 'Alice',
@@ -39,6 +42,7 @@ export default class UserSeeder implements Seeder {
         bio: 'I am an admin',
         cardNumber: '5218 5722 2223 2634',
         cardholderName: 'Alice Admin',
+        balance: await balanceRepository.save({})
       },
       {
         firstName: 'Peter',
@@ -55,6 +59,7 @@ export default class UserSeeder implements Seeder {
         bio: 'I am a user',
         cardNumber: '5218 5722 2223 2634',
         cardholderName: 'Peter User',
+        balance: await balanceRepository.save({})
       },
     ];
     await repository.insert(usersData);

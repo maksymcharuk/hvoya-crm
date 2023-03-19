@@ -1,5 +1,6 @@
+import { PaymentTransaction } from "./ payment-transaction.interface";
+
 export interface Balance {
-  value: number;
-  info: string;
-  date: Date;
+  amount: number;
+  paymentTransactions: PaymentTransaction[];
 }

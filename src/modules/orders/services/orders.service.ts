@@ -11,13 +11,14 @@ import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
 import { OrderEntity } from '@entities/order.entity';
-import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 
 import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
 import { CartService } from '../../cart/services/cart.service';
+import { BalanceService } from '../../../modules/balance/services/balance.service';
+import { BalanceEntity } from '@entities/balance.entity';
 
 @Injectable()
 export class OrdersService {
@@ -26,7 +27,8 @@ export class OrdersService {
     private filesService: FilesService,
     private cartService: CartService,
     private caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+    private balanceService: BalanceService,
+  ) { }
 
   async getOrder(userId: number, orderId: number): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -118,21 +120,18 @@ export class OrdersService {
         },
       );
 
-      const paymentTransaction = await queryRunner.manager.save(
-        PaymentTransactionEntity,
-        {
-          amount: this.calculateTotal(orderItems),
-          order: { id: order.id },
-        },
-      );
+      let balance = await queryRunner.manager.findOneOrFail(BalanceEntity, { where: { owner: { id: userId } } })
+      balance = await this.balanceService.update(balance.id, this.calculateTotal(orderItems).neg(), queryRunner.manager, order.id);
 
       order = await queryRunner.manager.save(OrderEntity, {
         id: order.id,
         items: orderItems,
         delivery: orderDelivery,
-        paymentTransaction,
+        paymentTransaction: balance.paymentTransactions[balance.paymentTransactions.length - 1],
         total: this.calculateTotal(orderItems),
       });
+
+
 
       await this.cartService.clearCart(userId);
 

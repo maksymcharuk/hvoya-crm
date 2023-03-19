@@ -8,7 +8,7 @@ import { UserBalanceService } from '../../services/user-balance.service';
   styleUrls: ['./balance-widget.component.scss']
 })
 export class BalanceWidgetComponent {
-  transactionsHistory$ = this.userBalance.transactionsHistory$;
+  balance$ = this.userBalance.balance$;
 
   constructor(
     private userBalance: UserBalanceService,

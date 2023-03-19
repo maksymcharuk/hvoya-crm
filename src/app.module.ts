@@ -23,6 +23,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { UsersModule } from './modules/users/users.module';
 import { FaqModule } from './modules/faq/faq.module';
+import { BalanceModule } from './modules/balance/balance.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { FaqModule } from './modules/faq/faq.module';
     IntegrationsModule,
     ScheduleModule.forRoot(),
     FaqModule,
+    BalanceModule,
   ],
   controllers: [AppController],
   providers: [
