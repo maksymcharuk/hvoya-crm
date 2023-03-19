@@ -6,10 +6,13 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { OrderStatus } from '@shared/enums/order-status.enum';
+import { Role } from '@shared/enums/role.enum';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
 import { GetOrderResponse } from '@shared/interfaces/responses/get-order.response';
 import { UpdateWaybillResponse } from '@shared/interfaces/responses/update-waybill.response';
 import { OrdersService } from '@shared/services/orders.service';
+import { UserService } from '@shared/services/user.service';
 
 @Component({
   selector: 'app-order-view',
@@ -21,6 +24,9 @@ export class OrderViewComponent {
 
   order$ = new BehaviorSubject<GetOrderResponse | null>(null);
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
+  orderStatusEnum = OrderStatus;
+  roleEnum = Role;
+  user = this.userService.getUser();
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: ['', Validators.required],
@@ -36,6 +42,7 @@ export class OrderViewComponent {
     private route: ActivatedRoute,
     private ordersService: OrdersService,
     private messageService: MessageService,
+    private userService: UserService,
   ) {
     this.ordersService
       .getOrder(this.route.snapshot.params['id'])
