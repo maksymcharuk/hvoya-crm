@@ -11,24 +11,38 @@
           <div class="flex">
             <div class="w-12rem hidden md:block"></div>
             <div class="md:pl-5 mt-2 flex-auto">
-              <div class="flex justify-content-end mb-6 pt-4">
-                <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
-                <span
-                  class="text-xl text-900 font-bold text-3xl ml-5"
-                  data-cy="order-total"
-                >
-                  <ng-container
-                    *ngIf="
-                      (cartLoading$ | async) === 0;
-                      else totalPriceSkeleton
-                    "
+              <div class="flex-column">
+                <div class="flex justify-content-end pt-4">
+                  <span class="text-xl text-900 font-bold text-3xl"
+                    >Всього:</span
                   >
-                    {{ cart.total | currency }}
+                  <span
+                    class="text-xl text-900 font-bold text-3xl ml-5"
+                    data-cy="order-total"
+                  >
+                    <ng-container
+                      *ngIf="
+                        (cartLoading$ | async) === 0;
+                        else totalPriceSkeleton
+                      "
+                    >
+                      {{ cart.total | currency }}
+                    </ng-container>
+                    <ng-template #totalPriceSkeleton>
+                      <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+                    </ng-template>
+                  </span>
+                </div>
+
+                <div
+                  class="flex justify-content-end text-base text-red-300 ml-5 mb-6"
+                >
+                  <ng-container *ngIf="balance$ | async as balance">
+                    <ng-container *ngIf="+cart.total > +balance.amount">
+                      Недостатньо коштів на балансі
+                    </ng-container>
                   </ng-container>
-                  <ng-template #totalPriceSkeleton>
-                    <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
-                  </ng-template>
-                </span>
+                </div>
               </div>
             </div>
           </div>

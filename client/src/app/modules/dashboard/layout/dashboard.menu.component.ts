@@ -12,7 +12,7 @@ import { LayoutService } from '@shared/layout/services/layout.service';
 export class DashboardMenuComponent implements OnInit {
   model: MenuItem[] = [];
 
-  constructor(public layoutService: LayoutService) {}
+  constructor(public layoutService: LayoutService) { }
 
   ngOnInit() {
     this.model = [
@@ -34,14 +34,14 @@ export class DashboardMenuComponent implements OnInit {
             icon: 'pi pi-fw pi-shopping-bag',
             routerLink: ['orders'],
           },
-          {
-            label: 'Запити',
-            icon: 'pi pi-fw pi-envelope',
-          },
-          {
-            label: 'Улюблені',
-            icon: 'pi pi-fw pi-heart',
-          },
+          // {
+          //   label: 'Запити',
+          //   icon: 'pi pi-fw pi-envelope',
+          // },
+          // {
+          //   label: 'Улюблені',
+          //   icon: 'pi pi-fw pi-heart',
+          // },
           {
             label: 'Запитання та відповіді',
             icon: 'pi pi-fw pi-question-circle',

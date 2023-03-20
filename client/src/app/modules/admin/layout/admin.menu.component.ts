@@ -57,14 +57,14 @@ export class AdminMenuComponent implements OnInit {
             icon: 'pi pi-fw pi-users',
             routerLink: ['users'],
           },
-          {
-            label: 'Запити',
-            icon: 'pi pi-fw pi-envelope',
-          },
-          {
-            label: 'Улюблені',
-            icon: 'pi pi-fw pi-heart',
-          },
+          // {
+          //   label: 'Запити',
+          //   icon: 'pi pi-fw pi-envelope',
+          // },
+          // {
+          //   label: 'Улюблені',
+          //   icon: 'pi pi-fw pi-heart',
+          // },
           {
             label: 'Запитання та відповіді',
             icon: 'pi pi-fw pi-question-circle',

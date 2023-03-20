@@ -35,6 +35,11 @@ export class BalanceService {
     await manager.save(PaymentTransactionEntity, paymentTransaction);
 
     if (amount.isNegative()) {
+
+      if (balance.amount.lessThan(amount.neg())) {
+        throw new Error('Недостатньо коштів');
+      }
+
       return manager.save(BalanceEntity, {
         id: balanceId,
         amount: balance.amount.minus(amount.neg()),
@@ -47,6 +52,13 @@ export class BalanceService {
         paymentTransactions: [...balance.paymentTransactions, paymentTransaction]
       });
     }
+  }
+
+  // temporary "testing" solution;
+  async addFunds(userId: number, amount: number): Promise<BalanceEntity> {
+    return this.balanceRepository.manager.transaction(async manager => {
+      return await this.update(userId, new Decimal(amount), manager);
+    });
   }
 
 

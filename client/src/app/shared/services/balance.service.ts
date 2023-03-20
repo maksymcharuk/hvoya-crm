@@ -10,7 +10,7 @@ import { Balance } from '@shared/interfaces/entities/balance.entity';
   providedIn: 'root',
 })
 export class BalanceService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getBalance(): Observable<Balance> {
     return this.http
@@ -18,7 +18,10 @@ export class BalanceService {
       .pipe(map((balance) => new Balance(balance)));
   }
 
-  addFunds(userId: number) {
-    console.log(userId, 'funds added');
+  // temporary function to add funds to the balance
+  addFunds(): Observable<Balance> {
+    return this.http
+      .post<Balance>(`${environment.apiUrl}/balance/add`, { amount: 500 })
+      .pipe(map((balance) => new Balance(balance)));
   }
 }

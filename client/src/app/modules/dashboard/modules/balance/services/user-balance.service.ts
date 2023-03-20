@@ -18,12 +18,11 @@ export class UserBalanceService {
     private balanceService: BalanceService,
     private userService: UserService,
   ) {
+    this.user = this.userService.getUser();
     this.getUserBalance();
   }
 
   getUserBalance() {
-    this.user = this.userService.getUser();
-
     if (this.user) {
       this.balanceService.getBalance().subscribe((res) => {
         this.balance$.next(res);
@@ -33,7 +32,9 @@ export class UserBalanceService {
 
   addFunds() {
     if (this.user) {
-      this.balanceService.addFunds(this.user.id);
+      this.balanceService.addFunds().subscribe((res) => {
+        this.balance$.next(res);
+      });
     }
   }
 }
