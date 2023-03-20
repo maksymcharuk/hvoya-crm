@@ -2,7 +2,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { Faq } from '@shared/interfaces/faq.interface';
+import { Faq } from '@shared/interfaces/entities/faq.entity';
 import { FaqService } from '@shared/services/faq.service';
 
 @Component({
@@ -19,6 +19,7 @@ export class FaqListComponent {
   faq!: Faq;
   submitted!: boolean;
   startIndex = 0;
+  faqEntity = Faq;
 
   private _isOrderChanged = false;
 

@@ -13,7 +13,7 @@ import {
   ProductProperties,
   ProductSize,
   ProductVariant,
-} from '@shared/interfaces/products';
+} from '@shared/interfaces/entities/product.entity';
 import { ProductsService } from '@shared/services/products.service';
 
 import { ProductColorsService } from '../../services/product-colors.service';

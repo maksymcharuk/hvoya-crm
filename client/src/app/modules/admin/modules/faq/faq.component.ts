@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Component, HostListener } from '@angular/core';
 
 import { ComponentCanDeactivate } from '@shared/guards/pending-changes/pending-changes.guard';
-import { Faq } from '@shared/interfaces/faq.interface';
+import { Faq } from '@shared/interfaces/entities/faq.entity';
 import { FaqService } from '@shared/services/faq.service';
 
 @Component({

@@ -1,4 +1,7 @@
-import { ProductSize, ProductVariant } from '@shared/interfaces/products';
+import {
+  ProductSize,
+  ProductVariant,
+} from '@shared/interfaces/entities/product.entity';
 
 import { getUniqueObjectsByKey } from './get-unique-objects-by-key.util';
 

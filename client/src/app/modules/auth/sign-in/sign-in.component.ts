@@ -6,6 +6,8 @@ import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { Role } from '@shared/enums/role.enum';
+import { AppAbility } from '@shared/interfaces/casl.interface';
 import {
   SignInDTO,
   SignInDTOFormGroup,
@@ -33,6 +35,7 @@ export class SignInComponent {
     private authService: AuthService,
     private router: Router,
     private userService: UserService,
+    private appAbility: AppAbility,
     private policiesService: PoliciesService,
     private readonly messageService: MessageService,
   ) {}
@@ -49,7 +52,8 @@ export class SignInComponent {
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe(
         () => {
-          this.policiesService.updateAbility();
+          this.policiesService.update(this.appAbility);
+
           const user = this.userService.getUser();
 
           if (!user) {
@@ -59,10 +63,10 @@ export class SignInComponent {
 
           const { role } = user;
 
-          if (role === 'SuperAdmin' || role === 'Admin') {
-            this.router.navigateByUrl('admin');
+          if (role === Role.SuperAdmin || role === Role.Admin) {
+            this.router.navigate(['admin']);
           } else {
-            this.router.navigateByUrl('dashboard');
+            this.router.navigate(['dashboard']);
           }
         },
         (error) => {

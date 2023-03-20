@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AbilityModule } from '@casl/angular';
 
 import { AppAbility } from '@shared/interfaces/casl.interface';
+import { PoliciesService } from '@shared/services/policies.service';
 import { SharedModule } from '@shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -26,7 +27,13 @@ import { AppComponent } from './app.component';
   ],
   providers: [
     MessageService,
-    { provide: AppAbility, useValue: new AppAbility() },
+    {
+      provide: AppAbility,
+      useFactory: (policiesService: PoliciesService) => {
+        return policiesService.build();
+      },
+      deps: [PoliciesService],
+    },
   ],
   bootstrap: [AppComponent],
 })

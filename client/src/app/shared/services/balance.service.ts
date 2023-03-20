@@ -1,20 +1,19 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { environment } from '@environment/environment';
-
-import { Balance } from '@shared/interfaces/balance.interface';
-
 import { Observable } from 'rxjs';
 
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { environment } from '@environment/environment';
+import { Balance } from '@shared/interfaces/balance.interface';
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BalanceService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getBalance(): Observable<Balance> {
-    return this.http.get<Balance>(`${environment.apiUrl}/balance`)
+    return this.http.get<Balance>(`${environment.apiUrl}/balance`);
   }
 
   addFunds(userId: number) {

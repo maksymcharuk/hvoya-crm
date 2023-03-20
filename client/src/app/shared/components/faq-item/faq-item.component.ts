@@ -8,7 +8,7 @@ import {
   Output,
 } from '@angular/core';
 
-import { Faq } from '@shared/interfaces/faq.interface';
+import { Faq } from '@shared/interfaces/entities/faq.entity';
 
 @Component({
   selector: 'app-faq-item',

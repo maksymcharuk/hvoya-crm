@@ -12,7 +12,7 @@ import {
   ProductColor,
   ProductSize,
   ProductVariant,
-} from '@shared/interfaces/products';
+} from '@shared/interfaces/entities/product.entity';
 import { getUniqueProductSizes } from '@shared/utils';
 
 @Component({

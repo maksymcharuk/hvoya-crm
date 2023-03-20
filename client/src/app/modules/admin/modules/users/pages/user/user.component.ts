@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Role } from '@shared/enums/role.enum';
-import { GetUserResponse } from '@shared/interfaces/responses/get-user.response';
+import { User } from '@shared/interfaces/entities/user.entity';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { UserService } from '@shared/services/user.service';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
-  user!: GetUserResponse;
+  user!: User;
   isFreezing: boolean = false;
 
   readonly roleEnum = Role;
@@ -30,21 +30,19 @@ export class UserComponent implements OnInit {
   ngOnInit(): void {
     this.userService
       .getUserById(this.route.snapshot.params['id'])
-      .subscribe((user: GetUserResponse) => {
+      .subscribe((user: User) => {
         this.user = user;
       });
   }
 
   confirmUser() {
-    this.userService
-      .confirmUser(this.user.id)
-      .subscribe((user: GetUserResponse) => {
-        this.user = user;
-        this.messageService.add({
-          severity: 'success',
-          detail: 'Користувача підтверджено',
-        });
+    this.userService.confirmUser(this.user.id).subscribe((user: User) => {
+      this.user = user;
+      this.messageService.add({
+        severity: 'success',
+        detail: 'Користувача підтверджено',
       });
+    });
   }
 
   confirmFreezeToggle() {
@@ -60,7 +58,7 @@ export class UserComponent implements OnInit {
     this.userService
       .freezeUserToggle(this.user.id)
       .pipe(finalize(() => (this.isFreezing = false)))
-      .subscribe((user: GetUserResponse) => {
+      .subscribe((user: User) => {
         this.user = user;
         if (this.user.userFreezed) {
           this.messageService.add({

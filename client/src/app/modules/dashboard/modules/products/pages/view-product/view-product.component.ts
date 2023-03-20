@@ -4,7 +4,11 @@ import { Observable, combineLatest, switchMap, take } from 'rxjs';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { ProductBase, ProductVariant } from '@shared/interfaces/products';
+import { CartItem } from '@shared/interfaces/entities/cart.entity';
+import {
+  ProductBase,
+  ProductVariant,
+} from '@shared/interfaces/entities/product.entity';
 import { ProductsService } from '@shared/services/products.service';
 
 import { CartService } from '../../../cart/services/cart/cart.service';
@@ -36,7 +40,7 @@ export class ViewProductComponent {
         take(1),
         switchMap(([cart]) => {
           const selectedVariantCount = cart?.items.find(
-            (item) => item.product.id === productVariant.id,
+            (item: CartItem) => item.product.id === productVariant.id,
           )?.quantity;
           if (!productVariant) {
             this.messageService.add({

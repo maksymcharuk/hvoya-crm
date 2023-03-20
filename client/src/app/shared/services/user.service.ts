@@ -1,24 +1,21 @@
 import jwt_decode from 'jwt-decode';
+import { Observable, map } from 'rxjs';
 
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
+import { environment } from '@environment/environment';
+import { User } from '@shared/interfaces/entities/user.entity';
 import { JwtTokenPayload } from '@shared/interfaces/jwt-payload.interface';
 import { TokenUser } from '@shared/interfaces/token-user.interface';
-import { environment } from '@environment/environment';
-import { GetUsersResponse } from '@shared/interfaces/responses/get-users.response';
-import { GetUserResponse } from '@shared/interfaces/responses/get-user.response';
 
 import { TokenService } from './token.service';
-
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private tokenService: TokenService,
-    private http: HttpClient) { }
+  constructor(private tokenService: TokenService, private http: HttpClient) {}
 
   getUser(): TokenUser | null {
     const token = this.tokenService.getToken();
@@ -29,19 +26,27 @@ export class UserService {
     return decodedToken.user;
   }
 
-  getUsers(): Observable<GetUsersResponse> {
-    return this.http.get<GetUsersResponse>(`${environment.apiUrl}/users`);
+  getUsers(): Observable<User[]> {
+    return this.http
+      .get<User[]>(`${environment.apiUrl}/users`)
+      .pipe(map((users) => users.map((user) => new User(user))));
   }
 
-  getUserById(userId: number): Observable<GetUserResponse> {
-    return this.http.get<GetUserResponse>(`${environment.apiUrl}/users/${userId}`);
+  getUserById(userId: number): Observable<User> {
+    return this.http
+      .get<User>(`${environment.apiUrl}/users/${userId}`)
+      .pipe(map((user) => new User(user)));
   }
 
-  confirmUser(userId: number): Observable<GetUserResponse> {
-    return this.http.post<GetUserResponse>(`${environment.apiUrl}/users/confirm`, { userId });
+  confirmUser(userId: number): Observable<User> {
+    return this.http
+      .post<User>(`${environment.apiUrl}/users/confirm`, { userId })
+      .pipe(map((user) => new User(user)));
   }
 
-  freezeUserToggle(userId: number): Observable<GetUserResponse> {
-    return this.http.post<GetUserResponse>(`${environment.apiUrl}/users/freeze-toggle`, { userId });
+  freezeUserToggle(userId: number): Observable<User> {
+    return this.http
+      .post<User>(`${environment.apiUrl}/users/freeze-toggle`, { userId })
+      .pipe(map((user) => new User(user)));
   }
 }

@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { ProductBase, ProductVariant } from '@shared/interfaces/products';
+import {
+  ProductBase,
+  ProductVariant,
+} from '@shared/interfaces/entities/product.entity';
 
 @Component({
   selector: 'app-product-list',

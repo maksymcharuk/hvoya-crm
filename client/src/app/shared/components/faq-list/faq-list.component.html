@@ -2,14 +2,14 @@
   <h4 class="mb-0">Запитання та відповіді</h4>
   <div>
     <p-button
-      *ngIf="'create' | able : 'faq.entity'"
+      *ngIf="'create' | able : faqEntity"
       label="Додати"
       icon="pi pi-plus"
       data-cy="add-faq-button"
       (onClick)="openNew()"
     ></p-button>
     <p-button
-      *ngIf="'update' | able : 'faq.entity'"
+      *ngIf="'update' | able : faqEntity"
       class="ml-2"
       label="Зберегти порядок"
       icon="pi pi-save"
@@ -22,7 +22,7 @@
     ></p-button>
   </div>
 </div>
-<ng-container *ngIf="'update' | able : 'faq.entity'; else regularList">
+<ng-container *ngIf="'update' | able : faqEntity; else regularList">
   <app-faq-item
     *ngFor="let faq of faqList; let index = index"
     pDraggable="dd"
@@ -49,7 +49,7 @@
 ></ng-template>
 
 <p-dialog
-  *ngIf="('create' | able : 'faq.entity') || ('update' | able : 'faq.entity')"
+  *ngIf="('create' | able : faqEntity) || ('update' | able : faqEntity)"
   [(visible)]="faqDialog"
   [modal]="true"
   header="Запитання та відповідь"

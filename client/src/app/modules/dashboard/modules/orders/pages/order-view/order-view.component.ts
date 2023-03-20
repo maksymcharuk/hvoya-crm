@@ -9,8 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Role } from '@shared/enums/role.enum';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
-import { GetOrderResponse } from '@shared/interfaces/responses/get-order.response';
-import { UpdateWaybillResponse } from '@shared/interfaces/responses/update-waybill.response';
+import { Order } from '@shared/interfaces/entities/order.entity';
 import { OrdersService } from '@shared/services/orders.service';
 import { UserService } from '@shared/services/user.service';
 
@@ -22,7 +21,7 @@ import { UserService } from '@shared/services/user.service';
 export class OrderViewComponent {
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
 
-  order$ = new BehaviorSubject<GetOrderResponse | null>(null);
+  order$ = new BehaviorSubject<Order | null>(null);
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
   orderStatusEnum = OrderStatus;
   roleEnum = Role;
@@ -87,7 +86,7 @@ export class OrderViewComponent {
     this.ordersService
       .updateWaybill(this.route.snapshot.params['id'], formData)
       .pipe(finalize(() => this.waybillSubmitting$.next(false)))
-      .subscribe((order: UpdateWaybillResponse) => {
+      .subscribe((order: Order) => {
         this.order$.next(order);
         this.waybillUpload.clear();
         this.waybillControl.reset();

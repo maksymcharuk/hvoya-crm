@@ -3,7 +3,7 @@ import { Table } from 'primeng/table';
 
 import { Component, ViewChild } from '@angular/core';
 
-import { ProductSize } from '@shared/interfaces/products';
+import { ProductSize } from '@shared/interfaces/entities/product.entity';
 
 import { ProductSizesService } from '../../../../services/product-sizes.service';
 

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { ProductBase } from '@shared/interfaces/products';
+import { ProductBase } from '@shared/interfaces/entities/product.entity';
 import { ProductsService } from '@shared/services/products.service';
 
 @Component({
