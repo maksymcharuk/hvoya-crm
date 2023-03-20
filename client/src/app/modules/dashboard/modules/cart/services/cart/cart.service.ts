@@ -4,12 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
-import { Cart } from '@shared/interfaces/cart.interface';
 import { AddToCartDTO } from '@shared/interfaces/dto/add-to-cart.dto';
 import { RemoveFromCartDTO } from '@shared/interfaces/dto/remove-from-cart.dto';
-import { AddToCartResponse } from '@shared/interfaces/responses/add-to-cart.response';
-import { GetCartResponse } from '@shared/interfaces/responses/get-cart.response';
-import { RemoveFromCartResponse } from '@shared/interfaces/responses/remove-from-cart.response';
+import { Cart } from '@shared/interfaces/entities/cart.entity';
 
 @Injectable({
   providedIn: 'root',
@@ -33,11 +30,12 @@ export class CartService {
     this.getCart().subscribe();
   }
 
-  getCart(): Observable<GetCartResponse> {
+  getCart(): Observable<Cart> {
     this.incrementCartLoading();
-    const response$ = this.http
-      .get<GetCartResponse>(`${environment.apiUrl}/cart`)
-      .pipe(shareReplay());
+    const response$ = this.http.get<Cart>(`${environment.apiUrl}/cart`).pipe(
+      shareReplay(),
+      map((cart) => new Cart(cart)),
+    );
     response$.subscribe((cart) => {
       this.cart$.next(cart);
       this.decrementCartLoading();
@@ -45,11 +43,14 @@ export class CartService {
     return response$;
   }
 
-  addToCart(addToCartDTO: AddToCartDTO): Observable<AddToCartResponse> {
+  addToCart(addToCartDTO: AddToCartDTO): Observable<Cart> {
     this.incrementCartLoading();
     const response$ = this.http
-      .post<AddToCartResponse>(`${environment.apiUrl}/cart/add`, addToCartDTO)
-      .pipe(shareReplay());
+      .post<Cart>(`${environment.apiUrl}/cart/add`, addToCartDTO)
+      .pipe(
+        shareReplay(),
+        map((cart) => new Cart(cart)),
+      );
     response$.subscribe((cart) => {
       this.cart$.next(cart);
       this.decrementCartLoading();
@@ -57,13 +58,14 @@ export class CartService {
     return response$;
   }
 
-  removeFromCart(
-    removeFromCartDTO: RemoveFromCartDTO,
-  ): Observable<RemoveFromCartResponse> {
+  removeFromCart(removeFromCartDTO: RemoveFromCartDTO): Observable<Cart> {
     this.incrementCartLoading();
     const response$ = this.http
       .post<Cart>(`${environment.apiUrl}/cart/remove`, removeFromCartDTO)
-      .pipe(shareReplay());
+      .pipe(
+        shareReplay(),
+        map((cart) => new Cart(cart)),
+      );
     response$.subscribe((cart) => {
       this.cart$.next(cart);
       this.decrementCartLoading();

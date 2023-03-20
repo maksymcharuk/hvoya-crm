@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { ProductSize } from '@shared/interfaces/products';
+import { ProductSize } from '@shared/interfaces/entities/product.entity';
 
 @Pipe({ name: 'productSize' })
 export class ProductSizePipe implements PipeTransform {

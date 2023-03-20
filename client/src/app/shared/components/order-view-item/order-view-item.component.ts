@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { OrderItem } from '@shared/interfaces/order.interface';
+import { OrderItem } from '@shared/interfaces/entities/order.entity';
 
 @Component({
   selector: 'app-order-view-item',

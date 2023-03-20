@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+import { Injectable } from '@angular/core';
+
+import { Balance } from '@shared/interfaces/entities/balance.entity';
+import { TokenUser } from '@shared/interfaces/token-user.interface';
 import { BalanceService } from '@shared/services/balance.service';
 import { UserService } from '@shared/services/user.service';
-import { Balance } from '@shared/interfaces/balance.interface';
-import { TokenUser } from '@shared/interfaces/token-user.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserBalanceService {
-
   balance$ = new BehaviorSubject<Balance | null>(null);
   user!: TokenUser | null;
 
@@ -27,7 +27,7 @@ export class UserBalanceService {
     if (this.user) {
       this.balanceService.getBalance().subscribe((res) => {
         this.balance$.next(res);
-      })
+      });
     }
   }
 

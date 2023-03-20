@@ -5,7 +5,7 @@
   data-cy="faq-item"
 >
   <ng-template pTemplate="icons">
-    <ng-container *ngIf="'update' | able : 'faq.entity'">
+    <ng-container *ngIf="'update' | able : faq">
       <p-badge
         class="mr-2"
         [value]="faq.isPublished ? 'Опубліковано' : 'Не опубліковано'"
@@ -26,7 +26,7 @@
 </p-panel>
 
 <p-confirmDialog
-  *ngIf="'update' | able : 'faq.entity'"
+  *ngIf="'update' | able : faq"
   rejectButtonStyleClass="p-button-text"
   [header]="
     'Ви впевнені, що хочете ' +

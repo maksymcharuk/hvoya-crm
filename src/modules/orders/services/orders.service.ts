@@ -238,7 +238,7 @@ export class OrdersService {
 
       if (ability.cannot(Action.Update, order)) {
         throw new HttpException(
-          'You are not allowed to update this order',
+          'У вас немає прав для оновлення цього замовлення',
           HttpStatus.FORBIDDEN,
         );
       }

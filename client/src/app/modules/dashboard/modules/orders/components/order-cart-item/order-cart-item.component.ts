@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
-import { CartItem } from '@shared/interfaces/cart.interface';
+import { CartItem } from '@shared/interfaces/entities/cart.entity';
 
 import { CartService } from '../../../cart/services/cart/cart.service';
 

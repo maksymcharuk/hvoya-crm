@@ -20,6 +20,7 @@ import { UserEntity } from '@entities/user.entity';
 import { BalanceEntity } from '@entities/balance.entity';
 
 import { Action } from '@enums/action.enum';
+import { OrderStatus } from '@enums/order-status.enum';
 import { Role } from '@enums/role.enum';
 
 type Subjects =
@@ -95,12 +96,15 @@ export class CaslAbilityFactory {
       can([Action.Read, Action.AddTo, Action.RemoveFrom], CartEntity);
       // Orders
       can(
-        [Action.Read, Action.Update, Action.Create],
+        [Action.Read, Action.Create],
         OrderEntity,
         ({ customer }: OrderEntity) => {
           return customer.id === user.id;
         },
-      ); // can manage only his own orders
+      ); // can read and create only his own orders
+      can([Action.Update], OrderEntity, ({ customer, status }: OrderEntity) => {
+        return customer.id === user.id && OrderStatus.Pending === status;
+      }); // can update only his own orders with status pending
       // FAQ
       can(
         [Action.Read],

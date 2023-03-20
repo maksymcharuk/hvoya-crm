@@ -3,7 +3,7 @@ import { Table } from 'primeng/table';
 
 import { Component, ViewChild } from '@angular/core';
 
-import { ProductColor } from '@shared/interfaces/products';
+import { ProductColor } from '@shared/interfaces/entities/product.entity';
 
 import { ProductColorsService } from '../../../../services/product-colors.service';
 

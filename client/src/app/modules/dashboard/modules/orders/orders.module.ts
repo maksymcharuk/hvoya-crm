@@ -11,6 +11,7 @@ import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbilityModule } from '@casl/angular';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -43,6 +44,7 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     TableModule,
     DropdownModule,
     SharedModule,
+    AbilityModule,
   ],
 })
 export class OrdersModule {}

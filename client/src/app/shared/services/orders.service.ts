@@ -1,14 +1,10 @@
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
-import { OrderCreateResponse } from '@shared/interfaces/responses/create-order.response';
-import { GetOrderResponse } from '@shared/interfaces/responses/get-order.response';
-import { GetOrdersResponse } from '@shared/interfaces/responses/get-orders.response';
-import { UpdateOrderResponse } from '@shared/interfaces/responses/update-order.response';
-import { UpdateWaybillResponse } from '@shared/interfaces/responses/update-waybill.response';
+import { Order } from '@shared/interfaces/entities/order.entity';
 
 @Injectable({
   providedIn: 'root',
@@ -16,40 +12,39 @@ import { UpdateWaybillResponse } from '@shared/interfaces/responses/update-waybi
 export class OrdersService {
   constructor(private http: HttpClient) {}
 
-  orderCreate(orderCreateFormData: FormData): Observable<OrderCreateResponse> {
-    return this.http.post<OrderCreateResponse>(
-      `${environment.apiUrl}/orders`,
-      orderCreateFormData,
-    );
+  orderCreate(orderCreateFormData: FormData): Observable<Order> {
+    return this.http
+      .post<Order>(`${environment.apiUrl}/orders`, orderCreateFormData)
+      .pipe(map((order) => new Order(order)));
   }
 
-  orderUpdate(
-    id: number,
-    updateOrderFormData: FormData,
-  ): Observable<UpdateOrderResponse> {
-    return this.http.put<UpdateOrderResponse>(
-      `${environment.apiUrl}/orders/${id}`,
-      updateOrderFormData,
-    );
+  orderUpdate(id: number, updateOrderFormData: FormData): Observable<Order> {
+    return this.http
+      .put<Order>(`${environment.apiUrl}/orders/${id}`, updateOrderFormData)
+      .pipe(map((order) => new Order(order)));
   }
 
   updateWaybill(
     id: number,
     updateWaybillFormData: FormData,
-  ): Observable<UpdateWaybillResponse> {
-    return this.http.put<UpdateWaybillResponse>(
-      `${environment.apiUrl}/orders/${id}/update-waybill`,
-      updateWaybillFormData,
-    );
+  ): Observable<Order> {
+    return this.http
+      .put<Order>(
+        `${environment.apiUrl}/orders/${id}/update-waybill`,
+        updateWaybillFormData,
+      )
+      .pipe(map((order) => new Order(order)));
   }
 
-  getOrders(): Observable<GetOrdersResponse> {
-    return this.http.get<GetOrdersResponse>(`${environment.apiUrl}/orders`);
+  getOrders(): Observable<Order[]> {
+    return this.http
+      .get<Order[]>(`${environment.apiUrl}/orders`)
+      .pipe(map((orders) => orders.map((order) => new Order(order))));
   }
 
-  getOrder(id: number): Observable<GetOrderResponse> {
-    return this.http.get<GetOrderResponse>(
-      `${environment.apiUrl}/orders/${id}`,
-    );
+  getOrder(id: number): Observable<Order> {
+    return this.http
+      .get<Order>(`${environment.apiUrl}/orders/${id}`)
+      .pipe(map((order) => new Order(order)));
   }
 }

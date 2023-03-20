@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { CartItem } from '@shared/interfaces/cart.interface';
+import { CartItem } from '@shared/interfaces/entities/cart.entity';
 
 import { CartService } from '../../services/cart/cart.service';
 

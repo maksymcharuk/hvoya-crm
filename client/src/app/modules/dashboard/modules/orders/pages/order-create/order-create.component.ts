@@ -6,11 +6,11 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
-import { CartItem } from '@shared/interfaces/cart.interface';
 import {
   OrderCreateDTO,
   OrderCreateFormGroup,
 } from '@shared/interfaces/dto/create-order.dto';
+import { CartItem } from '@shared/interfaces/entities/cart.entity';
 import { AccountService } from '@shared/services/account.service';
 import { OrdersService } from '@shared/services/orders.service';
 

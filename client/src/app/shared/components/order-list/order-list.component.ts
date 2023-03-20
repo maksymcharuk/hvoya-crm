@@ -12,7 +12,7 @@ import { FormBuilder } from '@angular/forms';
 
 import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
-import { Order } from '@shared/interfaces/order.interface';
+import { Order } from '@shared/interfaces/entities/order.entity';
 
 @Component({
   selector: 'app-order-list',
@@ -50,10 +50,7 @@ export class OrderListComponent implements OnDestroy {
     if (!orders) {
       return;
     }
-    this.orderInternal = orders.map((order) => ({
-      ...order,
-      createdAt: new Date(order.createdAt),
-    }));
+    this.orderInternal = orders;
     this.loading = false;
   }
   @ViewChild('ordersTable') ordersTable!: Table;
