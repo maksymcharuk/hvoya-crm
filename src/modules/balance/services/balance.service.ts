@@ -2,7 +2,7 @@ import Decimal from 'decimal.js';
 
 import { EntityManager, Repository } from 'typeorm';
 
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { BalanceEntity } from '@entities/balance.entity';
@@ -36,8 +36,10 @@ export class BalanceService {
 
     if (amount.isNegative()) {
 
+
+
       if (balance.amount.lessThan(amount.neg())) {
-        throw new Error('Недостатньо коштів');
+        throw new HttpException('Недостатньо коштів на балансі.', 400);
       }
 
       return manager.save(BalanceEntity, {
@@ -56,9 +58,7 @@ export class BalanceService {
 
   // temporary "testing" solution;
   async addFunds(userId: number, amount: number): Promise<BalanceEntity> {
-    return this.balanceRepository.manager.transaction(async manager => {
-      return await this.update(userId, new Decimal(amount), manager);
-    });
+    return await this.update(userId, new Decimal(amount), this.balanceRepository.manager);
   }
 
 
