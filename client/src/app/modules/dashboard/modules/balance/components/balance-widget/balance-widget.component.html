@@ -27,7 +27,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-transaction>
             <tr>
-              <td>{{ transaction.amount }}</td>
+              <td>{{ transaction.amount | currency }}</td>
               <td>{{ transaction.status }}</td>
               <td>{{ transaction.createdAt | date : 'short' }}</td>
             </tr>

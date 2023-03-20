@@ -1,12 +1,16 @@
 import { BaseEntity } from './base.entity';
+import { PaymentTransaction } from './payment-transaction.entity';
 
 export class Balance extends BaseEntity {
-  value?: number;
-  info?: string;
+  amount: number;
+  paymentTransactions: PaymentTransaction[];
 
   constructor(data?: Balance) {
     super(data);
-    this.value = data?.value;
-    this.info = data?.info;
+    this.amount = data?.amount || 0;
+    this.paymentTransactions =
+      data?.paymentTransactions.map(
+        (transaction) => new PaymentTransaction(transaction),
+      ) || [];
   }
 }

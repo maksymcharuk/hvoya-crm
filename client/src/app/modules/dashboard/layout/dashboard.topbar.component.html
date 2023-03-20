@@ -34,7 +34,7 @@
       <i class="pi pi-money-bill"></i>
       <span class="topbar-button-text">Баланс</span>
       <span class="ml-2" *ngIf="balance$ | async as balance">{{
-        balance.amount | currency : 'UAH' : 'symbol' : '1.2-20'
+        balance.amount | currency
       }}</span>
     </button>
     <p-overlayPanel #overlayPanel #balance>

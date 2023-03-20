@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { Balance } from '@shared/interfaces/balance.interface';
+import { Balance } from '@shared/interfaces/entities/balance.entity';
 import { TokenUser } from '@shared/interfaces/token-user.interface';
 import { BalanceService } from '@shared/services/balance.service';
 import { UserService } from '@shared/services/user.service';
