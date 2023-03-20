@@ -28,22 +28,22 @@ npm install -g @angular/cli
 $ npm install
 ```
 
-2. Duplicate `.env.example` file in the `env` folder of the project and rename it to `.env`.
+2. Duplicate `example.env` file in the `env` folder of the project and rename it to `.env`.
 
 3. Create DB with the configs from `.env` in PostgreSQL manually or by running:
 ```
 npm run db:setup
 
-# Additionaly create DB for tests
+# Additionaly repeat the same steps for `example.test.env` file and create DB for tests
 npm run db:setup-test
 ```
 
 > This will create DB with default data.  
 >
 > Users:  
-> SuperAdmin - login: john-super-admin@email.com, pass: 12345  
-> Admin - login: alice-admin@email.com, pass:  12345  
-> User - login: peter-user@email.com, pass: 12345  
+> SuperAdmin - login: john-super-admin@email.com, pass: Admin12345  
+> Admin - login: alice-admin@email.com, pass:  Admin12345  
+> User - login: peter-user@email.com, pass: User12345  
 
 ### Frontend (Angular)
 
@@ -76,7 +76,11 @@ $ npm run start:prod
 
 In `client` folder run:
 ```bash
+# development
 $ npm run start
+
+# e2e tests (will use correct backend server for testing)
+$ npm run start:test
 ```
 
 ## Development
@@ -85,20 +89,17 @@ $ npm run start
 
 Technologies and tools:
 1. Authorization - [Nest CASL](https://docs.nestjs.com/security/authorization#integrating-casl)
-
-Architecture:
-1. [How Do You Design a Shopping Cart Database for E-Commerce?](https://fabric.inc/blog/shopping-cart-database-design/)
-2. [Design Amazon - Online Shopping System](https://github.com/tssovi/grokking-the-object-oriented-design-interview/blob/master/object-oriented-design-case-studies/design-amazon-online-shopping-system.md)
  
 ### Frontend (Angular)
 
 Technologies and tools:
 1. UI Framework - [Prime NG](https://www.primefaces.org/primeng)
 2. Role-based authorization - [CASL for Angular](https://www.npmjs.com/package/@casl/angular)
-3. NGRX?
-4. Cypress
+3. Cypress (for e2e testing)
 
 ## Test
+
+> e2e tests are the main test in this project!   
 
 ### Backend (Nest)
 
@@ -126,10 +127,10 @@ $ npm run cypress:start
 
 ## Environments
 
-1. [Staging](http://staging.hvoya-crm.com/) -> `ssh root@167.99.145.25`
+1. [Staging](https://staging.hvoya-crm.com/) -> `ssh root@167.99.145.25`
 2. [Jenkins](http://159.89.233.123:8080/) -> `ssh root@159.89.233.123`
 3. [Trello](https://trello.com/b/YvdzPYBT/hvoya-crm)
-4. [Small cheatsheet](https://docs.google.com/document/d/1pn9lYFZJRZNnFB6rV9sUU3tAMIfulvh9J2B37NIPl_8/edit#heading=h.xdwyq0n7131o) with some basic commands to help setup dev env
+4. (Deprecated) [Small cheatsheet](https://docs.google.com/document/d/1pn9lYFZJRZNnFB6rV9sUU3tAMIfulvh9J2B37NIPl_8/edit#heading=h.xdwyq0n7131o) with some basic commands to help setup dev env
 
 ## Recipes
 
@@ -147,7 +148,7 @@ $ npm run cypress:start
 2. Generate migration `npm run migrations:generate --name=<name>`.
 3. Run migration `npm run migrations:run`.
 
-#### 3. Working with e2e tests
+#### 3. Writing e2e tests 
 
 In the `root` folder:
 1. Setup test DB run - `npm run db:setup-test`
