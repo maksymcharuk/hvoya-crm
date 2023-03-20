@@ -70,6 +70,7 @@ $ npm run start:prod
 ```
 
 > Note: All API endpoint routes start with `/api`. E.g. `/api/products`
+
 > Note: For e2e tests development use `npm run start:test`
 
 ### Frontend (Angular)
@@ -99,29 +100,30 @@ Technologies and tools:
 
 ## Test
 
-> e2e tests are the main test in this project!   
-
-### Backend (Nest)
-
-In `root` folder run:
-```bash
-# unit tests
-$ npm run test
-```
-
-### Frontend (Angular)
-
-In `client` folder run:
-```bash
-# unit tests
-$ npm run test
-```
+> Note: Currently we are using only e2e tests on the frontend
 
 ### e2e tests
 
+In `root` folder run:
+```bash
+# run test backend server
+$ npm run start:test
+```
+
 In `client` folder run:
 ```bash
-# e2e tests 
+# run test frontend server
+$ npm run start:test
+
+# run e2e tests UI
+$ npm run cypress:open
+```
+
+### e2e tests (headless)
+
+In `client` folder run:
+```bash
+# e2e tests
 $ npm run cypress:start
 ```
 
