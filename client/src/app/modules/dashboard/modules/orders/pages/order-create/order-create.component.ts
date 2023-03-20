@@ -27,6 +27,7 @@ export class OrderCreateComponent implements OnInit {
   cartLoading$ = this.cartService.cartLoading$;
   cartNotEmpty$ = this.cartService.cartNotEmpty$;
   profile$ = this.accountService.profile$;
+  balance$ = this.userBalanceService.balance$;
   submitting = false;
   deliveryServices = [
     { label: 'Нова пошта', value: DeliveryService.NovaPoshta },
