@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { DeliveryType } from '@shared/enums/delivery-type.enum';
 import {
@@ -38,6 +39,7 @@ export class OrderCreateComponent implements OnInit {
     { label: 'Склад - Склад', value: DeliveryType.WarehouseWarehouse },
     { label: 'Склад - Двері', value: DeliveryType.WarehouseDoor },
   ];
+  fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
 
   orderCreateForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],

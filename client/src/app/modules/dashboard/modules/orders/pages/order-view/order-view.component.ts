@@ -6,6 +6,7 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Role } from '@shared/enums/role.enum';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
@@ -26,6 +27,7 @@ export class OrderViewComponent {
   orderStatusEnum = OrderStatus;
   roleEnum = Role;
   user = this.userService.getUser();
+  fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: ['', Validators.required],

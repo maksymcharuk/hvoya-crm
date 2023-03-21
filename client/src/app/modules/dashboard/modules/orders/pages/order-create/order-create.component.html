@@ -204,6 +204,7 @@
               <div class="field col-12">
                 <label>ТТН:</label>
                 <p-fileUpload
+                  [accept]="fileFormats"
                   [customUpload]="true"
                   [auto]="true"
                   (uploadHandler)="onFileUpload($event)"
