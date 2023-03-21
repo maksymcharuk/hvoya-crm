@@ -14,6 +14,9 @@ describe('Orders', () => {
     });
 
     it('Place order', () => {
+      // Add funds to user balance
+      cy.addFundsToUserBalance(testUserEmail, 5000);
+
       // Add product to cart
       cy.addProductToCart();
 
@@ -25,7 +28,6 @@ describe('Orders', () => {
         firstName: 'John',
         lastName: 'Doe',
         middleName: 'Middle',
-        deliveryType: 'Test delivery type',
         city: 'Test city',
         postOffice: 'Test post office',
         trackingId: '1234556789',

@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 
 import { DeliveryService } from '@enums/delivery-service.enum';
+import { DeliveryType } from '@enums/delivery-type.enum';
 
 export class CreateOrderDto {
   @IsNotEmpty()
@@ -36,8 +37,9 @@ export class CreateOrderDto {
   @IsPhoneNumber('UA', { message: 'Номер телефону недійсний' })
   phoneNumber: string;
 
+  @IsEnum(DeliveryType)
   @IsNotEmpty()
-  deliveryType: string;
+  deliveryType: DeliveryType;
 
   @IsNotEmpty()
   @IsString()

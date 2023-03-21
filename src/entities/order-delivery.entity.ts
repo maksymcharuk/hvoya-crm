@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { DeliveryService } from '../enums/delivery-service.enum';
+import { DeliveryType } from '../enums/delivery-type.enum';
 import { OrderDeliveryStatus } from '../enums/order-delivery-status.enum';
 import { BaseEntity } from './base.entity';
 import { FileEntity } from './file.entity';
@@ -52,9 +53,11 @@ export class OrderDeliveryEntity extends BaseEntity {
   phoneNumber: string;
 
   @Column({
-    default: '',
+    type: 'enum',
+    enum: DeliveryType,
+    nullable: true,
   })
-  deliveryType: string;
+  deliveryType: DeliveryType | null;
 
   @Column({
     default: '',
