@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
   MaxFileSizeValidator,
   Param,
@@ -57,7 +58,10 @@ export class OrdersController {
     @Body() updateOrderDto: UpdateOrderDto,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [new MaxFileSizeValidator({ maxSize: 5000000 })],
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5000000 }),
+          new FileTypeValidator({ fileType: '(pdf)$' }),
+        ],
         fileIsRequired: false,
       }),
     )
@@ -77,7 +81,10 @@ export class OrdersController {
     @Body() updateOrderWaybillDto: UpdateOrderWaybillDto,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [new MaxFileSizeValidator({ maxSize: 5000000 })],
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5000000 }),
+          new FileTypeValidator({ fileType: '(pdf)$' }),
+        ],
         fileIsRequired: false,
       }),
     )
@@ -101,7 +108,10 @@ export class OrdersController {
     @Body() createOrderDto: CreateOrderDto,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [new MaxFileSizeValidator({ maxSize: 5000000 })],
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5000000 }),
+          new FileTypeValidator({ fileType: '(pdf)$' }),
+        ],
         fileIsRequired: false,
       }),
     )

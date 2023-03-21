@@ -140,6 +140,7 @@
                   <div class="field col-12 md:col-6">
                     <p-fileUpload
                       #waybillUpload
+                      [accept]="fileFormats"
                       [customUpload]="true"
                       [auto]="true"
                       (uploadHandler)="onFileUpload($event)"
