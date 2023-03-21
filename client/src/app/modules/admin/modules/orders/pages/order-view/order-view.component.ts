@@ -30,6 +30,7 @@ export class OrderViewComponent {
     value,
   }));
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
+  showWaybillViewDialog = false;
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: ['', Validators.required],
@@ -82,6 +83,10 @@ export class OrderViewComponent {
 
   onFileUpload(event: any) {
     this.waybillControl.patchValue(event.files[0]);
+  }
+
+  showWaybillViewDialogHandler() {
+    this.showWaybillViewDialog = true;
   }
 
   updateStatus() {
