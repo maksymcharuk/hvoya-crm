@@ -145,11 +145,12 @@
                 </div>
                 <div class="field col-12">
                   <label for="delivery-type">Тип доставки:</label>
-                  <input
+                  <p-dropdown
                     id="delivery-type"
-                    pInputText
+                    [options]="deliveryTypes"
                     formControlName="deliveryType"
-                  />
+                    optionValue="value"
+                  ></p-dropdown>
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
                     controlName="phoneNumber"

@@ -18,7 +18,6 @@ interface CreateOrderForm {
   firstName: string;
   lastName: string;
   middleName: string;
-  deliveryType: string;
   city: string;
   postOffice: string;
   trackingId: string;
@@ -82,6 +81,10 @@ declare global {
       confirmUser(email: string): typeof confirmUser;
       freezeUser(email: string): typeof freezeUser;
       unFreezeUser(email: string): typeof unFreezeUser;
+      addFundsToUserBalance(
+        email: string,
+        amount: number,
+      ): typeof addFundsToUserBalance;
     }
   }
 }
@@ -372,7 +375,6 @@ function fillAndSubmitCreateOrderForm(data: CreateOrderForm): void {
   cy.get('input[id="first-name"]').clear().type(data.firstName);
   cy.get('input[id="last-name"]').clear().type(data.lastName);
   cy.get('input[id="middle-name"]').clear().type(data.middleName);
-  cy.get('input[id="delivery-type"]').clear().type(data.deliveryType);
   cy.get('input[id="city"]').clear().type(data.city);
   cy.get('input[id="post-office"]').clear().type(data.postOffice);
   cy.get('input[id="tracking-id"]').clear().type(data.trackingId);
@@ -411,6 +413,19 @@ function unFreezeUser(email: string): void {
   cy.get('button').contains('Так').click();
   cy.checkToastMessage('Користувача розморожено');
   cy.logout();
+}
+
+function addFundsToUserBalance(email: string, amount: number): void {
+  cy.task<any[]>(
+    'connectDB',
+    `SELECT "balanceId" FROM public."user" WHERE email = '${email}'`,
+  ).then((res) => {
+    const { balanceId } = res[0];
+    cy.task<any[]>(
+      'connectDB',
+      `UPDATE public."balance" SET "amount" = ${amount} WHERE id = '${balanceId}'`,
+    );
+  });
 }
 
 // ***********************************************
@@ -483,3 +498,4 @@ Cypress.Commands.add('checkToastMessage', checkToastMessage);
 Cypress.Commands.add('confirmUser', confirmUser);
 Cypress.Commands.add('freezeUser', freezeUser);
 Cypress.Commands.add('unFreezeUser', unFreezeUser);
+Cypress.Commands.add('addFundsToUserBalance', addFundsToUserBalance);

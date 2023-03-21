@@ -6,6 +6,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
+import { DeliveryType } from '@shared/enums/delivery-type.enum';
 import {
   OrderCreateDTO,
   OrderCreateFormGroup,
@@ -14,8 +15,8 @@ import { CartItem } from '@shared/interfaces/entities/cart.entity';
 import { AccountService } from '@shared/services/account.service';
 import { OrdersService } from '@shared/services/orders.service';
 
-import { CartService } from '../../../cart/services/cart/cart.service';
 import { UserBalanceService } from '../../../balance/services/user-balance.service';
+import { CartService } from '../../../cart/services/cart/cart.service';
 
 @Component({
   selector: 'app-order-create',
@@ -33,6 +34,10 @@ export class OrderCreateComponent implements OnInit {
     { label: 'Нова пошта', value: DeliveryService.NovaPoshta },
     { label: 'Укрпошта', value: DeliveryService.UkrPoshta },
   ];
+  deliveryTypes = [
+    { label: 'Склад - Склад', value: DeliveryType.WarehouseWarehouse },
+    { label: 'Склад - Двері', value: DeliveryType.WarehouseDoor },
+  ];
 
   orderCreateForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -42,7 +47,7 @@ export class OrderCreateComponent implements OnInit {
     phoneNumber: ['', Validators.required],
     deliveryService: [this.deliveryServices[0]?.value, Validators.required],
     trackingId: ['', Validators.required],
-    deliveryType: ['', Validators.required],
+    deliveryType: [this.deliveryTypes[0]?.value, Validators.required],
     city: ['', Validators.required],
     postOffice: ['', Validators.required],
     waybill: [''],
@@ -59,8 +64,8 @@ export class OrderCreateComponent implements OnInit {
     private orderService: OrdersService,
     private accountService: AccountService,
     private messageService: MessageService,
-    private userBalanceService: UserBalanceService
-  ) { }
+    private userBalanceService: UserBalanceService,
+  ) {}
 
   ngOnInit(): void {
     this.profile$.subscribe((profile) => {
@@ -105,7 +110,7 @@ export class OrderCreateComponent implements OnInit {
       )
       .subscribe((order) => {
         this.cartService.getCart();
-        this.userBalanceService.getUserBalance()
+        this.userBalanceService.getUserBalance();
         this.messageService.add({
           severity: 'success',
           summary: 'Замовлення успішно створено',
