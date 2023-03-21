@@ -174,7 +174,7 @@ describe('Products', () => {
 
     it('Add image to product', () => {
       cy.selectFromDropdown('product-list', testProductName);
-      cy.uploadImageToProduct();
+      cy.uploadFile('product-image-upload', 'product.jpeg');
 
       cy.get('[data-cy="product-save-button"]').click();
       cy.checkToastMessage('Продукт успішно змінено');

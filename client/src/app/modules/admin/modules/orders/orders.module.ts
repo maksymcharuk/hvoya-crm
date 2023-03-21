@@ -1,3 +1,5 @@
+import { NgxDocViewerModule } from 'ngx-doc-viewer';
+import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,6 +25,8 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     InputTextModule,
     FileUploadModule,
     DropdownModule,
+    DialogModule,
+    NgxDocViewerModule,
   ],
 })
 export class OrdersModule {}

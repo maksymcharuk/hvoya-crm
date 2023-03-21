@@ -35,6 +35,11 @@ describe('Orders', () => {
       cy.checkToastMessage('Ваше замовлення');
       cy.getCyEl('order-view-page').should('exist');
 
+      // Check order waybill preview
+      cy.getCyEl('order-waybill-view-button').click();
+      cy.contains('Товарно-транспортна накладна').should('exist');
+      cy.get('.p-dialog-header-close').click();
+
       // Check order in orders list
       cy.getCyEl('menu-item').contains('Замовлення').click();
       cy.getCyEl('order-list-item').should('have.length', 1);
@@ -91,6 +96,11 @@ describe('Orders', () => {
         cy.getCyEl('order-status-edit-button').click();
         cy.selectFromDropdown('order-status-edit-dropdown', 'В очікуванні');
         cy.checkToastMessage('Статус замовлення успішно оновлено');
+
+        // Check order waybill preview
+        cy.getCyEl('order-waybill-view-button').click();
+        cy.contains('Товарно-транспортна накладна').should('exist');
+        cy.get('.p-dialog-header-close').click();
       });
     });
   });

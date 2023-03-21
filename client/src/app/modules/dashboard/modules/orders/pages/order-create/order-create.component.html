@@ -204,11 +204,12 @@
               <div class="field col-12">
                 <label>ТТН:</label>
                 <p-fileUpload
+                  data-cy="order-waybill-upload"
                   [accept]="fileFormats"
                   [customUpload]="true"
                   [auto]="true"
-                  (uploadHandler)="onFileUpload($event)"
                   [maxFileSize]="1000000"
+                  (uploadHandler)="onFileUpload($event)"
                 >
                 </p-fileUpload>
               </div>

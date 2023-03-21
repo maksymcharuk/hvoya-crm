@@ -67,7 +67,7 @@ declare global {
         testProductCategory: string,
         testProductBase: string,
       ): typeof compareProductCategoryAndBase;
-      uploadImageToProduct(): typeof uploadImageToProduct;
+      uploadFile(uploaderId: string, fileName: string): typeof uploadFile;
       checkImagesAmount(length: number): typeof checkImagesAmount;
       markFirstImageToBeRemoved(): typeof markFirstImageToBeRemoved;
       getShoppingCartWidgetMenuButton(): Cypress.Chainable<JQuery<HTMLElement>>;
@@ -271,14 +271,14 @@ function fillProductForm(form: any, uploadImage: boolean = true): void {
     .type(form.prize);
 
   if (uploadImage) {
-    uploadImageToProduct();
+    uploadFile('product-image-upload', 'product.jpeg');
   }
 }
 
-function uploadImageToProduct() {
-  cy.get('[data-cy="product-image-upload"]')
+function uploadFile(uploaderId: string, fileName: string) {
+  cy.getCyEl(uploaderId)
     .get('div[class="p-fileupload-content"]')
-    .selectFile('cypress/files/product.jpeg', { action: 'drag-drop' });
+    .selectFile(`cypress/files/${fileName}`, { action: 'drag-drop' });
 }
 
 function compareProductVariantFields(compareForm: any): void {
@@ -378,6 +378,7 @@ function fillAndSubmitCreateOrderForm(data: CreateOrderForm): void {
   cy.get('input[id="city"]').clear().type(data.city);
   cy.get('input[id="post-office"]').clear().type(data.postOffice);
   cy.get('input[id="tracking-id"]').clear().type(data.trackingId);
+  cy.uploadFile('order-waybill-upload', 'waybill-sample.pdf');
   cy.getCyEl('order-submit-button').click();
 }
 
@@ -481,7 +482,7 @@ Cypress.Commands.add(
   'compareProductCategoryAndBase',
   compareProductCategoryAndBase,
 );
-Cypress.Commands.add('uploadImageToProduct', uploadImageToProduct);
+Cypress.Commands.add('uploadFile', uploadFile);
 Cypress.Commands.add('checkImagesAmount', checkImagesAmount);
 Cypress.Commands.add('markFirstImageToBeRemoved', markFirstImageToBeRemoved);
 Cypress.Commands.add(
