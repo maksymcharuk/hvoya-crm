@@ -53,7 +53,7 @@ export class Order extends BaseEntity {
 
   constructor(data?: Order) {
     super(data);
-    this.items = data?.items.map((item) => new OrderItem(item)) || [];
+    this.items = data?.items?.map((item) => new OrderItem(item)) || [];
     this.delivery = new OrderDelivery(data?.delivery);
     this.status = data?.status || OrderStatus.Pending;
     this.total = data?.total;

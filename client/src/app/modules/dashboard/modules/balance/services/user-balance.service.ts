@@ -7,9 +7,7 @@ import { TokenUser } from '@shared/interfaces/token-user.interface';
 import { BalanceService } from '@shared/services/balance.service';
 import { UserService } from '@shared/services/user.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class UserBalanceService {
   balance$ = new BehaviorSubject<Balance | null>(null);
   user!: TokenUser | null;

@@ -17,11 +17,19 @@ export class BalanceService {
   ) { }
 
   getByUserId(userId: number): Promise<BalanceEntity> {
-    return this.balanceRepository.findOneByOrFail({ id: userId });
+    return this.balanceRepository.findOneOrFail({
+      where: { owner: { id: userId } },
+      relations: ['paymentTransactions.order'],
+      order: {
+        paymentTransactions: {
+          createdAt: 'DESC'
+        }
+      },
+    });
   }
 
-  async update(balanceId: number, amount: Decimal, manager: EntityManager, orderId?: number): Promise<BalanceEntity> {
-    let balance = await manager.findOneOrFail(BalanceEntity, { where: { id: balanceId } });
+  async update(userId: number, amount: Decimal, manager: EntityManager, orderId?: number): Promise<BalanceEntity> {
+    let balance = await manager.findOneOrFail(BalanceEntity, { where: { owner: { id: userId } } });
 
     const paymentTransaction = await manager.create(
       PaymentTransactionEntity,
@@ -35,25 +43,24 @@ export class BalanceService {
     await manager.save(PaymentTransactionEntity, paymentTransaction);
 
     if (amount.isNegative()) {
-
-
-
       if (balance.amount.lessThan(amount.neg())) {
         throw new HttpException('Недостатньо коштів на балансі.', 400);
       }
 
-      return manager.save(BalanceEntity, {
-        id: balanceId,
+      manager.save(BalanceEntity, {
+        id: balance.id,
         amount: balance.amount.minus(amount.neg()),
         paymentTransactions: [...balance.paymentTransactions, paymentTransaction]
       });
     } else {
-      return manager.save(BalanceEntity, {
-        id: balanceId,
+      manager.save(BalanceEntity, {
+        id: balance.id,
         amount: balance.amount.plus(amount),
         paymentTransactions: [...balance.paymentTransactions, paymentTransaction]
       });
     }
+
+    return this.getByUserId(userId);
   }
 
   // temporary "testing" solution;

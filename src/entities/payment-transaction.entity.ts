@@ -1,7 +1,6 @@
 import Decimal from 'decimal.js';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
-import { PaymentTransactionStatus } from '../enums/payment-transaction-status.enum';
 import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BalanceEntity } from './balance.entity';
 import { BaseEntity } from './base.entity';
@@ -17,13 +16,6 @@ export class PaymentTransactionEntity extends BaseEntity {
     transformer: new DecimalTransformer(),
   })
   amount: Decimal;
-
-  @Column({
-    type: 'enum',
-    enum: PaymentTransactionStatus,
-    default: PaymentTransactionStatus.Pending,
-  })
-  status: PaymentTransactionStatus;
 
   @ManyToOne(() => OrderEntity, (order) => order.paymentTransactions)
   order: OrderEntity;
