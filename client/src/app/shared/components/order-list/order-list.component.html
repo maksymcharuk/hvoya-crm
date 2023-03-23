@@ -171,7 +171,9 @@
           ></app-order-delivery-status-badge>
         </td>
         <td>
-          <span class="p-column-title">Сума</span>
+          <span class="p-column-title" data-cy="order-list-item-amount"
+            >Сума</span
+          >
           {{ order.total | currency }}
         </td>
         <ng-container *ngIf="adminView">

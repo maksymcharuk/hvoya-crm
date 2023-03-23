@@ -7,6 +7,7 @@
       </div>
       <div class="col-6 flex justify-content-end">
         <p-button
+          data-cy="transactions-history-button"
           label="Історія транзакцій"
           [routerLink]="['/', 'dashboard', 'balance', 'transaction-history']"
         ></p-button>
@@ -36,6 +37,7 @@
           <ng-template pTemplate="body" let-transaction>
             <tr>
               <td
+                data-cy="widget-transaction-amount"
                 [class.text-green-600]="+transaction.amount > 0"
                 [class.text-red-600]="+transaction.amount < 0"
               >
