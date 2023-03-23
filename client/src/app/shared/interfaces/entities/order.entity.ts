@@ -1,3 +1,4 @@
+import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 
@@ -11,6 +12,8 @@ export class OrderDelivery extends BaseEntity {
   firstName?: string;
   lastName?: string;
   middleName?: string;
+  phoneNumber?: string;
+  deliveryService?: DeliveryService;
   deliveryType?: string;
   status: OrderDeliveryStatus;
   city?: string;
@@ -23,6 +26,8 @@ export class OrderDelivery extends BaseEntity {
     this.firstName = data?.firstName;
     this.lastName = data?.lastName;
     this.middleName = data?.middleName;
+    this.phoneNumber = data?.phoneNumber;
+    this.deliveryService = data?.deliveryService;
     this.deliveryType = data?.deliveryType;
     this.status = data?.status || OrderDeliveryStatus.Pending;
     this.city = data?.city;

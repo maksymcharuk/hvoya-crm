@@ -1,0 +1,22 @@
+.delivery-service-badge {
+  align-items: center;
+  display: inline-flex;
+
+  &__logo {
+    object-fit: contain;
+
+    &--full {
+      height: 36px;
+      width: 100px;
+    }
+
+    &--short {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
+  &__text {
+    margin-left: 1rem;
+  }
+}

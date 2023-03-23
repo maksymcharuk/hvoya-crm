@@ -116,22 +116,22 @@
               >
                 <ng-template pTemplate="footer">
                   <p-divider></p-divider>
-                  <p class="mt-2">Requirements</p>
+                  <p class="mt-2">Вимоги до паролю</p>
                   <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
                     <li [ngClass]="{ valid: !hasLowerCase }">
-                      At least one lowercase
+                      Хоча б одна мала літера
                       <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
                     </li>
                     <li [ngClass]="{ valid: !hasUpperCase }">
-                      At least one uppercase
+                      Хоча б одна велика літера
                       <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
                     </li>
                     <li [ngClass]="{ valid: !hasNumeric }">
-                      At least one numeric
+                      Хоча б одна цифра
                       <i class="pi pi-check" *ngIf="!hasNumeric"></i>
                     </li>
                     <li [ngClass]="{ valid: !hasMinLength }">
-                      Minimum 8 characters
+                      Не менше 8 символів
                       <i class="pi pi-check" *ngIf="!hasMinLength"></i>
                     </li>
                   </ul>

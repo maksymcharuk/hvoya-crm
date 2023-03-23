@@ -3,58 +3,47 @@
     <div class="card">
       <div *ngIf="user">
         <div class="my-5">
-          <ul class="list-none p-0 m-0 border-top-1 border-300">
-            <li class="flex align-items-center py-3 px-2 flex-wrap">
-              <div class="text-500 w-full md:w-2 font-medium">ПІБ</div>
-              <div class="text-900 w-full md:w-10 line-height-3">
+          <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">ПІБ</div>
+              <div class="striped-list__item-value">
                 {{ user.firstName }} {{ user.lastName }}
                 {{ user.middleName }}
               </div>
             </li>
-            <li
-              class="flex align-items-center py-3 px-2 flex-wrap surface-ground"
-            >
-              <div class="text-500 w-full md:w-2 font-medium">Пошта</div>
-              <div class="text-900 w-full md:w-10">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Пошта</div>
+              <div class="striped-list__item-value">
                 {{ user.email }}
               </div>
             </li>
-            <li class="flex align-items-center py-3 px-2 flex-wrap">
-              <div class="text-500 w-full md:w-2 font-medium">Номер тефону</div>
-              <div class="text-900 w-full md:w-10 line-height-3">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Номер тефону</div>
+              <div class="striped-list__item-value">
                 {{ user.phoneNumber }}
               </div>
             </li>
-            <li
-              class="flex align-items-center py-3 px-2 flex-wrap surface-ground"
-            >
-              <div class="text-500 w-full md:w-2 font-medium">Локація</div>
-              <div class="text-900 w-full md:w-10 line-height-3">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Локація</div>
+              <div class="striped-list__item-value">
                 {{ user.location }}
               </div>
             </li>
-            <li class="flex align-items-center py-3 px-2 flex-wrap">
-              <div class="text-500 w-full md:w-2 font-medium">Опис</div>
-              <div class="text-900 w-full md:w-10 line-height-3">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Опис</div>
+              <div class="striped-list__item-value">
                 {{ user.bio }}
               </div>
             </li>
-            <li
-              class="flex align-items-center py-3 px-2 flex-wrap surface-ground"
-            >
-              <div class="text-500 w-full md:w-2 font-medium">
-                Дата створення
-              </div>
-              <div class="text-900 w-full md:w-10">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Дата створення</div>
+              <div class="striped-list__item-value">
                 {{ user.createdAt | date : 'short' }}
               </div>
             </li>
-            <li
-              class="flex align-items-center py-3 px-2 flex-wrap"
-              *ngIf="'update' | able : user"
-            >
-              <div class="text-500 w-full md:w-2 font-medium">Керування</div>
-              <div class="text-900 w-full md:w-10">
+            <li class="striped-list__item" *ngIf="'update' | able : user">
+              <div class="striped-list__item-key">Керування</div>
+              <div class="striped-list__item-value">
                 <button
                   *ngIf="!user.userConfirmed; else confirmed"
                   pButton

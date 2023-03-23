@@ -1,0 +1,38 @@
+.striped-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--surface-300);
+
+  &__item {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1rem 0.5rem;
+
+    &:nth-child(odd) {
+      background-color: var(--surface-ground);
+    }
+  }
+
+  &__item-key {
+    color: var(--surface-500);
+    font-weight: 500;
+    width: 100%;
+
+    @media screen and (min-width: 768px) {
+      width: 20%;
+    }
+  }
+
+  &__item-value {
+    color: var(--surface-900);
+    font-weight: 300;
+    line-height: 1.5;
+    width: 100%;
+
+    @media screen and (min-width: 768px) {
+      width: 80%;
+    }
+  }
+}

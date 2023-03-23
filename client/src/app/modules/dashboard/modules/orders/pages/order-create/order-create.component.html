@@ -92,7 +92,7 @@
                   />
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
-                    controlName="phoneNumber"
+                    controlName="firstName"
                     errorType="required"
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
@@ -102,7 +102,7 @@
                   <input id="last-name" pInputText formControlName="lastName" />
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
-                    controlName="phoneNumber"
+                    controlName="lastName"
                     errorType="required"
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
@@ -116,7 +116,7 @@
                   />
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
-                    controlName="phoneNumber"
+                    controlName="middleName"
                     errorType="required"
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
@@ -134,8 +134,24 @@
                     id="delivery-service"
                     [options]="deliveryServices"
                     formControlName="deliveryService"
-                    optionValue="value"
-                  ></p-dropdown>
+                  >
+                    <ng-template let-selected pTemplate="selectedItem">
+                      <app-delivery-service-badge
+                        *ngIf="selected as deliveryService"
+                        mode="short"
+                        [withText]="true"
+                        [deliveryService]="deliveryService"
+                      ></app-delivery-service-badge>
+                    </ng-template>
+                    <ng-template let-option pTemplate="item">
+                      <app-delivery-service-badge
+                        *ngIf="option as deliveryService"
+                        mode="short"
+                        [withText]="true"
+                        [deliveryService]="deliveryService"
+                      ></app-delivery-service-badge>
+                    </ng-template>
+                  </p-dropdown>
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
                     controlName="deliveryService"
@@ -153,7 +169,7 @@
                   ></p-dropdown>
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
-                    controlName="phoneNumber"
+                    controlName="deliveryType"
                     errorType="required"
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>

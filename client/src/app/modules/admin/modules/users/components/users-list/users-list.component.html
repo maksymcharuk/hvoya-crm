@@ -53,7 +53,7 @@
     <ng-template pTemplate="groupheader" let-user>
       <tr *ngIf="'read' | able : user" pRowGroupHeader>
         <td colspan="7">
-          <span class="font-bold ml-2">{{ user.role }}</span>
+          <span class="font-bold ml-2">{{ user.role | roleName }}</span>
         </td>
       </tr>
     </ng-template>

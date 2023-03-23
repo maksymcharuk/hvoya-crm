@@ -1,0 +1,14 @@
+<span class="delivery-service-badge">
+  <img
+    class="delivery-service-badge__logo"
+    [ngClass]="{
+      'delivery-service-badge__logo--full': mode === 'full',
+      'delivery-service-badge__logo--short': mode === 'short'
+    }"
+    [src]="deliveryServiceLogo"
+    [alt]="deliveryService | deliveryServiceName"
+  />
+  <span *ngIf="withText" class="delivery-service-badge__text">{{
+    deliveryService | deliveryServiceName
+  }}</span>
+</span>
