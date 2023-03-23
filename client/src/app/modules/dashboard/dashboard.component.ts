@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 
 import { AccountService } from '@shared/services/account.service';
 
+import { UserBalanceService } from './modules/balance/services/user-balance.service';
 import { CartService } from './modules/cart/services/cart/cart.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  providers: [AccountService, CartService],
+  providers: [AccountService, CartService, UserBalanceService],
 })
-export class DashboardComponent {}
+export class DashboardComponent { }

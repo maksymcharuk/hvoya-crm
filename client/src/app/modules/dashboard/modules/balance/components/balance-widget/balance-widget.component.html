@@ -8,28 +8,58 @@
       <div class="col-6 flex justify-content-end">
         <p-button
           label="Історія транзакцій"
-          [routerLink]="['/', 'dashboard', 'transactions-history']"
+          [routerLink]="['/', 'dashboard', 'balance', 'transaction-history']"
         ></p-button>
       </div>
       <div class="col-12">
         <p-table
           class="block"
-          [value]="balance.paymentTransactions | slice : -3"
+          [value]="balance.paymentTransactions | slice : 0 : 3"
           [rows]="3"
           [rowHover]="true"
         >
           <ng-template pTemplate="header">
-            <tr>
+            <tr
+              class="p-selectable-row"
+              [routerLink]="[
+                '/',
+                'dashboard',
+                'balance',
+                'transaction-history'
+              ]"
+            >
               <th>Сума</th>
-              <th>Статус</th>
               <th>Дата</th>
+              <th class="w-1">Замовлення</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-transaction>
             <tr>
-              <td>{{ transaction.amount | currency }}</td>
-              <td>{{ transaction.status }}</td>
+              <td
+                [class.text-green-600]="+transaction.amount > 0"
+                [class.text-red-600]="+transaction.amount < 0"
+              >
+                {{ transaction.amount | currency }}
+              </td>
               <td>{{ transaction.createdAt | date : 'short' }}</td>
+              <td
+                *ngIf="transaction.order.total; else noOrder"
+                class="text-center"
+              >
+                <button
+                  pButton
+                  pTooltip="Натистіть для перегляду замовлення"
+                  tooltipPosition="left"
+                  icon="pi pi-arrow-up-right"
+                  [routerLink]="[
+                    '/',
+                    'dashboard',
+                    'orders',
+                    transaction.order.id
+                  ]"
+                ></button>
+              </td>
+              <ng-template #noOrder><td></td></ng-template>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage" let-columns>
