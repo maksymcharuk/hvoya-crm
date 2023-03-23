@@ -10,33 +10,35 @@
           ></app-order-status-badge>
         </h4>
         <div class="my-5">
-          <ul class="list-none p-0 m-0 border-top-1 border-300">
-            <li
-              class="flex align-items-center py-3 px-2 flex-wrap surface-ground"
-            >
-              <div class="text-500 w-full md:w-2 font-medium">Дата</div>
-              <div class="text-900 w-full md:w-10">
+          <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Дата</div>
+              <div class="striped-list__item-value">
                 {{ order.createdAt | date : 'short' }}
               </div>
             </li>
-            <li class="flex align-items-center py-3 px-2 flex-wrap">
-              <div class="text-500 w-full md:w-2 font-medium">ПІБ</div>
-              <div class="text-900 w-full md:w-10 line-height-3">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">ПІБ</div>
+              <div class="striped-list__item-value">
                 {{ order.delivery.firstName }} {{ order.delivery.lastName }}
                 {{ order.delivery.middleName }}
               </div>
             </li>
-            <li
-              class="flex align-items-center py-3 px-2 flex-wrap surface-ground"
-            >
-              <div class="text-500 w-full md:w-2 font-medium">Місто</div>
-              <div class="text-900 w-full md:w-10">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Номер телефону</div>
+              <div class="striped-list__item-value">
+                {{ order.delivery.phoneNumber }}
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Місто</div>
+              <div class="striped-list__item-value">
                 {{ order.delivery.city }}
               </div>
             </li>
-            <li class="flex align-items-center py-3 px-2 flex-wrap">
-              <div class="text-500 w-full md:w-2 font-medium">Відділення</div>
-              <div class="text-900 w-full md:w-10 line-height-3">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Відділення</div>
+              <div class="striped-list__item-value">
                 {{ order.delivery.postOffice }}
               </div>
             </li>
@@ -44,12 +46,27 @@
         </div>
         <div class="my-5">
           <h5>Дані доставки</h5>
-          <ul class="list-none p-0 m-0 border-top-1 border-300">
-            <li
-              class="flex align-items-center py-3 px-2 flex-wrap surface-ground"
-            >
-              <div class="text-500 w-full md:w-2 font-medium">Скан ТТН</div>
-              <div class="text-900 w-full md:w-10">
+          <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Служба доставки</div>
+              <div class="striped-list__item-value">
+                <app-delivery-service-badge
+                  *ngIf="order.delivery.deliveryService as deliveryService"
+                  [deliveryService]="deliveryService"
+                ></app-delivery-service-badge>
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Статус доставки</div>
+              <div class="striped-list__item-value">
+                <app-order-delivery-status-badge
+                  [status]="order.delivery.status"
+                ></app-order-delivery-status-badge>
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Скан ТТН</div>
+              <div class="striped-list__item-value">
                 <ng-container
                   *ngIf="order.delivery.waybill?.url as url; else noWaybill"
                 >
@@ -83,22 +100,15 @@
                 </ng-template>
               </div>
             </li>
-            <li class="flex align-items-center py-3 px-2 flex-wrap">
-              <div class="text-500 w-full md:w-2 font-medium">
-                Статус доставки
-              </div>
-              <div class="text-900 w-full md:w-10 line-height-3">
-                <app-order-delivery-status-badge
-                  [status]="order.delivery.status"
-                ></app-order-delivery-status-badge>
-              </div>
-            </li>
             <li
               *ngIf="'update' | able : order; else noUpdateWaybill"
-              class="flex py-3 px-2 flex-wrap surface-ground"
+              class="striped-list__item"
             >
-              <div class="text-500 w-full md:w-2 font-medium"></div>
-              <form [formGroup]="updateWaybillForm" class="w-full md:w-10">
+              <div class="striped-list__item-key"></div>
+              <form
+                [formGroup]="updateWaybillForm"
+                class="striped-list__item-value"
+              >
                 <div class="p-fluid">
                   <div class="p-formgrid grid">
                     <div class="field col-6">
@@ -141,9 +151,9 @@
               </form>
             </li>
             <ng-template #noUpdateWaybill>
-              <li class="flex align-items-center py-3 px-2 flex-wrap">
-                <div class="text-500 w-full md:w-2 font-medium">Номер ТТН</div>
-                <div class="text-900 w-full md:w-10 line-height-3">
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Номер ТТН</div>
+                <div class="striped-list__item-value">
                   {{ order.delivery.trackingId }}
                 </div>
               </li>

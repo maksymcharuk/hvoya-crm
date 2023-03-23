@@ -31,10 +31,7 @@ export class OrderCreateComponent implements OnInit {
   profile$ = this.accountService.profile$;
   balance$ = this.userBalanceService.balance$;
   submitting = false;
-  deliveryServices = [
-    { label: 'Нова пошта', value: DeliveryService.NovaPoshta },
-    { label: 'Укрпошта', value: DeliveryService.UkrPoshta },
-  ];
+  deliveryServices = Object.keys(DeliveryService);
   deliveryTypes = [
     { label: 'Склад - Склад', value: DeliveryType.WarehouseWarehouse },
     { label: 'Склад - Двері', value: DeliveryType.WarehouseDoor },
@@ -47,7 +44,7 @@ export class OrderCreateComponent implements OnInit {
     lastName: ['', Validators.required],
     middleName: ['', Validators.required],
     phoneNumber: ['', Validators.required],
-    deliveryService: [this.deliveryServices[0]?.value, Validators.required],
+    deliveryService: [this.deliveryServices[0], Validators.required],
     trackingId: ['', Validators.required],
     deliveryType: [this.deliveryTypes[0]?.value, Validators.required],
     city: ['', Validators.required],

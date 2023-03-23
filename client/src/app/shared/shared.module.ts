@@ -21,6 +21,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AbilityModule } from '@casl/angular';
 
+import { DeliveryServiceBadgeComponent } from './components/delivery-service-badge/delivery-service-badge.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
 import { FaqListComponent } from './components/faq-list/faq-list.component';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
@@ -35,11 +36,15 @@ import { StatusBadgeComponent } from './components/status-badge/status-badge.com
 import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
-import { ProductSizePipe } from './pipes';
+import {
+  DeliveryServiceNamePipe,
+  ProductSizePipe,
+  RoleNamePipe,
+} from './pipes';
 
 registerLocaleData(localeUk);
 
-const PIPES = [ProductSizePipe];
+const PIPES = [ProductSizePipe, DeliveryServiceNamePipe, RoleNamePipe];
 
 const COMPONENTS = [
   VerticalMenuComponent,
@@ -54,6 +59,7 @@ const COMPONENTS = [
   ProductViewComponent,
   FaqItemComponent,
   FaqListComponent,
+  DeliveryServiceBadgeComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -100,4 +106,4 @@ const PRIMENG_MODULES = [
   ],
   exports: [...COMPONENTS, ...PIPES],
 })
-export class SharedModule { }
+export class SharedModule {}
