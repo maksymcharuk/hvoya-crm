@@ -85,6 +85,9 @@ declare global {
         email: string,
         amount: number,
       ): typeof addFundsToUserBalance;
+      checkTransaction(
+        amount: string,
+      ): typeof checkTransaction;
     }
   }
 }
@@ -429,6 +432,23 @@ function addFundsToUserBalance(email: string, amount: number): void {
   });
 }
 
+function checkTransaction(amount: string) {
+  const cleanAmount = amount.replace(/[-₴\s]+/g, '');;
+  cy.getCyEl('balance-widget').click();
+  checkCurrencyAmount('widget-transaction-amount', cleanAmount);
+
+  cy.getCyEl('transactions-history-button').click();
+  checkCurrencyAmount('transaction-amount', cleanAmount);
+}
+
+function checkCurrencyAmount(element: string, cleanAmount: string) {
+  cy.getCyEl(element)
+    .invoke('text')
+    .then((amount: string) => {
+      expect(amount.replace(/[-₴\s]+/g, '')).to.equal(cleanAmount);
+    });
+}
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -500,3 +520,4 @@ Cypress.Commands.add('confirmUser', confirmUser);
 Cypress.Commands.add('freezeUser', freezeUser);
 Cypress.Commands.add('unFreezeUser', unFreezeUser);
 Cypress.Commands.add('addFundsToUserBalance', addFundsToUserBalance);
+Cypress.Commands.add('checkTransaction', checkTransaction);

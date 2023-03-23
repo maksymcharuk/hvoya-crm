@@ -53,6 +53,11 @@ describe('Orders', () => {
           cy.getCyEl('order-view-page').should('exist');
           cy.should('contain', `№${newOrderId}`);
         });
+      cy.getCyEl('order-total-amount')
+        .invoke('text')
+        .then((amount: string) => {
+          cy.checkTransaction(amount);
+        });
     });
   });
 

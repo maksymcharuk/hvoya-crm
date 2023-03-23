@@ -171,7 +171,10 @@
             <div class="md:pl-5 mt-2 flex-auto">
               <div class="flex justify-content-end mb-4 pt-4">
                 <span class="text-xl text-900 font-bold text-3xl">Сума:</span>
-                <span class="text-xl text-900 font-bold text-3xl ml-5">
+                <span
+                  class="text-xl text-900 font-bold text-3xl ml-5"
+                  data-cy="order-total-amount"
+                >
                   {{ order.total | currency }}
                 </span>
               </div>
