@@ -26,6 +26,8 @@ export class CreateProductDto {
   @IsNotEmpty()
   productVariantDescription: string;
 
+  productVariantWeight: number | null;
+
   @IsNotEmpty()
   productVariantSizeId: number;
 

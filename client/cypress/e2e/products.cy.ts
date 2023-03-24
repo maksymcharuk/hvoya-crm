@@ -5,6 +5,7 @@ describe('Products', () => {
     size: string,
     color: string,
     prize: number,
+    weight: number,
     baseProductName: string;
   let testProductName: string = `Product-${Date.now()}`;
   let testProductBase: string;
@@ -18,6 +19,7 @@ describe('Products', () => {
     size = '220x125x125 см';
     color = 'Зелений';
     prize = 1;
+    weight = 5;
     baseProductName = `Base product-${Date.now()}`;
   });
 
@@ -43,6 +45,7 @@ describe('Products', () => {
         size,
         color,
         prize,
+        weight,
       });
 
       cy.get('[data-cy="product-save-button"]').click();
@@ -61,6 +64,7 @@ describe('Products', () => {
         size,
         color,
         prize,
+        weight,
       });
 
       cy.get('[data-cy="product-save-button"]').click();
@@ -81,6 +85,7 @@ describe('Products', () => {
         size,
         color,
         prize,
+        weight,
       });
 
       cy.get('[data-cy="product-save-button"]').click();
@@ -99,6 +104,7 @@ describe('Products', () => {
         size,
         color,
         prize,
+        weight,
       });
 
       cy.get('[data-cy="product-save-button"]').click();
@@ -125,6 +131,7 @@ describe('Products', () => {
           size,
           color,
           prize,
+          weight,
         },
         false,
       );
@@ -143,6 +150,7 @@ describe('Products', () => {
         size,
         color,
         prize,
+        weight,
       });
     });
 
@@ -158,6 +166,7 @@ describe('Products', () => {
           size,
           color,
           prize,
+          weight,
         },
         false,
       );

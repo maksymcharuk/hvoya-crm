@@ -85,9 +85,7 @@ declare global {
         email: string,
         amount: number,
       ): typeof addFundsToUserBalance;
-      checkTransaction(
-        amount: string,
-      ): typeof checkTransaction;
+      checkTransaction(amount: string): typeof checkTransaction;
     }
   }
 }
@@ -273,6 +271,8 @@ function fillProductForm(form: any, uploadImage: boolean = true): void {
     .type(Cypress._.repeat('{del}', 1))
     .type(form.prize);
 
+  cy.get('[data-cy="product-weight"] input').type(form.weight);
+
   if (uploadImage) {
     uploadFile('product-image-upload', 'product.jpeg');
   }
@@ -433,7 +433,7 @@ function addFundsToUserBalance(email: string, amount: number): void {
 }
 
 function checkTransaction(amount: string) {
-  const cleanAmount = amount.replace(/[-₴\s]+/g, '');;
+  const cleanAmount = amount.replace(/[-₴\s]+/g, '');
   cy.getCyEl('balance-widget').click();
   checkCurrencyAmount('widget-transaction-amount', cleanAmount);
 

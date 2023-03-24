@@ -32,6 +32,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         properties: {
           name: '',
           description: '',
+          weight: null,
           price: 0,
           size: {
             height: 0,
@@ -94,6 +95,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         Validators.required,
       ],
       productVariantPrice: [{ value: 0, disabled: true }, Validators.required],
+      productVariantWeight: [{ value: null, disabled: true }] as any,
     }),
     images: [[]],
   });
@@ -259,6 +261,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
                   description:
                     value.productVariantGroup.productVariantDescription,
                   price: value.productVariantGroup.productVariantPrice,
+                  weight: value.productVariantGroup.productVariantWeight,
                   size: this.sizes.find((size) => {
                     return (
                       size.id === value.productVariantGroup.productVariantSizeId
@@ -339,6 +342,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         productVariantSizeId: product.properties.size.id,
         productVariantColorId: product.properties.color.id,
         productVariantPrice: product.properties.price,
+        productVariantWeight: product.properties.weight,
       });
       this.allBaseProducts.forEach((base: ProductBase) => {
         base.variants.map((variant: ProductVariant) => {
