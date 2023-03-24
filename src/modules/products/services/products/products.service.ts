@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateProductDto } from '@dtos/create-product.dto';
-import { EditProductDto } from '@dtos/edit-product.dto';
+import { UpdateProductDto } from '@dtos/update-product.dto';
 import { FileEntity } from '@entities/file.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
@@ -80,6 +80,7 @@ export class ProductsService {
         {
           name: createProductDto.productVariantName,
           description: createProductDto.productVariantDescription,
+          weight: createProductDto.productVariantWeight,
           size: { id: createProductDto.productVariantSizeId },
           color: { id: createProductDto.productVariantColorId },
           price: createProductDto.productVariantPrice,
@@ -115,12 +116,12 @@ export class ProductsService {
   }
 
   async editProduct(
-    editProductDto: EditProductDto,
+    updateProductDto: UpdateProductDto,
     images?: Array<Express.Multer.File>,
   ): Promise<ProductVariantEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
-    const productCategoryId = editProductDto.productCategoryId;
-    const productBaseId = editProductDto.productBaseId;
+    const productCategoryId = updateProductDto.productCategoryId;
+    const productBaseId = updateProductDto.productBaseId;
     let savedProductCategory = null;
     let savedProductBase = null;
     let productImages: FileEntity[] = [];
@@ -132,7 +133,7 @@ export class ProductsService {
         if (!productCategoryId) {
           savedProductCategory = (await queryRunner.manager.save(
             ProductCategoryEntity,
-            { name: editProductDto.productCategoryName },
+            { name: updateProductDto.productCategoryName },
           )) as ProductCategoryEntity;
         } else {
           savedProductCategory = await queryRunner.manager.findOneByOrFail(
@@ -142,7 +143,7 @@ export class ProductsService {
         }
 
         savedProductBase = await queryRunner.manager.save(ProductBaseEntity, {
-          name: editProductDto.productBaseName,
+          name: updateProductDto.productBaseName,
           category: savedProductCategory,
         });
       } else {
@@ -168,26 +169,27 @@ export class ProductsService {
       }
       productImages = [
         ...productImages,
-        ...JSON.parse(editProductDto.existingImages),
+        ...JSON.parse(updateProductDto.existingImages),
       ];
 
       const productProperties = await queryRunner.manager.save(
         ProductPropertiesEntity,
         {
-          name: editProductDto.productVariantName,
-          description: editProductDto.productVariantDescription,
-          size: { id: editProductDto.productVariantSizeId },
-          color: { id: editProductDto.productVariantColorId },
-          price: editProductDto.productVariantPrice,
+          name: updateProductDto.productVariantName,
+          description: updateProductDto.productVariantDescription,
+          weight: updateProductDto.productVariantWeight,
+          size: { id: updateProductDto.productVariantSizeId },
+          color: { id: updateProductDto.productVariantColorId },
+          price: updateProductDto.productVariantPrice,
           images: productImages,
         },
       );
 
       await queryRunner.manager.update(
         ProductVariantEntity,
-        { id: editProductDto.productVariantId },
+        { id: updateProductDto.productVariantId },
         {
-          sku: editProductDto.productVariantSku,
+          sku: updateProductDto.productVariantSku,
           properties: { id: productProperties.id },
           baseProduct: { id: savedProductBase.id },
         },
@@ -195,7 +197,7 @@ export class ProductsService {
 
       const savedProductVariant = await queryRunner.manager.findOneByOrFail(
         ProductVariantEntity,
-        { id: editProductDto.productVariantId },
+        { id: updateProductDto.productVariantId },
       );
 
       await queryRunner.manager.save(ProductPropertiesEntity, {

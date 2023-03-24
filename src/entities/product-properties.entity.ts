@@ -25,6 +25,9 @@ export class ProductPropertiesEntity extends BaseEntity {
   })
   price: Decimal;
 
+  @Column({ type: 'int', nullable: true })
+  weight: number | null;
+
   @ManyToMany(() => FileEntity, {
     eager: true,
   })

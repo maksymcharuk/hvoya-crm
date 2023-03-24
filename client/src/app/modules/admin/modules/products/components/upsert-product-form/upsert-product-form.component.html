@@ -1,5 +1,5 @@
 <div class="grid">
-  <div class="col-8">
+  <div class="col">
     <div class="card">
       <form
         *ngIf="productForm"
@@ -318,6 +318,21 @@
             </app-form-control-error-message>
           </div>
 
+          <div class="field col-4">
+            <label for="productVariantWeight">Вага</label>
+            <p-inputNumber
+              inputId="productVariantWeight"
+              id="productVariantWeight"
+              formControlName="productVariantWeight"
+              [allowEmpty]="true"
+              [showButtons]="true"
+              [min]="1"
+              suffix=" кг"
+              data-cy="product-weight"
+            >
+            </p-inputNumber>
+          </div>
+
           <div
             class="col-12 selected-product-images-wrapper"
             *ngIf="isEdit && selectedProductImages.length"
@@ -402,7 +417,7 @@
       </form>
     </div>
   </div>
-  <div class="col-4">
+  <div class="col-4 hidden md:block">
     <div class="product-preview">
       <div class="product-preview-header mb-4">
         <div>Попередній перегляд</div>

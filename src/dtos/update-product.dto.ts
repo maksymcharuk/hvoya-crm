@@ -1,6 +1,6 @@
 import { IsNotEmpty, ValidateIf } from 'class-validator';
 
-export class EditProductDto {
+export class UpdateProductDto {
   @ValidateIf((o) => !o.productCategoryName)
   @IsNotEmpty()
   productCategoryId: number;
@@ -28,6 +28,8 @@ export class EditProductDto {
 
   @IsNotEmpty()
   productVariantDescription: string;
+
+  productVariantWeight: number | null;
 
   @IsNotEmpty()
   productVariantSizeId: number;

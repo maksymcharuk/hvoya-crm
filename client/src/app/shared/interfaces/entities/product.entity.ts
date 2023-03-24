@@ -45,6 +45,7 @@ class ProductBaseWithOutRelations extends BaseEntity {
 export class ProductProperties extends BaseEntity {
   name: string;
   description: string;
+  weight: number | null;
   price: number;
   size: ProductSize;
   color: ProductColor;
@@ -54,6 +55,7 @@ export class ProductProperties extends BaseEntity {
     super(data);
     this.name = data?.name || '';
     this.description = data?.description || '';
+    this.weight = data?.weight || null;
     this.price = data?.price || 0;
     this.size = new ProductSize(data?.size);
     this.color = new ProductColor(data?.color);

@@ -17,7 +17,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { CreateProductDto } from '@dtos/create-product.dto';
-import { EditProductDto } from '@dtos/edit-product.dto';
+import { UpdateProductDto } from '@dtos/update-product.dto';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
@@ -67,7 +67,7 @@ export class ProductsController {
       ability.can(Action.Update, ProductVariantEntity),
   )
   editProduct(
-    @Body() body: EditProductDto,
+    @Body() body: UpdateProductDto,
     @UploadedFiles(
       new ParseFilePipe({
         validators: [
