@@ -1,4 +1,4 @@
-import { IsNotEmpty, ValidateIf } from 'class-validator';
+import { IsNotEmpty, IsNumberString, ValidateIf } from 'class-validator';
 
 export class UpdateProductDto {
   @ValidateIf((o) => !o.productCategoryName)
@@ -29,7 +29,8 @@ export class UpdateProductDto {
   @IsNotEmpty()
   productVariantDescription: string;
 
-  productVariantWeight: number | null;
+  @IsNumberString()
+  productVariantWeight: number;
 
   @IsNotEmpty()
   productVariantSizeId: number;

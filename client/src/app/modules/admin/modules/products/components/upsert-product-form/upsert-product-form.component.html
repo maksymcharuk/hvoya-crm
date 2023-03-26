@@ -324,13 +324,21 @@
               inputId="productVariantWeight"
               id="productVariantWeight"
               formControlName="productVariantWeight"
-              [allowEmpty]="true"
-              [showButtons]="true"
-              [min]="1"
+              mode="decimal"
               suffix=" кг"
               data-cy="product-weight"
+              [min]="0"
+              [minFractionDigits]="1"
+              [maxFractionDigits]="2"
             >
             </p-inputNumber>
+            <app-form-control-error-message
+              [formGroup]="productForm"
+              controlName="productVariantGroup.productVariantWeight"
+              errorType="required"
+              errorMessage="Потрібно ввести вагу"
+            >
+            </app-form-control-error-message>
           </div>
 
           <div

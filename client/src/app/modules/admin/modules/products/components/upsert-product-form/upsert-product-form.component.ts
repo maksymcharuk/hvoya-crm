@@ -32,7 +32,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         properties: {
           name: '',
           description: '',
-          weight: null,
+          weight: 0,
           price: 0,
           size: {
             height: 0,
@@ -95,7 +95,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         Validators.required,
       ],
       productVariantPrice: [{ value: 0, disabled: true }, Validators.required],
-      productVariantWeight: [{ value: null, disabled: true }] as any,
+      productVariantWeight: [{ value: 0, disabled: true }, Validators.required],
     }),
     images: [[]],
   });

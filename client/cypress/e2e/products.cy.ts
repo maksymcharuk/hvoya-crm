@@ -19,7 +19,7 @@ describe('Products', () => {
     size = '220x125x125 см';
     color = 'Зелений';
     prize = 1;
-    weight = 5;
+    weight = 5.5;
     baseProductName = `Base product-${Date.now()}`;
   });
 
