@@ -79,6 +79,10 @@ export class ProductsController {
     )
     images?: Array<Express.Multer.File>,
   ) {
+    console.log('#---------editProduct-----------#');
+    console.log(body);
+    console.log('#--------------------#');
+
     return this.productsService.editProduct(body, images);
   }
 

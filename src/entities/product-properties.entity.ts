@@ -2,6 +2,7 @@ import Decimal from 'decimal.js';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
 import { DecimalTransformer } from '../transformers/decimal.transformer';
+import { NumericTransformer } from '../transformers/numeric.transformer';
 import { BaseEntity } from './base.entity';
 import { FileEntity } from './file.entity';
 import { ProductColorEntity } from './product-color.entity';
@@ -25,8 +26,14 @@ export class ProductPropertiesEntity extends BaseEntity {
   })
   price: Decimal;
 
-  @Column({ type: 'int', nullable: true })
-  weight: number | null;
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0.0,
+    transformer: new NumericTransformer(),
+  })
+  weight: number;
 
   @ManyToMany(() => FileEntity, {
     eager: true,
