@@ -1,5 +1,6 @@
 import * as compression from 'compression';
 import * as rateLimit from 'express-rate-limit';
+import * as xmlparser from 'express-xml-bodyparser';
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import * as nocache from 'nocache';
@@ -47,6 +48,7 @@ async function bootstrap() {
     }),
   );
   app.useLogger(app.get(Logger));
+  app.use(xmlparser());
 
   await app.listen(configService.get('PORT') || '3000');
 }
