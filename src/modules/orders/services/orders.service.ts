@@ -153,7 +153,7 @@ export class OrdersService {
         const orderItemQuantity = orderItems.find(
           (item) => item.product.id === variant.id,
         )?.quantity;
-        if (!orderItemQuantity) {
+        if (orderItemQuantity === undefined) {
           throw new HttpException(
             'Не вдалось опрацювати замолення. Спробуйте очистити кошик і вибрати товари знову.',
             HttpStatus.BAD_REQUEST,
