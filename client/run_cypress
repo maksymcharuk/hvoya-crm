@@ -4,9 +4,10 @@ cleanup_function() {
   # Stop server and client
   pm2 delete server
   pm2 delete client
+  exit 1
 }
 
-trap cleanup_function SIGINT
+trap cleanup_function INT TERM
 
 cd ..
 # Setup test DB
@@ -22,3 +23,4 @@ npm run cypress:headless --prefix client
 # Stop server and client
 pm2 delete server
 pm2 delete client
+exit 0
