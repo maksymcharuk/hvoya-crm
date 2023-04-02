@@ -21,6 +21,11 @@
         </ng-template>
       </p-selectButton>
     </div>
+    <app-stock-badge
+      *ngIf="selectedVariant?.stock !== undefined"
+      class="stock-badge"
+      [value]="selectedVariant!.stock"
+    ></app-stock-badge>
   </div>
   <ng-template #imageWrapperSkeleton>
     <p-skeleton height="15rem" width="100%"></p-skeleton>
@@ -76,6 +81,7 @@
     iconPos="left"
     label="Додати в кошик"
     data-cy="product-add-to-cart-button"
+    [disabled]="!selectedVariant?.stock"
     (click)="onAddToCart()"
   ></button>
 </div>

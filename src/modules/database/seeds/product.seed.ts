@@ -246,41 +246,49 @@ export default class ProductSeeder implements Seeder {
     const productVariants = await productVariantRepository.save([
       {
         sku: '102/55/G',
+        stock: 100,
         properties: productProperties[0],
         baseProduct: productBase[0],
       },
       {
         sku: '102/55/B',
+        stock: 90,
         properties: productProperties[1],
         baseProduct: productBase[0],
       },
       {
         sku: '214/60/G',
+        stock: 80,
         properties: productProperties[2],
         baseProduct: productBase[1],
       },
       {
         sku: '214/60/B',
+        stock: 70,
         properties: productProperties[3],
         baseProduct: productBase[1],
       },
       {
         sku: '200/220/G',
+        stock: 50,
         properties: productProperties[4],
         baseProduct: productBase[2],
       },
       {
         sku: '200/180/W',
+        stock: 20,
         properties: productProperties[5],
         baseProduct: productBase[2],
       },
       {
         sku: '100/70/B',
+        stock: 10,
         properties: productProperties[6],
         baseProduct: productBase[3],
       },
       {
         sku: '100/90/G',
+        stock: 0,
         properties: productProperties[7],
         baseProduct: productBase[3],
       },

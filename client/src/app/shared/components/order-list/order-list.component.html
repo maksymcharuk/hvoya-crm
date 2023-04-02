@@ -149,7 +149,8 @@
               [src]="image.url"
               [ngClass]="{ '-ml-4': !first }"
               [alt]="image.alt"
-              class="w-3rem border-circle border border-1 border-200"
+              [title]="image.alt"
+              class="w-3rem h-3rem border-circle border border-1 border-200"
             />
           </div>
         </td>

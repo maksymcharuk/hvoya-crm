@@ -1,12 +1,13 @@
 import Decimal from 'decimal.js';
 import { DataSource } from 'typeorm';
 
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { AddToCartDto } from '@dtos/add-to-cart.dto';
 import { RemoveFromCartDto } from '@dtos/remove-from-cart.dto';
 import { CartItemEntity } from '@entities/cart-item.entity';
 import { CartEntity } from '@entities/cart.entity';
+import { ProductVariantEntity } from '@entities/product-variant.entity';
 
 @Injectable()
 export class CartService {
@@ -36,7 +37,7 @@ export class CartService {
       cart.total = this.calculateTotal(cart);
       return cart;
     } catch (error) {
-      throw new HttpException(error.message, 500);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -46,6 +47,24 @@ export class CartService {
   ): Promise<CartEntity> {
     const manager = this.dataSource.createEntityManager();
     let cart = await this.getCart(userId);
+    const product = await manager.findOne(ProductVariantEntity, {
+      where: { id: addToCartDto.productId },
+    });
+
+    if (!product) {
+      throw new HttpException('Товар не знайдено', HttpStatus.NOT_FOUND);
+    }
+
+    if (product.stock < addToCartDto.quantity) {
+      throw new HttpException(
+        {
+          message:
+            'На жаль, даного продукту вже немає в наявності в достатній кількості',
+          cart,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     let cartItem = await manager.findOne(CartItemEntity, {
       where: {

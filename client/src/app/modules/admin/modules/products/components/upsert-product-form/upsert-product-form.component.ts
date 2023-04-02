@@ -29,6 +29,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     variants: [
       {
         sku: '',
+        stock: 0,
         properties: {
           name: '',
           description: '',
@@ -96,6 +97,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
       ],
       productVariantPrice: [{ value: 0, disabled: true }, Validators.required],
       productVariantWeight: [{ value: 0, disabled: true }, Validators.required],
+      productVariantStock: [{ value: 0, disabled: true }, Validators.required],
     }),
     images: [[]],
   });
@@ -256,6 +258,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
             variants: [
               {
                 sku: value.productVariantGroup.productVariantSku,
+                stock: value.productVariantGroup.productVariantStock,
                 properties: {
                   name: value.productVariantGroup.productVariantName,
                   description:
@@ -337,6 +340,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     if (product) {
       this.productForm.get('productVariantGroup')?.patchValue({
         productVariantSku: product.sku,
+        productVariantStock: product.stock,
         productVariantName: product.properties.name,
         productVariantDescription: product.properties.description,
         productVariantSizeId: product.properties.size.id,

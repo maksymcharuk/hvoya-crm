@@ -341,6 +341,18 @@
             </app-form-control-error-message>
           </div>
 
+          <div class="field col-4">
+            <label for="productVariantStock">Наявність</label>
+            <p-inputNumber
+              pTooltip="Наявність товару синхронізується з 1С"
+              inputId="productVariantStock"
+              id="productVariantStock"
+              formControlName="productVariantStock"
+              [min]="0"
+            >
+            </p-inputNumber>
+          </div>
+
           <div
             class="col-12 selected-product-images-wrapper"
             *ngIf="isEdit && selectedProductImages.length"

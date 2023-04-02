@@ -91,6 +91,7 @@ export class ProductsService {
         ProductVariantEntity,
         {
           sku: createProductDto.productVariantSku,
+          stock: createProductDto.productVariantStock,
           properties: { id: productProperties.id },
           baseProduct: savedProductBase,
         },
@@ -190,6 +191,7 @@ export class ProductsService {
         { id: updateProductDto.productVariantId },
         {
           sku: updateProductDto.productVariantSku,
+          stock: updateProductDto.productVariantStock,
           properties: { id: productProperties.id },
           baseProduct: { id: savedProductBase.id },
         },

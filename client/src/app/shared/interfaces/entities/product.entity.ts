@@ -66,14 +66,14 @@ export class ProductProperties extends BaseEntity {
 export class ProductVariant extends BaseEntity {
   sku: string;
   properties: ProductProperties;
-  availableItemCount?: number;
+  stock: number;
   baseProduct: ProductBaseWithOutRelations;
 
   constructor(data?: ProductVariant) {
     super(data);
     this.sku = data?.sku || '';
     this.properties = new ProductProperties(data?.properties);
-    this.availableItemCount = data?.availableItemCount;
+    this.stock = data?.stock || 0;
     this.baseProduct = new ProductBaseWithOutRelations(data?.baseProduct);
   }
 }

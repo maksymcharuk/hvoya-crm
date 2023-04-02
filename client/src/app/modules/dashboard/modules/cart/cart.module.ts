@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { SharedModule } from '@shared/shared.module';
+
 import { CartRoutingModule } from './cart-routing.module';
 import { CartItemComponent } from './components/cart-item/cart-item.component';
 import { CartWidgetComponent } from './components/cart-widget/cart-widget.component';
@@ -18,6 +20,7 @@ import { CartComponent } from './pages/cart/cart.component';
     CartRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    SharedModule,
     SkeletonModule,
     ButtonModule,
     InputNumberModule,
