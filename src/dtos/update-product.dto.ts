@@ -3,7 +3,7 @@ import {
   IsNotEmpty,
   IsNumberString,
   IsOptional,
-  IsPositive,
+  Min,
   ValidateIf,
 } from 'class-validator';
 
@@ -38,7 +38,7 @@ export class UpdateProductDto {
 
   @Transform(({ value }) => (value ? parseInt(value) : value))
   @IsOptional()
-  @IsPositive()
+  @Min(0)
   productVariantStock: number;
 
   @IsNumberString()

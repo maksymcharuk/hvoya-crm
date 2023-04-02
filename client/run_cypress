@@ -1,4 +1,13 @@
 #!/bin/sh
+
+cleanup_function() {
+  # Stop server and client
+  pm2 delete server
+  pm2 delete client
+}
+
+trap cleanup_function SIGINT
+
 cd ..
 # Setup test DB
 npm run db:setup-test

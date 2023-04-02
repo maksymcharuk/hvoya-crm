@@ -97,7 +97,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
       ],
       productVariantPrice: [{ value: 0, disabled: true }, Validators.required],
       productVariantWeight: [{ value: 0, disabled: true }, Validators.required],
-      productVariantStock: [{ value: 0, disabled: true }, Validators.required],
+      productVariantStock: [{ value: 0, disabled: true }],
     }),
     images: [[]],
   });
