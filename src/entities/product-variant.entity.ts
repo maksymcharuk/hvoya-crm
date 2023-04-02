@@ -12,7 +12,7 @@ export class ProductVariantEntity extends BaseEntity {
   @Column({
     default: 0,
   })
-  availableItemCount: number;
+  stock: number;
 
   @ManyToOne(() => ProductPropertiesEntity, (properties) => properties.product)
   properties: ProductPropertiesEntity;

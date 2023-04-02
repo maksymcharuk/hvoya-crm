@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { finalize } from 'rxjs';
+import { catchError, finalize } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -12,7 +12,7 @@ import {
   OrderCreateDTO,
   OrderCreateFormGroup,
 } from '@shared/interfaces/dto/create-order.dto';
-import { CartItem } from '@shared/interfaces/entities/cart.entity';
+import { Cart, CartItem } from '@shared/interfaces/entities/cart.entity';
 import { AccountService } from '@shared/services/account.service';
 import { OrdersService } from '@shared/services/orders.service';
 
@@ -105,6 +105,10 @@ export class OrderCreateComponent implements OnInit {
       .pipe(
         finalize(() => {
           this.submitting = false;
+        }),
+        catchError((err: { error: { message: string; cart: Cart } }) => {
+          this.cartService.cart$.next(new Cart(err.error.cart));
+          return [];
         }),
       )
       .subscribe((order) => {

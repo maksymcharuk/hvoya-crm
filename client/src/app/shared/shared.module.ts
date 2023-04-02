@@ -33,6 +33,7 @@ import { ProductItemComponent } from './components/product-item/product-item.com
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductViewComponent } from './components/product-view/product-view.component';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
+import { StockBadgeComponent } from './components/stock-badge/stock-badge.component';
 import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
@@ -60,6 +61,7 @@ const COMPONENTS = [
   FaqItemComponent,
   FaqListComponent,
   DeliveryServiceBadgeComponent,
+  StockBadgeComponent,
 ];
 
 const PRIMENG_MODULES = [

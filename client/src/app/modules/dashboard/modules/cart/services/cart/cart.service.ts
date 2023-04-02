@@ -1,4 +1,10 @@
-import { BehaviorSubject, Observable, map, shareReplay } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  map,
+  shareReplay,
+} from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -50,10 +56,19 @@ export class CartService {
       .pipe(
         shareReplay(),
         map((cart) => new Cart(cart)),
+        catchError((err: { error: { message: string; cart: Cart } }) => {
+          throw err;
+        }),
       );
-    response$.subscribe((cart) => {
-      this.cart$.next(cart);
-      this.decrementCartLoading();
+    response$.subscribe({
+      next: (cart) => {
+        this.cart$.next(cart);
+        this.decrementCartLoading();
+      },
+      error: (err: { error: { message: string; cart: Cart } }) => {
+        this.cart$.next(new Cart(err.error.cart));
+        this.decrementCartLoading();
+      },
     });
     return response$;
   }

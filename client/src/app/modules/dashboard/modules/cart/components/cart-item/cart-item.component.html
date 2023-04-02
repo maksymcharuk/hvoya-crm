@@ -15,7 +15,7 @@
           ? cartItem.product.properties.images[0]?.url
           : ''
       "
-      class="w-12rem flex-shrink-0 mx-auto md:mx-0"
+      class="w-12rem h-12rem flex-shrink-0 mx-auto md:mx-0"
     />
   </a>
   <div class="flex-auto py-5 md:pl-5">
@@ -48,6 +48,10 @@
               [min]="1"
             ></p-inputNumber>
           </form>
+          <app-stock-badge
+            class="inline-flex mt-2"
+            [value]="cartItem.product.stock"
+          ></app-stock-badge>
         </div>
         <div class="flex flex-column sm:align-items-end">
           <span class="text-900 text-2xl font-medium mb-2 sm:mb-3">

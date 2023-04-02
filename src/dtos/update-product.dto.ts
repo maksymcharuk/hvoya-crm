@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumberString, ValidateIf } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  Min,
+  ValidateIf,
+} from 'class-validator';
 
 export class UpdateProductDto {
   @ValidateIf((o) => !o.productCategoryName)
@@ -28,6 +35,11 @@ export class UpdateProductDto {
 
   @IsNotEmpty()
   productVariantDescription: string;
+
+  @Transform(({ value }) => (value ? parseInt(value) : value))
+  @IsOptional()
+  @Min(0)
+  productVariantStock: number;
 
   @IsNumberString()
   productVariantWeight: number;

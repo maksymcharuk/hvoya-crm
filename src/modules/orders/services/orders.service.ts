@@ -1,24 +1,25 @@
 import Decimal from 'decimal.js';
 import { FilesService } from 'src/modules/files/services/files.service';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderWaybillDto } from '@dtos/update-order-waybill.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
+import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
 import { OrderEntity } from '@entities/order.entity';
+import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 
+import { BalanceService } from '../../../modules/balance/services/balance.service';
 import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
 import { CartService } from '../../cart/services/cart.service';
-import { BalanceService } from '../../../modules/balance/services/balance.service';
-import { BalanceEntity } from '@entities/balance.entity';
 
 @Injectable()
 export class OrdersService {
@@ -28,7 +29,7 @@ export class OrdersService {
     private cartService: CartService,
     private caslAbilityFactory: CaslAbilityFactory,
     private balanceService: BalanceService,
-  ) { }
+  ) {}
 
   async getOrder(userId: number, orderId: number): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -42,7 +43,7 @@ export class OrdersService {
 
     if (ability.cannot(Action.Read, order)) {
       throw new HttpException(
-        'You are not allowed to read this order',
+        'У вас немає прав для перегляду цього замовлення',
         HttpStatus.FORBIDDEN,
       );
     }
@@ -79,7 +80,20 @@ export class OrdersService {
       const cart = await this.cartService.getCart(userId);
 
       if (cart.items.length === 0) {
-        throw new HttpException('Кошик пустий', HttpStatus.BAD_REQUEST);
+        throw new HttpException('Кошик пустий', HttpStatus.BAD_REQUEST, {});
+      }
+
+      const outOfStockProducts = cart.items.filter(
+        (item) => item.product.stock < item.quantity,
+      );
+      if (outOfStockProducts.length > 0) {
+        throw new HttpException(
+          {
+            message: 'На жаль, деяких товарів вже немає в наявності',
+            cart,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       if (waybill) {
@@ -120,18 +134,43 @@ export class OrdersService {
         },
       );
 
-      let balance = await queryRunner.manager.findOneOrFail(BalanceEntity, { where: { owner: { id: userId } } })
-      balance = await this.balanceService.update(balance.id, this.calculateTotal(orderItems).neg(), queryRunner.manager, order.id);
+      let balance = await queryRunner.manager.findOneOrFail(BalanceEntity, {
+        where: { owner: { id: userId } },
+      });
+      balance = await this.balanceService.update(
+        balance.id,
+        this.calculateTotal(orderItems).neg(),
+        queryRunner.manager,
+        order.id,
+      );
+
+      const variants = await queryRunner.manager.find(ProductVariantEntity, {
+        where: {
+          id: In(orderItems.map((item) => item.product.id)),
+        },
+      });
+      variants.forEach((variant) => {
+        const orderItemQuantity = orderItems.find(
+          (item) => item.product.id === variant.id,
+        )?.quantity;
+        if (orderItemQuantity === undefined) {
+          throw new HttpException(
+            'Не вдалось опрацювати замолення. Спробуйте очистити кошик і вибрати товари знову.',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        variant.stock -= orderItemQuantity;
+      });
+      await queryRunner.manager.save(ProductVariantEntity, variants);
 
       order = await queryRunner.manager.save(OrderEntity, {
         id: order.id,
         items: orderItems,
         delivery: orderDelivery,
-        paymentTransaction: balance.paymentTransactions[balance.paymentTransactions.length - 1],
+        paymentTransaction:
+          balance.paymentTransactions[balance.paymentTransactions.length - 1],
         total: this.calculateTotal(orderItems),
       });
-
-
 
       await this.cartService.clearCart(userId);
 
@@ -144,7 +183,7 @@ export class OrdersService {
         }
       } finally {
         await queryRunner.rollbackTransaction();
-        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+        throw new HttpException(err.response, HttpStatus.BAD_REQUEST);
       }
     } finally {
       await queryRunner.release();

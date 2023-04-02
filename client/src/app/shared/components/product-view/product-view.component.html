@@ -74,12 +74,22 @@
         </ng-template>
       </p-selectButton>
     </div>
+    <div class="mb-3 flex align-items-center justify-content-between">
+      <span class="font-bold text-900">Наявність</span>
+    </div>
+    <div class="flex align-items-center mb-5">
+      <app-stock-badge
+        *ngIf="selectedVariant?.stock !== undefined"
+        [value]="selectedVariant!.stock"
+      ></app-stock-badge>
+    </div>
     <button
       *ngIf="!hideAddToCartButton"
       pButton
       icon="pi pi-shopping-cart"
       label="Додати в кошик"
       class="p-element p-ripple w-full mb-5 p-button p-component"
+      [disabled]="!selectedVariant?.stock"
       (click)="onAddToCart()"
     ></button>
   </div>

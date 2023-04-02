@@ -15,7 +15,7 @@
           ? cartItem.product.properties.images[0]?.url
           : ''
       "
-      class="w-4rem flex-shrink-0 mx-auto md:mx-0"
+      class="w-4rem h-4rem flex-shrink-0 mx-auto md:mx-0"
     />
   </a>
   <div class="flex-auto py-1 md:pl-2">
@@ -37,7 +37,7 @@
         <span class="text-600">{{ cartItem.product.sku }}</span>
       </div>
       <div
-        class="w-full sm:w-4 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
+        class="w-full sm:w-4 flex align-items-center justify-content-between mt-3 sm:mt-0 pl-5"
       >
         <div class="p-fluid sm:w-6rem">
           <form [formGroup]="quantityForm">
@@ -48,6 +48,11 @@
               [min]="1"
             ></p-inputNumber>
           </form>
+          <app-stock-badge
+            class="inline-flex mt-2"
+            [value]="cartItem.product.stock"
+            [highlight]="hightlight"
+          ></app-stock-badge>
         </div>
         <div class="flex flex-column sm:align-items-end">
           <span class="text-900 text-xl font-medium mb-1 sm:mb-2">

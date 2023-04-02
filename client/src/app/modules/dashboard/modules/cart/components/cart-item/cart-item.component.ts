@@ -1,4 +1,10 @@
-import { BehaviorSubject, Subject, debounceTime, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  catchError,
+  debounceTime,
+  takeUntil,
+} from 'rxjs';
 
 import {
   AfterViewInit,
@@ -7,7 +13,7 @@ import {
   Input,
   OnDestroy,
 } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { AbstractControl, FormBuilder } from '@angular/forms';
 
 import { CartItem } from '@shared/interfaces/entities/cart.entity';
 
@@ -28,8 +34,8 @@ export class CartItemComponent implements AfterViewInit, OnDestroy {
     quantity: [1],
   });
 
-  get quantityControl() {
-    return this.quantityForm.get('quantity');
+  get quantityControl(): AbstractControl {
+    return this.quantityForm.get('quantity')!;
   }
 
   constructor(
@@ -46,9 +52,16 @@ export class CartItemComponent implements AfterViewInit, OnDestroy {
             productId: this.cartItem.product.id,
             quantity: quantity || 1,
           })
-          .subscribe(() => {
-            this.updating$.next(this.updating$.getValue() - 1);
-          });
+          .pipe(
+            catchError(() => {
+              this.updating$.next(this.updating$.getValue() - 1);
+              this.quantityControl.patchValue(this.cartItem.quantity, {
+                emitEvent: false,
+              });
+              return [];
+            }),
+          )
+          .subscribe(() => this.updating$.next(this.updating$.getValue() - 1));
       });
   }
 

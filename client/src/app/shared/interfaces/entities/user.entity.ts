@@ -29,8 +29,11 @@ export class User extends BaseEntity {
     this.cardNumber = data?.cardNumber || '';
     this.cardholderName = data?.cardholderName || '';
     this.role = data?.role || Role.User;
-    this.emailConfirmed = data?.emailConfirmed || true;
-    this.userConfirmed = data?.userConfirmed || true;
-    this.userFreezed = data?.userFreezed || false;
+    this.emailConfirmed =
+      data?.emailConfirmed !== undefined ? data.emailConfirmed : true;
+    this.userConfirmed =
+      data?.userConfirmed !== undefined ? data.userConfirmed : true;
+    this.userFreezed =
+      data?.userFreezed !== undefined ? data.userFreezed : false;
   }
 }

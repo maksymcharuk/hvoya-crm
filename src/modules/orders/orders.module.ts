@@ -7,13 +7,13 @@ import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { UserEntity } from '@entities/user.entity';
 
+import { BalanceModule } from '../balance/balance.module';
 import { CartModule } from '../cart/cart.module';
 import { CaslModule } from '../casl/casl.module';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { FilesModule } from '../files/files.module';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './services/orders.service';
-import { BalanceModule } from '../balance/balance.module';
 
 @Module({
   imports: [
@@ -33,4 +33,4 @@ import { BalanceModule } from '../balance/balance.module';
   controllers: [OrdersController],
   providers: [OrdersService],
 })
-export class OrdersModule { }
+export class OrdersModule {}
