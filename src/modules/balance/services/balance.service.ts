@@ -9,6 +9,8 @@ import { BalanceEntity } from '@entities/balance.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { OrderEntity } from '@entities/order.entity';
 
+import { TransactionStatus } from '@enums/transaction-status.enum';
+
 @Injectable()
 export class BalanceService {
   constructor(
@@ -68,5 +70,39 @@ export class BalanceService {
     return await this.update(userId, new Decimal(amount), this.balanceRepository.manager);
   }
 
+  async addFundsBanking(manager: EntityManager, userId: number, amount: number, bankTransactionId: string, paymentTransaction: PaymentTransactionEntity) {
+    let balance = await manager.findOneOrFail(BalanceEntity, { where: { owner: { id: userId } } });
+
+    await manager.save(PaymentTransactionEntity, {
+      ...paymentTransaction,
+      bankTransactionId,
+      amount: new Decimal(amount),
+      status: TransactionStatus.Success,
+    });
+
+    await manager.save(BalanceEntity, {
+      id: balance.id,
+      amount: balance.amount.plus(amount),
+      paymentTransactions: [...balance.paymentTransactions, paymentTransaction]
+    });
+  }
+
+  async cancelTransactionBanking(manager: EntityManager, userId: number, amount: number, bankTransactionId: string, paymentTransaction: PaymentTransactionEntity) {
+    let balance = await manager.findOneOrFail(BalanceEntity, { where: { owner: { id: userId } } });
+
+    await manager.save(PaymentTransactionEntity, {
+      ...paymentTransaction,
+      bankTransactionId,
+      amount: new Decimal(amount),
+      status: TransactionStatus.Cancelled,
+    });
+
+    await manager.save(BalanceEntity, {
+      id: balance.id,
+      amount: balance.amount.minus(amount),
+      paymentTransactions: [...balance.paymentTransactions, paymentTransaction]
+    });
+
+  }
 
 }

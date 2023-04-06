@@ -1,4 +1,4 @@
-export class PresearchRequest {
+export class SearchRequest {
   transfer: {
     $: {
       xmls: string;
@@ -10,6 +10,7 @@ export class PresearchRequest {
         $: {
           'xmlns:xsi': string;
           'xsi:type': string;
+          presearchId: string;
         }
         unit: [
           {

@@ -18,4 +18,4 @@ const routes = [
 @Module({
   imports: [RouterModule.register(routes), PrivatBankModule],
 })
-export class PaymentModule {}
+export class PaymentModule { }

@@ -5,23 +5,64 @@ import { Body, Controller, Post, Res } from '@nestjs/common';
 
 import { Action } from './enums/action.enum';
 import { PaymentApiService } from './services/payment-api.service';
+import { PrivatXMLRequest, PrivatJSONRequest } from './types/request.type';
+import { PresearchRequest } from './interfaces/requests/presearch.request';
+import { SearchRequest } from './interfaces/requests/search.request';
+import { CheckRequest } from './interfaces/requests/check.request';
+import { PayRequest } from './interfaces/requests/pay.request';
+import { CancelRequest } from './interfaces/requests/cancel.request';
 
 @Controller()
 export class PrivatBankController {
-  constructor(private readonly paymentApiService: PaymentApiService) {}
+  constructor(private readonly paymentApiService: PaymentApiService) { }
 
   @Post()
-  async main(@Body() xml: any, @Res() res: Response): Promise<void> {
+  async main(@Body() body: PrivatXMLRequest | PrivatJSONRequest, @Res() res: Response): Promise<void> {
     let xmlData;
 
-    switch (xml.transfer.$.action) {
-      case Action.Presearch:
-        xmlData = await this.paymentApiService.presearch();
+    if ('transfer' in body) {
+      switch (body.transfer.$.action) {
+        case Action.Presearch:
+          const xmlPreserch = body as PresearchRequest;
+          xmlData = await this.paymentApiService.presearch(xmlPreserch.transfer.data[0].unit[0].$.value);
+          break;
+        case Action.Search:
+          const xmlSearch = body as SearchRequest;
+          xmlData = await this.paymentApiService.search(xmlSearch.transfer.data[0].$.presearchId);
+          break;
+        case Action.Check:
+          const xmlCheck = body as CheckRequest;
+          xmlData = await this.paymentApiService.check(xmlCheck.transfer.data[0].$.id, xmlCheck.transfer.data[0].payerinfo[0].$.billIdentifier);
+          break;
+        case Action.Pay:
+          const xmlPay = body as PayRequest;
+          xmlData = await this.paymentApiService.pay(
+            xmlPay.transfer.data[0].payerinfo[0].$.billIdentifier,
+            xmlPay.transfer.data[0].$.id,
+            xmlPay.transfer.data[0].companyinfo ? xmlPay.transfer.data[0].companyinfo[0].checkreference[0] : null,
+            xmlPay.transfer.data[0].totalsum[0]
+          );
+          break;
+        case Action.Cancel:
+          const xmlCancel = body as CancelRequest;
+          xmlData = await this.paymentApiService.cancel(
+            xmlCancel.transfer.data[0].payerinfo[0].$.billIdentifier,
+            xmlCancel.transfer.data[0].$.id,
+            xmlCancel.transfer.data[0].totalsum[0]
+          );
+          break;
+        case Action.Upload:
+          xmlData = await this.paymentApiService.upload();
+          break;
+      }
+
+      const buildXml = new Builder().buildObject(xmlData);
+
+      res.set('Content-Type', 'text/xml');
+      res.send(buildXml);
+    } else {
+      const calcBody = body as PrivatJSONRequest;
+      res.send(this.paymentApiService.calc(calcBody.payments))
     }
-
-    const buildXml = new Builder().buildObject(xmlData);
-
-    res.set('Content-Type', 'text/xml');
-    res.send(buildXml);
   }
 }

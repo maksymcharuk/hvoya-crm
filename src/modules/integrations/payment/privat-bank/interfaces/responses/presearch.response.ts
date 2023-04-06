@@ -11,7 +11,7 @@ class PresearchResponseParams {
 
 class PresearchResponseData {
   $ = {
-    'xmlns:xsi': typeof PRIVAT_BANK_XMLNS_XSI,
+    'xmlns:xsi': PRIVAT_BANK_XMLNS_XSI,
     'xsi:type': XsiType.Payer,
   };
   headers = [
