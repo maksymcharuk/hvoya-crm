@@ -39,10 +39,6 @@ export class ProductItemComponent implements OnInit, OnChanges {
   selectedImage = '';
 
   ngOnInit(): void {
-    console.group(`ProductItemComponent ${this.product.id}}`);
-    console.log(this.product);
-    console.groupEnd();
-
     this.variants = this.product.variants || [];
     this.selectedVariant = this.variants[0];
     this.sizes = getUniqueProductSizes(this.variants);
