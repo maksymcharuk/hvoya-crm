@@ -11,7 +11,9 @@ import {
   ParseFilePipe,
   Post,
   UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { ImportProductsDto } from './dtos/import-products.dto';
 import { ProductsImportSource } from './enums/product-import-source.enum';
@@ -25,6 +27,7 @@ export class ProductsTransferController {
   ) {}
 
   @Post('import')
+  @UseInterceptors(FileInterceptor('file'))
   async import(
     @Body() { source, link }: ImportProductsDto,
     @UploadedFile(

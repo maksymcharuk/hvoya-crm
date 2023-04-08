@@ -9,6 +9,7 @@ import { ProductColorEntity } from '@entities/product-color.entity';
 import { ProductPropertiesEntity } from '@entities/product-properties.entity';
 import { ProductSizeEntity } from '@entities/product-size.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
+import { uniqueObjectsArray } from '@utils/unique-objects-array.util';
 
 import {
   NormalizedProductBase,
@@ -19,29 +20,98 @@ import {
   NormalizedProductsData,
 } from '../../interfaces/normalized-products-data.interface';
 
+interface UpsetionError {
+  error: Error;
+  entity:
+    | NormalizedProductBase
+    | NormalizedProductCategory
+    | NormalizedProductColor
+    | NormalizedProductSize;
+}
+
 @Injectable()
 export class ProductsCreationService {
+  private errors: UpsetionError[] = [];
+
   constructor(private readonly dataSource: DataSource) {}
 
   async upsertProducts(productsData: NormalizedProductsData) {
-    const errors = [];
+    this.errors = [];
 
-    for (let product of productsData.products) {
-      try {
-        await this.upsertProductBase(product);
-      } catch (error) {
-        errors.push({ error, product });
-      }
-    }
+    await this.upsertDepencencies(productsData.products);
+    await this.upsertMain(productsData.products);
 
-    if (errors.length) {
+    if (this.errors.length) {
       throw new HttpException(
         {
           message: 'Не вдалося завантажити деякі продукти',
-          errors,
+          errors: this.errors,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  private async upsertDepencencies(products: NormalizedProductBase[]) {
+    const productCategories = products
+      .map((product) => product.category)
+      .filter(
+        (category) => category !== undefined,
+      ) as NormalizedProductCategory[];
+    const productColors = uniqueObjectsArray(
+      products.reduce((acc, product) => {
+        return [
+          ...acc,
+          ...product.variants.map((variant) => variant.properties.color),
+        ];
+      }, []),
+      (currentEntity, nextEntity) => currentEntity.name === nextEntity.name,
+    );
+    const productSizes = uniqueObjectsArray(
+      products.reduce((acc, product) => {
+        return [
+          ...acc,
+          ...product.variants.map((variant) => variant.properties.size),
+        ];
+      }, []),
+      (currentEntity, nextEntity) =>
+        currentEntity.height === nextEntity.height &&
+        currentEntity.width === nextEntity.width &&
+        currentEntity.diameter === nextEntity.diameter,
+    );
+
+    for (let productCategory of productCategories) {
+      try {
+        await this.upsertProductCategory(productCategory);
+      } catch (error) {
+        this.errors.push({ error, entity: productCategory });
+      }
+    }
+
+    for (let productColor of productColors) {
+      try {
+        await this.upsertProductColor(productColor);
+      } catch (error) {
+        this.errors.push({ error, entity: productColor });
+      }
+    }
+
+    for (let productSize of productSizes) {
+      try {
+        await this.upsertProductSize(productSize);
+      } catch (error) {
+        this.errors.push({ error, entity: productSize });
+      }
+    }
+  }
+
+  private async upsertMain(products: NormalizedProductBase[]) {
+    for (let product of products) {
+      try {
+        await this.upsertProductBase(product);
+      } catch (error) {
+        this.errors.push({ error, entity: product });
+      }
     }
   }
 

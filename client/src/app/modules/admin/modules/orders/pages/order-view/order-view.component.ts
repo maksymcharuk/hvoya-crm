@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
 import { OrderStatus } from '@shared/enums/order-status.enum';
-import { OrderUpdateFormGroup } from '@shared/interfaces/dto/update-order.dto copy';
+import { OrderUpdateFormGroup } from '@shared/interfaces/dto/update-order.dto';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { OrdersService } from '@shared/services/orders.service';
