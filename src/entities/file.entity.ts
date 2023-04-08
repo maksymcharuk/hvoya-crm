@@ -4,7 +4,7 @@ import { BaseEntity } from './base.entity';
 
 @Entity('file')
 export class FileEntity extends BaseEntity {
-  @Column()
+  @Column({ nullable: true })
   public_id: string;
 
   @Column()

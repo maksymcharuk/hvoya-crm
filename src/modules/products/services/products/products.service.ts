@@ -221,8 +221,8 @@ export class ProductsService {
     }
   }
 
-  getProducts(): Promise<ProductBaseEntity[]> {
-    return this.dataSource.manager.find(ProductBaseEntity, {
+  async getProducts(): Promise<ProductBaseEntity[]> {
+    let products = await this.dataSource.manager.find(ProductBaseEntity, {
       relations: [
         'category',
         'variants',
@@ -230,6 +230,13 @@ export class ProductsService {
         'variants.properties.images',
       ],
     });
+
+    // TODO: Rewrite this to query
+    products = products.filter(
+      (product: ProductBaseEntity) => product.variants.length > 0,
+    );
+
+    return products;
   }
 
   getProduct(params: { id: number }): Promise<ProductBaseEntity> {

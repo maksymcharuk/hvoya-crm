@@ -15,15 +15,16 @@ import { AppService } from './app.service';
 import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
 import { AccountModule } from './modules/account/account.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { BalanceModule } from './modules/balance/balance.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { DatabaseModule } from './modules/database/database.module';
+import { FaqModule } from './modules/faq/faq.module';
 import { IntegrationsModule } from './modules/integrations/integrations.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { UsersModule } from './modules/users/users.module';
-import { FaqModule } from './modules/faq/faq.module';
-import { BalanceModule } from './modules/balance/balance.module';
+import { TransferModule } from './modules/transfer/transfer.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { BalanceModule } from './modules/balance/balance.module';
     ScheduleModule.forRoot(),
     FaqModule,
     BalanceModule,
+    TransferModule,
   ],
   controllers: [AppController],
   providers: [
