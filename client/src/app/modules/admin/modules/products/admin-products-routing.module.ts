@@ -5,6 +5,7 @@ import { AdminProductsComponent } from './admin-products.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { CreateProductComponent } from './pages/create-product/create-product.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
+import { TransferComponent } from './pages/transfer/transfer.component';
 import { ViewProductComponent } from './pages/view-product/view-product.component';
 
 const routes: Routes = [
@@ -30,6 +31,10 @@ const routes: Routes = [
           import('./modules/product-attributes/product-attributes.module').then(
             (m) => m.ProductAttributesModule,
           ),
+      },
+      {
+        path: 'transfer',
+        component: TransferComponent,
       },
       {
         path: ':baseId/:variantId',

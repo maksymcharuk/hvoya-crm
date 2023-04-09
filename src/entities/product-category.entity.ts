@@ -8,6 +8,9 @@ export class ProductCategoryEntity extends BaseEntity {
   @Column({ unique: true })
   name: string;
 
+  @Column({ type: 'text', array: true, default: [] })
+  externalIds: string[];
+
   @OneToMany(() => ProductBaseEntity, (productBase) => productBase.category)
   products: ProductBaseEntity[];
 }

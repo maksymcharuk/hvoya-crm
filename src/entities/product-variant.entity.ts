@@ -14,6 +14,9 @@ export class ProductVariantEntity extends BaseEntity {
   })
   stock: number;
 
+  @Column({ type: 'text', array: true, default: [] })
+  externalIds: string[];
+
   @ManyToOne(() => ProductPropertiesEntity, (properties) => properties.product)
   properties: ProductPropertiesEntity;
 

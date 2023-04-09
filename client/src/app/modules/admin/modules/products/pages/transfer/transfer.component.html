@@ -1,0 +1,76 @@
+<div class="card transfer">
+  <p-progressBar
+    *ngIf="submitting"
+    class="transfer__progress"
+    mode="indeterminate"
+    [style]="{ height: '4px' }"
+  ></p-progressBar>
+  <form [formGroup]="importForm" (ngSubmit)="onImportSubmit()">
+    <div class="p-fluid">
+      <h5>Імпорт продуктів</h5>
+      <div class="field">
+        <label for="import-source">Джерело імпорту:</label>
+        <p-dropdown
+          id="import-source"
+          [options]="importSources"
+          formControlName="source"
+          optionValue="value"
+        ></p-dropdown>
+        <app-form-control-error-message
+          [formGroup]="importForm"
+          controlName="source"
+          errorType="required"
+          errorMessage="Необхідно обрати джерело імпорту"
+        ></app-form-control-error-message>
+      </div>
+      <div class="field">
+        <p-selectButton
+          formControlName="sourceType"
+          [options]="importSourceTypes"
+        ></p-selectButton>
+      </div>
+      <div
+        *ngIf="sourceType?.value === importSourceTypeEnum.Link"
+        class="field"
+      >
+        <label for="link">Посилання:</label>
+        <input id="link" pInputText formControlName="link" />
+        <app-form-control-error-message
+          [formGroup]="importForm"
+          controlName="link"
+          errorType="required"
+          errorMessage="Необхідно ввести посилання"
+        ></app-form-control-error-message>
+      </div>
+    </div>
+    <div
+      *ngIf="sourceType?.value === importSourceTypeEnum.File"
+      class="formgrid"
+    >
+      <div class="field">
+        <label>Файл (XML):</label>
+        <p-fileUpload
+          accept=".xml"
+          [customUpload]="true"
+          [auto]="true"
+          [maxFileSize]="10000000"
+          [disabled]="file!.disabled"
+          (uploadHandler)="onFileUpload($event)"
+        >
+        </p-fileUpload>
+        <app-form-control-error-message
+          [formGroup]="importForm"
+          controlName="file"
+          errorType="required"
+          errorMessage="Необхідно вибрати файл"
+        ></app-form-control-error-message>
+      </div>
+    </div>
+    <button
+      pButton
+      type="submit"
+      label="Імпортувати"
+      [disabled]="submitting"
+    ></button>
+  </form>
+</div>

@@ -5,25 +5,25 @@ import { ProductPropertiesEntity } from './product-properties.entity';
 
 @Entity('product_size')
 export class ProductSizeEntity extends BaseEntity {
-  @Column({ type: 'int' })
+  @Column({ default: 0 })
   height: number;
 
-  @Column({ type: 'int', nullable: true })
-  width: number | null;
+  @Column({ default: 0 })
+  width: number;
 
-  @Column({ type: 'int', nullable: true })
-  depth: number | null;
+  @Column({ default: 0 })
+  depth: number;
 
-  @Column({ type: 'int', nullable: true })
-  diameter: number | null;
+  @Column({ default: 0 })
+  diameter: number;
 
-  @Column({ type: 'int' })
+  @Column({ default: 0 })
   packageHeight: number;
 
-  @Column({ type: 'int' })
+  @Column({ default: 0 })
   packageWidth: number;
 
-  @Column({ type: 'int' })
+  @Column({ default: 0 })
   packageDepth: number;
 
   @OneToMany(() => ProductPropertiesEntity, (product) => product.size)
