@@ -45,6 +45,11 @@ export class AdminMenuComponent implements OnInit {
                 routerLink: ['products/attributes'],
                 routerLinkActiveOptions: { exact: false },
               },
+              {
+                label: 'Імпорт та експорт',
+                icon: 'pi pi-fw pi-upload',
+                routerLink: ['products/transfer'],
+              },
             ],
           },
           {
