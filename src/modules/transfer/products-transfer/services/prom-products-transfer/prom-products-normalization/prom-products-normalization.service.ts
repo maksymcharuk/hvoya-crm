@@ -95,6 +95,7 @@ export class PromProductsNormalizationService
 
   private getSize(offer: PromOffer): NormalizedProductSize {
     const sku = offer.vendorCode[0]?.trim();
+    // Fetch size from sku first
     if (sku) {
       const { size } = this.getDataBaseOnSku(sku);
       if (
@@ -147,6 +148,7 @@ export class PromProductsNormalizationService
 
   private getColor(offer: PromOffer): NormalizedProductColor {
     const sku = offer.vendorCode[0]?.trim();
+    // Fetch color from sku first
     if (sku) {
       const { color } = this.getDataBaseOnSku(sku);
       const colorFromSku = color ? skuColorsMap.get(color) : undefined;
