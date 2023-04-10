@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PromProducts } from '../../interfaces/prom-products.interface';
 import { ProductsCreationService } from '../products-creation/products-creation.service';
-import { PromProductsNormalizationService } from './helper-services/prom-products-normalization/prom-products-normalization.service';
+import { PromProductsNormalizationService } from './prom-products-normalization/prom-products-normalization.service';
 
 @Injectable()
 export class PromProductsTransferService {

@@ -49,6 +49,7 @@
 
 .selected-product-images-wrapper {
   display: flex;
+  flex-wrap: wrap;
 
   &-image {
     position: relative;

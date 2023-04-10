@@ -1,5 +1,5 @@
 <div class="grid">
-  <div class="col">
+  <div class="col-8">
     <div class="card">
       <form
         *ngIf="productForm"
@@ -271,19 +271,19 @@
             >
               <ng-template let-color pTemplate="selectedItem">
                 <div class="flex align-items-center">
-                  <div
-                    class="flex-none w-1rem h-1rem border-circle border-400 mr-2"
-                    [style]="{ backgroundColor: color.hex }"
-                  ></div>
+                  <app-product-color-badge
+                    class="mr-2"
+                    [color]="color"
+                  ></app-product-color-badge>
                   <div>{{ color.name }}</div>
                 </div>
               </ng-template>
               <ng-template let-color pTemplate="item">
                 <div class="flex align-items-center">
-                  <div
-                    class="w-1rem h-1rem border-circle border-400 mr-2"
-                    [style]="{ backgroundColor: color.hex }"
-                  ></div>
+                  <app-product-color-badge
+                    class="mr-2"
+                    [color]="color"
+                  ></app-product-color-badge>
                   <div>{{ color.name }}</div>
                 </div>
               </ng-template>
@@ -428,7 +428,7 @@
               <button
                 type="submit"
                 pButton
-                label="Додати"
+                label="Зберегти"
                 data-cy="product-save-button"
               ></button>
             </div>

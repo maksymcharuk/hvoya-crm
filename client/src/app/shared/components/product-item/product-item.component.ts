@@ -41,7 +41,7 @@ export class ProductItemComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.variants = this.product.variants || [];
     this.selectedVariant = this.variants[0];
-    this.sizes = getUniqueProductSizes(this.variants);
+    this.sizes = getUniqueProductSizes(this.variants).sort(this.sortSizes);
     this.selectedSizeId = this.sizes[0]?.id;
     this.selectedImage = this.selectedVariant?.properties?.images[0]?.url || '';
 
@@ -52,7 +52,7 @@ export class ProductItemComponent implements OnInit, OnChanges {
     if (changes.product) {
       this.variants = changes.product.currentValue.variants;
       this.selectedVariant = changes.product.currentValue.variants[0];
-      this.sizes = getUniqueProductSizes(this.variants);
+      this.sizes = getUniqueProductSizes(this.variants).sort(this.sortSizes);
       this.selectedSizeId = this.sizes[0]?.id;
 
       this.updateColors();
@@ -95,5 +95,14 @@ export class ProductItemComponent implements OnInit, OnChanges {
       .filter((variant) => variant.properties.size.id === this.selectedSizeId)
       .map((product) => product.properties.color);
     this.selectedColorId = this.selectedVariant?.properties.color?.id;
+  }
+
+  private sortSizes(a: ProductSize, b: ProductSize): number {
+    if (a.height || b.height) {
+      return a.height - b.height;
+    } else if (a.diameter || b.diameter) {
+      return a.diameter - b.diameter;
+    }
+    return 0;
   }
 }
