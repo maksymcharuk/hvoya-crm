@@ -51,10 +51,10 @@
   <ng-template pTemplate="body" let-color>
     <tr>
       <td>
-        <div
-          class="w-3rem h-3rem border-circle border-1 border-400"
-          [style]="{ backgroundColor: color.hex }"
-        ></div>
+        <app-product-color-badge
+          size="42px"
+          [color]="color"
+        ></app-product-color-badge>
       </td>
       <td>{{ color.name }}</td>
       <td>{{ color.hex }}</td>
@@ -80,10 +80,11 @@
 >
   <ng-template pTemplate="content">
     <div class="flex justify-content-center">
-      <div
-        class="w-3rem h-3rem border-circle mb-4 border-1 border-400"
-        [style]="{ backgroundColor: color.hex }"
-      ></div>
+      <!-- TODO: update color badge when color is changed in dialog -->
+      <app-product-color-badge
+        size="42px"
+        [color]="color"
+      ></app-product-color-badge>
     </div>
     <div class="field">
       <label for="name">Назва</label>

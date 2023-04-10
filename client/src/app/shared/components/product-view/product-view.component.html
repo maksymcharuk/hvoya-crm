@@ -49,10 +49,10 @@
         class="colors"
       >
         <ng-template let-color>
-          <i
-            class="color-circle pi pi-circle-fill"
-            [style.color]="color.hex"
-          ></i>
+          <app-product-color-badge
+            [color]="color"
+            size="28px"
+          ></app-product-color-badge>
         </ng-template>
       </p-selectButton>
     </div>

@@ -29,6 +29,7 @@ import { OrderDeliveryStatusBadgeComponent } from './components/order-delivery-s
 import { OrderListComponent } from './components/order-list/order-list.component';
 import { OrderStatusBadgeComponent } from './components/order-status-badge/order-status-badge.component';
 import { OrderViewItemComponent } from './components/order-view-item/order-view-item.component';
+import { ProductColorBadgeComponent } from './components/product-color-badge/product-color-badge.component';
 import { ProductItemComponent } from './components/product-item/product-item.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductViewComponent } from './components/product-view/product-view.component';
@@ -62,6 +63,7 @@ const COMPONENTS = [
   FaqListComponent,
   DeliveryServiceBadgeComponent,
   StockBadgeComponent,
+  ProductColorBadgeComponent,
 ];
 
 const PRIMENG_MODULES = [

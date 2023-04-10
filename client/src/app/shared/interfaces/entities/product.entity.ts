@@ -14,9 +14,9 @@ export class ProductColor extends BaseEntity {
 
 export class ProductSize extends BaseEntity {
   height: number;
-  width?: number | null;
-  depth?: number | null;
-  diameter?: number | null;
+  width: number;
+  depth: number;
+  diameter: number;
   packageHeight: number;
   packageWidth: number;
   packageDepth: number;
@@ -24,9 +24,9 @@ export class ProductSize extends BaseEntity {
   constructor(data?: ProductSize) {
     super(data);
     this.height = data?.height || 0;
-    this.width = data?.width;
-    this.depth = data?.depth;
-    this.diameter = data?.diameter;
+    this.width = data?.width || 0;
+    this.depth = data?.depth || 0;
+    this.diameter = data?.diameter || 0;
     this.packageHeight = data?.packageHeight || 0;
     this.packageWidth = data?.packageWidth || 0;
     this.packageDepth = data?.packageDepth || 0;

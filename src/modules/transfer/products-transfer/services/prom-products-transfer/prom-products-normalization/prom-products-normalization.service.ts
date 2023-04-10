@@ -1,47 +1,26 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { ProductColor } from '../../../../enums/product-color.enum';
+import { ProductColor } from '../../../enums/product-color.enum';
 import {
   NormalizedProductBase,
   NormalizedProductColor,
+  NormalizedProductSize,
   NormalizedProductsData,
-} from '../../../../interfaces/normalized-products-data.interface';
+} from '../../../interfaces/normalized-products-data.interface';
 import {
   PromCategory,
   PromOffer,
   PromProducts,
-} from '../../../../interfaces/prom-products.interface';
-import { productColorsMap } from '../../../../maps/product-colors.map';
-import { BaseNormalizationService } from '../../../base-normalization/base-normalization.service';
+} from '../../../interfaces/prom-products.interface';
+import { productColorsMap } from '../../../maps/product-colors.map';
+import { skuColorsMap } from '../../../maps/sku-color.map';
+import { BaseNormalizationService } from '../../base-normalization/base-normalization.service';
+import { promColorsMap } from '../maps/prom-colors.map';
 
 @Injectable()
 export class PromProductsNormalizationService
   implements BaseNormalizationService<PromProducts>
 {
-  private readonly promColorsMap = new Map<
-    string,
-    NormalizedProductColor | undefined
-  >([
-    ['Зеленый', productColorsMap.get(ProductColor.Green)],
-    ['Зелёный', productColorsMap.get(ProductColor.Green)],
-    ['Белый', productColorsMap.get(ProductColor.White)],
-    ['Голубой', productColorsMap.get(ProductColor.Blue)],
-    ['Заснеженная', productColorsMap.get(ProductColor.Snowy)],
-    ['Заснеженый', productColorsMap.get(ProductColor.Snowy)],
-    ['Заснеженный', productColorsMap.get(ProductColor.Snowy)],
-    ['Белый|Зеленый', productColorsMap.get(ProductColor.WhiteGreen)],
-    ['Зеленый|Белый', productColorsMap.get(ProductColor.WhiteGreen)],
-    ['Белый кончик|Зеленый', productColorsMap.get(ProductColor.WhiteGreen)],
-    [
-      'Белый кончик|Темно-зеленый',
-      productColorsMap.get(ProductColor.WhiteGreen),
-    ],
-    [
-      'Белый|Зеленый|Голубой',
-      productColorsMap.get(ProductColor.WhiteGreenBlue),
-    ],
-  ]);
-
   normalize(data: PromProducts): NormalizedProductsData {
     let products: NormalizedProductBase[] | undefined = [];
     try {
@@ -78,16 +57,8 @@ export class PromProductsNormalizationService
                 images: offer.picture.map((picture: string) => ({
                   url: picture,
                 })),
-                color: this.getColor(offer.param),
-                size: {
-                  height: this.getDimension(offer.param, 'Высота'),
-                  width: this.getDimension(
-                    offer.param,
-                    'Диаметр нижнего яруса',
-                    true,
-                  ),
-                  diameter: this.getDimension(offer.param, 'Диаметр', true),
-                },
+                color: this.getColor(offer),
+                size: this.getSize(offer),
               },
             };
           }),
@@ -122,16 +93,44 @@ export class PromProductsNormalizationService
     return Number(weightParam._);
   }
 
+  private getSize(offer: PromOffer): NormalizedProductSize {
+    const sku = offer.vendorCode[0]?.trim();
+    if (sku) {
+      const { size } = this.getDataBaseOnSku(sku);
+      if (
+        offer.name_ua[0]!.includes('вінок') ||
+        offer.name_ua[0]!.includes('Вінок')
+      ) {
+        return {
+          height: 0,
+          width: 0,
+          diameter: Number(size),
+        };
+      }
+      return {
+        height: Number(size),
+        width: Number(size),
+        diameter: 0,
+      };
+    }
+
+    return {
+      height: this.getDimension(offer.param, 'Высота'),
+      width: this.getDimension(offer.param, 'Диаметр нижнего яруса', true),
+      diameter: this.getDimension(offer.param, 'Диаметр', true),
+    };
+  }
+
   // Known issues (TODO):
   // 1. A lot of product with wrong dimensions or without dimensions at all (especially garlands)
   // 2. Some products use height instead of diameter
   // 3. None of the products have package dimensions
   private getDimension(
-    params: PromOffer['param'],
+    param: PromOffer['param'],
     key: string,
     matchFull: boolean = false,
   ): number {
-    const dimensionParam = params.find((param: PromOffer['param'][0]) =>
+    const dimensionParam = param.find((param: PromOffer['param'][0]) =>
       matchFull ? param.$.name === key : param.$.name.includes(key),
     );
 
@@ -146,8 +145,20 @@ export class PromProductsNormalizationService
     return Number(dimensionParam._);
   }
 
-  getColor(params: PromOffer['param']): NormalizedProductColor {
-    const color = params.find((param: PromOffer['param'][0]) =>
+  private getColor(offer: PromOffer): NormalizedProductColor {
+    const sku = offer.vendorCode[0]?.trim();
+    if (sku) {
+      const { color } = this.getDataBaseOnSku(sku);
+      const colorFromSku = color ? skuColorsMap.get(color) : undefined;
+      if (colorFromSku) {
+        return (
+          productColorsMap.get(colorFromSku) ||
+          productColorsMap.get(ProductColor.Undefined)!
+        );
+      }
+    }
+
+    const color = offer.param.find((param: PromOffer['param'][0]) =>
       param.$.name.includes('Цвет'),
     )?._;
 
@@ -156,8 +167,20 @@ export class PromProductsNormalizationService
     }
 
     return (
-      this.promColorsMap.get(color) ||
-      productColorsMap.get(ProductColor.Undefined)!
+      promColorsMap.get(color) || productColorsMap.get(ProductColor.Undefined)!
     );
+  }
+
+  private getDataBaseOnSku(sku: string) {
+    const skuParts = sku.split('/');
+    const color = skuParts[skuParts.length - 1];
+    const size = skuParts[skuParts.length - 2];
+    const skuWithoutColorAndSize = skuParts.slice(0, -2).join('-');
+
+    return {
+      color,
+      size,
+      skuWithoutColorAndSize,
+    };
   }
 }
