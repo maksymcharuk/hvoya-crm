@@ -34,23 +34,23 @@ class Unit {
           payerinfo: [
             {
               $: {
-                ls: string | undefined;
+                ls?: string;
                 billIdentifier: string;
               }
-              fio: [''] | undefined;
-              address: [''] | undefined;
+              fio?: [''];
+              address?: [''];
             }
           ]
-          bankinfo: [
+          bankinfo?: [
             {
               $: {
-                pointId: string | undefined;
+                pointId?: string;
                 pointType: string;
               }
             }
-          ] | undefined;
+          ];
           totalSum: string;
-          payerComission: [''] | undefined;
+          payerComission?: [''];
           dopdata: [
             {
               dop: [
@@ -64,9 +64,9 @@ class Unit {
             }
           ]
           createTime: string;
-          companyComissionByPay: [''] | undefined;
-          dealerComission: [''] | undefined;
-          confirmTime: [''] | undefined;
+          companyComissionByPay?: [''];
+          dealerComission?: [''];
+          confirmTime?: [''];
           servicegroup: [
             {
               service: [
@@ -88,7 +88,7 @@ class Unit {
                       ]
                     }
                   ]
-                  dopdata: [
+                  dopdata?: [
                     {
                       dop: [
                         {
@@ -99,7 +99,7 @@ class Unit {
                         }
                       ]
                     }
-                  ] | undefined;
+                  ];
                 }
               ]
             }
@@ -108,21 +108,21 @@ class Unit {
       ]
     }
   ]
-  sdate: [''] | undefined;
+  sdate?: [''];
   sum: string;
-  timestamp: [''] | undefined;
-  bplref: [''] | undefined;
-  operday: [''] | undefined;
-  providerId: [''] | undefined;
-  statusFlag: [''] | undefined;
-  companyCode: [''] | undefined;
-  comissionSum: [''] | undefined;
-  numberOfPayments: [''] | undefined;
-  mfo: [''] | undefined;
-  account: [''] | undefined;
-  okpo: [''] | undefined;
-  dgBankAccount: [''] | undefined;
-  dgBankMfo: [''] | undefined;
-  dgBankOkpo: [''] | undefined;
-  acceptSum: [''] | undefined;
+  timestamp?: [''];
+  bplref?: [''];
+  operday?: [''];
+  providerId?: [''];
+  statusFlag?: [''];
+  companyCode?: [''];
+  comissionSum?: [''];
+  numberOfPayments?: [''];
+  mfo?: [''];
+  account?: [''];
+  okpo?: [''];
+  dgBankAccount?: [''];
+  dgBankMfo?: [''];
+  dgBankOkpo?: [''];
+  acceptSum?: [''];
 }

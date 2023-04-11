@@ -20,6 +20,10 @@ export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {
   }
 
   async generateAccountNumber(entity: UserEntity, manager: EntityManager): Promise<void> {
+    if (entity.accountNumber) {
+      return;
+    };
+
     let code: string;
     do {
       code = Math.floor(10000 + Math.random() * 90000).toString();

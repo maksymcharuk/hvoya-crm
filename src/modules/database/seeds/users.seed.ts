@@ -26,6 +26,7 @@ export default class UserSeeder implements Seeder {
         cardNumber: '5218 5722 2223 2634',
         cardholderName: 'John SuperAdmin',
         balance: await balanceRepository.save({}),
+        accountNumber: '11111',
       },
       {
         firstName: 'Alice',
@@ -43,6 +44,7 @@ export default class UserSeeder implements Seeder {
         cardNumber: '5218 5722 2223 2634',
         cardholderName: 'Alice Admin',
         balance: await balanceRepository.save({}),
+        accountNumber: '22222',
       },
       {
         firstName: 'Peter',
@@ -60,6 +62,7 @@ export default class UserSeeder implements Seeder {
         cardNumber: '5218 5722 2223 2634',
         cardholderName: 'Peter User',
         balance: await balanceRepository.save({}),
+        accountNumber: '33333',
       },
       {
         firstName: 'Test',
@@ -77,7 +80,8 @@ export default class UserSeeder implements Seeder {
         cardNumber: '5218 5722 2223 2667',
         cardholderName: 'Test User',
         balance: await balanceRepository.save({}),
-        userTest: true
+        userTest: true,
+        accountNumber: '44444',
       },
     ];
     await repository.save(usersData);

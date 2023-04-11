@@ -4,10 +4,11 @@ import { Module } from '@nestjs/common';
 import { PrivatBankController } from './privat-bank.controller';
 import { PaymentApiService } from './services/payment-api.service';
 import { BalanceModule } from '../../../balance/balance.module';
+import { JwtPrivatGuard } from '../../guards/jwt-privat/jwt-privat.guard';
 
 @Module({
   imports: [HttpModule, BalanceModule],
-  providers: [PaymentApiService],
+  providers: [PaymentApiService, JwtPrivatGuard],
   controllers: [PrivatBankController],
 })
 export class PrivatBankModule { }

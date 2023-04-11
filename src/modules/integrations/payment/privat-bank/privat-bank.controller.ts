@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Builder } from 'xml2js';
 
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 
 import { Action } from './enums/action.enum';
 import { PaymentApiService } from './services/payment-api.service';
@@ -11,8 +11,10 @@ import { SearchRequest } from './interfaces/requests/search.request';
 import { CheckRequest } from './interfaces/requests/check.request';
 import { PayRequest } from './interfaces/requests/pay.request';
 import { CancelRequest } from './interfaces/requests/cancel.request';
+import { JwtPrivatGuard } from '../../guards/jwt-privat/jwt-privat.guard';
 
 @Controller()
+@UseGuards(JwtPrivatGuard)
 export class PrivatBankController {
   constructor(private readonly paymentApiService: PaymentApiService) { }
 
@@ -28,7 +30,9 @@ export class PrivatBankController {
           break;
         case Action.Search:
           const xmlSearch = body as SearchRequest;
-          xmlData = await this.paymentApiService.search(xmlSearch.transfer.data[0].$.presearchId);
+          xmlData = await this.paymentApiService.search(
+            xmlSearch.transfer.data[0].$.presearchId ? xmlSearch.transfer.data[0].$.presearchId : xmlSearch.transfer.data[0].unit[0].$.value
+          );
           break;
         case Action.Check:
           const xmlCheck = body as CheckRequest;

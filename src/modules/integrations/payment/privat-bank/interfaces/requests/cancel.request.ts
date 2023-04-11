@@ -14,9 +14,9 @@ export class CancelRequest {
         }
         companyinfo: [
           {
-            companyCode: [''] | undefined;
-            companyName: [''] | undefined;
-            dopdata: [
+            companyCode?: [''];
+            companyName?: [''];
+            dopdata?: [
               {
                 dop: [
                   {
@@ -27,7 +27,7 @@ export class CancelRequest {
                   }
                 ]
               }
-            ] | undefined;
+            ];
           }
         ]
         payerinfo: [
@@ -36,17 +36,17 @@ export class CancelRequest {
               billIdentifier: string;
               ls: string;
             }
-            fio: [''] | undefined;
-            phone: [''] | undefined;
-            address: [''] | undefined;
+            fio?: [''];
+            phone?: [''];
+            address?: [''];
           }
         ]
         totalsum: [''];
         createTime: [''];
-        confirmTime: [''] | undefined;
+        confirmTime?: [''];
         serviceGroup: [
           {
-            service: [
+            service?: [
               {
                 $: {
                   sum: string;
@@ -56,18 +56,18 @@ export class CancelRequest {
                   {
                     $: {
                       billIdentifier: string;
-                      ls: string | undefined;
+                      ls?: string;
                     }
-                    fio: [''] | undefined;
-                    phone: [''] | undefined;
-                    address: [''] | undefined;
+                    fio?: [''];
+                    phone?: [''];
+                    address?: [''];
                   }
                 ]
-                companyinfo: [
+                companyinfo?: [
                   {
                     checkReference: string;
                     companyCode: string;
-                    companyName: [''] | undefined;
+                    companyName?: [''];
                     dopData: [
                       {
                         dop: [
@@ -81,9 +81,9 @@ export class CancelRequest {
                       }
                     ]
                   }
-                ] | undefined;
+                ];
                 idinvoice: string;
-                serviceName: [''] | undefined;
+                serviceName?: [''];
                 dopdata: [
                   {
                     dop: [
@@ -97,7 +97,7 @@ export class CancelRequest {
                   }
                 ]
               }
-            ] | undefined;
+            ];
           }
         ]
       }

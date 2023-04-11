@@ -13,14 +13,14 @@ export class CheckRequest {
           number: string;
           id: string;
         }
-        companyinfo: [
+        companyinfo?: [
           {
             $: {
-              companyId: string | undefined;
+              companyId?: string;
             }
-            companyCode: string | undefined;
-            companyName: string | undefined;
-            dopdata: [
+            companyCode?: string;
+            companyName?: string;
+            dopdata?: [
               {
                 dop: [
                   {
@@ -31,54 +31,54 @@ export class CheckRequest {
                   }
                 ]
               }
-            ] | undefined;
+            ];
           }
-        ] | undefined;
+        ];
         payerinfo: [
           {
             $: {
-              billIdentifier: string | undefined;
-              ls: string | undefined;
+              billIdentifier?: string;
+              ls?: string;
             }
-            fio: [''] | undefined;
-            phone: [''] | undefined;
-            address: [''] | undefined;
+            fio?: [''];
+            phone?: [''];
+            address?: [''];
           }
         ]
         totalSum: [''];
-        createTime: [''] | undefined;
-        servicegroup: [
+        createTime?: [''];
+        servicegroup?: [
           {
-            service: [
+            service?: [
               {
                 $: {
                   sum: string;
                   serviceCode: string;
                 }
-                companyinfo: [
+                companyinfo?: [
                   {
                     companyCode: [''];
-                    companyName: [''] | undefined;
+                    companyName?: [''];
                   }
-                ] | undefined;
-                serviceName: [''] | undefined;
-                destination: [''] | undefined;
-                meterdata: [
+                ];
+                serviceName?: [''];
+                destination?: [''];
+                meterdata?: [
                   {
                     meter: [
                       {
                         $: {
                           previousValue: string;
-                          currentValue: string | undefined;
-                          tarif: string | undefined;
-                          delta: string | undefined;
-                          name: string | undefined;
+                          currentValue?: string;
+                          tarif?: string;
+                          delta?: string;
+                          name?: string;
                         }
                       }
                     ]
                   }
-                ] | undefined
-                dopdata: [
+                ]
+                dopdata?: [
                   {
                     dop: [
                       {
@@ -89,11 +89,11 @@ export class CheckRequest {
                       }
                     ]
                   }
-                ] | undefined;
+                ];
               }
-            ] | undefined;
+            ];
           }
-        ] | undefined;
+        ];
       }
     ]
   }

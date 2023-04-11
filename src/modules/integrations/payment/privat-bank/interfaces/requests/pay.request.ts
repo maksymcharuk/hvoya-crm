@@ -11,18 +11,18 @@ export class PayRequest {
           'xmlns:xsi': string;
           'xsi:type': string;
           id: string;
-          number: string | undefined;
+          number?: string;
         }
-        companyinfo: [
+        companyinfo?: [
           {
             $: {
-              inn: string | undefined;
+              inn?: string;
               companyId: string;
             }
-            companyCode: [''] | undefined;
-            unitCode: [''] | undefined;
-            companyName: [''] | undefined;
-            dopdata: [
+            companyCode?: [''];
+            unitCode?: [''];
+            companyName?: [''];
+            dopdata?: [
               {
                 dop: [
                   {
@@ -33,42 +33,42 @@ export class PayRequest {
                   }
                 ]
               }
-            ] | undefined;
+            ];
             checkreference: [''];
           }
-        ] | undefined;
+        ];
         payerinfo: [
           {
             $: {
               billIdentifier: string;
-              ls: string | undefined;
+              ls?: string;
             }
-            fio: [''] | undefined;
-            phone: [''] | undefined;
-            address: [''] | undefined;
+            fio?: [''];
+            phone?: [''];
+            address?: [''];
           }
         ]
         totalsum: [''];
         createTime: [''];
-        confirmTime: [''] | undefined;
-        numberPack: [''] | undefined;
-        subNumberPack: [''] | undefined;
+        confirmTime?: [''];
+        numberPack?: [''];
+        subNumberPack?: [''];
         serviceGroup: [
           {
-            service: [
+            service?: [
               {
                 $: {
                   sum: string;
                   serviceCode: string;
-                  id: string | undefined;
+                  id?: string;
                 }
                 companyinfo: [
                   {
-                    checkReference: [''] | undefined;
-                    companyCode: [''] | undefined;
-                    unitCode: [''] | undefined;
-                    companyName: [''] | undefined;
-                    dopdata: [
+                    checkReference?: [''];
+                    companyCode?: [''];
+                    unitCode?: [''];
+                    companyName?: [''];
+                    dopdata?: [
                       {
                         dop: [
                           {
@@ -79,42 +79,42 @@ export class PayRequest {
                           }
                         ]
                       }
-                    ] | undefined;
+                    ];
                   }
                 ]
                 idinvoice: [''];
-                serviceName: [''] | undefined;
-                destination: [''] | undefined;
-                meterdata: [
+                serviceName?: [''];
+                destination?: [''];
+                meterdata?: [
                   {
                     meter: [
                       {
                         $: {
                           previousValue: string;
-                          currentValue: string | undefined;
-                          tarif: string | undefined;
-                          delta: string | undefined;
-                          name: string | undefined;
+                          currentValue?: string;
+                          tarif?: string;
+                          delta?: string;
+                          name?: string;
                         }
                       }
                     ]
                   }
-                ] | undefined;
+                ];
                 dopdata: [
                   {
-                    dop: [
+                    dop?: [
                       {
                         $: {
                           name: string;
                           value: string;
                         }
                       }
-                    ] | undefined;
+                    ];
                   }
                 ]
                 comissions: Commision[]
               }
-            ] | undefined;
+            ];
           }
         ]
       }
