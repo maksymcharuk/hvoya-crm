@@ -23,9 +23,10 @@ export class UserFreezeInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<any>> {
-    if (context.switchToHttp().getRequest().user.user) {
+    const userToken = context.switchToHttp().getRequest().user;
+    if (userToken && userToken.user) {
       const user = await this.usersRepository.findOneByOrFail({
-        id: context.switchToHttp().getRequest().user.user.id,
+        id: userToken.user.id,
       });
 
       if (user.userFreezed === true) {
