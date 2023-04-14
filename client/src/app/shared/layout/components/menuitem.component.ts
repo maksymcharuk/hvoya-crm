@@ -20,10 +20,10 @@ import { NavigationEnd, Router } from '@angular/router';
 import { LayoutService } from '@shared/layout/services/layout.service';
 import { NotificationsService } from '@shared/services/notifications.service';
 
-import { MenuService } from '../../../shared/layout/services/menu.service';
+import { MenuService } from '../services/menu.service';
 
 @Component({
-  selector: '[admin-menuitem]',
+  selector: '[menuitem]',
   template: `
     <ng-container>
       <div
@@ -80,7 +80,12 @@ import { MenuService } from '../../../shared/layout/services/menu.service';
           class="pi pi-fw pi-angle-down layout-submenu-toggler"
           *ngIf="item.items"
         ></i>
-        <span *ngIf="item.badge" class="layout-submenu-toggler mr-2" pBadge [value]="item.badge"></span>
+        <span
+          *ngIf="item.badge"
+          class="layout-submenu-toggler mr-2"
+          pBadge
+          [value]="item.badge"
+        ></span>
       </a>
 
       <ul
@@ -89,7 +94,7 @@ import { MenuService } from '../../../shared/layout/services/menu.service';
       >
         <ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
           <li
-            admin-menuitem
+            menuitem
             [item]="child"
             [index]="i"
             [parentKey]="key"
@@ -120,22 +125,25 @@ import { MenuService } from '../../../shared/layout/services/menu.service';
     ]),
   ],
 })
-export class AdminMenuitemComponent implements OnInit, OnDestroy {
+export class MenuitemComponent implements OnInit, OnDestroy {
   @Input() item: any;
-
   @Input() index!: number;
-
   @Input() @HostBinding('class.layout-root-menuitem') root!: boolean;
-
   @Input() parentKey!: string;
 
+  @HostBinding('class.active-menuitem')
+  get activeClass() {
+    return this.active && !this.root;
+  }
+
   active = false;
-
   menuSourceSubscription: Subscription;
-
   menuResetSubscription: Subscription;
-
   key = '';
+
+  get submenuAnimation() {
+    return this.root ? 'expanded' : this.active ? 'expanded' : 'collapsed';
+  }
 
   constructor(
     public layoutService: LayoutService,
@@ -189,6 +197,16 @@ export class AdminMenuitemComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngOnDestroy() {
+    if (this.menuSourceSubscription) {
+      this.menuSourceSubscription.unsubscribe();
+    }
+
+    if (this.menuResetSubscription) {
+      this.menuResetSubscription.unsubscribe();
+    }
+  }
+
   updateActiveStateFromRoute() {
     const activeRoute = this.router.isActive(this.item.routerLink[0], {
       paths: 'exact',
@@ -222,31 +240,16 @@ export class AdminMenuitemComponent implements OnInit, OnDestroy {
     this.menuService.onMenuStateChange({ key: this.key });
   }
 
-  get submenuAnimation() {
-    return this.root ? 'expanded' : this.active ? 'expanded' : 'collapsed';
-  }
-
   getNotificationCount() {
     this.notificationsService.notifications$.subscribe((notifications) => {
       const filteredNotifications = notifications.filter(
-        (notification) => notification.type === this.item.title && !notification.checked
+        (notification) =>
+          notification.type === this.item.title && !notification.checked,
       );
-      this.item.badge = filteredNotifications.length > 0 ? filteredNotifications.length.toString() : null;
+      this.item.badge =
+        filteredNotifications.length > 0
+          ? filteredNotifications.length.toString()
+          : null;
     });
-  }
-
-  @HostBinding('class.active-menuitem')
-  get activeClass() {
-    return this.active && !this.root;
-  }
-
-  ngOnDestroy() {
-    if (this.menuSourceSubscription) {
-      this.menuSourceSubscription.unsubscribe();
-    }
-
-    if (this.menuResetSubscription) {
-      this.menuResetSubscription.unsubscribe();
-    }
   }
 }

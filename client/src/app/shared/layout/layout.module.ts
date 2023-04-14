@@ -13,29 +13,22 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { LayoutConfigModule } from '@shared/layout/layout-config.module';
 import { SharedModule } from '@shared/shared.module';
 
-import { AdminFooterComponent } from './admin.footer.component';
-import { AdminLayoutComponent } from './admin.layout.component';
-import { AdminMenuComponent } from './admin.menu.component';
-import { AdminMenuitemComponent } from './admin.menuitem.component';
-import { AdminSidebarComponent } from './admin.sidebar.component';
-import { AdminTopBarComponent } from './admin.topbar.component';
+import { FooterComponent } from './components/footer.component';
+import { LayoutComponent } from './components/layout.component';
+import { MenuComponent } from './components/menu.component';
+import { MenuitemComponent } from './components/menuitem.component';
+import { SidebarComponent } from './components/sidebar.component';
+import { TopBarComponent } from './components/topbar.component';
+import { ConfigModule } from './config/config.module';
 
 @NgModule({
-  declarations: [
-    AdminMenuitemComponent,
-    AdminTopBarComponent,
-    AdminFooterComponent,
-    AdminMenuComponent,
-    AdminSidebarComponent,
-    AdminLayoutComponent,
-  ],
   imports: [
     CommonModule,
-    FormsModule,
     HttpClientModule,
+    RouterModule,
+    FormsModule,
     InputTextModule,
     SidebarModule,
     BadgeModule,
@@ -43,11 +36,18 @@ import { AdminTopBarComponent } from './admin.topbar.component';
     InputSwitchModule,
     RippleModule,
     OverlayPanelModule,
-    RouterModule,
-    LayoutConfigModule,
     ButtonModule,
-    SharedModule
+    SharedModule,
+    ConfigModule,
   ],
-  exports: [AdminLayoutComponent],
+  declarations: [
+    MenuitemComponent,
+    TopBarComponent,
+    FooterComponent,
+    MenuComponent,
+    SidebarComponent,
+    LayoutComponent,
+  ],
+  exports: [LayoutComponent],
 })
-export class AdminLayoutModule { }
+export class LayoutModule {}

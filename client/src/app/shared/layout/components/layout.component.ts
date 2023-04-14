@@ -1,27 +1,45 @@
+import { MenuItem } from 'primeng/api';
+import { OverlayPanel } from 'primeng/overlaypanel';
 import { Subscription, filter } from 'rxjs';
 
-import { Component, OnDestroy, Renderer2, ViewChild } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import {
+  AfterContentInit,
+  Component,
+  ContentChildren,
+  HostListener,
+  Input,
+  OnDestroy,
+  QueryList,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { LayoutService } from '@shared/layout/services/layout.service';
 
-import { DashboardSidebarComponent } from './dashboard.sidebar.component';
-import { DashboardTopBarComponent } from './dashboard.topbar.component';
+import { SidebarComponent } from './sidebar.component';
+import { TopBarComponent } from './topbar.component';
 
 @Component({
-  selector: 'dashboard-layout',
-  templateUrl: './dashboard.layout.component.html',
+  selector: 'app-layout',
+  templateUrl: './layout.component.html',
 })
-export class DashboardLayoutComponent implements OnDestroy {
+export class LayoutComponent implements OnDestroy, AfterContentInit {
+  @Input() sidebarMenuItems: MenuItem[] = [];
+
+  @ContentChildren('overlayPanel') overlayPanels!: QueryList<OverlayPanel>;
+
+  @ViewChild(SidebarComponent) appSidebar!: SidebarComponent;
+  @ViewChild(TopBarComponent) appTopbar!: TopBarComponent;
+
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll() {
+    this.hideOverlayPanels();
+  }
+
   overlayMenuOpenSubscription: Subscription;
-
   menuOutsideClickListener: any;
-
   profileMenuOutsideClickListener: any;
-
-  @ViewChild(DashboardSidebarComponent) appSidebar!: DashboardSidebarComponent;
-
-  @ViewChild(DashboardTopBarComponent) appTopbar!: DashboardTopBarComponent;
 
   constructor(
     public layoutService: LayoutService,
@@ -85,6 +103,22 @@ export class DashboardLayoutComponent implements OnDestroy {
         this.hideMenu();
         this.hideProfileMenu();
       });
+  }
+
+  ngAfterContentInit() {
+    this.router.events
+      .pipe(filter((e) => e instanceof NavigationStart))
+      .subscribe(() => {
+        this.hideOverlayPanels();
+      });
+  }
+
+  hideOverlayPanels() {
+    if (this.overlayPanels) {
+      this.overlayPanels.forEach((overlayPanel) => {
+        overlayPanel.hide();
+      });
+    }
   }
 
   hideMenu() {

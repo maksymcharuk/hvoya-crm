@@ -1,1 +1,80 @@
-<dashboard-layout></dashboard-layout>
+<app-layout [sidebarMenuItems]="sidebarMenuItems">
+  <ng-container topbar-menu>
+    <button
+      data-cy="balance-widget"
+      class="p-link layout-topbar-button w-max"
+      (click)="balance.toggle($event)"
+    >
+      <i class="pi pi-money-bill"></i>
+      <span class="topbar-button-text">Баланс</span>
+      <span class="ml-2" *ngIf="balance$ | async as balance">{{
+        balance.amount | currency
+      }}</span>
+    </button>
+    <p-overlayPanel #overlayPanel #balance>
+      <ng-template pTemplate
+        ><app-balance-widget></app-balance-widget
+      ></ng-template>
+    </p-overlayPanel>
+
+    <!-- <button
+      class="p-link layout-topbar-button"
+      (click)="notifications.toggle($event)"
+    >
+      <i class="pi pi-bell"></i>
+      <span class="topbar-button-text">Сповіщення</span>
+    </button>
+    <p-overlayPanel #overlayPanel #notifications>
+      <ng-template pTemplate> Сповіщення </ng-template>
+    </p-overlayPanel> -->
+
+    <button class="p-link layout-topbar-button" (click)="cart.toggle($event)">
+      <i
+        *ngIf="
+          cartItemsNumber$ | async as cartItemsNumber;
+          else shoppingIconWithoutBadge
+        "
+        class="pi pi-shopping-cart"
+        pBadge
+        [value]="cartItemsNumber.toString()"
+      ></i>
+      <ng-template #shoppingIconWithoutBadge>
+        <i class="pi pi-shopping-cart"></i>
+      </ng-template>
+      <span class="topbar-button-text">Кошик</span>
+    </button>
+    <p-overlayPanel #overlayPanel #cart>
+      <ng-template pTemplate><app-cart-widget></app-cart-widget></ng-template>
+    </p-overlayPanel>
+
+    <button
+      class="p-link layout-topbar-button"
+      (click)="account.toggle($event)"
+    >
+      <i class="pi pi-user"></i>
+      <span class="topbar-button-text">Акаунт</span>
+    </button>
+    <p-overlayPanel #overlayPanel #account>
+      <ng-template pTemplate>
+        <div class="layout-menu-dropdown">
+          <button
+            pButton
+            pRipple
+            type="button"
+            label="Акаунт"
+            class="p-button-text"
+            routerLink="account"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            label="Вийти"
+            class="p-button-text"
+            (click)="logout()"
+          ></button>
+        </div>
+      </ng-template>
+    </p-overlayPanel>
+  </ng-container>
+</app-layout>

@@ -1,13 +1,15 @@
 <div class="layout-wrapper" [ngClass]="containerClass">
-  <admin-topbar></admin-topbar>
+  <app-topbar>
+    <ng-content select="[topbar-menu]"></ng-content>
+  </app-topbar>
   <div class="layout-sidebar">
-    <admin-sidebar></admin-sidebar>
+    <app-sidebar [menuItems]="sidebarMenuItems"></app-sidebar>
   </div>
   <div class="layout-main-container">
     <div class="layout-main">
       <router-outlet></router-outlet>
     </div>
-    <admin-footer></admin-footer>
+    <app-footer></app-footer>
   </div>
   <app-config></app-config>
   <div class="layout-mask"></div>
