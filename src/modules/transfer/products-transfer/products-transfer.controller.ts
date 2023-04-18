@@ -11,15 +11,25 @@ import {
   ParseFilePipe,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+import { ProductBaseEntity } from '@entities/product-base.entity';
+import { ProductVariantEntity } from '@entities/product-variant.entity';
+import { Action } from '@enums/action.enum';
+
+import { JwtAuthGuard } from '../../../modules/auth/jwt-auth.guard';
+import { AppAbility } from '../../../modules/casl/casl-ability/casl-ability.factory';
+import { CheckPolicies } from '../../../modules/casl/check-policies.decorator';
+import { PoliciesGuard } from '../../../modules/casl/policies.guard';
 import { ImportProductsDto } from './dtos/import-products.dto';
 import { ProductsImportSource } from './enums/product-import-source.enum';
 import { PromProductsTransferService } from './services/prom-products-transfer/prom-products-transfer.service';
 
 @Controller('products-transfer')
+@UseGuards(JwtAuthGuard, PoliciesGuard)
 export class ProductsTransferController {
   constructor(
     private readonly httpService: HttpService,
@@ -27,6 +37,13 @@ export class ProductsTransferController {
   ) {}
 
   @Post('import')
+  @CheckPolicies(
+    (ability: AppAbility) =>
+      ability.can(Action.Create, ProductBaseEntity) &&
+      ability.can(Action.Update, ProductBaseEntity) &&
+      ability.can(Action.Create, ProductVariantEntity) &&
+      ability.can(Action.Update, ProductVariantEntity),
+  )
   @UseInterceptors(FileInterceptor('file'))
   async import(
     @Body() { source, link }: ImportProductsDto,
