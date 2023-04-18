@@ -6,6 +6,7 @@ client/.angular/
 # Configs
 env/*
 !env/example*
+secrets/*
 
 # Logs
 logs
