@@ -17,15 +17,16 @@ export class UserFreezeInterceptor implements NestInterceptor {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
   async intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<any>> {
-    if (context.switchToHttp().getRequest().user) {
+    const userToken = context.switchToHttp().getRequest().user;
+    if (userToken && userToken.user) {
       const user = await this.usersRepository.findOneByOrFail({
-        id: context.switchToHttp().getRequest().user.user.id,
+        id: userToken.user.id,
       });
 
       if (user.userFreezed === true) {

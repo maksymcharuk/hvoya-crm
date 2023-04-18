@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import {
+  EntityManager,
   EntitySubscriberInterface,
   EventSubscriber,
   InsertEvent,
@@ -18,8 +19,20 @@ export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {
     entity.password = await bcrypt.hash(entity.password, 8);
   }
 
-  beforeInsert(event: InsertEvent<UserEntity>): Promise<void> {
-    return this.hashPassword(event.entity);
+  async generateAccountNumber(entity: UserEntity, manager: EntityManager): Promise<void> {
+    if (entity.accountNumber) {
+      return;
+    };
+
+    let code: string;
+    do {
+      code = Math.floor(10000 + Math.random() * 90000).toString();
+    } while (await manager.findOne(UserEntity, { where: { accountNumber: code } }));
+    entity.accountNumber = code;
+  }
+
+  beforeInsert(event: InsertEvent<UserEntity>): Promise<void[]> {
+    return Promise.all([this.hashPassword(event.entity), this.generateAccountNumber(event.entity, event.manager)])
   }
 
   async beforeUpdate({

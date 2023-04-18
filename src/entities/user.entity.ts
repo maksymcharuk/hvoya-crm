@@ -64,6 +64,19 @@ export class UserEntity extends BaseEntity {
   })
   userFreezed: boolean;
 
+  @Column({
+    update: false,
+    unique: true,
+    nullable: true,
+  })
+  accountNumber: string;
+
+  @Column({
+    default: false,
+    update: false,
+  })
+  userTest: boolean;
+
   @OneToOne(() => CartEntity, (cart) => cart.owner)
   @JoinColumn()
   cart: CartEntity;
