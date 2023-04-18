@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { Api } from '@enums/api.enum';
+import { ApiClient } from '@enums/api.enum';
 
 @Injectable()
 export class JwtPrivatGuard extends AuthGuard('jwt') {
@@ -10,7 +10,7 @@ export class JwtPrivatGuard extends AuthGuard('jwt') {
   }
 
   override handleRequest(err: any, token: any) {
-    if (token && token.provider === Api.PrivatBank) {
+    if (token && token.provider === ApiClient.PrivatBank) {
       return token.provider;
     } else {
       throw err || new UnauthorizedException();

@@ -1,4 +1,3 @@
-export enum Api {
+export enum ApiClient {
   PrivatBank = 'PrivatBank',
-  OneC = 'OneC',
 }
