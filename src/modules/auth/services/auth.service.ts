@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
@@ -33,6 +34,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
+    private eventEmitter: EventEmitter2,
   ) { }
 
   async signIn(authSignInDto: AuthSignInDto) {
@@ -58,7 +60,7 @@ export class AuthService {
     const { email } = authSignUpDto;
 
     let user = await this.usersService.findByEmail(email);
-    let adminUsers = await this.usersService.getAllAdmins();
+    let adminUsers = await this.usersService.getAllSuperAdmins();
     if (user) {
       throw new HttpException(
         'Користувача з такою електронною поштою не знайдено',
@@ -84,12 +86,21 @@ export class AuthService {
       )}/auth/confirm-email?token=${access_token}`;
       const userUrl = `${appOrigin.get(
         this.configService.get('NODE_ENV') || Env.Development,
-      )}/users/${user.id}`;
+      )}/admin/users/${user.id}`;
       await this.mailService.send(new ConfirmEmailMail(user, url), user.email);
       await this.mailService.send(
         new ConfirmUserMail(user, userUrl),
         adminEmails,
       );
+
+      this.eventEmitter.emit(
+        'notification.user.created',
+        {
+          message: `Користувач ${user.firstName} ${user.lastName} створив акаунт`,
+          url: userUrl,
+        }
+      );
+
       await queryRunner.commitTransaction();
     } catch (err) {
       await queryRunner.rollbackTransaction();

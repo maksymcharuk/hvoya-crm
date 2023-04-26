@@ -73,8 +73,12 @@ export class UsersService {
     }
   }
 
-  async getAllAdmins(): Promise<UserEntity[]> {
+  async getAllSuperAdmins(): Promise<UserEntity[]> {
     return await this.usersRepository.findBy({ role: Role.SuperAdmin });
+  }
+
+  async getAllAdmins(): Promise<UserEntity[]> {
+    return await this.usersRepository.find({ where: [{ role: Role.SuperAdmin }, { role: Role.Admin }] });
   }
 
   async confirmUser(userId: number): Promise<UserEntity> {

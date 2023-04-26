@@ -3,6 +3,8 @@ import { FilesService } from 'src/modules/files/services/files.service';
 import { DataSource, In } from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ConfigService } from '@nestjs/config';
 
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderWaybillDto } from '@dtos/update-order-waybill.dto';
@@ -16,10 +18,12 @@ import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
+import { Env } from '@enums/env.enum';
 
 import { BalanceService } from '../../../modules/balance/services/balance.service';
 import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
 import { CartService } from '../../cart/services/cart.service';
+import { appOrigin } from '../../../config';
 
 @Injectable()
 export class OrdersService {
@@ -29,7 +33,9 @@ export class OrdersService {
     private cartService: CartService,
     private caslAbilityFactory: CaslAbilityFactory,
     private balanceService: BalanceService,
-  ) {}
+    private eventEmitter: EventEmitter2,
+    private configService: ConfigService,
+  ) { }
 
   async getOrder(userId: number, orderId: number): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -174,6 +180,18 @@ export class OrdersService {
 
       await this.cartService.clearCart(userId);
 
+      const notificationUrl = `${appOrigin.get(
+        this.configService.get('NODE_ENV') || Env.Development,
+      )}/admin/orders/${order.id}`;
+
+      this.eventEmitter.emit(
+        'notification.order.created',
+        {
+          message: `Нове замовлення №${order.id}`,
+          url: notificationUrl,
+        }
+      );
+
       await queryRunner.commitTransaction();
       return this.getOrder(userId, order.id);
     } catch (err) {
@@ -201,7 +219,7 @@ export class OrdersService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      let order = await this.getOrderWhere({ id: orderId });
+      let order = await this.getOrderWhere({ id: orderId }, ['customer']);
 
       if (waybill) {
         waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
@@ -233,13 +251,26 @@ export class OrdersService {
           },
         );
 
+        const notificationUrl = `${appOrigin.get(
+          this.configService.get('NODE_ENV') || Env.Development,
+        )}/dashboard/orders/${order.id}`;
+
+        this.eventEmitter.emit(
+          'notification.order.updated',
+          {
+            message: `Статус вашого замовлення ${order.id} змінено на ${order.status}`,
+            url: notificationUrl,
+            userId: order.customer.id,
+          }
+        );
+
         await queryRunner.manager.update(OrderEntity, orderId, {
           status: updateOrderDto.orderStatus,
         });
       }
 
       await queryRunner.commitTransaction();
-      return this.getOrderWhere({ id: orderId });
+      return this.getOrderWhere({ id: orderId }, ['customer']);
     } catch (err) {
       try {
         if (waybillScan) {

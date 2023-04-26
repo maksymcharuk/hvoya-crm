@@ -14,6 +14,8 @@ import { NavigationStart, Router } from '@angular/router';
 
 import { LayoutService } from '@shared/layout/services/layout.service';
 import { AuthService } from '@shared/services/auth.service';
+import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
+import { NotificationsService } from '@shared/services/notifications.service';
 
 @Component({
   selector: 'admin-topbar',
@@ -32,11 +34,15 @@ export class AdminTopBarComponent implements AfterViewInit {
     this.hideOverlayPanels();
   }
 
+  notificationsList: NotificationEntity[] = [];
+  uncheckedNotifications: string = '0';
+
   constructor(
     public layoutService: LayoutService,
     private authService: AuthService,
     private router: Router,
-  ) {}
+    private notificationsService: NotificationsService,
+  ) { }
 
   ngAfterViewInit() {
     this.router.events
@@ -44,6 +50,7 @@ export class AdminTopBarComponent implements AfterViewInit {
       .subscribe(() => {
         this.hideOverlayPanels();
       });
+    this.getNotifications();
   }
 
   logout() {
@@ -55,6 +62,24 @@ export class AdminTopBarComponent implements AfterViewInit {
       this.overlayPanels.forEach((overlayPanel) => {
         overlayPanel.hide();
       });
+    }
+  }
+
+  getNotifications() {
+    this.notificationsService.getNotifications()
+      .subscribe((notifications: NotificationEntity[]) => {
+        this.notificationsList = notifications;
+        this.uncheckedNotifications = this.notificationsList.filter((notification) => !notification.checked).length.toString();
+      });
+  }
+
+  checkNotification(notification: NotificationEntity) {
+    if (!notification.checked) {
+      this.notificationsService.checkNotification(notification.id)
+        .subscribe((notifications: NotificationEntity[]) => {
+          this.notificationsList = notifications;
+          this.uncheckedNotifications = this.notificationsList.filter((notification) => !notification.checked).length.toString();
+        });
     }
   }
 }

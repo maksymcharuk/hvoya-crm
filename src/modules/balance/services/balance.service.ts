@@ -15,7 +15,7 @@ import { TransactionStatus } from '@enums/transaction-status.enum';
 export class BalanceService {
   constructor(
     @InjectRepository(BalanceEntity)
-    private balanceRepository: Repository<BalanceEntity>,
+    private balanceRepository: Repository<BalanceEntity>
   ) { }
 
   getByUserId(userId: number): Promise<BalanceEntity> {

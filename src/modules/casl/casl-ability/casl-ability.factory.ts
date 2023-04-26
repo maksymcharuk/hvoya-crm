@@ -18,6 +18,7 @@ import { ProductSizeEntity } from '@entities/product-size.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { BalanceEntity } from '@entities/balance.entity';
+import { NotificationEntity } from '@entities/notification.entity';
 
 import { Action } from '@enums/action.enum';
 import { OrderStatus } from '@enums/order-status.enum';
@@ -35,6 +36,7 @@ type Subjects =
     | typeof OrderEntity
     | typeof FaqEntity
     | typeof BalanceEntity
+    | typeof NotificationEntity
   >
   | 'all';
 
@@ -84,6 +86,8 @@ export class CaslAbilityFactory {
       can([Action.Read, Action.Create, Action.Update], FaqEntity);
       // Balance
       can([Action.Read, Action.Update], BalanceEntity);
+      // Notifications
+      can([Action.Read, Action.Create, Action.Update], NotificationEntity);
     }
 
     if (user.role === Role.User) {
@@ -113,6 +117,8 @@ export class CaslAbilityFactory {
       ); // can read only published faq
       // Balance
       can([Action.Read], BalanceEntity);
+      // Notifications
+      can([Action.Read], NotificationEntity);
     }
 
     if (user.role === Role.SuperAdmin || user.role === Role.Admin) {

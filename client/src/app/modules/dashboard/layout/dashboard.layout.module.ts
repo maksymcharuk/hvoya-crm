@@ -6,6 +6,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
 import { SidebarModule } from 'primeng/sidebar';
+import { VirtualScrollerModule } from 'primeng/virtualscroller';
 
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -51,6 +52,7 @@ import { BalanceModule } from '../modules/balance/balance.module';
     CartModule,
     SharedModule,
     BalanceModule,
+    VirtualScrollerModule,
   ],
   exports: [DashboardLayoutComponent],
 })
