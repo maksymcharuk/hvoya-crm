@@ -22,12 +22,7 @@ export class PhoneNumberPipe implements PipeTransform {
     const formattedNumber = `+38 (${phoneNumber.slice(
       0,
       3,
-    )}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(
-      6,
-      8,
-    )}-${phoneNumber.slice(8)}`;
-
-    console.log('formattedNumber', formattedNumber);
+    )}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
 
     return formattedNumber;
   }
