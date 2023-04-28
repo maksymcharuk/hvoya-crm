@@ -1,13 +1,24 @@
-.confirm-page-wrapper {
-    height: 100vh;
+.confirm-email {
+  background-color: var(--primary-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 30px;
+
+  img {
+    margin-bottom: 20px;
+  }
+
+  &__wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: relative;
-
-    &-logo {
-        top: 120px;
-        position: absolute;
-    }
+    background-color: #ffffff;
+    padding: 30px 30px 50px;
+    max-width: 100%;
+    width: 700px;
+  }
 }

@@ -67,7 +67,9 @@ describe('Auth', () => {
       cy.contains('Дякуємо за реєстрацію');
 
       cy.signIn(uniqueEmail, 'Test12345');
-      cy.checkToastMessage('Електронну пошту не підтверджено');
+      cy.checkToastMessage(
+        'Будь ласка, підтвердіть вашу електронну пошту. Ми відправили вам лист з посиланням для підтвердження.',
+      );
     });
 
     it('Register new user, confirm email and try to sign in without user confirmation', () => {
@@ -75,7 +77,9 @@ describe('Auth', () => {
       const password = 'Test12345';
       cy.registerNewUser(email, password, { confirm: false });
       cy.signIn(email, password);
-      cy.checkToastMessage('Ваш акаунт не підтверджено');
+      cy.checkToastMessage(
+        'Ваш акаунт ще не підтверджено. Зачекайте або зверніться до менеджера.',
+      );
     });
 
     it('Register new user, confirm email, confirm user as SuperAdmin and sign in', () => {
@@ -193,7 +197,9 @@ describe('Auth', () => {
       cy.registerNewUser(email, password, { confirm: true });
       cy.freezeUser(email);
       cy.signIn(email, password);
-      cy.checkToastMessage('Ваш акаунт тимчасово призупинено');
+      cy.checkToastMessage(
+        'Вибачте, ваш акаунт тимчасово призупинено. Зверніться до менеджера за більш детальною інформацією.',
+      );
     });
 
     it('Unfreeze user', () => {

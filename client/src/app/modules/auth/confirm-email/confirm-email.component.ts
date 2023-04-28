@@ -11,37 +11,19 @@ import { AuthService } from '@shared/services/auth.service';
   styleUrls: ['./confirm-email.component.scss'],
 })
 export class ConfirmEmailComponent implements OnInit {
-  dots: string = '';
-  dotsInterval: ReturnType<typeof setInterval> = setInterval(() => {}, 0);
-
   constructor(
-    private authService: AuthService,
-    private activatedRoute: ActivatedRoute,
     private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
-    this.dotsInterval = setInterval(() => {
-      if (this.dots.length < 3) {
-        this.dots += '.';
-      } else {
-        this.dots = '';
-      }
-    }, 500);
-
-    this.activatedRoute.queryParams.subscribe((params) => {
-      const confirmEmailToken = params['token'];
-
-      this.authService
-        .confirmEmail({ confirmEmailToken })
-        .pipe(delay(3000))
-        .subscribe(() => {
-          this.router.navigateByUrl('auth/sign-in');
-        });
-    });
-  }
-
-  ngOnDestroy(): void {
-    clearInterval(this.dotsInterval);
+    const confirmEmailToken = this.route.snapshot.queryParams['token'];
+    this.authService
+      .confirmEmail({ confirmEmailToken })
+      .pipe(delay(5000))
+      .subscribe(() => {
+        this.router.navigateByUrl('auth/sign-in');
+      });
   }
 }
