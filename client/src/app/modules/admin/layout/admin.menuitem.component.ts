@@ -18,6 +18,7 @@ import {
 import { NavigationEnd, Router } from '@angular/router';
 
 import { LayoutService } from '@shared/layout/services/layout.service';
+import { NotificationsService } from '@shared/services/notifications.service';
 
 import { MenuService } from '../../../shared/layout/services/menu.service';
 
@@ -79,6 +80,7 @@ import { MenuService } from '../../../shared/layout/services/menu.service';
           class="pi pi-fw pi-angle-down layout-submenu-toggler"
           *ngIf="item.items"
         ></i>
+        <span *ngIf="item.badge" class="layout-submenu-toggler mr-2" pBadge [value]="item.badge"></span>
       </a>
 
       <ul
@@ -139,6 +141,7 @@ export class AdminMenuitemComponent implements OnInit, OnDestroy {
     public layoutService: LayoutService,
     public router: Router,
     private menuService: MenuService,
+    private notificationsService: NotificationsService,
   ) {
     this.menuSourceSubscription = this.menuService.menuSource$.subscribe(
       (value) => {
@@ -181,6 +184,9 @@ export class AdminMenuitemComponent implements OnInit, OnDestroy {
     if (this.item.routerLink) {
       this.updateActiveStateFromRoute();
     }
+    if (this.item.title) {
+      this.getNotificationCount();
+    }
   }
 
   updateActiveStateFromRoute() {
@@ -218,6 +224,15 @@ export class AdminMenuitemComponent implements OnInit, OnDestroy {
 
   get submenuAnimation() {
     return this.root ? 'expanded' : this.active ? 'expanded' : 'collapsed';
+  }
+
+  getNotificationCount() {
+    this.notificationsService.notifications$.subscribe((notifications) => {
+      const filteredNotifications = notifications.filter(
+        (notification) => notification.type === this.item.title && !notification.checked
+      );
+      this.item.badge = filteredNotifications.length > 0 ? filteredNotifications.length.toString() : null;
+    });
   }
 
   @HostBinding('class.active-menuitem')

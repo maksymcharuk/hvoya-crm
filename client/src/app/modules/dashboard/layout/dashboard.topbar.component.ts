@@ -14,6 +14,7 @@ import { NavigationStart, Router } from '@angular/router';
 
 import { LayoutService } from '@shared/layout/services/layout.service';
 import { AuthService } from '@shared/services/auth.service';
+import { NotificationsService } from '@shared/services/notifications.service';
 
 import { CartService } from '../modules/cart/services/cart/cart.service';
 import { UserBalanceService } from '../modules/balance/services/user-balance.service';
@@ -37,12 +38,15 @@ export class DashboardTopBarComponent implements AfterViewInit {
     this.hideOverlayPanels();
   }
 
+  uncheckedNotifications$ = this.notificationsService.notificationsNumber$;
+
   constructor(
     public layoutService: LayoutService,
     private cartService: CartService,
     private authService: AuthService,
     private router: Router,
     private userBalance: UserBalanceService,
+    private notificationsService: NotificationsService,
   ) { }
 
   ngAfterViewInit() {

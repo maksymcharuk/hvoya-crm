@@ -1,0 +1,45 @@
+<ng-container *ngIf="notificationsList$ | async as list">
+  <p-virtualScroller
+    *ngIf="list.length > 0; else noNotifications"
+    [value]="list"
+    [style]="{ width: '200px' }"
+    scrollHeight="200px"
+    [itemSize]="50"
+  >
+    <ng-template pTemplate="item" let-notification>
+      <a
+        *ngIf="
+          notification.type !== notificationType.Info;
+          else infoNotification
+        "
+        [routerLink]="getPath(notification)"
+        class="flex align-items-center justify-content-between p-2 h-full cursor-pointer text-color"
+        (click)="checkNotification(notification)"
+      >
+        <span>{{ notification.message }}</span>
+        <i
+          class="pi pi-circle-fill"
+          [style]="notification.checked ? 'color: #a6a6a6' : 'color: #f9d10a'"
+        ></i>
+      </a>
+      <ng-template #infoNotification>
+        <span
+          class="flex align-items-center justify-content-between p-2 h-full cursor-pointer text-color"
+          (click)="checkNotification(notification)"
+        >
+          <span>{{ notification.message }}</span>
+          <i
+            class="pi pi-circle-fill"
+            [style]="notification.checked ? 'color: #a6a6a6' : 'color: #f9d10a'"
+          ></i>
+        </span>
+      </ng-template>
+    </ng-template>
+  </p-virtualScroller>
+</ng-container>
+
+<ng-template #noNotifications>
+  <div class="flex align-items-center justify-content-center p-2 h-full">
+    <span class="text-color">Сповіщень немає</span>
+  </div>
+</ng-template>

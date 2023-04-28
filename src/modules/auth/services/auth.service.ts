@@ -11,11 +11,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Env } from '@enums/env.enum';
+import { NotificationEvent } from '@enums/notification-event.enum';
+import { NotificationType } from '@enums/notification-type.enum';
 import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 
 import { appOrigin } from '../../../config';
@@ -33,6 +36,7 @@ export class AuthService {
     private jwtService: JwtService,
     private mailService: MailService,
     private configService: ConfigService,
+    private eventEmitter: EventEmitter2,
   ) { }
 
   async signIn(authSignInDto: AuthSignInDto) {
@@ -58,7 +62,7 @@ export class AuthService {
     const { email } = authSignUpDto;
 
     let user = await this.usersService.findByEmail(email);
-    let adminUsers = await this.usersService.getAllAdmins();
+    let adminUsers = await this.usersService.getAllSuperAdmins();
     if (user) {
       throw new HttpException(
         'Користувача з такою електронною поштою не знайдено',
@@ -84,12 +88,24 @@ export class AuthService {
       )}/auth/confirm-email?token=${access_token}`;
       const userUrl = `${appOrigin.get(
         this.configService.get('NODE_ENV') || Env.Development,
-      )}/users/${user.id}`;
+      )}/admin/users/${user.id}`;
       await this.mailService.send(new ConfirmEmailMail(user, url), user.email);
       await this.mailService.send(
         new ConfirmUserMail(user, userUrl),
         adminEmails,
       );
+
+      this.eventEmitter.emit(
+        NotificationEvent.UserCreated,
+        {
+          message: `Користувач ${user.firstName} ${user.lastName} створив акаунт`,
+          data: {
+            id: user.id,
+          },
+          type: NotificationType.User,
+        }
+      );
+
       await queryRunner.commitTransaction();
     } catch (err) {
       await queryRunner.rollbackTransaction();

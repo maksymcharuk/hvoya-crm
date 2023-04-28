@@ -2,11 +2,14 @@ import { DataSource, QueryRunner, Repository } from 'typeorm';
 
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { CreateUserDto } from '@dtos/create-user.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Role } from '@enums/role.enum';
 import { Action } from '@enums/action.enum';
+import { NotificationEvent } from '@enums/notification-event.enum';
+import { NotificationType } from '@enums/notification-type.enum';
 import { BalanceEntity } from '@entities/balance.entity';
 
 import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
@@ -18,6 +21,7 @@ export class UsersService {
     private usersRepository: Repository<UserEntity>,
     private dataSource: DataSource,
     private caslAbilityFactory: CaslAbilityFactory,
+    private eventEmitter: EventEmitter2,
   ) { }
 
   async create(
@@ -73,12 +77,28 @@ export class UsersService {
     }
   }
 
-  async getAllAdmins(): Promise<UserEntity[]> {
+  async getAllSuperAdmins(): Promise<UserEntity[]> {
     return await this.usersRepository.findBy({ role: Role.SuperAdmin });
+  }
+
+  async getAllAdmins(): Promise<UserEntity[]> {
+    return await this.usersRepository.find({ where: [{ role: Role.SuperAdmin }, { role: Role.Admin }] });
   }
 
   async confirmUser(userId: number): Promise<UserEntity> {
     const user = await this.usersRepository.findOneByOrFail({ id: userId });
+
+    this.eventEmitter.emit(
+      NotificationEvent.UserConfirmed,
+      {
+        message: `Користувач ${user.firstName} ${user.lastName} створив акаунт`,
+        data: {
+          id: user.id,
+        },
+        type: NotificationType.User,
+      }
+    );
+
     return await this.usersRepository.save({ ...user, userConfirmed: true });
   }
 

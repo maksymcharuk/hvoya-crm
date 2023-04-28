@@ -3,12 +3,16 @@ import { MenuItem } from 'primeng/api';
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 
+import { NotificationType } from '@shared/enums/notification-type.enum';
+
 @Component({
   selector: 'admin-menu',
   templateUrl: './admin.menu.component.html',
 })
 export class AdminMenuComponent implements OnInit {
   model: MenuItem[] = [];
+
+  constructor() { }
 
   ngOnInit() {
     this.model = [
@@ -56,11 +60,15 @@ export class AdminMenuComponent implements OnInit {
             label: 'Замовлення',
             icon: 'pi pi-fw pi-shopping-bag',
             routerLink: ['orders'],
+            badge: '',
+            title: NotificationType.Order,
           },
           {
             label: 'Користувачі',
             icon: 'pi pi-fw pi-users',
             routerLink: ['users'],
+            badge: '',
+            title: NotificationType.User,
           },
           // {
           //   label: 'Запити',

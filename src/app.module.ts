@@ -7,6 +7,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { UserEntity } from '@entities/user.entity';
 
@@ -25,6 +26,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { UsersModule } from './modules/users/users.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -56,6 +58,8 @@ import { UsersModule } from './modules/users/users.module';
     FaqModule,
     BalanceModule,
     TransferModule,
+    EventEmitterModule.forRoot(),
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -66,4 +70,4 @@ import { UsersModule } from './modules/users/users.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

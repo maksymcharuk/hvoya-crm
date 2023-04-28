@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { LayoutConfigModule } from '@shared/layout/layout-config.module';
+import { SharedModule } from '@shared/shared.module';
 
 import { AdminFooterComponent } from './admin.footer.component';
 import { AdminLayoutComponent } from './admin.layout.component';
@@ -45,7 +46,8 @@ import { AdminTopBarComponent } from './admin.topbar.component';
     RouterModule,
     LayoutConfigModule,
     ButtonModule,
+    SharedModule
   ],
   exports: [AdminLayoutComponent],
 })
-export class AdminLayoutModule {}
+export class AdminLayoutModule { }

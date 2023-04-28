@@ -14,6 +14,7 @@ import { NavigationStart, Router } from '@angular/router';
 
 import { LayoutService } from '@shared/layout/services/layout.service';
 import { AuthService } from '@shared/services/auth.service';
+import { NotificationsService } from '@shared/services/notifications.service';
 
 @Component({
   selector: 'admin-topbar',
@@ -21,6 +22,7 @@ import { AuthService } from '@shared/services/auth.service';
 })
 export class AdminTopBarComponent implements AfterViewInit {
   items!: MenuItem[];
+  uncheckedNotifications$ = this.notificationsService.notificationsNumber$;
 
   @ViewChild('menubutton') menuButton!: ElementRef;
   @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
@@ -36,7 +38,8 @@ export class AdminTopBarComponent implements AfterViewInit {
     public layoutService: LayoutService,
     private authService: AuthService,
     private router: Router,
-  ) {}
+    private notificationsService: NotificationsService,
+  ) { }
 
   ngAfterViewInit() {
     this.router.events
