@@ -1,15 +1,29 @@
 <app-layout [sidebarMenuItems]="sidebarMenuItems">
   <ng-container topbar-menu>
-    <!-- <button
-        class="p-link layout-topbar-button"
-        (click)="notifications.toggle($event)"
+    <button
+      class="p-link layout-topbar-button"
+      (click)="notifications.toggle($event)"
+    >
+      <ng-container
+        *ngIf="notificationsNumber$ | async as notificationsNumber; else bell"
       >
+        <i
+          class="pi pi-bell"
+          pBadge
+          [value]="notificationsNumber.toString()"
+        ></i>
+      </ng-container>
+      <ng-template #bell>
         <i class="pi pi-bell"></i>
-        <span class="topbar-button-text">Notifications</span>
-      </button>
-      <p-overlayPanel #overlayPanel #notifications>
-        <ng-template pTemplate>Сповіщення</ng-template>
-      </p-overlayPanel> -->
+      </ng-template>
+
+      <span class="topbar-button-text">Сповіщення</span>
+    </button>
+    <p-overlayPanel #overlayPanel #notifications>
+      <ng-template pTemplate>
+        <app-notifications></app-notifications>
+      </ng-template>
+    </p-overlayPanel>
 
     <button
       class="p-link layout-topbar-button"

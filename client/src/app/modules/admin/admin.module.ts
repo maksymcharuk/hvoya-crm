@@ -1,3 +1,4 @@
+import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 
@@ -18,6 +19,7 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
     AdminRoutingModule,
     ButtonModule,
     OverlayPanelModule,
+    BadgeModule,
     LayoutModule,
     SharedModule,
   ],

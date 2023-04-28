@@ -52,10 +52,11 @@ export class FaqController {
   @Put(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Update, FaqEntity))
   update(
+    @User('id') userId: number,
     @Param('id', ParseIntPipe) id: number,
     @Body() faq: UpdateFaqDto,
   ): Promise<FaqEntity> {
-    return this.faqService.update(id, faq);
+    return this.faqService.update(id, faq, userId);
   }
 
   @Put()

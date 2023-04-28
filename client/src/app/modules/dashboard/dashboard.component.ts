@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+import { NotificationType } from '@shared/enums/notification-type.enum';
 import { AccountService } from '@shared/services/account.service';
 import { AuthService } from '@shared/services/auth.service';
 import { NotificationsService } from '@shared/services/notifications.service';
@@ -20,6 +21,7 @@ import { CartService } from './modules/cart/services/cart/cart.service';
 })
 export class DashboardComponent {
   cartItemsNumber$ = this.cartService.cartItemsNumber$;
+  notificationsNumber$ = this.notificationsService.notificationsNumber$;
   balance$ = this.userBalance.balance$;
   sidebarMenuItems = [
     {
@@ -39,6 +41,8 @@ export class DashboardComponent {
           label: 'Замовлення',
           icon: 'pi pi-fw pi-shopping-bag',
           routerLink: ['orders'],
+          badge: '',
+          title: NotificationType.Order,
         },
         // {
         //   label: 'Запити',
@@ -61,6 +65,7 @@ export class DashboardComponent {
     private cartService: CartService,
     private userBalance: UserBalanceService,
     private authService: AuthService,
+    private notificationsService: NotificationsService,
   ) {}
 
   logout() {

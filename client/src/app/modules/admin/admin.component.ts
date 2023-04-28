@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+import { NotificationType } from '@shared/enums/notification-type.enum';
 import { AccountService } from '@shared/services/account.service';
 import { AuthService } from '@shared/services/auth.service';
 import { NotificationsService } from '@shared/services/notifications.service';
@@ -11,6 +12,7 @@ import { NotificationsService } from '@shared/services/notifications.service';
   providers: [AccountService, NotificationsService],
 })
 export class AdminComponent {
+  notificationsNumber$ = this.notificationsService.notificationsNumber$;
   sidebarMenuItems = [
     {
       label: '',
@@ -56,11 +58,15 @@ export class AdminComponent {
           label: 'Замовлення',
           icon: 'pi pi-fw pi-shopping-bag',
           routerLink: ['orders'],
+          badge: '',
+          title: NotificationType.Order,
         },
         {
           label: 'Користувачі',
           icon: 'pi pi-fw pi-users',
           routerLink: ['users'],
+          badge: '',
+          title: NotificationType.User,
         },
         // {
         //   label: 'Запити',
@@ -79,7 +85,10 @@ export class AdminComponent {
     },
   ];
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private notificationsService: NotificationsService,
+  ) {}
 
   logout() {
     this.authService.logout();

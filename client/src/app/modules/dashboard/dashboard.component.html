@@ -17,16 +17,30 @@
       ></ng-template>
     </p-overlayPanel>
 
-    <!-- <button
+    <button
       class="p-link layout-topbar-button"
       (click)="notifications.toggle($event)"
     >
-      <i class="pi pi-bell"></i>
+      <ng-container
+        *ngIf="notificationsNumber$ | async as notificationsNumber; else bell"
+      >
+        <i
+          class="pi pi-bell"
+          pBadge
+          [value]="notificationsNumber.toString()"
+        ></i>
+      </ng-container>
+      <ng-template #bell>
+        <i class="pi pi-bell"></i>
+      </ng-template>
+
       <span class="topbar-button-text">Сповіщення</span>
     </button>
     <p-overlayPanel #overlayPanel #notifications>
-      <ng-template pTemplate> Сповіщення </ng-template>
-    </p-overlayPanel> -->
+      <ng-template pTemplate>
+        <app-notifications></app-notifications>
+      </ng-template>
+    </p-overlayPanel>
 
     <button class="p-link layout-topbar-button" (click)="cart.toggle($event)">
       <i
