@@ -1,5 +1,7 @@
 <div class="sign-up">
-  <img src="assets/images/logo.svg" alt="logo" />
+  <a routerLink="/">
+    <img src="assets/images/logo.svg" alt="logo" />
+  </a>
   <div class="sign-up-wrapper">
     <div class="sign-up-wrapper-title">
       <h3>Реєстрація</h3>
@@ -8,7 +10,7 @@
       <div class="sign-up-wrapper-form">
         <div class="p-fluid formgrid grid">
           <!-- Left column -->
-          <div class="col-6">
+          <div class="col-12 md:col-6">
             <div class="field">
               <label for="email">Пошта</label>
               <div class="p-input-icon-right">
@@ -158,7 +160,7 @@
               </p-password>
               <app-form-control-error-message
                 [formGroup]="signUpForm"
-                controlName="password"
+                controlName="confirmPassword"
                 errorType="required"
                 errorMessage="Потрібно підтвердити пароль"
               >
@@ -166,7 +168,7 @@
             </div>
           </div>
           <!-- Right column -->
-          <div class="col-6 flex">
+          <div class="col-12 md:col-6 flex">
             <div class="field flex flex-column">
               <label for="bio" class="flex-none">Опис організації</label>
               <textarea
@@ -205,21 +207,3 @@
     </form>
   </div>
 </div>
-
-<p-dialog
-  [(visible)]="displayConfirmEmailModal"
-  [dismissableMask]="true"
-  [modal]="true"
-  class="confirm-email-dialog"
-  [style]="{ width: '50vw' }"
-  [draggable]="false"
-  [resizable]="false"
->
-  <p class="confirm-email-dialog-text">
-    Дякуємо за реєстрацію. Ми відправили вам листа з посиланням для
-    підтвердження вашої електронної адреси. Якщо ви не бачите листа, будь ласка,
-    перевірте папку спам. Також наш менеджер зв'яжеться з вами для підтвердження
-    вашої організації та отримання доступу до системи.
-  </p>
-  <p class="confirm-email-dialog-email">{{ confirmEmailValue }}</p>
-</p-dialog>

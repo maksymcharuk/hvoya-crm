@@ -24,8 +24,6 @@ export class ProfileComponent implements OnInit {
     lastName: [''],
     location: [''],
     bio: [''],
-    cardNumber: [''],
-    cardholderName: [''],
   }) as UpdateUserProfileFormGroup;
 
   constructor(
@@ -43,8 +41,6 @@ export class ProfileComponent implements OnInit {
           lastName: profile.lastName,
           location: profile.location,
           bio: profile.bio,
-          cardNumber: profile.cardNumber,
-          cardholderName: profile.cardholderName,
         });
       }
     });

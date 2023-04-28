@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ForgotPasswordConfirmationComponent } from './forgot-password-confirmation.component';
+
+describe('ForgotPasswordConfirmationComponent', () => {
+  let component: ForgotPasswordConfirmationComponent;
+  let fixture: ComponentFixture<ForgotPasswordConfirmationComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ ForgotPasswordConfirmationComponent ]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(ForgotPasswordConfirmationComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

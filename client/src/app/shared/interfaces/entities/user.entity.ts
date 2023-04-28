@@ -10,8 +10,6 @@ export class User extends BaseEntity {
   phoneNumber: string;
   location: string;
   bio: string;
-  cardNumber: string;
-  cardholderName: string;
   role: Role;
   emailConfirmed: boolean;
   userConfirmed: boolean;
@@ -26,8 +24,6 @@ export class User extends BaseEntity {
     this.phoneNumber = data?.phoneNumber || '';
     this.location = data?.location || '';
     this.bio = data?.bio || '';
-    this.cardNumber = data?.cardNumber || '';
-    this.cardholderName = data?.cardholderName || '';
     this.role = data?.role || Role.User;
     this.emailConfirmed =
       data?.emailConfirmed !== undefined ? data.emailConfirmed : true;

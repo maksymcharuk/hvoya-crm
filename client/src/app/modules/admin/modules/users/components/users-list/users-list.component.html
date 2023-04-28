@@ -66,7 +66,7 @@
           {{ user.middleName }}
         </td>
         <td>{{ user.email }}</td>
-        <td>{{ user.phoneNumber }}</td>
+        <td>{{ user.phoneNumber | phoneNumber }}</td>
         <td>{{ user.userConfirmed ? 'Так' : 'Ні' }}</td>
         <td>{{ user.emailConfirmed ? 'Так' : 'Ні' }}</td>
         <td>{{ user.userFreezed ? 'Так' : 'Ні' }}</td>

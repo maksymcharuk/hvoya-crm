@@ -6,8 +6,6 @@ export interface GetProfileResponse {
   phoneNumber: string;
   location: string;
   bio: string;
-  cardNumber: string;
-  cardholderName: string;
   role: string;
   emailConfirmed: boolean;
   createdAt: string;
