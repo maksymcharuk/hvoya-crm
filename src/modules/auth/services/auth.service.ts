@@ -47,11 +47,18 @@ export class AuthService {
     }
 
     if (user.emailConfirmed === false) {
-      throw new ConflictException('Електронну пошту не підтверджено');
+      throw new ConflictException(
+        'Будь ласка, підтвердіть вашу електронну пошту. Ми відправили вам лист з посиланням для підтвердження.',
+      );
     } else if (user.userConfirmed === false) {
-      throw new ForbiddenException('Ваш акаунт не підтверджено');
+      throw new ForbiddenException(
+        'Ваш акаунт ще не підтверджено. Зачекайте або зверніться до менеджера.',
+      );
     } else if (user.userFreezed === true) {
-      throw new HttpException('Ваш акаунт тимчасово призупинено', 406);
+      throw new HttpException(
+        'Вибачте, ваш акаунт тимчасово призупинено. Зверніться до менеджера за більш детальною інформацією.',
+        406,
+      );
     }
 
     return this.signToken(user);

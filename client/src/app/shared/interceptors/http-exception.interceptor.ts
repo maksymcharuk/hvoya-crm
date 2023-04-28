@@ -32,7 +32,8 @@ export class HttpExceptionInterceptor implements HttpInterceptor {
           if (err.status === 406) {
             this.messageService.add({
               severity: 'error',
-              summary: 'Ваш акаунт тимчасово призупинено.',
+              summary:
+                'Вибачте, ваш акаунт тимчасово призупинено. Зверніться до менеджера за більш детальною інформацією.',
               detail: err.error.message,
             });
             this.authService.logout();
