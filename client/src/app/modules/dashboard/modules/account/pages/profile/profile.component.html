@@ -42,21 +42,6 @@
       formControlName="bio"
     ></textarea>
   </div>
-  <h5>Дані оплати</h5>
-  <div class="field">
-    <label for="card-number">Номер картки::</label>
-    <p-inputMask
-      inputId="card-number"
-      formControlName="cardNumber"
-      mask="9999 9999 9999 9999"
-      slotChar=" "
-      [autoClear]="false"
-    ></p-inputMask>
-  </div>
-  <div class="field">
-    <label for="cardholder-name">Ім'я власника картки:</label>
-    <input id="cardholder-name" pInputText formControlName="cardholderName" />
-  </div>
   <button
     pButton
     type="submit"

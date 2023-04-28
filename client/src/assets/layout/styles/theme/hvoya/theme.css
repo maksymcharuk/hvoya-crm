@@ -7035,9 +7035,20 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   color: var(--surface-0) !important;
 }
 
+@media screen and (max-width: 991px) {
+  .layout-topbar-menu-mobile-active .layout-topbar-button {
+    color: var(--surface-900) !important;
+  }
+}
+
 .layout-topbar .layout-topbar-button:hover {
-  background-color: transparent !important;
   color: var(--text-secondary) !important;
+}
+
+@media screen and (max-width: 991px) {
+  .layout-topbar-menu-mobile-active .layout-topbar-button:hover {
+    color: var(--surface-800) !important;
+  }
 }
 
 .layout-topbar .layout-topbar-button .p-badge {

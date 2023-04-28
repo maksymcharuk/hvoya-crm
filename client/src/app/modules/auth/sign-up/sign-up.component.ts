@@ -1,6 +1,9 @@
+import { finalize } from 'rxjs';
+
 import { Component, OnInit } from '@angular/core';
 import { AbstractControlOptions, FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import {
   SignUpDTO,
@@ -8,8 +11,6 @@ import {
 } from '@shared/interfaces/dto/sign-up.dto';
 import { AuthService } from '@shared/services/auth.service';
 import { PasswordValidators } from '@shared/validators/password-validator';
-
-import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-sign-up',
@@ -21,8 +22,6 @@ export class SignUpComponent implements OnInit {
   hasUpperCase: boolean | undefined = true;
   hasNumeric: boolean | undefined = true;
   hasMinLength: boolean | undefined = true;
-  displayConfirmEmailModal: boolean = false;
-  confirmEmailValue: string = '';
   isLoading: boolean = false;
 
   signUpForm = this.formBuilder.group(
@@ -52,8 +51,9 @@ export class SignUpComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private router: Router,
     private authService: AuthService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.signUpForm.valueChanges.subscribe(() => {
@@ -68,12 +68,13 @@ export class SignUpComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.authService.signUp(value)
+    this.authService
+      .signUp(value)
       .pipe(finalize(() => (this.isLoading = false)))
       .subscribe(() => {
-        this.displayConfirmEmailModal = true;
-        this.confirmEmailValue = this.signUpForm.get('email')?.value;
-        this.signUpForm.reset();
+        this.router.navigate(['/auth/sign-up/confirmation'], {
+          queryParams: { email: this.signUpForm.get('email')?.value },
+        });
       });
   }
 

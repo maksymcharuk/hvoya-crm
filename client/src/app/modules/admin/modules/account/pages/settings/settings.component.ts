@@ -56,6 +56,11 @@ export class SettingsComponent {
   ) {}
 
   onChangePasswordSubmit(value: ChangePasswordDTO) {
+    if (!this.changePasswordForm.valid) {
+      this.changePasswordForm.markAllAsTouched();
+      return;
+    }
+
     this.isLoading = true;
     this.accountService
       .changePassword(value)
@@ -65,6 +70,7 @@ export class SettingsComponent {
           severity: 'success',
           detail: 'Пароль було успішно оновлено',
         });
+        this.changePasswordForm.reset();
       });
   }
 }

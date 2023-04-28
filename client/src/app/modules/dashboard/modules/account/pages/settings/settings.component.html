@@ -25,6 +25,13 @@
       [toggleMask]="true"
       [feedback]="false"
     ></p-password>
+    <app-form-control-error-message
+      [formGroup]="changePasswordForm"
+      controlName="currentPassword"
+      errorType="required"
+      errorMessage="Потрібно ввести поточний пароль"
+    >
+    </app-form-control-error-message>
   </div>
   <div class="field">
     <label for="password">Новий пароль:</label>
@@ -56,6 +63,13 @@
         </ul>
       </ng-template>
     </p-password>
+    <app-form-control-error-message
+      [formGroup]="changePasswordForm"
+      controlName="password"
+      errorType="required"
+      errorMessage="Потрібно ввести пароль"
+    >
+    </app-form-control-error-message>
   </div>
   <div class="field">
     <label for="confirm-password">Підтвердити новий пароль:</label>
@@ -65,6 +79,20 @@
       [toggleMask]="true"
       [feedback]="false"
     ></p-password>
+    <app-form-control-error-message
+      [formGroup]="changePasswordForm"
+      controlName="confirmPassword"
+      errorType="required"
+      errorMessage="Потрібно підтвердити пароль"
+    >
+    </app-form-control-error-message>
+    <app-form-control-error-message
+      [formGroup]="changePasswordForm"
+      controlName="confirmPassword"
+      errorType="mismatch"
+      errorMessage="Паролі не збігаються"
+    >
+    </app-form-control-error-message>
   </div>
   <button
     pButton

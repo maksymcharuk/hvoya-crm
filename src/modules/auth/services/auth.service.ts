@@ -10,8 +10,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 
 import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
@@ -37,7 +37,7 @@ export class AuthService {
     private mailService: MailService,
     private configService: ConfigService,
     private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
@@ -65,7 +65,7 @@ export class AuthService {
     let adminUsers = await this.usersService.getAllSuperAdmins();
     if (user) {
       throw new HttpException(
-        'Користувача з такою електронною поштою не знайдено',
+        'Користувача з такою електронною поштою вже існує. Спробуйте іншу пошту.',
         HttpStatus.CONFLICT,
       );
     }
@@ -95,16 +95,13 @@ export class AuthService {
         adminEmails,
       );
 
-      this.eventEmitter.emit(
-        NotificationEvent.UserCreated,
-        {
-          message: `Користувач ${user.firstName} ${user.lastName} створив акаунт`,
-          data: {
-            id: user.id,
-          },
-          type: NotificationType.User,
-        }
-      );
+      this.eventEmitter.emit(NotificationEvent.UserCreated, {
+        message: `Користувач ${user.firstName} ${user.lastName} створив акаунт`,
+        data: {
+          id: user.id,
+        },
+        type: NotificationType.User,
+      });
 
       await queryRunner.commitTransaction();
     } catch (err) {
@@ -164,7 +161,7 @@ export class AuthService {
       decodedToken = this.jwtService.verify(token) as JwtTokenPayload;
     } catch (error) {
       throw new HttpException(
-        'Посилання для зміни паролю недійсне або закінчився термін дії. Спробуйте змінити пароль ще раз',
+        'Посилання для зміни паролю недійсне або закінчився термін дії. Спробуйте подати заявку на відновлення паролю ще раз.',
         HttpStatus.BAD_REQUEST,
       );
     }

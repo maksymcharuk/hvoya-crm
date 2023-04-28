@@ -139,7 +139,7 @@ function signInAsUser(options?: SignInOptions): void {
 function signUp(email: string, password: string): void {
   cy.visit('/auth/sign-up');
   cy.getCyEl('email').type(email);
-  cy.getCyEl('phone-number').type('1234567890');
+  cy.getCyEl('phone-number').type('0673347200');
   cy.getCyEl('first-name').type('test-firstName');
   cy.getCyEl('middle-name').type('test-middleName');
   cy.getCyEl('last-name').type('test-lastName');

@@ -41,6 +41,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
 import {
   DeliveryServiceNamePipe,
+  PhoneNumberPipe,
   ProductSizePipe,
   RoleNamePipe,
 } from './pipes';
@@ -48,7 +49,12 @@ import { NotificationsComponent } from './components/notifications/notifications
 
 registerLocaleData(localeUk);
 
-const PIPES = [ProductSizePipe, DeliveryServiceNamePipe, RoleNamePipe];
+const PIPES = [
+  ProductSizePipe,
+  DeliveryServiceNamePipe,
+  RoleNamePipe,
+  PhoneNumberPipe,
+];
 
 const COMPONENTS = [
   VerticalMenuComponent,

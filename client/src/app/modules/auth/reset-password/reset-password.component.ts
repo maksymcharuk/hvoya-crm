@@ -1,4 +1,4 @@
-import { delay, share } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 
 import { Component, OnInit } from '@angular/core';
 import {
@@ -26,9 +26,9 @@ export class ResetPasswordComponent implements OnInit {
   hasNumeric: boolean | undefined = true;
   hasMinLength: boolean | undefined = true;
   token: string | null = null;
-  displayConfirmDialog: boolean = false;
+  isLoading: boolean = false;
 
-  confirmPasswordForm = this.formBuilder.group(
+  resetPasswordForm = this.formBuilder.group(
     {
       password: [
         '',
@@ -55,42 +55,40 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.confirmPasswordForm.valueChanges.subscribe(() => {
+    this.resetPasswordForm.valueChanges.subscribe(() => {
       this.getPasswordErrors();
     });
 
     this.activatedRoute.queryParams.subscribe((params) => {
       this.token = params['token'];
       if (!this.token) {
-        this.router.navigateByUrl('auth/sign-in');
+        this.router.navigate(['/auth/sign-in']);
       }
     });
   }
 
   onSubmit(value: ConfirmPasswordDTO) {
-    const request$ = this.authService
+    this.isLoading = true;
+    this.authService
       .resetPassword(value.password, this.token)
-      .pipe(share());
-    request$.subscribe(() => {
-      this.displayConfirmDialog = true;
-    });
-    request$.pipe(delay(3000)).subscribe(() => {
-      this.router.navigateByUrl('auth/sign-in');
-    });
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe(() => {
+        this.router.navigate(['/auth/reset-password/confirmation']);
+      });
   }
 
   getPasswordErrors() {
-    if (this.confirmPasswordForm.get('password')?.value) {
-      this.hasLowerCase = this.confirmPasswordForm
+    if (this.resetPasswordForm.get('password')?.value) {
+      this.hasLowerCase = this.resetPasswordForm
         .get('password')
         ?.hasError('hasLowerCase');
-      this.hasUpperCase = this.confirmPasswordForm
+      this.hasUpperCase = this.resetPasswordForm
         .get('password')
         ?.hasError('hasUpperCase');
-      this.hasNumeric = this.confirmPasswordForm
+      this.hasNumeric = this.resetPasswordForm
         .get('password')
         ?.hasError('hasNumeric');
-      this.hasMinLength = this.confirmPasswordForm
+      this.hasMinLength = this.resetPasswordForm
         .get('password')
         ?.hasError('minlength');
     } else {

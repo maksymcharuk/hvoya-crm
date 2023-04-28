@@ -11,11 +11,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { User } from '@decorators/user.decorator';
 import { CreateUserDto } from '@dtos/create-user.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
-
-import { User } from '@decorators/user.decorator';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
@@ -29,7 +28,7 @@ export class UsersController {
   constructor(
     private dataSource: DataSource,
     private usersService: UsersService,
-  ) { }
+  ) {}
 
   @Post()
   @CheckPolicies((ability: AppAbility) =>
@@ -47,7 +46,7 @@ export class UsersController {
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw new HttpException(
-        'Щось пішло не так. Будь ласка спробуйте пізніше.',
+        'Будь ласка, спробуйте ще раз трішки пізніше.',
         500,
       );
     } finally {
@@ -68,13 +67,17 @@ export class UsersController {
   }
 
   @Post('confirm')
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.SuperUpdate, UserEntity))
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Update, UserEntity),
+  )
   async confirmUser(@Body('userId') userId: number) {
     return this.usersService.confirmUser(userId);
   }
 
   @Post('freeze-toggle')
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.SuperUpdate, UserEntity))
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Update, UserEntity),
+  )
   async freezeToggleUser(@Body('userId') userId: number) {
     return this.usersService.freezeToggleUser(userId);
   }

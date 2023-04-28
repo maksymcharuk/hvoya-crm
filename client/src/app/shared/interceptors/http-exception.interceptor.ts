@@ -19,7 +19,7 @@ export class HttpExceptionInterceptor implements HttpInterceptor {
     private readonly messageService: MessageService,
     private authService: AuthService,
     private router: Router,
-  ) { }
+  ) {}
 
   intercept(
     request: HttpRequest<unknown>,
@@ -40,7 +40,7 @@ export class HttpExceptionInterceptor implements HttpInterceptor {
           } else {
             this.messageService.add({
               severity: 'error',
-              summary: 'Щось пішло не так.',
+              summary: 'Виникла помилка.',
               detail: err.error.message,
             });
           }

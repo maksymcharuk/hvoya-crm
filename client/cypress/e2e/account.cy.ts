@@ -15,22 +15,18 @@ describe('Account', () => {
       });
 
       it('Sign up as user and update profile with valid data', () => {
-        const phoneNumber = '0671234567';
-        const phoneNumberFormated = '+38 (067) 123-4567';
+        const phoneNumber = '0673347200';
+        const phoneNumberFormated = '+38 (067) 334-7200';
         const firstName = 'TestFname';
         const lastName = 'TestLname';
         const location = 'TestLocation';
         const bio = 'TestBio';
-        const cardNumber = '5218 5722 2223 2634';
-        const cardholderName = 'Test Cardholder';
 
         cy.get('input[id="phone-number"]').clear().type(phoneNumber);
         cy.get('input[id="first-name"]').clear().type(firstName);
         cy.get('input[id="last-name"]').clear().type(lastName);
         cy.get('input[id="location"]').clear().type(location);
         cy.get('textarea[id="about"]').clear().type(bio);
-        cy.get('input[id="card-number"]').clear().type(cardNumber);
-        cy.get('input[id="cardholder-name"]').clear().type(cardholderName);
 
         cy.get('button[type=submit]').click();
 
@@ -49,37 +45,17 @@ describe('Account', () => {
         cy.get('input[id="last-name"]').should('have.value', lastName);
         cy.get('input[id="location"]').should('have.value', location);
         cy.get('textarea[id="about"]').should('have.value', bio);
-        cy.get('input[id="card-number"]').should('have.value', cardNumber);
-        cy.get('input[id="cardholder-name"]').should(
-          'have.value',
-          cardholderName,
-        );
         cy.get('.user-info .user-info__name').contains(
           `${firstName} ${lastName}`,
         );
       });
 
       it('Sign in as user and try to update profile with invalid phone number', () => {
-        const phoneNumber = '067123456';
+        const phoneNumber = '3473347200';
 
         cy.get('input[id="phone-number"]').clear().type(phoneNumber);
         cy.get('button[type=submit]').click();
-        cy.checkToastMessage('Номер телефону недійсний');
-      });
-
-      it('Sign in as user and try to update profile with invalid card data', () => {
-        const invalidCardNumber = '5218 5722 2223 263';
-
-        cy.get('input[id="card-number"]').clear().type(invalidCardNumber);
-        cy.get('button[type=submit]').click();
-        cy.checkToastMessage('Номер картки недійсний');
-
-        const validCardNumber = '5218 5722 2223 2634';
-
-        cy.get('input[id="card-number"]').clear().type(validCardNumber);
-        cy.get('input[id="cardholder-name"]').clear();
-        cy.get('button[type=submit]').click();
-        cy.checkToastMessage("Потрібне ім'я власника картки");
+        cy.checkToastMessage('Номер телефону невірний');
       });
     });
 
@@ -135,8 +111,8 @@ describe('Account', () => {
       });
 
       it('Sign up as admin and try to update profile with valid data', () => {
-        const phoneNumber = '0671234567';
-        const phoneNumberFormated = '+38 (067) 123-4567';
+        const phoneNumber = '0673347200';
+        const phoneNumberFormated = '+38 (067) 334-7200';
         const firstName = 'TestFname';
         const lastName = 'TestLname';
 
@@ -165,11 +141,11 @@ describe('Account', () => {
       });
 
       it('Sign in as admin and try to update profile with invalid phone number', () => {
-        const phoneNumber = '067123456';
+        const phoneNumber = '3473347200';
 
         cy.get('input[id="phone-number"]').clear().type(phoneNumber);
         cy.get('button[type=submit]').click();
-        cy.checkToastMessage('Номер телефону недійсний');
+        cy.checkToastMessage('Номер телефону невірний');
       });
     });
 

@@ -1,15 +1,35 @@
-import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsPhoneNumber,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export class CreateUserDto {
-  @IsEmail()
+  @IsEmail({}, { message: 'Невірний формат електронної пошти' })
   email: string;
 
-  @IsOptional()
-  firtName?: string;
+  @IsString()
+  @IsNotEmpty({ message: "Потрібно вказати ім'я" })
+  firstName: string;
 
-  @IsOptional()
-  lastName?: string;
+  @IsString()
+  @IsNotEmpty({ message: 'Потрібно вказати прізвище' })
+  lastName: string;
+
+  @IsString()
+  @IsNotEmpty({ message: 'Потрібно вказати по-батькові' })
+  middleName: string;
+
+  @IsNotEmpty({ message: 'Потрібно ввести пароль' })
+  password: string;
 
   @IsNotEmpty()
-  password: string;
+  @Length(10, 10, { message: 'Номер телефону невірний' })
+  @IsPhoneNumber('UA', { message: 'Номер телефону невірний' })
+  phoneNumber: string;
+
+  @IsNotEmpty({ message: 'Потрібно додати опис' })
+  bio: string;
 }
