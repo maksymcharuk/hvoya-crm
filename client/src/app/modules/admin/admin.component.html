@@ -1,1 +1,58 @@
-<admin-layout></admin-layout>
+<app-layout [sidebarMenuItems]="sidebarMenuItems">
+  <ng-container topbar-menu>
+    <button
+      class="p-link layout-topbar-button"
+      (click)="notifications.toggle($event)"
+    >
+      <ng-container
+        *ngIf="notificationsNumber$ | async as notificationsNumber; else bell"
+      >
+        <i
+          class="pi pi-bell"
+          pBadge
+          [value]="notificationsNumber.toString()"
+        ></i>
+      </ng-container>
+      <ng-template #bell>
+        <i class="pi pi-bell"></i>
+      </ng-template>
+
+      <span class="topbar-button-text">Сповіщення</span>
+    </button>
+    <p-overlayPanel #overlayPanel #notifications>
+      <ng-template pTemplate>
+        <app-notifications></app-notifications>
+      </ng-template>
+    </p-overlayPanel>
+
+    <button
+      class="p-link layout-topbar-button"
+      (click)="account.toggle($event)"
+    >
+      <i class="pi pi-user"></i>
+      <span class="topbar-button-text">Акаунт</span>
+    </button>
+    <p-overlayPanel #overlayPanel #account>
+      <ng-template pTemplate>
+        <div class="layout-menu-dropdown">
+          <button
+            pButton
+            pRipple
+            type="button"
+            label="Акаунт"
+            class="p-button-text"
+            routerLink="account"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            label="Вийти"
+            class="p-button-text"
+            (click)="logout()"
+          ></button>
+        </div>
+      </ng-template>
+    </p-overlayPanel>
+  </ng-container>
+</app-layout>

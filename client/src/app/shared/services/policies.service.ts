@@ -56,6 +56,7 @@ export class PoliciesService {
 
     switch (currentUser.role) {
       case Role.SuperAdmin:
+        can('manage', 'all');
         can('visit', AdminPage);
         can('read', User);
         can('update', User, (user: User) => user.role !== Role.SuperAdmin);

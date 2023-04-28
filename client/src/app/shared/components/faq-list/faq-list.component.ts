@@ -66,10 +66,7 @@ export class FaqListComponent {
     this.faqService
       .update(faq.id, { isPublished: !faq.isPublished })
       .subscribe((updatedFaq: Faq) => {
-        this.faqList[this.findIndexById(faq.id)] = {
-          ...faq,
-          ...updatedFaq,
-        };
+        this.faqList[this.findIndexById(faq.id)] = updatedFaq;
         this.messageService.add({
           severity: 'success',
           detail: `Запитання/відповідь успішно ${

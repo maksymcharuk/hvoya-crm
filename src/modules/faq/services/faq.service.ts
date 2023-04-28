@@ -61,10 +61,15 @@ export class FaqService {
     return this.faqRepository.save(faq);
   }
 
-  async update(id: number, faq: UpdateFaqDto): Promise<FaqEntity> {
+  async update(
+    id: number,
+    faq: UpdateFaqDto,
+    userId: number,
+  ): Promise<FaqEntity> {
     const updatedFaq = { id, ...faq };
     await this.validateFaqBatch([updatedFaq]);
-    return this.faqRepository.save(updatedFaq);
+    await this.faqRepository.save(updatedFaq);
+    return this.findById(id, userId);
   }
 
   async updateBatch(faqList: UpdateFaqBatchDto[]): Promise<FaqEntity[]> {
