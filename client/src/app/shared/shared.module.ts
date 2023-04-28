@@ -12,6 +12,7 @@ import { PanelModule } from 'primeng/panel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
+import { VirtualScrollerModule } from 'primeng/virtualscroller';
 
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -43,6 +44,7 @@ import {
   ProductSizePipe,
   RoleNamePipe,
 } from './pipes';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 
 registerLocaleData(localeUk);
 
@@ -64,6 +66,7 @@ const COMPONENTS = [
   DeliveryServiceBadgeComponent,
   StockBadgeComponent,
   ProductColorBadgeComponent,
+  NotificationsComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -81,10 +84,11 @@ const PRIMENG_MODULES = [
   DialogModule,
   EditorModule,
   BadgeModule,
+  VirtualScrollerModule,
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS, ...PIPES],
+  declarations: [...COMPONENTS, ...PIPES, NotificationsComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -110,4 +114,4 @@ const PRIMENG_MODULES = [
   ],
   exports: [...COMPONENTS, ...PIPES],
 })
-export class SharedModule {}
+export class SharedModule { }

@@ -4,6 +4,7 @@ import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 
 import { LayoutService } from '@shared/layout/services/layout.service';
+import { NotificationType } from '@shared/enums/notification-type.enum';
 
 @Component({
   selector: 'dashboard-menu',
@@ -33,6 +34,8 @@ export class DashboardMenuComponent implements OnInit {
             label: 'Замовлення',
             icon: 'pi pi-fw pi-shopping-bag',
             routerLink: ['orders'],
+            badge: '',
+            title: NotificationType.Order,
           },
           // {
           //   label: 'Запити',

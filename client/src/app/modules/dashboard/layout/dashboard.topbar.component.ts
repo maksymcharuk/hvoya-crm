@@ -15,7 +15,6 @@ import { NavigationStart, Router } from '@angular/router';
 import { LayoutService } from '@shared/layout/services/layout.service';
 import { AuthService } from '@shared/services/auth.service';
 import { NotificationsService } from '@shared/services/notifications.service';
-import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
 
 import { CartService } from '../modules/cart/services/cart/cart.service';
 import { UserBalanceService } from '../modules/balance/services/user-balance.service';
@@ -39,8 +38,7 @@ export class DashboardTopBarComponent implements AfterViewInit {
     this.hideOverlayPanels();
   }
 
-  notificationsList: NotificationEntity[] = [];
-  uncheckedNotifications: string = '0';
+  uncheckedNotifications$ = this.notificationsService.notificationsNumber$;
 
   constructor(
     public layoutService: LayoutService,
@@ -57,7 +55,6 @@ export class DashboardTopBarComponent implements AfterViewInit {
       .subscribe(() => {
         this.hideOverlayPanels();
       });
-    this.getNotifications();
   }
 
   logout() {
@@ -69,24 +66,6 @@ export class DashboardTopBarComponent implements AfterViewInit {
       this.overlayPanels.forEach((overlayPanel) => {
         overlayPanel.hide();
       });
-    }
-  }
-
-  getNotifications() {
-    this.notificationsService.getNotifications()
-      .subscribe((notifications: NotificationEntity[]) => {
-        this.notificationsList = notifications;
-        this.uncheckedNotifications = this.notificationsList.filter((notification) => !notification.checked).length.toString();
-      });
-  }
-
-  checkNotification(notification: NotificationEntity) {
-    if (!notification.checked) {
-      this.notificationsService.checkNotification(notification.id)
-        .subscribe((notifications: NotificationEntity[]) => {
-          this.notificationsList = notifications;
-          this.uncheckedNotifications = this.notificationsList.filter((notification) => !notification.checked).length.toString();
-        });
     }
   }
 }

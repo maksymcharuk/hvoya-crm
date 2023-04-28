@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
 import { NotificationCreatedEvent } from '@interfaces/notifications/notification-created.interface';
+import { NotificationEvent } from '@enums/notification-event.enum';
 
 import { UsersService } from '../../../modules/users/services/users.service';
 import { NotificationService } from '../services/notification/notification.service';
@@ -14,17 +15,22 @@ export class NotificationListenerService {
     private notificationService: NotificationService,
   ) { }
 
-  @OnEvent('notification.user.created')
+  @OnEvent(NotificationEvent.UserCreated)
   async handleUserCreatedEvent(payload: NotificationCreatedEvent) {
     this.sendNotificationToAdmins(payload);
   }
 
-  @OnEvent('notification.order.created')
+  @OnEvent(NotificationEvent.UserConfirmed)
+  async handleUserConfirmedEvent(payload: NotificationCreatedEvent) {
+    this.sendNotificationToAdmins(payload);
+  }
+
+  @OnEvent(NotificationEvent.OrderCreated)
   async handleOrderCreatedEvent(payload: NotificationCreatedEvent) {
     this.sendNotificationToAdmins(payload);
   }
 
-  @OnEvent('notification.order.updated')
+  @OnEvent(NotificationEvent.OrderUpdated)
   async handleOrderUpdatedEvent(payload: NotificationCreatedEvent) {
     this.sendNotificationToUser(payload);
   }

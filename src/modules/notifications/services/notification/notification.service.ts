@@ -25,13 +25,14 @@ export class NotificationService {
   create(user: UserEntity, payload: NotificationCreatedEvent) {
     return this.notificationRepository.save({
       message: payload.message,
-      url: payload.url,
+      data: payload.data,
+      type: payload.type,
       user: user
     });
   }
 
-  async check(id: number): Promise<NotificationEntity[]> {
+  async check(id: number, userId: number): Promise<NotificationEntity[]> {
     await this.notificationRepository.update({ id }, { checked: true });
-    return this.getAll(id);
+    return this.getAll(userId);
   }
 }

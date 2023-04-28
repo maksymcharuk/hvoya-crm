@@ -24,7 +24,7 @@ export class NotificationsController {
 
   @Post()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, NotificationEntity))
-  check(@Body('id') id: number): Promise<NotificationEntity[]> {
-    return this.notificationService.check(id);
+  check(@User('id') userId: number, @Body('id') id: number): Promise<NotificationEntity[]> {
+    return this.notificationService.check(id, userId);
   }
 }

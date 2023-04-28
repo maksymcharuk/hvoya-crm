@@ -17,6 +17,8 @@ import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Env } from '@enums/env.enum';
+import { NotificationEvent } from '@enums/notification-event.enum';
+import { NotificationType } from '@enums/notification-type.enum';
 import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 
 import { appOrigin } from '../../../config';
@@ -94,10 +96,13 @@ export class AuthService {
       );
 
       this.eventEmitter.emit(
-        'notification.user.created',
+        NotificationEvent.UserCreated,
         {
           message: `Користувач ${user.firstName} ${user.lastName} створив акаунт`,
-          url: userUrl,
+          data: {
+            id: user.id,
+          },
+          type: NotificationType.User,
         }
       );
 

@@ -4,7 +4,6 @@ import { DataSource, In } from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ConfigService } from '@nestjs/config';
 
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderWaybillDto } from '@dtos/update-order-waybill.dto';
@@ -18,12 +17,12 @@ import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
-import { Env } from '@enums/env.enum';
+import { NotificationEvent } from '@enums/notification-event.enum';
+import { NotificationType } from '@enums/notification-type.enum';
 
 import { BalanceService } from '../../../modules/balance/services/balance.service';
 import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
 import { CartService } from '../../cart/services/cart.service';
-import { appOrigin } from '../../../config';
 
 @Injectable()
 export class OrdersService {
@@ -34,7 +33,6 @@ export class OrdersService {
     private caslAbilityFactory: CaslAbilityFactory,
     private balanceService: BalanceService,
     private eventEmitter: EventEmitter2,
-    private configService: ConfigService,
   ) { }
 
   async getOrder(userId: number, orderId: number): Promise<OrderEntity> {
@@ -180,15 +178,14 @@ export class OrdersService {
 
       await this.cartService.clearCart(userId);
 
-      const notificationUrl = `${appOrigin.get(
-        this.configService.get('NODE_ENV') || Env.Development,
-      )}/admin/orders/${order.id}`;
-
       this.eventEmitter.emit(
-        'notification.order.created',
+        NotificationEvent.OrderCreated,
         {
           message: `Нове замовлення №${order.id}`,
-          url: notificationUrl,
+          data: {
+            id: order.id,
+          },
+          type: NotificationType.Order,
         }
       );
 
@@ -251,16 +248,15 @@ export class OrdersService {
           },
         );
 
-        const notificationUrl = `${appOrigin.get(
-          this.configService.get('NODE_ENV') || Env.Development,
-        )}/dashboard/orders/${order.id}`;
-
         this.eventEmitter.emit(
-          'notification.order.updated',
+          NotificationEvent.OrderUpdated,
           {
             message: `Статус вашого замовлення ${order.id} змінено на ${order.status}`,
-            url: notificationUrl,
+            data: {
+              id: order.id,
+            },
             userId: order.customer.id,
+            type: NotificationType.Order,
           }
         );
 

@@ -6,7 +6,6 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
 import { SidebarModule } from 'primeng/sidebar';
-import { VirtualScrollerModule } from 'primeng/virtualscroller';
 
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -15,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { LayoutConfigModule } from '@shared/layout/layout-config.module';
+import { SharedModule } from '@shared/shared.module';
 
 import { AdminFooterComponent } from './admin.footer.component';
 import { AdminLayoutComponent } from './admin.layout.component';
@@ -46,7 +46,7 @@ import { AdminTopBarComponent } from './admin.topbar.component';
     RouterModule,
     LayoutConfigModule,
     ButtonModule,
-    VirtualScrollerModule,
+    SharedModule
   ],
   exports: [AdminLayoutComponent],
 })

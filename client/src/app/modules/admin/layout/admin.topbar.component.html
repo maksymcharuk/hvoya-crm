@@ -31,40 +31,20 @@
       class="p-link layout-topbar-button"
       (click)="notifications.toggle($event)"
     >
-      <i
-        class="pi pi-bell"
-        *ngIf="uncheckedNotifications === '0'; else notificationBadge"
-      ></i>
-      <ng-template #notificationBadge>
-        <i class="pi pi-bell" pBadge [value]="uncheckedNotifications"></i>
+      <ng-container
+        *ngIf="uncheckedNotifications$ | async as notifications; else bell"
+      >
+        <i class="pi pi-bell" pBadge [value]="notifications.toString()"></i>
+      </ng-container>
+      <ng-template #bell>
+        <i class="pi pi-bell"></i>
       </ng-template>
 
       <span class="topbar-button-text">Сповіщення</span>
     </button>
     <p-overlayPanel #overlayPanel #notifications>
       <ng-template pTemplate>
-        <p-virtualScroller
-          [value]="notificationsList"
-          [style]="{ width: '200px' }"
-          scrollHeight="200px"
-          [itemSize]="50"
-        >
-          <ng-template pTemplate="item" let-notification>
-            <a
-              [href]="notification.url"
-              class="flex align-items-center justify-content-between p-2 h-full cursor-pointer text-color"
-              (click)="checkNotification(notification)"
-            >
-              <span>{{ notification.message }}</span>
-              <i
-                class="pi pi-circle-fill"
-                [style]="
-                  notification.checked ? 'color: #a6a6a6' : 'color: #f9d10a'
-                "
-              ></i>
-            </a>
-          </ng-template>
-        </p-virtualScroller>
+        <app-notifications></app-notifications>
       </ng-template>
     </p-overlayPanel>
 
