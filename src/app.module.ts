@@ -4,12 +4,14 @@ import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 
 import { UserEntity } from '@entities/user.entity';
+import { WebsocketGateway } from '@gateways/websocket.gateway';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -22,11 +24,11 @@ import { CaslModule } from './modules/casl/casl.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { FaqModule } from './modules/faq/faq.module';
 import { IntegrationsModule } from './modules/integrations/integrations.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { UsersModule } from './modules/users/users.module';
-import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -64,10 +66,11 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
   controllers: [AppController],
   providers: [
     AppService,
+    WebsocketGateway,
     {
       provide: APP_INTERCEPTOR,
       useClass: UserFreezeInterceptor,
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

@@ -33,6 +33,8 @@
       "@interfaces/*": ["src/interfaces/*"],
       "@decorators/*": ["src/decorators/*"],
       "@transformers/*": ["src/transformers/*"],
+      "@adapters/*": ["src/adapters/*"],
+      "@gateways/*": ["src/gateways/*"],
       "@utils/*": ["src/utils/*"]
     }
   }
