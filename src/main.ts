@@ -2,7 +2,7 @@ import * as compression from 'compression';
 import * as dotenv from 'dotenv';
 import * as rateLimit from 'express-rate-limit';
 import * as xmlparser from 'express-xml-bodyparser';
-import * as fs from 'fs';
+// import * as fs from 'fs';
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import * as nocache from 'nocache';
@@ -19,17 +19,23 @@ import { appOrigin } from './config';
 
 dotenv.config();
 
-const httpsOptions = {
-  cert: fs.readFileSync(process.env['CERT_PATH'] || ''),
-  key: fs.readFileSync(process.env['KEY_PATH'] || ''),
-  requestCert: true,
-  rejectUnauthorized: false,
-};
+// const httpsOptions = {
+//   cert: fs.readFileSync(process.env['CERT_PATH'] || ''),
+//   key: [
+//     {
+//       pem: fs.readFileSync(process.env['KEY_PATH'] || ''),
+//       passphrase: 'hvoya_tani4ka_1971',
+//     },
+//   ],
+//   ca: fs.readFileSync(process.env['CA_PATH'] || ''),
+//   requestCert: true,
+//   rejectUnauthorized: false,
+// };
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
-    httpsOptions,
+    // httpsOptions,
   });
   const configService = app.get(ConfigService);
 
