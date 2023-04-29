@@ -20,9 +20,11 @@ import { appOrigin } from './config';
 dotenv.config();
 
 const httpsOptions = {
-  cert: fs.readFileSync(process.env['CERT_PATH'] || ''),
-  key: fs.readFileSync(process.env['KEY_PATH'] || ''),
-  ca: fs.readFileSync(process.env['CA_PATH'] || ''),
+  cert: process.env['CERT_PATH']
+    ? fs.readFileSync(process.env['CERT_PATH'])
+    : '',
+  key: process.env['KEY_PATH'] ? fs.readFileSync(process.env['KEY_PATH']) : '',
+  ca: process.env['CA_PATH'] ? fs.readFileSync(process.env['CA_PATH']) : '',
   requestCert: true,
   rejectUnauthorized: false,
 };
