@@ -36,7 +36,6 @@ export class NotificationListenerService {
 
   private async sendNotificationToAdmins(payload: NotificationCreatedEvent) {
     let adminUsers = await this.usersService.getAllAdmins();
-    console.log(adminUsers);
 
     adminUsers.forEach((user) => {
       this.notificationService.create(user, payload);
