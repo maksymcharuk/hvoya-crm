@@ -16,11 +16,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+import { JwtAuthGuard } from '@auth/jwt-auth.guard';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { Action } from '@enums/action.enum';
 
-import { JwtAuthGuard } from '../../../modules/auth/jwt-auth.guard';
 import { AppAbility } from '../../../modules/casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../../../modules/casl/check-policies.decorator';
 import { PoliciesGuard } from '../../../modules/casl/policies.guard';

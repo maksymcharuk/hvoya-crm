@@ -14,7 +14,6 @@ export class PhoneNumberPipe implements PipeTransform {
 
     // Check if the phone number has a valid length
     if (phoneNumber.length !== 10) {
-      console.log('phoneNumber.length', phoneNumber.length);
       return value; // Return the original value if it doesn't have the expected length
     }
 

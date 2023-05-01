@@ -5,19 +5,18 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { JwtModule } from '@nestjs/jwt';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AuthModule } from '@auth/auth.module';
 import { UserEntity } from '@entities/user.entity';
-import { WebsocketGateway } from '@gateways/websocket.gateway';
+import { WSocketModule } from '@gateways/websocket/websocket.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
 import { AccountModule } from './modules/account/account.module';
-import { AuthModule } from './modules/auth/auth.module';
 import { BalanceModule } from './modules/balance/balance.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CaslModule } from './modules/casl/casl.module';
@@ -62,11 +61,11 @@ import { UsersModule } from './modules/users/users.module';
     TransferModule,
     EventEmitterModule.forRoot(),
     NotificationsModule,
+    WSocketModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    WebsocketGateway,
     {
       provide: APP_INTERCEPTOR,
       useClass: UserFreezeInterceptor,

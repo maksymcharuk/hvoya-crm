@@ -3,7 +3,8 @@ import { Builder } from 'xml2js';
 
 import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 
-import { SslAuthGuard } from '../../../../modules/auth/ssl-auth/ssl-auth.guard';
+import { SslAuthGuard } from '@auth/ssl-auth/ssl-auth.guard';
+
 import { Action } from './enums/action.enum';
 import { CancelRequest } from './interfaces/requests/cancel.request';
 import { CheckRequest } from './interfaces/requests/check.request';

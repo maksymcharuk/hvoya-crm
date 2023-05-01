@@ -1,21 +1,26 @@
 import { Socket, io } from 'socket.io-client';
 
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 
 import { environment } from '@environment/environment';
+import { SocketEvent } from '@shared/enums/socket-event.enum';
+import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
 
+import { NotificationsService } from './notifications.service';
 import { TokenService } from './token.service';
 
 @Injectable()
-export class WebsocketGatewayService {
+export class WebSocketGatewayService implements OnDestroy {
   private socket: Socket;
 
-  constructor(public tokenService: TokenService) {
+  constructor(
+    private readonly tokenService: TokenService,
+    private readonly notificationsService: NotificationsService,
+  ) {
     // Create a WebSocket connection to the backend
     this.socket = io(environment.webSocketUrl, {
-      withCredentials: true, // Enable sending cookies if required
       extraHeaders: {
-        Authorization: `Bearer ${this.tokenService.getToken()}`, // Add any additional headers
+        Authorization: `Bearer ${this.tokenService.getToken()}`,
       },
     });
 
@@ -28,14 +33,22 @@ export class WebsocketGatewayService {
       console.log('Disconnected from WebSocket server');
     });
 
-    this.socket.on('response', (message: string) => {
-      console.log(`Received response from server: ${message}`);
-    });
+    this.socket.on(
+      SocketEvent.NotificationCreate,
+      (notification: NotificationEntity) => {
+        this.notificationsService.notifications$.next([
+          new NotificationEntity(notification),
+          ...this.notificationsService.notifications$.getValue(),
+        ]);
+      },
+    );
   }
 
-  // Example method to send a message to the server
-  sendMessage() {
-    const message = 'Hello from the client!';
-    this.socket.emit('notification', message);
+  ngOnDestroy() {
+    this.socket.disconnect();
+  }
+
+  sendMessage(event: string, message: string) {
+    this.socket.emit(event, message);
   }
 }
