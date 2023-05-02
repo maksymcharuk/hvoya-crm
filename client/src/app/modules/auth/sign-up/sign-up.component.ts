@@ -42,6 +42,8 @@ export class SignUpComponent implements OnInit {
       middleName: ['', Validators.required],
       lastName: ['', Validators.required],
       phoneNumber: ['', Validators.required],
+      location: ['', Validators.required],
+      website: ['', Validators.required],
       bio: ['', Validators.required],
     },
     {

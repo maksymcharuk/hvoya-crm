@@ -33,7 +33,7 @@ export class OrdersService {
     private caslAbilityFactory: CaslAbilityFactory,
     private balanceService: BalanceService,
     private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   async getOrder(userId: number, orderId: number): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -126,14 +126,15 @@ export class OrdersService {
         {
           trackingId: createOrderDto.trackingId,
           deliveryService: createOrderDto.deliveryService,
-          firstName: createOrderDto.firstName,
-          lastName: createOrderDto.lastName,
-          middleName: createOrderDto.middleName,
-          phoneNumber: createOrderDto.phoneNumber,
-          email: createOrderDto.email,
-          deliveryType: createOrderDto.deliveryType,
-          city: createOrderDto.city,
-          postOffice: createOrderDto.postOffice,
+          // NOTE: Keep this for a waybill generation logic in future
+          // firstName: createOrderDto.firstName,
+          // lastName: createOrderDto.lastName,
+          // middleName: createOrderDto.middleName,
+          // phoneNumber: createOrderDto.phoneNumber,
+          // email: createOrderDto.email,
+          // deliveryType: createOrderDto.deliveryType,
+          // city: createOrderDto.city,
+          // postOffice: createOrderDto.postOffice,
           waybill: waybillScan,
         },
       );
@@ -178,16 +179,13 @@ export class OrdersService {
 
       await this.cartService.clearCart(userId);
 
-      this.eventEmitter.emit(
-        NotificationEvent.OrderCreated,
-        {
-          message: `Нове замовлення №${order.id}`,
-          data: {
-            id: order.id,
-          },
-          type: NotificationType.Order,
-        }
-      );
+      this.eventEmitter.emit(NotificationEvent.OrderCreated, {
+        message: `Нове замовлення №${order.id}`,
+        data: {
+          id: order.id,
+        },
+        type: NotificationType.Order,
+      });
 
       await queryRunner.commitTransaction();
       return this.getOrder(userId, order.id);
@@ -237,28 +235,26 @@ export class OrdersService {
           order.delivery.id,
           {
             trackingId: updateOrderDto.trackingId,
-            firstName: updateOrderDto.firstName,
-            lastName: updateOrderDto.lastName,
-            middleName: updateOrderDto.middleName,
-            phoneNumber: updateOrderDto.phoneNumber,
-            email: updateOrderDto.email,
-            deliveryType: updateOrderDto.deliveryType,
-            city: updateOrderDto.city,
-            postOffice: updateOrderDto.postOffice,
+            // NOTE: Keep this for a waybill generation logic in future
+            // firstName: updateOrderDto.firstName,
+            // lastName: updateOrderDto.lastName,
+            // middleName: updateOrderDto.middleName,
+            // phoneNumber: updateOrderDto.phoneNumber,
+            // email: updateOrderDto.email,
+            // deliveryType: updateOrderDto.deliveryType,
+            // city: updateOrderDto.city,
+            // postOffice: updateOrderDto.postOffice,
           },
         );
 
-        this.eventEmitter.emit(
-          NotificationEvent.OrderUpdated,
-          {
-            message: `Статус вашого замовлення ${order.id} змінено на ${order.status}`,
-            data: {
-              id: order.id,
-            },
-            userId: order.customer.id,
-            type: NotificationType.Order,
-          }
-        );
+        this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
+          message: `Статус вашого замовлення ${order.id} змінено на ${order.status}`,
+          data: {
+            id: order.id,
+          },
+          userId: order.customer.id,
+          type: NotificationType.Order,
+        });
 
         await queryRunner.manager.update(OrderEntity, orderId, {
           status: updateOrderDto.orderStatus,
