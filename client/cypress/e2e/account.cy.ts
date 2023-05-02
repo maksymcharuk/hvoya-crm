@@ -17,18 +17,22 @@ describe('Account', () => {
       it('Sign up as user and update profile with valid data', () => {
         const phoneNumber = '0673347200';
         const phoneNumberFormated = '+38 (067) 334-7200';
-        const firstName = 'TestFname';
         const lastName = 'TestLname';
+        const firstName = 'TestFname';
+        const middleName = 'TestMname';
         const location = 'TestLocation';
+        const website = 'https://hvoya.com';
         const bio = 'TestBio';
 
-        cy.get('input[id="phone-number"]').clear().type(phoneNumber);
-        cy.get('input[id="first-name"]').clear().type(firstName);
-        cy.get('input[id="last-name"]').clear().type(lastName);
-        cy.get('input[id="location"]').clear().type(location);
-        cy.get('textarea[id="about"]').clear().type(bio);
+        cy.getCyEl('phone-number', 'input').clear().type(phoneNumber);
+        cy.getCyEl('last-name').clear().type(lastName);
+        cy.getCyEl('first-name').clear().type(firstName);
+        cy.getCyEl('middle-name').clear().type(middleName);
+        cy.getCyEl('location').clear().type(location);
+        cy.getCyEl('website').clear().type(website);
+        cy.getCyEl('bio').clear().type(bio);
 
-        cy.get('button[type=submit]').click();
+        cy.getCyEl('submit').click();
 
         cy.checkToastMessage('Профіль було успішно оновлено');
         cy.get('.user-info .user-info__name').contains(
@@ -37,14 +41,16 @@ describe('Account', () => {
 
         cy.reload();
 
-        cy.get('input[id="phone-number"]').should(
+        cy.getCyEl('phone-number', 'input').should(
           'have.value',
           phoneNumberFormated,
         );
-        cy.get('input[id="first-name"]').should('have.value', firstName);
-        cy.get('input[id="last-name"]').should('have.value', lastName);
-        cy.get('input[id="location"]').should('have.value', location);
-        cy.get('textarea[id="about"]').should('have.value', bio);
+        cy.getCyEl('last-name').should('have.value', lastName);
+        cy.getCyEl('first-name').should('have.value', firstName);
+        cy.getCyEl('middle-name').should('have.value', middleName);
+        cy.getCyEl('location').should('have.value', location);
+        cy.getCyEl('website').should('have.value', website);
+        cy.getCyEl('bio').should('have.value', bio);
         cy.get('.user-info .user-info__name').contains(
           `${firstName} ${lastName}`,
         );
@@ -53,8 +59,8 @@ describe('Account', () => {
       it('Sign in as user and try to update profile with invalid phone number', () => {
         const phoneNumber = '3473347200';
 
-        cy.get('input[id="phone-number"]').clear().type(phoneNumber);
-        cy.get('button[type=submit]').click();
+        cy.getCyEl('phone-number', 'input').clear().type(phoneNumber);
+        cy.getCyEl('submit').click();
         cy.checkToastMessage('Номер телефону невірний');
       });
     });
@@ -84,7 +90,7 @@ describe('Account', () => {
           cy.get('input[id="confirm-password"]')
             .clear()
             .type(userUpdatedPassword);
-          cy.get('button[type=submit]').click();
+          cy.getCyEl('submit').click();
           cy.checkToastMessage('Пароль було успішно оновлено');
         });
 
@@ -115,12 +121,14 @@ describe('Account', () => {
         const phoneNumberFormated = '+38 (067) 334-7200';
         const firstName = 'TestFname';
         const lastName = 'TestLname';
+        const middleName = 'TestMname';
 
-        cy.get('input[id="phone-number"]').clear().type(phoneNumber);
-        cy.get('input[id="first-name"]').clear().type(firstName);
-        cy.get('input[id="last-name"]').clear().type(lastName);
+        cy.getCyEl('phone-number', 'input').clear().type(phoneNumber);
+        cy.getCyEl('first-name').clear().type(firstName);
+        cy.getCyEl('last-name').clear().type(lastName);
+        cy.getCyEl('middle-name').clear().type(middleName);
 
-        cy.get('button[type=submit]').click();
+        cy.getCyEl('submit').click();
 
         cy.checkToastMessage('Профіль було успішно оновлено');
         cy.get('.user-info .user-info__name').contains(
@@ -129,12 +137,13 @@ describe('Account', () => {
 
         cy.reload();
 
-        cy.get('input[id="phone-number"]').should(
+        cy.getCyEl('phone-number', 'input').should(
           'have.value',
           phoneNumberFormated,
         );
-        cy.get('input[id="first-name"]').should('have.value', firstName);
-        cy.get('input[id="last-name"]').should('have.value', lastName);
+        cy.getCyEl('first-name').should('have.value', firstName);
+        cy.getCyEl('last-name').should('have.value', lastName);
+        cy.getCyEl('middle-name').should('have.value', middleName);
         cy.get('.user-info .user-info__name').contains(
           `${firstName} ${lastName}`,
         );
@@ -143,8 +152,8 @@ describe('Account', () => {
       it('Sign in as admin and try to update profile with invalid phone number', () => {
         const phoneNumber = '3473347200';
 
-        cy.get('input[id="phone-number"]').clear().type(phoneNumber);
-        cy.get('button[type=submit]').click();
+        cy.getCyEl('phone-number', 'input').clear().type(phoneNumber);
+        cy.getCyEl('submit').click();
         cy.checkToastMessage('Номер телефону невірний');
       });
     });
@@ -173,7 +182,7 @@ describe('Account', () => {
           cy.get('input[id="confirm-password"]')
             .clear()
             .type(adminUpdatedPassword);
-          cy.get('button[type=submit]').click();
+          cy.getCyEl('submit').click();
           cy.checkToastMessage('Пароль було успішно оновлено');
         });
 

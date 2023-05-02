@@ -24,12 +24,12 @@ describe('Orders', () => {
       cy.openShoppingCartWidget();
       cy.getCyEl('cart-widget-checkout-button').click();
       cy.fillAndSubmitCreateOrderForm({
-        phoneNumber: '0671232123',
-        firstName: 'John',
-        lastName: 'Doe',
-        middleName: 'Middle',
-        city: 'Test city',
-        postOffice: 'Test post office',
+        // phoneNumber: '0671232123',
+        // firstName: 'John',
+        // lastName: 'Doe',
+        // middleName: 'Middle',
+        // city: 'Test city',
+        // postOffice: 'Test post office',
         trackingId: '1234556789',
       });
       cy.checkToastMessage('Ваше замовлення');
@@ -92,14 +92,14 @@ describe('Orders', () => {
         cy.getCyEl('order-view-page').should('exist');
 
         // Change order status
-        cy.getCyEl('order-status-current').should('contain', 'В очікуванні');
+        cy.getCyEl('order-status-current').should('contain', 'Нове');
         cy.getCyEl('order-status-edit-button').click();
         cy.selectFromDropdown('order-status-edit-dropdown', 'Опрацьовується');
         cy.checkToastMessage('Статус замовлення успішно оновлено');
 
         // Revert order status
         cy.getCyEl('order-status-edit-button').click();
-        cy.selectFromDropdown('order-status-edit-dropdown', 'В очікуванні');
+        cy.selectFromDropdown('order-status-edit-dropdown', 'Нове');
         cy.checkToastMessage('Статус замовлення успішно оновлено');
 
         // Check order waybill preview

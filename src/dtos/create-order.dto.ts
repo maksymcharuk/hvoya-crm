@@ -1,50 +1,44 @@
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsPhoneNumber,
-  IsString,
-} from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 
 import { DeliveryService } from '@enums/delivery-service.enum';
-import { DeliveryType } from '@enums/delivery-type.enum';
 
 export class CreateOrderDto {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Необхідно вказати номер ТТН' })
   trackingId: string;
 
   @IsEnum(DeliveryService)
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Необхідно вказати службу доставки' })
   deliveryService: DeliveryService;
 
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
+  // NOTE: Keep this for a waybill generation logic in future
+  // @IsNotEmpty()
+  // @IsEmail()
+  // email: string;
 
-  @IsNotEmpty()
-  @IsString()
-  firstName: string;
+  // @IsNotEmpty()
+  // @IsString()
+  // firstName: string;
 
-  @IsNotEmpty()
-  @IsString()
-  lastName: string;
+  // @IsNotEmpty()
+  // @IsString()
+  // lastName: string;
 
-  @IsNotEmpty()
-  @IsString()
-  middleName: string;
+  // @IsNotEmpty()
+  // @IsString()
+  // middleName: string;
 
-  @IsNotEmpty()
-  @IsPhoneNumber('UA', { message: 'Номер телефону недійсний' })
-  phoneNumber: string;
+  // @IsNotEmpty()
+  // @IsPhoneNumber('UA', { message: 'Номер телефону недійсний' })
+  // phoneNumber: string;
 
-  @IsEnum(DeliveryType)
-  @IsNotEmpty()
-  deliveryType: DeliveryType;
+  // @IsEnum(DeliveryType)
+  // @IsNotEmpty()
+  // deliveryType: DeliveryType;
 
-  @IsNotEmpty()
-  @IsString()
-  city: string;
+  // @IsNotEmpty()
+  // @IsString()
+  // city: string;
 
-  @IsNotEmpty()
-  postOffice: string;
+  // @IsNotEmpty()
+  // postOffice: string;
 }

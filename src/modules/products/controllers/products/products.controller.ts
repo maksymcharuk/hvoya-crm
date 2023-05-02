@@ -1,10 +1,9 @@
-import { FileTypeValidator } from '@validators/ files-type.validator';
-import { MaxFilesSizeValidator } from '@validators/max-files-size.validator';
-
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   ParseIntPipe,
@@ -47,7 +46,7 @@ export class ProductsController {
     @UploadedFiles(
       new ParseFilePipe({
         validators: [
-          new MaxFilesSizeValidator({ maxSize: 5000000 }),
+          new MaxFileSizeValidator({ maxSize: 5000000 }),
           new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
         fileIsRequired: false,
@@ -71,7 +70,7 @@ export class ProductsController {
     @UploadedFiles(
       new ParseFilePipe({
         validators: [
-          new MaxFilesSizeValidator({ maxSize: 5000000 }),
+          new MaxFileSizeValidator({ maxSize: 5000000 }),
           new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
         fileIsRequired: false,

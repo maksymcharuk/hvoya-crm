@@ -32,6 +32,9 @@ export class UserEntity extends BaseEntity {
   location: string;
 
   @Column({ default: '' })
+  website: string;
+
+  @Column({ default: '' })
   bio: string;
 
   @Column()

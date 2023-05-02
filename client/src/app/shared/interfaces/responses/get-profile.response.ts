@@ -1,9 +1,11 @@
 export interface GetProfileResponse {
   id: string;
   email: string;
-  firstName: string;
   lastName: string;
+  firstName: string;
+  middleName: string;
   phoneNumber: string;
+  website: string;
   location: string;
   bio: string;
   role: string;

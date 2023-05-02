@@ -50,7 +50,7 @@ export class DashboardProductListComponent {
       .subscribe(() => {
         this.messageService.add({
           severity: 'success',
-          detail: `${productVariant.properties.name} added to cart`,
+          detail: `${productVariant.properties.name} додано у кошик`,
         });
       });
   }

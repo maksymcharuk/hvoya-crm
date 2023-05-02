@@ -19,5 +19,8 @@ export class UpdateProfileDto {
   location?: string;
 
   @IsOptional()
+  website?: string;
+
+  @IsOptional()
   bio?: string;
 }

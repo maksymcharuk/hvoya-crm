@@ -15,6 +15,10 @@ export class User extends BaseEntity {
   userConfirmed: boolean;
   userFreezed: boolean;
 
+  get fullName(): string {
+    return `${this.lastName} ${this.firstName} ${this.middleName}`;
+  }
+
   constructor(data?: User) {
     super(data);
     this.email = data?.email || '';
