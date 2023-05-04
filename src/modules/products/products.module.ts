@@ -12,11 +12,11 @@ import { CaslModule } from '../casl/casl.module';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { FilesModule } from '../files/files.module';
 import { ProductColorsController } from './controllers/product-colors/product-colors.controller';
+import { ProductSizesController } from './controllers/product-sizes/product-sizes.controller';
 import { ProductsController } from './controllers/products/products.controller';
 import { ProductColorsService } from './services/product-colors/product-colors.service';
-import { ProductsService } from './services/products/products.service';
 import { ProductSizesService } from './services/product-sizes/product-sizes.service';
-import { ProductSizesController } from './controllers/product-sizes/product-sizes.controller';
+import { ProductsService } from './services/products/products.service';
 
 @Module({
   imports: [
@@ -32,7 +32,11 @@ import { ProductSizesController } from './controllers/product-sizes/product-size
     CloudinaryModule,
     FilesModule,
   ],
-  controllers: [ProductsController, ProductColorsController, ProductSizesController],
+  controllers: [
+    ProductsController,
+    ProductColorsController,
+    ProductSizesController,
+  ],
   providers: [ProductsService, ProductColorsService, ProductSizesService],
 })
 export class ProductsModule {}

@@ -14,6 +14,17 @@
   object-fit: cover;
 }
 
+.overlay {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
 .stock-badge {
   background-color: var(--surface-0);
   color: var(--surface-700);

@@ -45,6 +45,9 @@ export class UpdateProductDto {
   productVariantWeight: number;
 
   @IsNotEmpty()
+  productVariantIsPublished: boolean;
+
+  @IsNotEmpty()
   productVariantSizeId: number;
 
   @IsNotEmpty()

@@ -1,5 +1,5 @@
 <div class="grid" data-cy="product-view-page">
-  <div class="col-12 lg:col-6">
+  <div class="col-12 lg:col-6 relative">
     <p-galleria
       #galleria
       *ngIf="selectedVariant?.properties?.images as images"
@@ -15,6 +15,12 @@
         <img class="gallery-thumbnail" [src]="item.url" />
       </ng-template>
     </p-galleria>
+    <p-tag
+      *ngIf="selectedVariant?.properties?.isPublished === false"
+      class="published-tag"
+      severity="danger"
+      value="Не опублікований"
+    ></p-tag>
   </div>
   <div class="col-12 lg:col-6 py-5 lg:py-3 lg:pl-5">
     <ol

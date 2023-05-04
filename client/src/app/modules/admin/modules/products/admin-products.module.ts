@@ -1,4 +1,5 @@
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { EditorModule } from 'primeng/editor';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -53,6 +54,7 @@ import { ViewProductComponent } from './pages/view-product/view-product.componen
     EditorModule,
     TooltipModule,
     SelectButtonModule,
+    CheckboxModule,
   ],
 })
 export class AdminProductsModule {}
