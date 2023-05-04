@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
+import { User } from '@decorators/user.decorator';
 import { CreateProductDto } from '@dtos/create-product.dto';
 import { UpdateProductDto } from '@dtos/update-product.dto';
 import { ProductBaseEntity } from '@entities/product-base.entity';
@@ -85,15 +86,18 @@ export class ProductsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductBaseEntity),
   )
-  getProducts() {
-    return this.productsService.getProducts();
+  getProducts(@User('id') userId: number) {
+    return this.productsService.getProducts(userId);
   }
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductBaseEntity),
   )
-  getProduct(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.getProduct({ id });
+  getProduct(
+    @User('id') userId: number,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.productsService.getProduct(id, userId);
   }
 }

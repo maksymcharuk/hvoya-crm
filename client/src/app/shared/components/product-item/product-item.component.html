@@ -8,6 +8,16 @@
   >
     <a [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]">
       <img [src]="selectedImage" class="wrapper__img" />
+      <div
+        *ngIf="selectedVariant?.properties?.isPublished === false"
+        class="overlay"
+      >
+        <p-tag
+          class="published-tag"
+          severity="danger"
+          value="Не опублікований"
+        ></p-tag>
+      </div>
     </a>
     <div class="colors my-2">
       <p-selectButton

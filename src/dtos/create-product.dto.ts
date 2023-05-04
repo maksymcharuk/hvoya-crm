@@ -42,6 +42,9 @@ export class CreateProductDto {
   productVariantWeight: number;
 
   @IsNotEmpty()
+  productVariantIsPublished: boolean;
+
+  @IsNotEmpty()
   productVariantSizeId: number;
 
   @IsNotEmpty()

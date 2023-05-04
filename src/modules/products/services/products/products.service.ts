@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { DataSource, SelectQueryBuilder } from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
@@ -9,8 +9,11 @@ import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductPropertiesEntity } from '@entities/product-properties.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
+import { UserEntity } from '@entities/user.entity';
+import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 
+import { CaslAbilityFactory } from '../../../../modules/casl/casl-ability/casl-ability.factory';
 import { FilesService } from '../../../../modules/files/services/files.service';
 
 @Injectable()
@@ -18,6 +21,7 @@ export class ProductsService {
   constructor(
     private dataSource: DataSource,
     private filesService: FilesService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
   async createProduct(
@@ -221,34 +225,52 @@ export class ProductsService {
     }
   }
 
-  async getProducts(): Promise<ProductBaseEntity[]> {
-    let products = await this.dataSource.manager.find(ProductBaseEntity, {
-      relations: [
-        'category',
-        'variants',
-        'variants.properties',
-        'variants.properties.images',
-      ],
+  async getProducts(userId: number): Promise<ProductBaseEntity[]> {
+    const user = await this.dataSource.manager.findOneByOrFail(UserEntity, {
+      id: userId,
     });
+    let products = await this.getProductQuery().getMany();
+    const ability = this.caslAbilityFactory.createForUser(user);
 
-    // TODO: Rewrite this to query
-    products = products.filter(
-      (product: ProductBaseEntity) => product.variants.length > 0,
-    );
+    products = products
+      .map((product) => {
+        product.variants = product.variants.filter((variant) => {
+          return ability.can(Action.Read, variant);
+        });
+        return product;
+      })
+      .filter((product) => {
+        return product.variants.length;
+      });
 
     return products;
   }
 
-  getProduct(params: { id: number }): Promise<ProductBaseEntity> {
-    return this.dataSource.manager.findOneOrFail(ProductBaseEntity, {
-      where: params,
-      relations: [
-        'category',
-        'variants',
-        'variants.properties',
-        'variants.properties.images',
-      ],
+  async getProduct(id: number, userId: number): Promise<ProductBaseEntity> {
+    let user: UserEntity;
+    try {
+      user = await this.dataSource.manager.findOneByOrFail(UserEntity, {
+        id: userId,
+      });
+    } catch (error) {
+      throw new HttpException('Користувач не знайдений', HttpStatus.NOT_FOUND);
+    }
+    let product = await this.getProductQuery(id).getOne();
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (!product) {
+      throw new HttpException('Товар не знайдено', HttpStatus.NOT_FOUND);
+    }
+
+    product.variants = product.variants.filter((variant) => {
+      return ability.can(Action.Read, variant);
     });
+
+    if (!product.variants.length) {
+      throw new HttpException('Товар не знайдено', HttpStatus.NOT_FOUND);
+    }
+
+    return product;
   }
 
   getProductVariant(params: { id: number }): Promise<ProductVariantEntity> {
@@ -256,5 +278,24 @@ export class ProductsService {
       where: params,
       relations: ['properties', 'baseProduct'],
     });
+  }
+
+  getProductQuery(id?: number): SelectQueryBuilder<ProductBaseEntity> {
+    const query = this.dataSource.createQueryBuilder(
+      ProductBaseEntity,
+      'productBase',
+    );
+
+    if (id) {
+      query.where('productBase.id = :id', { id });
+    }
+
+    return query
+      .leftJoinAndSelect('productBase.category', 'category')
+      .leftJoinAndSelect('productBase.variants', 'variants')
+      .leftJoinAndSelect('variants.properties', 'properties')
+      .leftJoinAndSelect('properties.images', 'images')
+      .leftJoinAndSelect('properties.size', 'size')
+      .leftJoinAndSelect('properties.color', 'color');
   }
 }
