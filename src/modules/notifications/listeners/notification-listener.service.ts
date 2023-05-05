@@ -1,19 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
-import { NotificationCreatedEvent } from '@interfaces/notifications/notification-created.interface';
 import { NotificationEvent } from '@enums/notification-event.enum';
+import { NotificationCreatedEvent } from '@interfaces/notifications/notification-created.interface';
 
 import { UsersService } from '../../../modules/users/services/users.service';
 import { NotificationService } from '../services/notification/notification.service';
 
 @Injectable()
 export class NotificationListenerService {
-
   constructor(
     private usersService: UsersService,
     private notificationService: NotificationService,
-  ) { }
+  ) {}
 
   @OnEvent(NotificationEvent.UserCreated)
   async handleUserCreatedEvent(payload: NotificationCreatedEvent) {
@@ -37,7 +36,8 @@ export class NotificationListenerService {
 
   private async sendNotificationToAdmins(payload: NotificationCreatedEvent) {
     let adminUsers = await this.usersService.getAllAdmins();
-    adminUsers.forEach(user => {
+
+    adminUsers.forEach((user) => {
       this.notificationService.create(user, payload);
     });
   }
@@ -51,5 +51,4 @@ export class NotificationListenerService {
 
     this.notificationService.create(user, payload);
   }
-
 }

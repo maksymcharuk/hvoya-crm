@@ -1,17 +1,20 @@
 import * as compression from 'compression';
 import * as dotenv from 'dotenv';
+import * as express from 'express';
 import * as rateLimit from 'express-rate-limit';
 import * as xmlparser from 'express-xml-bodyparser';
 import * as fs from 'fs';
 import helmet from 'helmet';
+import * as https from 'https';
 import { Logger } from 'nestjs-pino';
 import * as nocache from 'nocache';
 
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
+import { ExpressAdapter } from '@nestjs/platform-express';
 
+import { ExtendedSocketIoAdapter } from '@adapters/extended-socket-io.adapter';
 import { Env } from '@enums/env.enum';
 
 import { AppModule } from './app.module';
@@ -30,11 +33,12 @@ const httpsOptions = {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    bufferLogs: true,
-    httpsOptions,
-  });
+  const server = express();
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
   const configService = app.get(ConfigService);
+  const httpsServer = https.createServer(httpsOptions, server);
+
+  app.useWebSocketAdapter(new ExtendedSocketIoAdapter(httpsServer));
 
   // Security configs
   if (configService.get('NODE_ENV') === Env.Production) {
@@ -65,6 +69,8 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   app.use(xmlparser());
 
-  await app.listen(configService.get('PORT') || '3000');
+  await app.init();
+
+  httpsServer.listen(configService.get('PORT') || '3000');
 }
 bootstrap();

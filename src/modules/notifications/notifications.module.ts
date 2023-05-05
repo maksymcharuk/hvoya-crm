@@ -2,20 +2,22 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { NotificationEntity } from '@entities/notification.entity';
+import { WSocketModule } from '@gateways/websocket/websocket.module';
 
+import { CaslModule } from '../casl/casl.module';
 import { UsersModule } from '../users/users.module';
 import { NotificationListenerService } from './listeners/notification-listener.service';
-import { NotificationService } from './services/notification/notification.service';
 import { NotificationsController } from './notifications.controller';
-import { CaslModule } from '../casl/casl.module';
+import { NotificationService } from './services/notification/notification.service';
 
 @Module({
   imports: [
     UsersModule,
     CaslModule,
-    TypeOrmModule.forFeature([NotificationEntity])
+    WSocketModule,
+    TypeOrmModule.forFeature([NotificationEntity]),
   ],
   providers: [NotificationListenerService, NotificationService],
-  controllers: [NotificationsController]
+  controllers: [NotificationsController],
 })
-export class NotificationsModule { }
+export class NotificationsModule {}

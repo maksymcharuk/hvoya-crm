@@ -1,19 +1,21 @@
-import { UserEntity } from '@entities/user.entity';
+import { Repository } from 'typeorm';
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
-
-import { NotificationCreatedEvent } from '@interfaces/notifications/notification-created.interface';
 import { NotificationEntity } from '@entities/notification.entity';
+import { UserEntity } from '@entities/user.entity';
+import { SocketEvent } from '@enums/socket-event.enum';
+import { WSocketGateway } from '@gateways/websocket/websocket.gateway';
+import { NotificationCreatedEvent } from '@interfaces/notifications/notification-created.interface';
 
 @Injectable()
 export class NotificationService {
-
   constructor(
     @InjectRepository(NotificationEntity)
-    private notificationRepository: Repository<NotificationEntity>,
-  ) { }
+    private readonly notificationRepository: Repository<NotificationEntity>,
+    private readonly wSocketGateway: WSocketGateway,
+  ) {}
 
   async getAll(userId: number): Promise<NotificationEntity[]> {
     return this.notificationRepository.find({
@@ -22,13 +24,19 @@ export class NotificationService {
     });
   }
 
-  create(user: UserEntity, payload: NotificationCreatedEvent) {
-    return this.notificationRepository.save({
+  async create(user: UserEntity, payload: NotificationCreatedEvent) {
+    const notification = await this.notificationRepository.save({
       message: payload.message,
       data: payload.data,
       type: payload.type,
-      user: user
+      user: user,
     });
+    this.wSocketGateway.sendToUser(
+      user.id,
+      SocketEvent.NotificationCreate,
+      notification,
+    );
+    return notification;
   }
 
   async check(id: number, userId: number): Promise<NotificationEntity[]> {

@@ -31,8 +31,11 @@
       "@entities/*": ["src/entities/*"],
       "@enums/*": ["src/enums/*"],
       "@interfaces/*": ["src/interfaces/*"],
+      "@auth/*": ["src/modules/auth/*"],
       "@decorators/*": ["src/decorators/*"],
       "@transformers/*": ["src/transformers/*"],
+      "@adapters/*": ["src/adapters/*"],
+      "@gateways/*": ["src/gateways/*"],
       "@utils/*": ["src/utils/*"]
     }
   }

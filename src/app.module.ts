@@ -4,29 +4,30 @@ import { join } from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 
+import { AuthModule } from '@auth/auth.module';
 import { UserEntity } from '@entities/user.entity';
+import { WSocketModule } from '@gateways/websocket/websocket.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
 import { AccountModule } from './modules/account/account.module';
-import { AuthModule } from './modules/auth/auth.module';
 import { BalanceModule } from './modules/balance/balance.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CaslModule } from './modules/casl/casl.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { FaqModule } from './modules/faq/faq.module';
 import { IntegrationsModule } from './modules/integrations/integrations.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { UsersModule } from './modules/users/users.module';
-import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     TransferModule,
     EventEmitterModule.forRoot(),
     NotificationsModule,
+    WSocketModule,
   ],
   controllers: [AppController],
   providers: [
@@ -70,4 +72,4 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}
