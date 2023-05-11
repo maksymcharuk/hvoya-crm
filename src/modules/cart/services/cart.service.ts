@@ -13,7 +13,7 @@ import { ProductVariantEntity } from '@entities/product-variant.entity';
 export class CartService {
   constructor(private dataSource: DataSource) {}
 
-  async getCart(userId: number): Promise<CartEntity> {
+  async getCart(userId: string): Promise<CartEntity> {
     const manager = this.dataSource.createEntityManager();
 
     try {
@@ -42,7 +42,7 @@ export class CartService {
   }
 
   async addToCart(
-    userId: number,
+    userId: string,
     addToCartDto: AddToCartDto,
   ): Promise<CartEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -94,7 +94,7 @@ export class CartService {
   }
 
   async removeFromCart(
-    userId: number,
+    userId: string,
     removeFromCartDto: RemoveFromCartDto,
   ): Promise<CartEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -119,7 +119,7 @@ export class CartService {
     return this.getCart(userId);
   }
 
-  async clearCart(userId: number): Promise<CartEntity> {
+  async clearCart(userId: string): Promise<CartEntity> {
     const manager = this.dataSource.createEntityManager();
     const cart = await this.getCart(userId);
 

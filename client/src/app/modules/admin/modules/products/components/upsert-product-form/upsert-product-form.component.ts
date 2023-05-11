@@ -91,9 +91,12 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         { value: '', disabled: true },
         Validators.required,
       ],
-      productVariantSizeId: [{ value: 0, disabled: true }, Validators.required],
+      productVariantSizeId: [
+        { value: '', disabled: true },
+        Validators.required,
+      ],
       productVariantColorId: [
-        { value: 0, disabled: true },
+        { value: '', disabled: true },
         Validators.required,
       ],
       productVariantPrice: [{ value: 0, disabled: true }, Validators.required],

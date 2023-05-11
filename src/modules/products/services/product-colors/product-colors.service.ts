@@ -17,7 +17,7 @@ export class ProductColorsService {
     return this.productColorRepository.find();
   }
 
-  getColorById(id: number): Promise<ProductColorEntity> {
+  getColorById(id: string): Promise<ProductColorEntity> {
     return this.productColorRepository.findOneOrFail({ where: { id } });
   }
 
@@ -28,7 +28,7 @@ export class ProductColorsService {
   }
 
   updateColor(
-    id: number,
+    id: string,
     updateColorDto: Partial<CreateProductColorDto>,
   ): Promise<ProductColorEntity> {
     return this.productColorRepository.save({ id, ...updateColorDto });

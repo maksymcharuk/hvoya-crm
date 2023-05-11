@@ -4,10 +4,10 @@ export class CalcRequest {
 
 class Payments {
   parameters: {
-    param0: string,
-    param1: string,
+    param0: string;
+    param1: string;
   };
-  id: number;
+  id: string;
   serviceInfo: ServiceInfo[];
 }
 
@@ -15,7 +15,7 @@ class ServiceInfo {
   codifier: string;
   sum: number;
   parameters: {
-    param0: string,
-    param1: string,
-  }
+    param0: string;
+    param1: string;
+  };
 }

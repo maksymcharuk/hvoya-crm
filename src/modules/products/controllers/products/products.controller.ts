@@ -6,7 +6,6 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
-  ParseIntPipe,
   Post,
   Put,
   UploadedFiles,
@@ -86,7 +85,7 @@ export class ProductsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductBaseEntity),
   )
-  getProducts(@User('id') userId: number) {
+  getProducts(@User('id') userId: string) {
     return this.productsService.getProducts(userId);
   }
 
@@ -94,10 +93,7 @@ export class ProductsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductBaseEntity),
   )
-  getProduct(
-    @User('id') userId: number,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
+  getProduct(@User('id') userId: string, @Param('id') id: string) {
     return this.productsService.getProduct(id, userId);
   }
 }

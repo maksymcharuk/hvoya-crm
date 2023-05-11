@@ -15,7 +15,7 @@ export class AccountService {
   ) {}
 
   async changePassword(
-    userId: number,
+    userId: string,
     changePasswordDto: ChangePasswordDto,
   ): Promise<UserEntity> {
     let user = await this.usersRepository.findOneByOrFail({ id: userId });
@@ -37,7 +37,7 @@ export class AccountService {
   }
 
   async updateProfile(
-    userId: number,
+    userId: string,
     updateProfileDto: UpdateProfileDto,
   ): Promise<UserEntity> {
     let user = await this.usersRepository.findOneByOrFail({ id: userId });
@@ -54,7 +54,7 @@ export class AccountService {
     return this.sanitizeUser(user);
   }
 
-  async findById(id: number): Promise<UserEntity | null> {
+  async findById(id: string): Promise<UserEntity | null> {
     const user = await this.usersRepository.findOneByOrFail({ id });
 
     return this.sanitizeUser(user);

@@ -1,15 +1,12 @@
 describe('FAQ', () => {
   const getFaqList = () => {
-    return cy.task<any[]>(
-      'connectDB',
-      'SELECT * FROM public.faq ORDER BY id ASC',
-    );
+    return cy.task<any[]>('connectDB', 'SELECT * FROM public.faq');
   };
 
   const getFaqListPublished = () => {
     return cy.task<any[]>(
       'connectDB',
-      'SELECT * FROM public.faq WHERE "isPublished" = true ORDER BY id ASC',
+      'SELECT * FROM public.faq WHERE "isPublished" = true',
     );
   };
 

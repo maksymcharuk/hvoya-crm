@@ -17,7 +17,7 @@ export class NotificationService {
     private readonly wSocketGateway: WSocketGateway,
   ) {}
 
-  async getAll(userId: number): Promise<NotificationEntity[]> {
+  async getAll(userId: string): Promise<NotificationEntity[]> {
     return this.notificationRepository.find({
       where: { user: { id: userId } },
       order: { checked: 'ASC', createdAt: 'DESC' },
@@ -39,7 +39,7 @@ export class NotificationService {
     return notification;
   }
 
-  async check(id: number, userId: number): Promise<NotificationEntity[]> {
+  async check(id: string, userId: string): Promise<NotificationEntity[]> {
     await this.notificationRepository.update({ id }, { checked: true });
     return this.getAll(userId);
   }

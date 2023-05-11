@@ -29,7 +29,7 @@ export class WSocketGateway
   @WebSocketServer()
   server: Server;
 
-  userIdToConnectionData: { [key: number]: ConnectionData } = {};
+  userIdToConnectionData: { [key: string]: ConnectionData } = {};
 
   constructor(
     private readonly webSocketAuthMiddleware: WebSocketAuthMiddleware,
@@ -66,7 +66,7 @@ export class WSocketGateway
   //   this.sendNotificationToUser(user.id, 'Hello from server!');
   // }
 
-  sendToUser(userId: number, event: SocketEvent, data: any) {
+  sendToUser(userId: string, event: SocketEvent, data: any) {
     this.userIdToConnectionData[userId]?.client.emit(event, data);
   }
 }

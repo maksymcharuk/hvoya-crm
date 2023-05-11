@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   UseGuards,
@@ -37,7 +36,7 @@ export class ProductSizesController {
     ability.can(Action.Update, ProductSizeEntity),
   )
   editProduct(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() body: Partial<CreateProductSizeDto>,
   ) {
     return this.productSizesService.updateSize(id, body);
@@ -55,7 +54,7 @@ export class ProductSizesController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductSizeEntity),
   )
-  getProduct(@Param('id', ParseIntPipe) id: number) {
+  getProduct(@Param('id') id: string) {
     return this.productSizesService.getSizeById(id);
   }
 }

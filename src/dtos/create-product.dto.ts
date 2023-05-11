@@ -10,7 +10,7 @@ import {
 export class CreateProductDto {
   @ValidateIf((o) => !o.productCategoryName)
   @IsNotEmpty()
-  productCategoryId: number;
+  productCategoryId: string;
 
   @ValidateIf((o) => !o.productCategoryId)
   @IsNotEmpty()
@@ -18,7 +18,7 @@ export class CreateProductDto {
 
   @ValidateIf((o) => !o.productBaseName)
   @IsNotEmpty()
-  productBaseId: number;
+  productBaseId: string;
 
   @ValidateIf((o) => !o.productBaseId)
   @IsNotEmpty()
@@ -45,10 +45,10 @@ export class CreateProductDto {
   productVariantIsPublished: boolean;
 
   @IsNotEmpty()
-  productVariantSizeId: number;
+  productVariantSizeId: string;
 
   @IsNotEmpty()
-  productVariantColorId: number;
+  productVariantColorId: string;
 
   @IsNotEmpty()
   productVariantPrice: number;

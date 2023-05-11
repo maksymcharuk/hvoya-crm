@@ -19,14 +19,14 @@ export class CartController {
 
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, CartEntity))
-  async getCart(@User('id') userId: number): Promise<CartEntity> {
+  async getCart(@User('id') userId: string): Promise<CartEntity> {
     return this.cartService.getCart(userId);
   }
 
   @Post('add')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.AddTo, CartEntity))
   async addToCart(
-    @User('id') userId: number,
+    @User('id') userId: string,
     @Body() addToCartDto: AddToCartDto,
   ): Promise<CartEntity> {
     return this.cartService.addToCart(userId, addToCartDto);
@@ -37,7 +37,7 @@ export class CartController {
     ability.can(Action.RemoveFrom, CartEntity),
   )
   async removeFromCart(
-    @User('id') userId: number,
+    @User('id') userId: string,
     @Body() removeFromCartDto: RemoveFromCartDto,
   ): Promise<CartEntity> {
     return this.cartService.removeFromCart(userId, removeFromCartDto);

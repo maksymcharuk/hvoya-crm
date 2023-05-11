@@ -77,7 +77,7 @@ export class ProductSizesComponent {
     }
   }
 
-  findIndexById(id: number): number {
+  findIndexById(id: string): number {
     let index = -1;
     for (let i = 0; i < this.sizes.length; i++) {
       if (this.sizes[i]?.id === id) {

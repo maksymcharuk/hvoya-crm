@@ -227,7 +227,7 @@ export class ProductsService {
     }
   }
 
-  async getProducts(userId: number): Promise<ProductBaseEntity[]> {
+  async getProducts(userId: string): Promise<ProductBaseEntity[]> {
     const user = await this.dataSource.manager.findOneByOrFail(UserEntity, {
       id: userId,
     });
@@ -248,7 +248,7 @@ export class ProductsService {
     return products;
   }
 
-  async getProduct(id: number, userId: number): Promise<ProductBaseEntity> {
+  async getProduct(id: string, userId: string): Promise<ProductBaseEntity> {
     let user: UserEntity;
     try {
       user = await this.dataSource.manager.findOneByOrFail(UserEntity, {
@@ -275,14 +275,14 @@ export class ProductsService {
     return product;
   }
 
-  getProductVariant(params: { id: number }): Promise<ProductVariantEntity> {
+  getProductVariant(params: { id: string }): Promise<ProductVariantEntity> {
     return this.dataSource.manager.findOneOrFail(ProductVariantEntity, {
       where: params,
       relations: ['properties', 'baseProduct'],
     });
   }
 
-  getProductQuery(id?: number): SelectQueryBuilder<ProductBaseEntity> {
+  getProductQuery(id?: string): SelectQueryBuilder<ProductBaseEntity> {
     const query = this.dataSource.createQueryBuilder(
       ProductBaseEntity,
       'productBase',

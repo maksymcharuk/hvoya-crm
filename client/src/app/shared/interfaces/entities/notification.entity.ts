@@ -1,8 +1,9 @@
 import { NotificationType } from '@shared/enums/notification-type.enum';
+
 import { BaseEntity } from './base.entity';
 
 class Data {
-  id: number | null;
+  id: string | null;
 
   constructor(data?: Data) {
     this.id = data?.id || null;
