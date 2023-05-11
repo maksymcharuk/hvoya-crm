@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class RemoveFromCartDto {
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  productId: number;
+  productId: string;
 }

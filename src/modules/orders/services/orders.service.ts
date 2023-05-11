@@ -8,7 +8,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderWaybillDto } from '@dtos/update-order-waybill.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
-import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
@@ -35,7 +34,7 @@ export class OrdersService {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async getOrder(userId: number, orderId: number): Promise<OrderEntity> {
+  async getOrder(userId: string, orderId: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
     const user = await manager.findOneOrFail(UserEntity, {
       where: { id: userId },
@@ -55,7 +54,7 @@ export class OrdersService {
     return order;
   }
 
-  async getOrders(userId: number): Promise<OrderEntity[]> {
+  async getOrders(userId: string): Promise<OrderEntity[]> {
     const manager = this.dataSource.createEntityManager();
     const user = await manager.findOneOrFail(UserEntity, {
       where: { id: userId },
@@ -71,7 +70,7 @@ export class OrdersService {
   }
 
   async createOrder(
-    userId: number,
+    userId: string,
     createOrderDto: CreateOrderDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
@@ -139,11 +138,8 @@ export class OrdersService {
         },
       );
 
-      let balance = await queryRunner.manager.findOneOrFail(BalanceEntity, {
-        where: { owner: { id: userId } },
-      });
-      balance = await this.balanceService.update(
-        balance.id,
+      const balance = await this.balanceService.update(
+        userId,
         this.calculateTotal(orderItems).neg(),
         queryRunner.manager,
         order.id,
@@ -190,6 +186,8 @@ export class OrdersService {
       await queryRunner.commitTransaction();
       return this.getOrder(userId, order.id);
     } catch (err) {
+      console.log(err);
+
       try {
         if (waybillScan) {
           await this.filesService.deleteFilesCloudinary([waybillScan]);
@@ -204,7 +202,7 @@ export class OrdersService {
   }
 
   async updateOrder(
-    orderId: number,
+    orderId: string,
     updateOrderDto?: UpdateOrderDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
@@ -278,8 +276,8 @@ export class OrdersService {
   }
 
   async updateOrderWaybill(
-    userId: number,
-    orderId: number,
+    userId: string,
+    orderId: string,
     updateOrderWaybillDto: UpdateOrderWaybillDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {

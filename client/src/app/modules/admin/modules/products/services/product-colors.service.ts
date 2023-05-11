@@ -13,7 +13,7 @@ import { ProductColor } from '@shared/interfaces/entities/product.entity';
 export class ProductColorsService {
   constructor(private readonly http: HttpClient) {}
 
-  getColorById(id: number): Observable<ProductColor> {
+  getColorById(id: string): Observable<ProductColor> {
     return this.http
       .get<ProductColor>(`${environment.apiUrl}/product-colors/${id}`)
       .pipe(map((productColor) => new ProductColor(productColor)));
@@ -43,7 +43,7 @@ export class ProductColorsService {
   }
 
   updateColor(
-    id: number,
+    id: string,
     updateProductColorDTO: Partial<CreateProductColorDTO>,
   ): Observable<ProductColor> {
     return this.http

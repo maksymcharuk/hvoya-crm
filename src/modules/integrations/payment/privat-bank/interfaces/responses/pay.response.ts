@@ -5,22 +5,21 @@ import { XsiType } from '../../enums/xsi-type.enum';
 import { BaseXml } from '../base-xml.interface';
 
 class PayResponseParams {
-  payReference: number;
+  payReference: string;
 }
 
 class PayResponseDate {
   $: {
-    'xmlns:xsi': typeof PRIVAT_BANK_XMLNS_XSI,
-    'xsi:type': XsiType.Gateway,
-    'reference': number,
+    'xmlns:xsi': typeof PRIVAT_BANK_XMLNS_XSI;
+    'xsi:type': XsiType.Gateway;
+    reference: string;
   };
-
 
   constructor(params: PayResponseParams) {
     this.$ = {
       'xmlns:xsi': PRIVAT_BANK_XMLNS_XSI,
       'xsi:type': XsiType.Gateway,
-      'reference': params.payReference,
+      reference: params.payReference,
     };
   }
 }
@@ -30,4 +29,3 @@ export class PayResponse extends BaseXml<PayResponseDate> {
     super(Interface.Debt, Action.Pay, new PayResponseDate(params));
   }
 }
-

@@ -31,10 +31,10 @@ export class ProductItemComponent implements OnInit, OnChanges {
   selectedVariant: ProductVariant | undefined;
 
   sizes: ProductSize[] = [];
-  selectedSizeId: number | undefined;
+  selectedSizeId: string | undefined;
 
   colors: ProductColor[] = [];
-  selectedColorId: number | undefined;
+  selectedColorId: string | undefined;
 
   selectedImage = '';
 

@@ -10,7 +10,7 @@ import {
 export class UpdateProductDto {
   @ValidateIf((o) => !o.productCategoryName)
   @IsNotEmpty()
-  productCategoryId: number;
+  productCategoryId: string;
 
   @ValidateIf((o) => !o.productCategoryId)
   @IsNotEmpty()
@@ -18,14 +18,14 @@ export class UpdateProductDto {
 
   @ValidateIf((o) => !o.productBaseName)
   @IsNotEmpty()
-  productBaseId: number;
+  productBaseId: string;
 
   @ValidateIf((o) => !o.productBaseId)
   @IsNotEmpty()
   productBaseName: string;
 
   @IsNotEmpty()
-  productVariantId: number;
+  productVariantId: string;
 
   @IsNotEmpty()
   productVariantSku: string;
@@ -48,10 +48,10 @@ export class UpdateProductDto {
   productVariantIsPublished: boolean;
 
   @IsNotEmpty()
-  productVariantSizeId: number;
+  productVariantSizeId: string;
 
   @IsNotEmpty()
-  productVariantColorId: number;
+  productVariantColorId: string;
 
   @IsNotEmpty()
   productVariantPrice: number;

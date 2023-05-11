@@ -17,7 +17,7 @@ export class ProductSizesService {
     return this.productSizeRepository.find();
   }
 
-  getSizeById(id: number): Promise<ProductSizeEntity> {
+  getSizeById(id: string): Promise<ProductSizeEntity> {
     return this.productSizeRepository.findOneOrFail({ where: { id } });
   }
 
@@ -26,7 +26,7 @@ export class ProductSizesService {
   }
 
   updateSize(
-    id: number,
+    id: string,
     updateSizeDto: Partial<CreateProductSizeDto>,
   ): Promise<ProductSizeEntity> {
     return this.productSizeRepository.save({ id, ...updateSizeDto });

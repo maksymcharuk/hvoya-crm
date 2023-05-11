@@ -6,7 +6,6 @@ import {
   Get,
   HttpException,
   Param,
-  ParseIntPipe,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -56,13 +55,13 @@ export class UsersController {
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
-  async getUserById(@Param('id', ParseIntPipe) id: number) {
+  async getUserById(@Param('id') id: string) {
     return this.usersService.showById(id);
   }
 
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
-  async getUsers(@User('id') userId: number) {
+  async getUsers(@User('id') userId: string) {
     return this.usersService.getAll(userId);
   }
 
@@ -70,7 +69,7 @@ export class UsersController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Update, UserEntity),
   )
-  async confirmUser(@Body('userId') userId: number) {
+  async confirmUser(@Body('userId') userId: string) {
     return this.usersService.confirmUser(userId);
   }
 
@@ -78,7 +77,7 @@ export class UsersController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Update, UserEntity),
   )
-  async freezeToggleUser(@Body('userId') userId: number) {
+  async freezeToggleUser(@Body('userId') userId: string) {
     return this.usersService.freezeToggleUser(userId);
   }
 }

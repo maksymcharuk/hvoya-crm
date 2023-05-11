@@ -28,7 +28,7 @@ export class FaqService {
     private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
-  async findById(id: number, userId: number): Promise<FaqEntity> {
+  async findById(id: string, userId: string): Promise<FaqEntity> {
     const faq = await this.faqRepository.findOneBy({ id });
     const user = await this.userRepository.findOneByOrFail({
       id: userId,
@@ -44,7 +44,7 @@ export class FaqService {
     return faq;
   }
 
-  async getAll(userId: number): Promise<FaqEntity[]> {
+  async getAll(userId: string): Promise<FaqEntity[]> {
     const faqList = await this.faqRepository.find({
       order: { order: 'ASC' },
     });
@@ -62,9 +62,9 @@ export class FaqService {
   }
 
   async update(
-    id: number,
+    id: string,
     faq: UpdateFaqDto,
-    userId: number,
+    userId: string,
   ): Promise<FaqEntity> {
     const updatedFaq = { id, ...faq };
     await this.validateFaqBatch([updatedFaq]);
@@ -77,7 +77,7 @@ export class FaqService {
     return this.faqRepository.save(faqList);
   }
 
-  async delete(id: number, userId: number): Promise<FaqEntity> {
+  async delete(id: string, userId: string): Promise<FaqEntity> {
     const faq = await this.findById(id, userId);
 
     return this.faqRepository.remove(faq);

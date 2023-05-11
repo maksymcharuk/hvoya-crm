@@ -18,14 +18,14 @@ export class OrdersService {
       .pipe(map((order) => new Order(order)));
   }
 
-  orderUpdate(id: number, updateOrderFormData: FormData): Observable<Order> {
+  orderUpdate(id: string, updateOrderFormData: FormData): Observable<Order> {
     return this.http
       .put<Order>(`${environment.apiUrl}/orders/${id}`, updateOrderFormData)
       .pipe(map((order) => new Order(order)));
   }
 
   updateWaybill(
-    id: number,
+    id: string,
     updateWaybillFormData: FormData,
   ): Observable<Order> {
     return this.http
@@ -42,7 +42,7 @@ export class OrdersService {
       .pipe(map((orders) => orders.map((order) => new Order(order))));
   }
 
-  getOrder(id: number): Observable<Order> {
+  getOrder(id: string): Observable<Order> {
     return this.http
       .get<Order>(`${environment.apiUrl}/orders/${id}`)
       .pipe(map((order) => new Order(order)));

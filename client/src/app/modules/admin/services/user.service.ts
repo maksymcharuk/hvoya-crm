@@ -10,9 +10,9 @@ import { GetUserResponse } from '@shared/interfaces/responses/get-user.response'
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  getUser(id: number): Observable<GetUserResponse> {
+  getUser(id: string): Observable<GetUserResponse> {
     return this.http.get<GetUserResponse>(`${environment.apiUrl}/users/${id}`);
   }
 }

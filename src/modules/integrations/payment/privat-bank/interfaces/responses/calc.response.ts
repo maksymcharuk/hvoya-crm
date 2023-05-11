@@ -4,7 +4,7 @@ export class CalcResponse {
 }
 
 class Payments {
-  id: number;
+  id: string;
   commissName: string;
   serviceInfo: ServiceInfo[];
 }

@@ -20,7 +20,7 @@ export class FaqService {
       .pipe(map((faqList) => faqList.map((faq) => new Faq(faq))));
   }
 
-  findById(id: number): Observable<Faq> {
+  findById(id: string): Observable<Faq> {
     return this.http
       .get<Faq>(`${environment.apiUrl}/faq/${id}`)
       .pipe(map((faq) => new Faq(faq)));
@@ -32,7 +32,7 @@ export class FaqService {
       .pipe(map((faq) => new Faq(faq)));
   }
 
-  update(id: number, faq: UpdateFaqDTO): Observable<Faq> {
+  update(id: string, faq: UpdateFaqDTO): Observable<Faq> {
     return this.http
       .put<Faq>(`${environment.apiUrl}/faq/${id}`, faq)
       .pipe(map((faq) => new Faq(faq)));
@@ -44,7 +44,7 @@ export class FaqService {
       .pipe(map((faqList) => faqList.map((faq) => new Faq(faq))));
   }
 
-  delete(id: number): Observable<Faq> {
+  delete(id: string): Observable<Faq> {
     return this.http
       .delete<Faq>(`${environment.apiUrl}/faq/${id}`)
       .pipe(map((faq) => new Faq(faq)));

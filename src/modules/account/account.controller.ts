@@ -19,7 +19,7 @@ export class AccountController {
 
   @Get('profile')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
-  async findById(@User('id') id: number) {
+  async findById(@User('id') id: string) {
     return this.accountService.findById(id);
   }
 
@@ -28,7 +28,7 @@ export class AccountController {
     ability.can(Action.Update, UserEntity),
   )
   async updateProfile(
-    @User('id') id: number,
+    @User('id') id: string,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
     return this.accountService.updateProfile(id, updateProfileDto);
@@ -39,7 +39,7 @@ export class AccountController {
     ability.can(Action.Update, UserEntity),
   )
   async changePassword(
-    @User('id') id: number,
+    @User('id') id: string,
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
     return this.accountService.changePassword(id, changePasswordDto);

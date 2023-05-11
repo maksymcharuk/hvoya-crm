@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   UseGuards,
@@ -30,15 +29,15 @@ export class FaqController {
 
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, FaqEntity))
-  getAll(@User('id') userId: number): Promise<FaqEntity[]> {
+  getAll(@User('id') userId: string): Promise<FaqEntity[]> {
     return this.faqService.getAll(userId);
   }
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, FaqEntity))
   findById(
-    @User('id') userId: number,
-    @Param('id', ParseIntPipe) id: number,
+    @User('id') userId: string,
+    @Param('id') id: string,
   ): Promise<FaqEntity> {
     return this.faqService.findById(id, userId);
   }
@@ -52,8 +51,8 @@ export class FaqController {
   @Put(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Update, FaqEntity))
   update(
-    @User('id') userId: number,
-    @Param('id', ParseIntPipe) id: number,
+    @User('id') userId: string,
+    @Param('id') id: string,
     @Body() faq: UpdateFaqDto,
   ): Promise<FaqEntity> {
     return this.faqService.update(id, faq, userId);
@@ -68,8 +67,8 @@ export class FaqController {
   @Delete(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Delete, FaqEntity))
   delete(
-    @User('id') userId: number,
-    @Param('id', ParseIntPipe) id: number,
+    @User('id') userId: string,
+    @Param('id') id: string,
   ): Promise<FaqEntity> {
     return this.faqService.delete(id, userId);
   }

@@ -198,7 +198,7 @@ export class ProductsCreationService {
 
   async upsertProductVariant(
     productVariant: NormalizedProductVariant,
-    productBaseId: number,
+    productBaseId: string,
   ) {
     const manager = this.dataSource.createEntityManager();
     const productVariantExists = await manager

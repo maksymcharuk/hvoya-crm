@@ -5,22 +5,21 @@ import { XsiType } from '../../enums/xsi-type.enum';
 import { BaseXml } from '../base-xml.interface';
 
 class CancelResponseParams {
-  cancelReference: number;
+  cancelReference: string;
 }
 
 class CancelResponseDate {
   $: {
-    'xmlns:xsi': typeof PRIVAT_BANK_XMLNS_XSI,
-    'xsi:type': XsiType.Gateway,
-    'reference': number,
+    'xmlns:xsi': typeof PRIVAT_BANK_XMLNS_XSI;
+    'xsi:type': XsiType.Gateway;
+    reference: string;
   };
-
 
   constructor(params: CancelResponseParams) {
     this.$ = {
       'xmlns:xsi': PRIVAT_BANK_XMLNS_XSI,
       'xsi:type': XsiType.Gateway,
-      'reference': params.cancelReference,
+      reference: params.cancelReference,
     };
   }
 }

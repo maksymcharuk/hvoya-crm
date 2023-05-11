@@ -13,7 +13,7 @@ import { ProductSize } from '@shared/interfaces/entities/product.entity';
 export class ProductSizesService {
   constructor(private readonly http: HttpClient) {}
 
-  getSizeById(id: number): Observable<ProductSize> {
+  getSizeById(id: string): Observable<ProductSize> {
     return this.http
       .get<ProductSize>(`${environment.apiUrl}/product-sizes/${id}`)
       .pipe(map((productSize) => new ProductSize(productSize)));
@@ -41,7 +41,7 @@ export class ProductSizesService {
   }
 
   updateSize(
-    id: number,
+    id: string,
     updateProductSizeDTO: Partial<CreateProductSizeDTO>,
   ): Observable<ProductSize> {
     return this.http
