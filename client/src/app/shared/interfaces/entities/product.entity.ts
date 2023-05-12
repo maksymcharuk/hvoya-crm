@@ -46,6 +46,7 @@ export class ProductProperties extends BaseEntity {
   name: string;
   description: string;
   weight: number;
+  isPublished: boolean;
   price: number;
   size: ProductSize;
   color: ProductColor;
@@ -56,6 +57,8 @@ export class ProductProperties extends BaseEntity {
     this.name = data?.name || '';
     this.description = data?.description || '';
     this.weight = data?.weight || 0;
+    this.isPublished =
+      data?.isPublished !== undefined ? data.isPublished : true;
     this.price = data?.price || 0;
     this.size = new ProductSize(data?.size);
     this.color = new ProductColor(data?.color);

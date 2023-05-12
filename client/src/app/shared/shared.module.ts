@@ -12,6 +12,7 @@ import { PanelModule } from 'primeng/panel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
 import { MultiSelectModule } from 'primeng/multiselect';
 
@@ -29,6 +30,7 @@ import { DeliveryServiceBadgeComponent } from './components/delivery-service-bad
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
 import { FaqListComponent } from './components/faq-list/faq-list.component';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
+import { NotificationsComponent } from './components/notifications/notifications.component';
 import { OrderDeliveryStatusBadgeComponent } from './components/order-delivery-status-badge/order-delivery-status-badge.component';
 import { OrderListComponent } from './components/order-list/order-list.component';
 import { OrderStatusBadgeComponent } from './components/order-status-badge/order-status-badge.component';
@@ -48,7 +50,6 @@ import {
   ProductSizePipe,
   RoleNamePipe,
 } from './pipes';
-import { NotificationsComponent } from './components/notifications/notifications.component';
 
 registerLocaleData(localeUk);
 
@@ -95,6 +96,7 @@ const PRIMENG_MODULES = [
   BadgeModule,
   VirtualScrollerModule,
   MultiSelectModule,
+  TagModule,
 ];
 
 @NgModule({

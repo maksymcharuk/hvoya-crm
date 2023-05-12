@@ -52,7 +52,7 @@ export class ProductsService {
       );
   }
 
-  getProduct(id: number): Observable<ProductBase> {
+  getProduct(id: string): Observable<ProductBase> {
     return this.http
       .get<ProductBase>(`${environment.apiUrl}/products/${id}`)
       .pipe(map((product) => new ProductBase(product)));

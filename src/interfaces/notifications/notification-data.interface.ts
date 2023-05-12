@@ -1,3 +1,3 @@
 export interface NotificationData {
-  id: number;
+  id: string;
 }

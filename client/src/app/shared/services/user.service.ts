@@ -32,19 +32,19 @@ export class UserService {
       .pipe(map((users) => users.map((user) => new User(user))));
   }
 
-  getUserById(userId: number): Observable<User> {
+  getUserById(userId: string): Observable<User> {
     return this.http
       .get<User>(`${environment.apiUrl}/users/${userId}`)
       .pipe(map((user) => new User(user)));
   }
 
-  confirmUser(userId: number): Observable<User> {
+  confirmUser(userId: string): Observable<User> {
     return this.http
       .post<User>(`${environment.apiUrl}/users/confirm`, { userId })
       .pipe(map((user) => new User(user)));
   }
 
-  freezeUserToggle(userId: number): Observable<User> {
+  freezeUserToggle(userId: string): Observable<User> {
     return this.http
       .post<User>(`${environment.apiUrl}/users/freeze-toggle`, { userId })
       .pipe(map((user) => new User(user)));

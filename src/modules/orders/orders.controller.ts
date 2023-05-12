@@ -6,7 +6,6 @@ import {
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
-  ParseIntPipe,
   Post,
   Put,
   UploadedFile,
@@ -36,15 +35,15 @@ export class OrdersController {
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderEntity))
   async getOrder(
-    @User('id') userId: number,
-    @Param('id', ParseIntPipe) id: number,
+    @User('id') userId: string,
+    @Param('id') id: string,
   ): Promise<OrderEntity> {
     return this.ordersService.getOrder(userId, id);
   }
 
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderEntity))
-  async getOrders(@User('id') userId: number): Promise<OrderEntity[]> {
+  async getOrders(@User('id') userId: string): Promise<OrderEntity[]> {
     return this.ordersService.getOrders(userId);
   }
 
@@ -54,7 +53,7 @@ export class OrdersController {
     ability.can(Action.SuperUpdate, OrderEntity),
   )
   async updateOrder(
-    @Param('id', ParseIntPipe) orderId: number,
+    @Param('id') orderId: string,
     @Body() updateOrderDto: UpdateOrderDto,
     @UploadedFile(
       new ParseFilePipe({
@@ -76,8 +75,8 @@ export class OrdersController {
     ability.can(Action.Update, OrderEntity),
   )
   async updateOrderWaybill(
-    @User('id') userId: number,
-    @Param('id') orderId: number,
+    @User('id') userId: string,
+    @Param('id') orderId: string,
     @Body() updateOrderWaybillDto: UpdateOrderWaybillDto,
     @UploadedFile(
       new ParseFilePipe({
@@ -104,7 +103,7 @@ export class OrdersController {
     ability.can(Action.Create, OrderEntity),
   )
   async createOrder(
-    @User('id') userId: number,
+    @User('id') userId: string,
     @Body() createOrderDto: CreateOrderDto,
     @UploadedFile(
       new ParseFilePipe({

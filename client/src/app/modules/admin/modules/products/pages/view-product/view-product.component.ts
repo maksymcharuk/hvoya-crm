@@ -13,7 +13,7 @@ import { ProductsService } from '@shared/services/products.service';
 })
 export class ViewProductComponent {
   product$: Observable<ProductBase>;
-  selectedVariantId!: number;
+  selectedVariantId!: string;
 
   constructor(
     private productsService: ProductsService,
@@ -22,6 +22,6 @@ export class ViewProductComponent {
     this.product$ = this.productsService.getProduct(
       this.route.snapshot.params['baseId'],
     );
-    this.selectedVariantId = +this.route.snapshot.params['variantId'];
+    this.selectedVariantId = this.route.snapshot.params['variantId'];
   }
 }

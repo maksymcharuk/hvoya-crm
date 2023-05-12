@@ -4,6 +4,7 @@ import { NotificationType } from '@shared/enums/notification-type.enum';
 import { AccountService } from '@shared/services/account.service';
 import { AuthService } from '@shared/services/auth.service';
 import { NotificationsService } from '@shared/services/notifications.service';
+import { WebSocketGatewayService } from '@shared/services/websocket-gateway.service';
 
 import { UserBalanceService } from './modules/balance/services/user-balance.service';
 import { CartService } from './modules/cart/services/cart/cart.service';
@@ -17,6 +18,7 @@ import { CartService } from './modules/cart/services/cart/cart.service';
     CartService,
     UserBalanceService,
     NotificationsService,
+    WebSocketGatewayService,
   ],
 })
 export class DashboardComponent {
@@ -66,7 +68,10 @@ export class DashboardComponent {
     private userBalance: UserBalanceService,
     private authService: AuthService,
     private notificationsService: NotificationsService,
-  ) {}
+    private webSocketGatewayService: WebSocketGatewayService,
+  ) {
+    console.log(this.webSocketGatewayService);
+  }
 
   logout() {
     this.authService.logout();

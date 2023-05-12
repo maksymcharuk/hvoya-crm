@@ -19,6 +19,8 @@ export class OrderStatusBadgeComponent {
         return 'default';
       case OrderStatus.Processing:
         return 'accent';
+      case OrderStatus.Packaging:
+        return 'accent';
       case OrderStatus.TransferedToDelivery:
         return 'accent';
       case OrderStatus.Fulfilled:
@@ -35,9 +37,11 @@ export class OrderStatusBadgeComponent {
   get text() {
     switch (this.status) {
       case OrderStatus.Pending:
-        return 'В очікуванні';
+        return 'Нове';
       case OrderStatus.Processing:
-        return 'Опрацьовується';
+        return 'Опрацьовується менеджером';
+      case OrderStatus.Packaging:
+        return 'Укомплектовується';
       case OrderStatus.TransferedToDelivery:
         return 'Передано до служби доставки';
       case OrderStatus.Fulfilled:
@@ -47,7 +51,7 @@ export class OrderStatusBadgeComponent {
       case OrderStatus.Refunded:
         return 'Повернуто';
       default:
-        return 'В очікуванні';
+        return 'В очікуванні опрацювання';
     }
   }
 }

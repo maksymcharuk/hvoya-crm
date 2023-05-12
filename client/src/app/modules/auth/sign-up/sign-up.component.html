@@ -54,24 +54,6 @@
               </app-form-control-error-message>
             </div>
             <div class="field">
-              <label for="firstName">Ім'я</label>
-              <input
-                name="firstName"
-                formControlName="firstName"
-                type="text"
-                pInputText
-                placeholder="Введіть ваше ім'я"
-                data-cy="first-name"
-              />
-              <app-form-control-error-message
-                [formGroup]="signUpForm"
-                controlName="firstName"
-                errorType="required"
-                errorMessage="Потрібно ввести ім'я"
-              >
-              </app-form-control-error-message>
-            </div>
-            <div class="field">
               <label for="lastName">Прізвище</label>
               <input
                 name="lastName"
@@ -86,6 +68,24 @@
                 controlName="lastName"
                 errorType="required"
                 errorMessage="Потрібно ввести прізвище"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="firstName">Ім'я</label>
+              <input
+                name="firstName"
+                formControlName="firstName"
+                type="text"
+                pInputText
+                placeholder="Введіть ваше ім'я"
+                data-cy="first-name"
+              />
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="firstName"
+                errorType="required"
+                errorMessage="Потрібно ввести ім'я"
               >
               </app-form-control-error-message>
             </div>
@@ -168,8 +168,44 @@
             </div>
           </div>
           <!-- Right column -->
-          <div class="col-12 md:col-6 flex">
-            <div class="field flex flex-column">
+          <div class="col-12 md:col-6 flex flex-column">
+            <div class="field">
+              <label for="location">Місцезнаходження</label>
+              <input
+                name="location"
+                formControlName="location"
+                type="text"
+                pInputText
+                placeholder="Введіть місцезнаходження"
+                data-cy="location"
+              />
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="location"
+                errorType="required"
+                errorMessage="Потрібно ввести місцезнаходження"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="website">Веб-сайт або сторінка у соц. мережі</label>
+              <input
+                name="website"
+                formControlName="website"
+                type="text"
+                pInputText
+                placeholder="Веб-сайт/соціальна мережа"
+                data-cy="website"
+              />
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="website"
+                errorType="required"
+                errorMessage="Потрібно ввести посилання на веб-сайт або сторінку у соціальній мережі"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field flex flex-column flex-auto">
               <label for="bio" class="flex-none">Опис організації</label>
               <textarea
                 class="flex-auto"

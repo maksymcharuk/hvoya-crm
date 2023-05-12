@@ -5,28 +5,85 @@
 >
   <h5>Персональні дані</h5>
   <div class="field">
-    <label for="phone-number">Номер телефону:</label>
+    <label for="phoneNumber">Номер телефону:</label>
     <p-inputMask
+      name="phoneNumber"
       inputId="phone-number"
       formControlName="phoneNumber"
       mask="+38 (999) 999-9999"
       slotChar=" "
       [unmask]="true"
       [autoClear]="false"
+      placeholder="Введіть номер телефону"
+      data-cy="phone-number"
     ></p-inputMask>
+    <app-form-control-error-message
+      [formGroup]="updateProfileForm"
+      controlName="phoneNumber"
+      errorType="required"
+      errorMessage="Потрібно ввести номер телефону"
+    >
+    </app-form-control-error-message>
   </div>
   <div class="field">
-    <label for="first-name">Ім'я:</label>
-    <input id="first-name" pInputText formControlName="firstName" />
+    <label for="lastName">Прізвище:</label>
+    <input
+      name="lastName"
+      formControlName="lastName"
+      type="text"
+      pInputText
+      placeholder="Введіть прізвище"
+      data-cy="last-name"
+    />
+    <app-form-control-error-message
+      [formGroup]="updateProfileForm"
+      controlName="lastName"
+      errorType="required"
+      errorMessage="Потрібно ввести прізвище"
+    >
+    </app-form-control-error-message>
   </div>
   <div class="field">
-    <label for="last-name">Прізвище:</label>
-    <input id="last-name" pInputText formControlName="lastName" />
+    <label for="firstName">Ім'я:</label>
+    <input
+      name="firstName"
+      formControlName="firstName"
+      type="text"
+      pInputText
+      placeholder="Введіть ваше ім'я"
+      data-cy="first-name"
+    />
+    <app-form-control-error-message
+      [formGroup]="updateProfileForm"
+      controlName="firstName"
+      errorType="required"
+      errorMessage="Потрібно ввести ім'я"
+    >
+    </app-form-control-error-message>
+  </div>
+  <div class="field">
+    <label for="middleName">По батькові:</label>
+    <input
+      name="middleName"
+      formControlName="middleName"
+      type="text"
+      pInputText
+      placeholder="Введіть ваші по батькові"
+      data-cy="middle-name"
+    />
+    <app-form-control-error-message
+      [formGroup]="updateProfileForm"
+      controlName="middleName"
+      errorType="required"
+      errorMessage="Потрібно ввести ваше по батькові"
+    >
+    </app-form-control-error-message>
   </div>
   <button
     pButton
     type="submit"
     label="Зберегти"
+    data-cy="submit"
     [disabled]="isLoading"
   ></button>
 </form>

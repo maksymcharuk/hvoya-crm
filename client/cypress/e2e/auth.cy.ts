@@ -151,9 +151,15 @@ describe('Auth', () => {
     it('Visits Reset password page with token and resets password', () => {
       cy.task<any[]>(
         'connectDB',
-        'SELECT * FROM public."user" ORDER BY id ASC',
+        `
+          SELECT * 
+          FROM public."user"
+          WHERE id IN (SELECT id FROM public."user" WHERE "createdAt" = (SELECT MAX("createdAt") FROM public."user"))
+          ORDER BY id ASC
+          LIMIT 1
+        `,
       ).then((users) => {
-        const token = signToken(users[users.length - 1].id);
+        const token = signToken(users[0].id);
         const password = `Test${Date.now()}`;
 
         cy.resetPassword(password, token);
@@ -164,9 +170,15 @@ describe('Auth', () => {
     it('Reset password and login with new one', () => {
       cy.task<any[]>(
         'connectDB',
-        'SELECT * FROM public."user" ORDER BY id ASC',
+        `
+          SELECT * 
+          FROM public."user"
+          WHERE id IN (SELECT id FROM public."user" WHERE "createdAt" = (SELECT MAX("createdAt") FROM public."user"))
+          ORDER BY id ASC
+          LIMIT 1
+        `,
       ).then((users) => {
-        const user = users[users.length - 1];
+        const user = users[0];
         const token = signToken(user.id);
         const password = `Test${Date.now()}`;
 

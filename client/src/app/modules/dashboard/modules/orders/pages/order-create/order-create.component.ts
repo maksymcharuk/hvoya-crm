@@ -39,18 +39,24 @@ export class OrderCreateComponent implements OnInit {
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
 
   orderCreateForm = this.formBuilder.group({
-    email: ['', [Validators.required, Validators.email]],
-    firstName: ['', Validators.required],
-    lastName: ['', Validators.required],
-    middleName: ['', Validators.required],
-    phoneNumber: ['', Validators.required],
+    // NOTE: Keep this for a waybill generation logic in future
+    // email: ['', [Validators.required, Validators.email]],
+    // firstName: ['', Validators.required],
+    // lastName: ['', Validators.required],
+    // middleName: ['', Validators.required],
+    // phoneNumber: ['', Validators.required],
     deliveryService: [this.deliveryServices[0], Validators.required],
     trackingId: ['', Validators.required],
-    deliveryType: [this.deliveryTypes[0]?.value, Validators.required],
-    city: ['', Validators.required],
-    postOffice: ['', Validators.required],
-    waybill: [''],
+    // NOTE: Keep this for a waybill generation logic in future
+    // deliveryType: [this.deliveryTypes[0]?.value, Validators.required],
+    // city: ['', Validators.required],
+    // postOffice: ['', Validators.required],
+    waybill: ['', Validators.required],
   }) as OrderCreateFormGroup;
+
+  get trackingId() {
+    return this.orderCreateForm.get('trackingId');
+  }
 
   get waybill() {
     return this.orderCreateForm.get('waybill');
@@ -73,6 +79,12 @@ export class OrderCreateComponent implements OnInit {
           email: profile.email,
         });
       }
+    });
+
+    this.trackingId?.valueChanges.subscribe(() => {
+      this.trackingId?.patchValue(this.trackingId?.value.toUpperCase(), {
+        emitEvent: false,
+      });
     });
   }
 
@@ -107,7 +119,9 @@ export class OrderCreateComponent implements OnInit {
           this.submitting = false;
         }),
         catchError((err: { error: { message: string; cart: Cart } }) => {
-          this.cartService.cart$.next(new Cart(err.error.cart));
+          if (err.error.cart) {
+            this.cartService.cart$.next(new Cart(err.error.cart));
+          }
           return [];
         }),
       )

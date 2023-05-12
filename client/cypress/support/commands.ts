@@ -14,12 +14,12 @@ interface Product {
   price?: string;
 }
 interface CreateOrderForm {
-  phoneNumber: string;
-  firstName: string;
-  lastName: string;
-  middleName: string;
-  city: string;
-  postOffice: string;
+  // phoneNumber: string;
+  // firstName: string;
+  // lastName: string;
+  // middleName: string;
+  // city: string;
+  // postOffice: string;
   trackingId: string;
 }
 declare global {
@@ -73,7 +73,10 @@ declare global {
       getShoppingCartWidgetMenuButton(): Cypress.Chainable<JQuery<HTMLElement>>;
       openShoppingCartWidget(): typeof openShoppingCartWidget;
       addProductToCart(productName?: string): Cypress.Chainable<Product>;
-      getCyEl(selector: string): Cypress.Chainable<JQuery<HTMLElement>>;
+      getCyEl(
+        selector: string,
+        nestedSelector?: string,
+      ): Cypress.Chainable<JQuery<HTMLElement>>;
       fillAndSubmitCreateOrderForm(
         data: CreateOrderForm,
       ): typeof fillAndSubmitCreateOrderForm;
@@ -90,7 +93,13 @@ declare global {
   }
 }
 
-function getCyEl(selector: string): Cypress.Chainable<JQuery<HTMLElement>> {
+function getCyEl(
+  selector: string,
+  nestedSelector?: string,
+): Cypress.Chainable<JQuery<HTMLElement>> {
+  if (nestedSelector) {
+    return cy.get(`[data-cy="${selector}"]`).find(nestedSelector);
+  }
   return cy.get(`[data-cy="${selector}"]`);
 }
 
@@ -140,9 +149,11 @@ function signUp(email: string, password: string): void {
   cy.visit('/auth/sign-up');
   cy.getCyEl('email').type(email);
   cy.getCyEl('phone-number').type('0673347200');
+  cy.getCyEl('last-name').type('test-lastName');
   cy.getCyEl('first-name').type('test-firstName');
   cy.getCyEl('middle-name').type('test-middleName');
-  cy.getCyEl('last-name').type('test-lastName');
+  cy.getCyEl('location').type('Lutsk');
+  cy.getCyEl('website').type('https://hvoya.com');
   cy.getCyEl('bio').type('test-bio');
   cy.getCyEl('password').type(password).find('input').blur();
   cy.getCyEl('confirm-password').type(password);
@@ -201,19 +212,26 @@ function registerNewUser(email: string, password: string, options: any): void {
 
   cy.task<any[]>(
     'connectDB',
-    'SELECT * FROM public."user" ORDER BY id ASC',
+    `
+      SELECT * 
+      FROM public."user"
+      WHERE id IN (SELECT id FROM public."user" WHERE "createdAt" = (SELECT MAX("createdAt") FROM public."user"))
+      ORDER BY id ASC
+      LIMIT 1
+    `,
   ).then((users) => {
-    const token = signToken(users[users.length - 1].id);
-
+    const token = signToken(users[0].id);
     cy.visit(`/auth/confirm-email?token=${token}`);
   });
 
   if (options.confirm) {
     cy.task<any[]>(
       'connectDB',
-      `UPDATE public."user" 
+      `
+        UPDATE public."user"
         SET "userConfirmed" = true
-        WHERE id = (SELECT max(id) FROM public."user")`,
+        WHERE id IN (SELECT id FROM public."user" WHERE "createdAt" = (SELECT MAX("createdAt") FROM public."user"))
+      `,
     );
   }
 }
@@ -222,9 +240,11 @@ function registerNewAdmin(email: string, password: string): void {
   cy.registerNewUser(email, password, { confirm: true });
   cy.task<any[]>(
     'connectDB',
-    `UPDATE public."user" 
+    `
+      UPDATE public."user" 
       SET role = 'Admin'::user_role_enum
-      WHERE id = (SELECT max(id) FROM public."user")`,
+      WHERE id IN (SELECT id FROM public."user" WHERE "createdAt" = (SELECT MAX("createdAt") FROM public."user"))
+    `,
   );
 }
 
@@ -374,12 +394,12 @@ function addProductToCart(productName?: string): Cypress.Chainable<Product> {
 }
 
 function fillAndSubmitCreateOrderForm(data: CreateOrderForm): void {
-  cy.get('input[id="phone-number"]').clear().type(data.phoneNumber);
-  cy.get('input[id="first-name"]').clear().type(data.firstName);
-  cy.get('input[id="last-name"]').clear().type(data.lastName);
-  cy.get('input[id="middle-name"]').clear().type(data.middleName);
-  cy.get('input[id="city"]').clear().type(data.city);
-  cy.get('input[id="post-office"]').clear().type(data.postOffice);
+  // cy.get('input[id="phone-number"]').clear().type(data.phoneNumber);
+  // cy.get('input[id="first-name"]').clear().type(data.firstName);
+  // cy.get('input[id="last-name"]').clear().type(data.lastName);
+  // cy.get('input[id="middle-name"]').clear().type(data.middleName);
+  // cy.get('input[id="city"]').clear().type(data.city);
+  // cy.get('input[id="post-office"]').clear().type(data.postOffice);
   cy.get('input[id="tracking-id"]').clear().type(data.trackingId);
   cy.uploadFile('order-waybill-upload', 'waybill-sample.pdf');
   cy.getCyEl('order-submit-button').click();

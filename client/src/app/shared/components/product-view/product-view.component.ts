@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { Galleria } from 'primeng/galleria';
 
 import { Location } from '@angular/common';
@@ -9,6 +10,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   ProductBase,
@@ -25,7 +27,7 @@ import { getUniqueProductSizes } from '@shared/utils';
 })
 export class ProductViewComponent implements OnInit {
   @Input() product!: Partial<ProductBase>;
-  @Input() selectedVariantId!: number;
+  @Input() selectedVariantId!: string;
   @Input() hideAddToCartButton = false;
   @Input() previewImages: string[] = [];
 
@@ -36,18 +38,35 @@ export class ProductViewComponent implements OnInit {
   selectedVariant: ProductVariant | undefined;
 
   sizes: ProductSize[] = [];
-  selectedSizeId: number | undefined;
+  selectedSizeId: string | undefined;
 
   colors: ProductColor[] = [];
-  selectedColorId: number | undefined;
+  selectedColorId: string | undefined;
 
-  constructor(private location: Location) {}
+  constructor(
+    private location: Location,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly messageService: MessageService,
+  ) {}
 
   ngOnInit(): void {
     this.variants = this.product.variants || [];
     this.selectedVariant = this.variants.find(
       (variant) => variant.id === this.selectedVariantId,
     );
+
+    if (!this.selectedVariant) {
+      this.router.navigate(['../../'], {
+        relativeTo: this.route,
+      });
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Виникла помилка.',
+        detail: 'Товару не знайдено',
+      });
+    }
+
     this.sizes = getUniqueProductSizes(this.variants);
     this.selectedSizeId = this.selectedVariant?.properties.size.id;
 

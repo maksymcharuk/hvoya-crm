@@ -20,7 +20,7 @@ import { CartService } from '../../../cart/services/cart/cart.service';
 })
 export class ViewProductComponent {
   product$!: Observable<ProductBase>;
-  selectedVariantId!: number;
+  selectedVariantId!: string;
 
   constructor(
     private productsService: ProductsService,
@@ -29,7 +29,7 @@ export class ViewProductComponent {
     private route: ActivatedRoute,
   ) {
     this.route.params.subscribe((params) => {
-      this.selectedVariantId = +params['variantId'];
+      this.selectedVariantId = params['variantId'];
       this.product$ = this.productsService.getProduct(params['baseId']);
     });
   }
@@ -58,7 +58,7 @@ export class ViewProductComponent {
       .subscribe(() => {
         this.messageService.add({
           severity: 'success',
-          detail: `${productVariant.properties.name} added to cart`,
+          detail: `${productVariant.properties.name} додано у кошик`,
         });
       });
   }

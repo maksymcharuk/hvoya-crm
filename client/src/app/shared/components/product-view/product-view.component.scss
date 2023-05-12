@@ -9,6 +9,12 @@
   max-height: 120px;
 }
 
+.published-tag {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+}
+
 :host ::ng-deep {
   .p-galleria .p-galleria-thumbnail-container {
     background-color: transparent;

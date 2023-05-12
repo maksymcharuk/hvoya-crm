@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsPhoneNumber,
   IsString,
+  IsUrl,
   Length,
 } from 'class-validator';
 
@@ -29,6 +30,19 @@ export class CreateUserDto {
   @Length(10, 10, { message: 'Номер телефону невірний' })
   @IsPhoneNumber('UA', { message: 'Номер телефону невірний' })
   phoneNumber: string;
+
+  @IsNotEmpty({ message: 'Потрібно ввести місцезнаходження' })
+  location: string;
+
+  @IsNotEmpty()
+  @IsUrl(
+    {},
+    {
+      message:
+        'Невірний формат посилання на веб-сайт чи профіль у соціальній мережі',
+    },
+  )
+  website: string;
 
   @IsNotEmpty({ message: 'Потрібно додати опис' })
   bio: string;

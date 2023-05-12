@@ -8,7 +8,6 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderWaybillDto } from '@dtos/update-order-waybill.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
-import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
@@ -33,9 +32,9 @@ export class OrdersService {
     private caslAbilityFactory: CaslAbilityFactory,
     private balanceService: BalanceService,
     private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
-  async getOrder(userId: number, orderId: number): Promise<OrderEntity> {
+  async getOrder(userId: string, orderId: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
     const user = await manager.findOneOrFail(UserEntity, {
       where: { id: userId },
@@ -55,7 +54,7 @@ export class OrdersService {
     return order;
   }
 
-  async getOrders(userId: number): Promise<OrderEntity[]> {
+  async getOrders(userId: string): Promise<OrderEntity[]> {
     const manager = this.dataSource.createEntityManager();
     const user = await manager.findOneOrFail(UserEntity, {
       where: { id: userId },
@@ -71,7 +70,7 @@ export class OrdersService {
   }
 
   async createOrder(
-    userId: number,
+    userId: string,
     createOrderDto: CreateOrderDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
@@ -126,23 +125,21 @@ export class OrdersService {
         {
           trackingId: createOrderDto.trackingId,
           deliveryService: createOrderDto.deliveryService,
-          firstName: createOrderDto.firstName,
-          lastName: createOrderDto.lastName,
-          middleName: createOrderDto.middleName,
-          phoneNumber: createOrderDto.phoneNumber,
-          email: createOrderDto.email,
-          deliveryType: createOrderDto.deliveryType,
-          city: createOrderDto.city,
-          postOffice: createOrderDto.postOffice,
+          // NOTE: Keep this for a waybill generation logic in future
+          // firstName: createOrderDto.firstName,
+          // lastName: createOrderDto.lastName,
+          // middleName: createOrderDto.middleName,
+          // phoneNumber: createOrderDto.phoneNumber,
+          // email: createOrderDto.email,
+          // deliveryType: createOrderDto.deliveryType,
+          // city: createOrderDto.city,
+          // postOffice: createOrderDto.postOffice,
           waybill: waybillScan,
         },
       );
 
-      let balance = await queryRunner.manager.findOneOrFail(BalanceEntity, {
-        where: { owner: { id: userId } },
-      });
-      balance = await this.balanceService.update(
-        balance.id,
+      const balance = await this.balanceService.update(
+        userId,
         this.calculateTotal(orderItems).neg(),
         queryRunner.manager,
         order.id,
@@ -178,20 +175,19 @@ export class OrdersService {
 
       await this.cartService.clearCart(userId);
 
-      this.eventEmitter.emit(
-        NotificationEvent.OrderCreated,
-        {
-          message: `Нове замовлення №${order.id}`,
-          data: {
-            id: order.id,
-          },
-          type: NotificationType.Order,
-        }
-      );
+      this.eventEmitter.emit(NotificationEvent.OrderCreated, {
+        message: `Нове замовлення №${order.id}`,
+        data: {
+          id: order.id,
+        },
+        type: NotificationType.Order,
+      });
 
       await queryRunner.commitTransaction();
       return this.getOrder(userId, order.id);
     } catch (err) {
+      console.log(err);
+
       try {
         if (waybillScan) {
           await this.filesService.deleteFilesCloudinary([waybillScan]);
@@ -206,7 +202,7 @@ export class OrdersService {
   }
 
   async updateOrder(
-    orderId: number,
+    orderId: string,
     updateOrderDto?: UpdateOrderDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
@@ -237,28 +233,26 @@ export class OrdersService {
           order.delivery.id,
           {
             trackingId: updateOrderDto.trackingId,
-            firstName: updateOrderDto.firstName,
-            lastName: updateOrderDto.lastName,
-            middleName: updateOrderDto.middleName,
-            phoneNumber: updateOrderDto.phoneNumber,
-            email: updateOrderDto.email,
-            deliveryType: updateOrderDto.deliveryType,
-            city: updateOrderDto.city,
-            postOffice: updateOrderDto.postOffice,
+            // NOTE: Keep this for a waybill generation logic in future
+            // firstName: updateOrderDto.firstName,
+            // lastName: updateOrderDto.lastName,
+            // middleName: updateOrderDto.middleName,
+            // phoneNumber: updateOrderDto.phoneNumber,
+            // email: updateOrderDto.email,
+            // deliveryType: updateOrderDto.deliveryType,
+            // city: updateOrderDto.city,
+            // postOffice: updateOrderDto.postOffice,
           },
         );
 
-        this.eventEmitter.emit(
-          NotificationEvent.OrderUpdated,
-          {
-            message: `Статус вашого замовлення ${order.id} змінено на ${order.status}`,
-            data: {
-              id: order.id,
-            },
-            userId: order.customer.id,
-            type: NotificationType.Order,
-          }
-        );
+        this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
+          message: `Статус вашого замовлення ${order.id} змінено на ${order.status}`,
+          data: {
+            id: order.id,
+          },
+          userId: order.customer.id,
+          type: NotificationType.Order,
+        });
 
         await queryRunner.manager.update(OrderEntity, orderId, {
           status: updateOrderDto.orderStatus,
@@ -282,8 +276,8 @@ export class OrdersService {
   }
 
   async updateOrderWaybill(
-    userId: number,
-    orderId: number,
+    userId: string,
+    orderId: string,
     updateOrderWaybillDto: UpdateOrderWaybillDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {

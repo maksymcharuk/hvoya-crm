@@ -78,14 +78,14 @@ export class SignInComponent {
                   this.emailConfirmationSent = true;
                   this.messageService.add({
                     severity: 'success',
-                    summary: 'Confirmation email sent',
+                    summary: 'Лист з підтвердженням надіслано',
                     detail: 'Будь ласка, перевірте свою електронну пошту',
                   });
                 });
             } else {
               this.messageService.add({
                 severity: 'info',
-                summary: 'Confirmation email sent',
+                summary: 'Лист з підтвердженням надіслано',
                 detail: 'Будь ласка, перевірте свою електронну пошту',
               });
             }

@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   UseGuards,
@@ -37,7 +36,7 @@ export class ProductColorsController {
     ability.can(Action.Update, ProductColorEntity),
   )
   editProduct(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() body: Partial<CreateProductColorDto>,
   ) {
     return this.productColorsService.updateColor(id, body);
@@ -55,7 +54,7 @@ export class ProductColorsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductColorEntity),
   )
-  getProduct(@Param('id', ParseIntPipe) id: number) {
+  getProduct(@Param('id') id: string) {
     return this.productColorsService.getColorById(id);
   }
 }

@@ -353,6 +353,18 @@
             </p-inputNumber>
           </div>
 
+          <div class="field col-12 flex align-items-center">
+            <p-checkbox
+              inputId="productVariantIsPublished"
+              aria-labelledby="Опубліковати товар"
+              [binary]="true"
+              formControlName="productVariantIsPublished"
+            ></p-checkbox>
+            <label class="mb-0 ml-3" for="productVariantIsPublished">
+              Опублікований
+            </label>
+          </div>
+
           <div
             class="col-12 selected-product-images-wrapper"
             *ngIf="isEdit && selectedProductImages.length"

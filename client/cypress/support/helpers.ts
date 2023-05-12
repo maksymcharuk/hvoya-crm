@@ -1,7 +1,7 @@
 import jwt_encode from 'jwt-encode';
 
 export const signToken = (
-  userId: number,
+  userId: string,
   userRole = 'User',
   expiresIn = '10m',
 ) => {

@@ -35,6 +35,9 @@ export class ProductPropertiesEntity extends BaseEntity {
   })
   weight: number;
 
+  @Column({ default: true })
+  isPublished: boolean;
+
   @ManyToMany(() => FileEntity, {
     eager: true,
   })

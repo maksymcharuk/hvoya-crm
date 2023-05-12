@@ -50,11 +50,11 @@ export class UsersService {
     return updatedUser;
   }
 
-  showById(id: number): Promise<UserEntity | null> {
+  showById(id: string): Promise<UserEntity | null> {
     return this.findById(id);
   }
 
-  findById(id: number): Promise<UserEntity | null> {
+  findById(id: string): Promise<UserEntity | null> {
     return this.usersRepository.findOneBy({ id });
   }
 
@@ -62,7 +62,7 @@ export class UsersService {
     return this.usersRepository.findOneBy({ email });
   }
 
-  async getAll(userId: number): Promise<UserEntity[]> {
+  async getAll(userId: string): Promise<UserEntity[]> {
     const manager = this.dataSource.createEntityManager();
     const user = await manager.findOneOrFail(UserEntity, {
       where: { id: userId },
@@ -87,11 +87,11 @@ export class UsersService {
     });
   }
 
-  async confirmUser(userId: number): Promise<UserEntity> {
+  async confirmUser(userId: string): Promise<UserEntity> {
     const user = await this.usersRepository.findOneByOrFail({ id: userId });
 
     this.eventEmitter.emit(NotificationEvent.UserConfirmed, {
-      message: `Користувач ${user.firstName} ${user.lastName} створив акаунт`,
+      message: `Акаунт користувача ${user.firstName} ${user.lastName} підтвердженно`,
       data: {
         id: user.id,
       },
@@ -101,7 +101,7 @@ export class UsersService {
     return this.usersRepository.save({ ...user, userConfirmed: true });
   }
 
-  async freezeToggleUser(userId: number): Promise<UserEntity> {
+  async freezeToggleUser(userId: string): Promise<UserEntity> {
     let user = await this.usersRepository.findOneBy({ id: userId });
 
     if (!user) {

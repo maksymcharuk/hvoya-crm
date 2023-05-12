@@ -4,12 +4,13 @@ import { NotificationType } from '@shared/enums/notification-type.enum';
 import { AccountService } from '@shared/services/account.service';
 import { AuthService } from '@shared/services/auth.service';
 import { NotificationsService } from '@shared/services/notifications.service';
+import { WebSocketGatewayService } from '@shared/services/websocket-gateway.service';
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
-  providers: [AccountService, NotificationsService],
+  providers: [AccountService, NotificationsService, WebSocketGatewayService],
 })
 export class AdminComponent {
   notificationsNumber$ = this.notificationsService.notificationsNumber$;
@@ -88,7 +89,10 @@ export class AdminComponent {
   constructor(
     private authService: AuthService,
     private notificationsService: NotificationsService,
-  ) {}
+    private webSocketGatewayService: WebSocketGatewayService,
+  ) {
+    console.log(this.webSocketGatewayService);
+  }
 
   logout() {
     this.authService.logout();

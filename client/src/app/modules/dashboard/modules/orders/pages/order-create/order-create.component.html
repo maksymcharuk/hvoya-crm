@@ -50,7 +50,8 @@
       </ng-container>
       <form [formGroup]="orderCreateForm">
         <div class="grid">
-          <div class="col-6">
+          <!-- NOTE: Keep this for a waybill generation logic in future -->
+          <!-- <div class="col-6">
             <div class="p-fluid">
               <h5>Інформація про отримувача</h5>
               <div class="formgrid grid">
@@ -123,7 +124,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="col-6">
             <div class="p-fluid">
               <h5>Інформація про достаку</h5>
@@ -159,7 +160,8 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col-12">
+                <!-- NOTE: Keep this for a waybill generation logic in future -->
+                <!-- <div class="field col-12">
                   <label for="delivery-type">Тип доставки:</label>
                   <p-dropdown
                     id="delivery-type"
@@ -183,10 +185,11 @@
                     errorType="required"
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
-                </div>
+                </div> -->
               </div>
               <div class="formgrid grid">
-                <div class="field col-12">
+                <!-- NOTE: Keep this for a waybill generation logic in future -->
+                <!-- <div class="field col-12">
                   <label for="post-office">Відділення:</label>
                   <input
                     id="post-office"
@@ -199,7 +202,7 @@
                     errorType="required"
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
-                </div>
+                </div> -->
                 <div class="field col-12">
                   <label for="tracking-id">Номер ТТН:</label>
                   <input
@@ -228,6 +231,12 @@
                   (uploadHandler)="onFileUpload($event)"
                 >
                 </p-fileUpload>
+                <app-form-control-error-message
+                  [formGroup]="orderCreateForm"
+                  controlName="waybill"
+                  errorType="required"
+                  errorMessage="Це є обов'язковим полем"
+                ></app-form-control-error-message>
               </div>
             </div>
           </div>

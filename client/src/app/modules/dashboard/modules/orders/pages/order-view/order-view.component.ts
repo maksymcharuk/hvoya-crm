@@ -3,7 +3,7 @@ import { FileUpload } from 'primeng/fileupload';
 import { BehaviorSubject, finalize } from 'rxjs';
 
 import { Component, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
@@ -31,7 +31,7 @@ export class OrderViewComponent {
   showWaybillViewDialog = false;
 
   updateWaybillForm = this.formBuilder.group({
-    trackingId: ['', Validators.required],
+    trackingId: [''],
     waybill: [''],
   }) as UpdateWaybillFormGroup;
 

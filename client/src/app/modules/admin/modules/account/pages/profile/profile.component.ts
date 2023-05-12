@@ -2,6 +2,7 @@ import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
 
 import { Component, OnInit } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 
 import {
@@ -19,9 +20,10 @@ export class ProfileComponent implements OnInit {
   isLoading = false;
 
   updateProfileForm = this.formBuilder.group({
-    phoneNumber: [''],
-    firstName: [''],
-    lastName: [''],
+    phoneNumber: ['', Validators.required],
+    lastName: ['', Validators.required],
+    firstName: ['', Validators.required],
+    middleName: ['', Validators.required],
   }) as UpdateAdminProfileFormGroup;
 
   constructor(
@@ -35,14 +37,20 @@ export class ProfileComponent implements OnInit {
       if (profile) {
         this.updateProfileForm.patchValue({
           phoneNumber: profile.phoneNumber,
-          firstName: profile.firstName,
           lastName: profile.lastName,
+          firstName: profile.firstName,
+          middleName: profile.middleName,
         });
       }
     });
   }
 
   onSubmit(value: UpdateAdminProfileDTO) {
+    if (!this.updateProfileForm.valid) {
+      this.updateProfileForm.markAllAsTouched();
+      return;
+    }
+
     this.isLoading = true;
     this.accountService
       .updateProfile(value)

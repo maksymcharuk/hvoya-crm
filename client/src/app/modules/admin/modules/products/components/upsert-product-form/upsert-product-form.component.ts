@@ -34,6 +34,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
           name: '',
           description: '',
           weight: 0,
+          isPublished: true,
           price: 0,
           size: {
             height: 0,
@@ -90,13 +91,20 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         { value: '', disabled: true },
         Validators.required,
       ],
-      productVariantSizeId: [{ value: 0, disabled: true }, Validators.required],
+      productVariantSizeId: [
+        { value: '', disabled: true },
+        Validators.required,
+      ],
       productVariantColorId: [
-        { value: 0, disabled: true },
+        { value: '', disabled: true },
         Validators.required,
       ],
       productVariantPrice: [{ value: 0, disabled: true }, Validators.required],
       productVariantWeight: [{ value: 0, disabled: true }, Validators.required],
+      productVariantIsPublished: [
+        { value: true, disabled: true },
+        Validators.required,
+      ],
       productVariantStock: [{ value: 0, disabled: true }],
     }),
     images: [[]],
@@ -265,6 +273,8 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
                     value.productVariantGroup.productVariantDescription,
                   price: value.productVariantGroup.productVariantPrice,
                   weight: value.productVariantGroup.productVariantWeight,
+                  isPublished:
+                    value.productVariantGroup.productVariantIsPublished,
                   size: this.sizes.find((size) => {
                     return (
                       size.id === value.productVariantGroup.productVariantSizeId
@@ -347,6 +357,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
         productVariantColorId: product.properties.color.id,
         productVariantPrice: product.properties.price,
         productVariantWeight: product.properties.weight,
+        productVariantIsPublished: product.properties.isPublished,
       });
       this.allBaseProducts.forEach((base: ProductBase) => {
         base.variants.map((variant: ProductVariant) => {

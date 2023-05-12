@@ -77,7 +77,7 @@ export class ProductColorsComponent {
     }
   }
 
-  findIndexById(id: number): number {
+  findIndexById(id: string): number {
     let index = -1;
     for (let i = 0; i < this.colors.length; i++) {
       if (this.colors[i]?.id === id) {

@@ -2,8 +2,9 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 
 export interface UpdateAdminProfileDTO {
   phoneNumber: string;
-  firstName: string;
   lastName: string;
+  firstName: string;
+  middleName: string;
 }
 
 export interface UpdateAdminProfileFormGroup extends FormGroup {
@@ -11,7 +12,8 @@ export interface UpdateAdminProfileFormGroup extends FormGroup {
 
   controls: {
     phoneNumber: AbstractControl;
-    firstName: AbstractControl;
     lastName: AbstractControl;
+    firstName: AbstractControl;
+    middleName: AbstractControl;
   };
 }

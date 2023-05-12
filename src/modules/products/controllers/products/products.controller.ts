@@ -1,13 +1,11 @@
-import { FileTypeValidator } from '@validators/ files-type.validator';
-import { MaxFilesSizeValidator } from '@validators/max-files-size.validator';
-
 import {
   Body,
   Controller,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
   Param,
   ParseFilePipe,
-  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -17,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
+import { User } from '@decorators/user.decorator';
 import { CreateProductDto } from '@dtos/create-product.dto';
 import { UpdateProductDto } from '@dtos/update-product.dto';
 import { PageOptionsDto } from '@dtos/page-options.dto';
@@ -50,7 +49,7 @@ export class ProductsController {
     @UploadedFiles(
       new ParseFilePipe({
         validators: [
-          new MaxFilesSizeValidator({ maxSize: 5000000 }),
+          new MaxFileSizeValidator({ maxSize: 5000000 }),
           new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
         fileIsRequired: false,
@@ -74,7 +73,7 @@ export class ProductsController {
     @UploadedFiles(
       new ParseFilePipe({
         validators: [
-          new MaxFilesSizeValidator({ maxSize: 5000000 }),
+          new MaxFileSizeValidator({ maxSize: 5000000 }),
           new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
         ],
         fileIsRequired: false,
@@ -89,8 +88,8 @@ export class ProductsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductBaseEntity),
   )
-  getProducts() {
-    return this.productsService.getProducts();
+  getProducts(@User('id') userId: string) {
+    return this.productsService.getProducts(userId);
   }
 
   @Get('categories')
@@ -115,7 +114,7 @@ export class ProductsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductBaseEntity),
   )
-  getProduct(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.getProduct({ id });
+  getProduct(@User('id') userId: string, @Param('id') id: string) {
+    return this.productsService.getProduct(id, userId);
   }
 }

@@ -60,11 +60,15 @@
                 {{ order.createdAt | date : 'short' }}
               </div>
             </li>
+          </ul>
+        </div>
+        <div class="my-5">
+          <h5>Дані дропшипера</h5>
+          <ul class="striped-list">
             <li class="striped-list__item">
               <div class="striped-list__item-key">ПІБ</div>
               <div class="striped-list__item-value">
-                {{ order.delivery.firstName }} {{ order.delivery.lastName }}
-                {{ order.delivery.middleName }}
+                {{ order.customer.fullName }}
               </div>
             </li>
             <li class="striped-list__item">
@@ -72,24 +76,12 @@
               <div class="striped-list__item-value">
                 <ng-container
                   *ngIf="
-                    order.delivery.phoneNumber as phoneNumber;
+                    order.customer.phoneNumber as phoneNumber;
                     else emptyPhoneNumber
                   "
                   >{{ phoneNumber | phoneNumber }}</ng-container
                 >
                 <ng-template #emptyPhoneNumber>-</ng-template>
-              </div>
-            </li>
-            <li class="striped-list__item">
-              <div class="striped-list__item-key">Місто</div>
-              <div class="striped-list__item-value">
-                {{ order.delivery.city }}
-              </div>
-            </li>
-            <li class="striped-list__item">
-              <div class="striped-list__item-key">Відділення</div>
-              <div class="striped-list__item-value">
-                {{ order.delivery.postOffice }}
               </div>
             </li>
           </ul>
@@ -115,7 +107,7 @@
               </div>
             </li>
             <li class="striped-list__item">
-              <div class="striped-list__item-key">Скан ТТН</div>
+              <div class="striped-list__item-key">Маркування (PDF)</div>
               <div class="striped-list__item-value">
                 <ng-container
                   *ngIf="order.delivery.waybill?.url as url; else noWaybill"
@@ -146,7 +138,7 @@
                   </p-dialog>
                 </ng-container>
                 <ng-template #noWaybill>
-                  <span>-</span>
+                  <span>—</span>
                 </ng-template>
               </div>
             </li>
@@ -176,6 +168,7 @@
                 </div>
                 <div class="p-formgrid grid">
                   <div class="field col-12 md:col-6">
+                    <label for="tracking-id">Файл маркування:</label>
                     <p-fileUpload
                       #waybillUpload
                       data-cy="order-waybill-upload"
@@ -192,7 +185,7 @@
                 <button
                   (click)="updateWaybill()"
                   pButton
-                  label="Оновини накладну"
+                  label="Оновини дані ТТН"
                   [disabled]="waybillSubmitting$ | async"
                 ></button>
               </form>

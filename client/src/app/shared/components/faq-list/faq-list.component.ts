@@ -117,7 +117,7 @@ export class FaqListComponent {
     }
   }
 
-  private findIndexById(id: number): number {
+  private findIndexById(id: string): number {
     let index = -1;
     for (let i = 0; i < this.faqList.length; i++) {
       if (this.faqList[i]?.id === id) {

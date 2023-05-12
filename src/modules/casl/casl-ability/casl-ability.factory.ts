@@ -8,8 +8,10 @@ import {
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
+import { BalanceEntity } from '@entities/balance.entity';
 import { CartEntity } from '@entities/cart.entity';
 import { FaqEntity } from '@entities/faq.entity';
+import { NotificationEntity } from '@entities/notification.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
@@ -17,27 +19,24 @@ import { ProductColorEntity } from '@entities/product-color.entity';
 import { ProductSizeEntity } from '@entities/product-size.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
-import { BalanceEntity } from '@entities/balance.entity';
-import { NotificationEntity } from '@entities/notification.entity';
-
 import { Action } from '@enums/action.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { Role } from '@enums/role.enum';
 
 type Subjects =
   | InferSubjects<
-    | typeof UserEntity
-    | typeof ProductCategoryEntity
-    | typeof ProductBaseEntity
-    | typeof ProductVariantEntity
-    | typeof ProductColorEntity
-    | typeof ProductSizeEntity
-    | typeof CartEntity
-    | typeof OrderEntity
-    | typeof FaqEntity
-    | typeof BalanceEntity
-    | typeof NotificationEntity
-  >
+      | typeof UserEntity
+      | typeof ProductCategoryEntity
+      | typeof ProductBaseEntity
+      | typeof ProductVariantEntity
+      | typeof ProductColorEntity
+      | typeof ProductSizeEntity
+      | typeof CartEntity
+      | typeof OrderEntity
+      | typeof FaqEntity
+      | typeof BalanceEntity
+      | typeof NotificationEntity
+    >
   | 'all';
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
@@ -95,7 +94,11 @@ export class CaslAbilityFactory {
       // Products
       can(Action.Read, ProductCategoryEntity);
       can(Action.Read, ProductBaseEntity);
-      can(Action.Read, ProductVariantEntity);
+      can(
+        Action.Read,
+        ProductVariantEntity,
+        ({ properties }: ProductVariantEntity) => properties.isPublished,
+      );
       // Cart
       can([Action.Read, Action.AddTo, Action.RemoveFrom], CartEntity);
       // Orders

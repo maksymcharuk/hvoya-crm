@@ -1,9 +1,8 @@
 import { Response } from 'express';
 import { Builder } from 'xml2js';
 
-import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 
-import { SslAuthGuard } from '../../../../modules/auth/ssl-auth/ssl-auth.guard';
 import { Action } from './enums/action.enum';
 import { CancelRequest } from './interfaces/requests/cancel.request';
 import { CheckRequest } from './interfaces/requests/check.request';
@@ -14,7 +13,6 @@ import { PaymentApiService } from './services/payment-api.service';
 import { PrivatJSONRequest, PrivatXMLRequest } from './types/request.type';
 
 @Controller()
-@UseGuards(SslAuthGuard)
 export class PrivatBankController {
   constructor(private readonly paymentApiService: PaymentApiService) {}
 
