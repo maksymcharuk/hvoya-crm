@@ -4,6 +4,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateProductDto } from '@dtos/create-product.dto';
 import { UpdateProductDto } from '@dtos/update-product.dto';
+import { PageOptionsDto } from '@dtos/page-options.dto';
+import { PageDto } from '@dtos/page.dto';
+import { PageMetaDto } from '@dtos/page-meta.dto';
+
 import { FileEntity } from '@entities/file.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
@@ -18,7 +22,7 @@ export class ProductsService {
   constructor(
     private dataSource: DataSource,
     private filesService: FilesService,
-  ) {}
+  ) { }
 
   async createProduct(
     createProductDto: CreateProductDto,
@@ -256,5 +260,57 @@ export class ProductsService {
       where: params,
       relations: ['properties', 'baseProduct'],
     });
+  }
+
+  async getFilteredProducts(
+    pageOptionsDto: PageOptionsDto
+  ): Promise<PageDto<ProductBaseEntity>> {
+    const queryBuilder = this.dataSource.createQueryBuilder(ProductBaseEntity, 'product');
+
+    console.log(pageOptionsDto.skip, 'skip');
+    console.log(pageOptionsDto.take, 'take');
+
+    queryBuilder
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.variants', 'variant')
+      .leftJoinAndSelect('variant.properties', 'properties')
+      .leftJoinAndSelect('properties.images', 'images')
+      .leftJoinAndSelect('properties.color', 'color')
+      .leftJoinAndSelect('properties.size', 'size')
+
+    if (pageOptionsDto.category) {
+      const categoryIds = pageOptionsDto.category.split(',');
+      queryBuilder.andWhere('category.id IN (:...categoryIds)', { categoryIds });
+    }
+
+    if (pageOptionsDto.size) {
+      const sizeIds = pageOptionsDto.size.split(',');
+      queryBuilder.andWhere('size.id IN (:...sizeIds)', { sizeIds });
+    }
+
+    if (pageOptionsDto.color) {
+      const colorIds = pageOptionsDto.color.split(',');
+      queryBuilder.andWhere('color.id IN (:...colorIds)', { colorIds });
+    }
+
+    if (pageOptionsDto.searchKey) {
+      queryBuilder.andWhere('LOWER(properties.name) LIKE LOWER(:searchKey)', { searchKey: `%${pageOptionsDto.searchKey}%` })
+    }
+
+    queryBuilder
+      .orderBy(`properties.${pageOptionsDto.orderBy}`, pageOptionsDto.order)
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
+  async getProductsCategories(): Promise<ProductCategoryEntity[]> {
+    return this.dataSource.manager.find(ProductCategoryEntity);
   }
 }

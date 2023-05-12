@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -18,6 +19,8 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { CreateProductDto } from '@dtos/create-product.dto';
 import { UpdateProductDto } from '@dtos/update-product.dto';
+import { PageOptionsDto } from '@dtos/page-options.dto';
+import { PageDto } from '@dtos/page.dto';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
@@ -32,7 +35,7 @@ import { ProductsService } from '../../services/products/products.service';
 @Controller('products')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class ProductsController {
-  constructor(private productsService: ProductsService) {}
+  constructor(private productsService: ProductsService) { }
 
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
@@ -88,6 +91,24 @@ export class ProductsController {
   )
   getProducts() {
     return this.productsService.getProducts();
+  }
+
+  @Get('categories')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, ProductCategoryEntity),
+  )
+  getProductsCategories() {
+    return this.productsService.getProductsCategories();
+  }
+
+  @Get('filtered')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, ProductBaseEntity),
+  )
+  getFilteredProducts(
+    @Query() pageOptionsDto: PageOptionsDto
+  ): Promise<PageDto<ProductBaseEntity>> {
+    return this.productsService.getFilteredProducts(pageOptionsDto);
   }
 
   @Get(':id')
