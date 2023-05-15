@@ -20,7 +20,9 @@ class SearchResponseData {
     {
       $: {
         billIdentifier: string,
+        ls: string,
       },
+      fio: string,
     },
   ];
   serviceGroup: [
@@ -30,6 +32,18 @@ class SearchResponseData {
           $: {
             serviceCode: string,
           },
+          companyInfo: [
+            {
+              companyCode: string,
+            }
+          ]
+          debtInfo: [
+            {
+              $: {
+                amountToPay: string,
+              }
+            }
+          ]
           payerInfo: [
             {
               $: {
@@ -49,7 +63,9 @@ class SearchResponseData {
       {
         $: {
           billIdentifier: params.billIdentifier,
+          ls: params.billIdentifier,
         },
+        fio: params.fio,
       },
     ];
 
@@ -60,6 +76,18 @@ class SearchResponseData {
             $: {
               serviceCode: params.serviceCode,
             },
+            companyInfo: [
+              {
+                companyCode: '2611220009',
+              }
+            ],
+            debtInfo: [
+              {
+                $: {
+                  amountToPay: '0.00',
+                }
+              }
+            ],
             payerInfo: [
               {
                 $: {
