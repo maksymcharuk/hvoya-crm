@@ -14,7 +14,7 @@ import { PrivatJSONRequest, PrivatXMLRequest } from './types/request.type';
 
 @Controller()
 export class PrivatBankController {
-  constructor(private readonly paymentApiService: PaymentApiService) {}
+  constructor(private readonly paymentApiService: PaymentApiService) { }
 
   @Post()
   async main(
