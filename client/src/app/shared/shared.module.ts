@@ -14,6 +14,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -22,6 +23,8 @@ import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AbilityModule } from '@casl/angular';
+
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { DeliveryServiceBadgeComponent } from './components/delivery-service-badge/delivery-service-badge.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
@@ -92,6 +95,7 @@ const PRIMENG_MODULES = [
   EditorModule,
   BadgeModule,
   VirtualScrollerModule,
+  MultiSelectModule,
   TagModule,
 ];
 
@@ -104,6 +108,7 @@ const PRIMENG_MODULES = [
     FormsModule,
     ReactiveFormsModule,
     AbilityModule,
+    InfiniteScrollModule,
     ...PRIMENG_MODULES,
   ],
   providers: [
@@ -122,4 +127,4 @@ const PRIMENG_MODULES = [
   ],
   exports: [...COMPONENTS, ...PIPES],
 })
-export class SharedModule {}
+export class SharedModule { }

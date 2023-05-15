@@ -63,6 +63,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api', { exclude: ['/'] });
   app.useGlobalPipes(
     new ValidationPipe({
+      transform: true,
       whitelist: true,
     }),
   );

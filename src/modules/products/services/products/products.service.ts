@@ -4,9 +4,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateProductDto } from '@dtos/create-product.dto';
 import { UpdateProductDto } from '@dtos/update-product.dto';
+import { PageOptionsDto } from '@dtos/page-options.dto';
+import { PageDto } from '@dtos/page.dto';
+import { PageMetaDto } from '@dtos/page-meta.dto';
+
 import { FileEntity } from '@entities/file.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
-import { ProductCategoryEntity } from '@entities/product-category.entity';
+
 import { ProductPropertiesEntity } from '@entities/product-properties.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
@@ -15,6 +19,7 @@ import { Folder } from '@enums/folder.enum';
 
 import { CaslAbilityFactory } from '../../../../modules/casl/casl-ability/casl-ability.factory';
 import { FilesService } from '../../../../modules/files/services/files.service';
+import { ProductCategoryEntity } from '../../../../entities/product-category.entity';
 
 @Injectable()
 export class ProductsService {
@@ -22,7 +27,7 @@ export class ProductsService {
     private dataSource: DataSource,
     private filesService: FilesService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+  ) { }
 
   async createProduct(
     createProductDto: CreateProductDto,
@@ -280,6 +285,47 @@ export class ProductsService {
       where: params,
       relations: ['properties', 'baseProduct'],
     });
+  }
+
+  async getFilteredProducts(
+    pageOptionsDto: PageOptionsDto
+  ): Promise<PageDto<ProductBaseEntity>> {
+    const queryBuilder = this.getProductQuery();
+
+    if (pageOptionsDto.category) {
+      const categoryIds = pageOptionsDto.category.split(',');
+      queryBuilder.andWhere('category.id IN (:...categoryIds)', { categoryIds });
+    }
+
+    if (pageOptionsDto.size) {
+      const sizeIds = pageOptionsDto.size.split(',');
+      queryBuilder.andWhere('size.id IN (:...sizeIds)', { sizeIds });
+    }
+
+    if (pageOptionsDto.color) {
+      const colorIds = pageOptionsDto.color.split(',');
+      queryBuilder.andWhere('color.id IN (:...colorIds)', { colorIds });
+    }
+
+    if (pageOptionsDto.searchKey) {
+      queryBuilder.andWhere('LOWER(properties.name) LIKE LOWER(:searchKey)', { searchKey: `%${pageOptionsDto.searchKey}%` })
+    }
+
+    queryBuilder
+      .orderBy(`productBase.${pageOptionsDto.orderBy}`, pageOptionsDto.order)
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto);
+  }
+
+  async getProductsCategories(): Promise<ProductCategoryEntity[]> {
+    return this.dataSource.manager.find(ProductCategoryEntity);
   }
 
   getProductQuery(id?: string): SelectQueryBuilder<ProductBaseEntity> {
