@@ -99,6 +99,8 @@ export class CaslAbilityFactory {
         ProductVariantEntity,
         ({ properties }: ProductVariantEntity) => properties.isPublished,
       );
+      can([Action.Read], ProductColorEntity);
+      can([Action.Read], ProductSizeEntity);
       // Cart
       can([Action.Read, Action.AddTo, Action.RemoveFrom], CartEntity);
       // Orders

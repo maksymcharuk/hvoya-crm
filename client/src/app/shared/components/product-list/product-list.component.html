@@ -2,15 +2,15 @@
   <div class="flex mb-3 justify-content-between card p-3">
     <!-- <p-dropdown
       [options]="sortOptions"
-      [(ngModel)]="sortValue"
+      [(ngModel)]="selectedSortOption"
       placeholder="Сортування"
       (onChange)="onSortChange($event)"
       optionValue="value"
       styleClass="mb-2 md:mb-0"
     ></p-dropdown> -->
     <p-multiSelect
-      [options]="filterList"
-      [(ngModel)]="selectedFilters"
+      [options]="(filterOptions$ | async) || []"
+      [(ngModel)]="selectedFilterOptions"
       (onChange)="onFilter($event)"
       defaultLabel="Виберіть фільтри"
       [group]="true"
@@ -67,16 +67,26 @@
       </ng-container>
     </ng-template>
     <ng-container *ngIf="productList$ | async as products; else loading">
-      <ng-container *ngFor="let product of products">
-        <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
-          <app-product-item
-            class="flex"
-            [product]="product"
-            [hideAddToCartButton]="hideAddToCartButton"
-            (addToCart)="onAddToCart($event)"
-          ></app-product-item>
-        </div>
+      <ng-container *ngIf="products.length > 0; else noProductsFound">
+        <ng-container *ngFor="let product of products">
+          <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
+            <app-product-item
+              class="flex"
+              [product]="product"
+              [hideAddToCartButton]="hideAddToCartButton"
+              (addToCart)="onAddToCart($event)"
+            ></app-product-item>
+          </div>
+        </ng-container>
       </ng-container>
+      <ng-template #noProductsFound>
+        <div class="col-12 my-5 text-center">
+          За вашим запитом нічого не знайдено. Спробуйте змінити параметри.
+        </div>
+      </ng-template>
     </ng-container>
+  </div>
+  <div *ngIf="showLoader" class="flex justify-content-center py-2">
+    <p-progressSpinner styleClass="w-4rem h-4rem"></p-progressSpinner>
   </div>
 </div>
