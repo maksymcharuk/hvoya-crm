@@ -15,7 +15,7 @@ class ErrorResponseData {
     'xsi:type': XsiType.ErrorInfo,
     'code': number,
   };
-  message: string;
+  Message: string;
 
 
   constructor(params: ErrorResponseParams) {
@@ -24,7 +24,7 @@ class ErrorResponseData {
       'xsi:type': XsiType.ErrorInfo,
       'code': params.code,
     };
-    this.message = params.message;
+    this.Message = params.message;
   }
 }
 

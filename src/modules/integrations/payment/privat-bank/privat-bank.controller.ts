@@ -70,7 +70,13 @@ export class PrivatBankController {
           break;
       }
 
-      const buildXml = new Builder().buildObject(xmlData);
+      const buildXml = new Builder({
+        xmldec: {
+          version: '1.0',
+          encoding: 'UTF-8',
+          standalone: undefined
+        }
+      }).buildObject(xmlData);
 
       res.set('Content-Type', 'text/xml');
       res.send(buildXml);
