@@ -20,7 +20,7 @@ export class PaymentApiService {
   constructor(
     private dataSource: DataSource,
     private balanceService: BalanceService,
-  ) {}
+  ) { }
 
   async presearch(
     accountNumber: string,
@@ -65,7 +65,7 @@ export class PaymentApiService {
       return Promise.resolve(
         new SearchResponse({
           billIdentifier: user.accountNumber,
-          serviceCode: user.accountNumber,
+          serviceCode: '1',
           fio: `${user.lastName} ${user.firstName} ${user.middleName}`,
           phone: user.phoneNumber,
         }),

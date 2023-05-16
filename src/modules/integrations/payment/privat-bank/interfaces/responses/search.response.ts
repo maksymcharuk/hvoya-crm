@@ -48,9 +48,9 @@ class SearchResponseData {
             {
               $: {
                 billIdentifier: string,
+                ls: string,
               },
               fio: string,
-              phone: string,
             }
           ],
         },
@@ -92,9 +92,9 @@ class SearchResponseData {
               {
                 $: {
                   billIdentifier: params.billIdentifier,
+                  ls: params.billIdentifier,
                 },
                 fio: params.fio,
-                phone: params.phone,
               }
             ],
           },
