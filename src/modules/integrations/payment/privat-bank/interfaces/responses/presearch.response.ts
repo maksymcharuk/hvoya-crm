@@ -14,9 +14,9 @@ class PresearchResponseData {
     'xmlns:xsi': PRIVAT_BANK_XMLNS_XSI,
     'xsi:type': XsiType.Payer,
   };
-  headers = [
+  Headers = [
     {
-      header: [
+      Header: [
         {
           $: {
             name: 'fio',
@@ -30,28 +30,28 @@ class PresearchResponseData {
       ],
     },
   ];
-  columns: [
+  Columns: [
     {
-      column: [
+      Column: [
         {
-          element: string[];
+          Element: string[];
         },
         {
-          element: string[];
+          Element: string[];
         },
       ];
     },
   ];
 
   constructor(params: PresearchResponseParams) {
-    this.columns = [
+    this.Columns = [
       {
-        column: [
+        Column: [
           {
-            element: params.fio,
+            Element: params.fio,
           },
           {
-            element: params.ls,
+            Element: params.ls,
           },
         ],
       },

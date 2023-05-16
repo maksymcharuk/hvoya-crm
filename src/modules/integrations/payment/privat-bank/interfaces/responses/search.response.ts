@@ -16,41 +16,41 @@ class SearchResponseData {
     'xmlns:xsi': PRIVAT_BANK_XMLNS_XSI,
     'xsi:type': XsiType.DebtPack,
   };
-  payerInfo: [
+  PayerInfo: [
     {
       $: {
         billIdentifier: string,
         ls: string,
       },
-      fio: string,
+      Fio: string,
     },
   ];
-  serviceGroup: [
+  ServiceGroup: [
     {
-      debtService: [
+      DebtService: [
         {
           $: {
-            serviceCode: string,
+            ServiceCode: string,
           },
-          companyInfo: [
+          CompanyInfo: [
             {
-              companyCode: string,
+              CompanyCode: string,
             }
           ]
-          debtInfo: [
+          DebtInfo: [
             {
               $: {
                 amountToPay: string,
               }
             }
           ]
-          payerInfo: [
+          PayerInfo: [
             {
               $: {
                 billIdentifier: string,
                 ls: string,
               },
-              fio: string,
+              Fio: string,
             }
           ],
         },
@@ -59,42 +59,42 @@ class SearchResponseData {
   ];
 
   constructor(params: SearchResponseParams) {
-    this.payerInfo = [
+    this.PayerInfo = [
       {
         $: {
           billIdentifier: params.billIdentifier,
           ls: params.billIdentifier,
         },
-        fio: params.fio,
+        Fio: params.fio,
       },
     ];
 
-    this.serviceGroup = [
+    this.ServiceGroup = [
       {
-        debtService: [
+        DebtService: [
           {
             $: {
-              serviceCode: params.serviceCode,
+              ServiceCode: params.serviceCode,
             },
-            companyInfo: [
+            CompanyInfo: [
               {
-                companyCode: '2611220009',
+                CompanyCode: '2611220009',
               }
             ],
-            debtInfo: [
+            DebtInfo: [
               {
                 $: {
                   amountToPay: '0.00',
                 }
               }
             ],
-            payerInfo: [
+            PayerInfo: [
               {
                 $: {
                   billIdentifier: params.billIdentifier,
                   ls: params.billIdentifier,
                 },
-                fio: params.fio,
+                Fio: params.fio,
               }
             ],
           },

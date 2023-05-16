@@ -3,23 +3,23 @@ import { Action } from '../enums/action.enum';
 import { Interface } from '../enums/interface.enum';
 
 export class BaseXml<T> {
-  transfer: {
+  Transfer: {
     $: {
-      xmlns: typeof PRIVAT_BANK_XMLNS;
-      interface: Interface;
       action: Action;
+      interface: Interface;
+      xmlns: typeof PRIVAT_BANK_XMLNS;
     };
-    data: T[];
+    Data: T[];
   };
 
   constructor(_interface: Interface, action: Action, data: T) {
-    this.transfer = {
+    this.Transfer = {
       $: {
-        xmlns: PRIVAT_BANK_XMLNS,
-        interface: _interface,
         action,
+        interface: _interface,
+        xmlns: PRIVAT_BANK_XMLNS,
       },
-      data: [data],
+      Data: [data],
     };
   }
 }
