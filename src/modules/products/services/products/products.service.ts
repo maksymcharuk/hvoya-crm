@@ -312,14 +312,15 @@ export class ProductsService {
       queryBuilder.andWhere('color.id IN (:...colorIds)', { colorIds });
     }
 
-    if (pageOptionsDto.searchKey) {
-      queryBuilder.andWhere('LOWER(properties.name) LIKE LOWER(:searchKey)', {
-        searchKey: `%${pageOptionsDto.searchKey}%`,
+    if (pageOptionsDto.searchQuery) {
+      queryBuilder.andWhere('LOWER(properties.name) LIKE LOWER(:searchQuery)', {
+        searchQuery: `%${pageOptionsDto.searchQuery}%`,
       });
     }
 
     queryBuilder
-      .orderBy(`productBase.${pageOptionsDto.orderBy}`, pageOptionsDto.order)
+      // .orderBy(`properties.${pageOptionsDto.orderBy}`, pageOptionsDto.order)
+      // .orderBy(`productBase.createdAt`, SortOrder.ASC)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
 

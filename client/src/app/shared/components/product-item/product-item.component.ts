@@ -42,7 +42,7 @@ export class ProductItemComponent implements OnInit, OnChanges {
     this.variants = this.product.variants || [];
     this.selectedVariant = this.variants[0];
     this.sizes = getUniqueProductSizes(this.variants).sort(this.sortSizes);
-    this.selectedSizeId = this.sizes[0]?.id;
+    this.selectedSizeId = this.selectedVariant?.properties.size.id;
     this.selectedImage = this.selectedVariant?.properties?.images[0]?.url || '';
 
     this.updateColors();

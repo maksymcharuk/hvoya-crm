@@ -1,3 +1,7 @@
+.hidden {
+  visibility: hidden;
+}
+
 :host {
   .skeleton-wrapper p-skeleton {
     display: block;
@@ -18,7 +22,6 @@
   }
 }
 
-
 :host ::ng-deep {
   .p-multiselect-label-container {
     width: 18rem;
@@ -27,7 +30,7 @@
   .p-dropdown {
     width: 14rem;
   }
-  
+
   .p-overlay {
     z-index: 100 !important;
   }

@@ -1,22 +1,22 @@
-import { Observable, map, BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 
 import { environment } from '@environment/environment';
+import { PageDto } from '@shared/interfaces/dto/page.dto';
 import {
   ProductBase,
   ProductCategory,
   ProductVariant,
 } from '@shared/interfaces/entities/product.entity';
-import { PageDto } from '@shared/interfaces/dto/page.dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   productsList$ = new BehaviorSubject<ProductBase[]>([]);
 
@@ -27,28 +27,32 @@ export class ProductsService {
   }
 
   getProducts(): Observable<ProductBase[]> {
-    return this.http
-      .get<ProductBase[]>(`${environment.apiUrl}/products`)
-      .pipe(
-        map((products) => products.map((product) => new ProductBase(product))),
-        tap((products) => this.productsList$.next(products))
-      );
+    return this.http.get<ProductBase[]>(`${environment.apiUrl}/products`).pipe(
+      map((products) => products.map((product) => new ProductBase(product))),
+      tap((products) => this.productsList$.next(products)),
+    );
   }
 
   getProductsCategories(): Observable<ProductCategory[]> {
     return this.http
       .get<ProductCategory[]>(`${environment.apiUrl}/products/categories`)
       .pipe(
-        map((categories) => categories.map((category) => new ProductCategory(category)))
+        map((categories) =>
+          categories.map((category) => new ProductCategory(category)),
+        ),
       );
   }
 
   getFilteredProducts(filter: Params, page: number): Observable<ProductBase[]> {
     return this.http
-      .get<PageDto<ProductBase[]>>(`${environment.apiUrl}/products/filtered`, { params: { ...filter, page } })
+      .get<PageDto<ProductBase[]>>(`${environment.apiUrl}/products/filtered`, {
+        params: { ...filter, page },
+      })
       .pipe(
-        map((products) => products.data.map((product) => new ProductBase(product))),
-        tap((products) => this.productsList$.next(products))
+        map((products) =>
+          products.data.map((product) => new ProductBase(product)),
+        ),
+        tap((products) => this.productsList$.next(products)),
       );
   }
 

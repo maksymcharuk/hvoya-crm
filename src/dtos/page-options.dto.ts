@@ -1,6 +1,7 @@
-import { SortOrder } from "@enums/sort-order.enum";
-import { Type } from "class-transformer";
-import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
+import { Type } from 'class-transformer';
+import { IsEnum, IsInt, IsOptional, Min } from 'class-validator';
+
+import { SortOrder } from '@enums/sort-order.enum';
 
 export class PageOptionsDto {
   @IsEnum(SortOrder)
@@ -20,7 +21,7 @@ export class PageOptionsDto {
   readonly category?: string;
 
   @IsOptional()
-  readonly searchKey?: string;
+  readonly searchQuery?: string;
 
   @Type(() => Number)
   @IsInt()
@@ -31,7 +32,7 @@ export class PageOptionsDto {
   @Type(() => Number)
   @IsInt()
   @IsOptional()
-  readonly take?: number = 10;
+  readonly take?: number = 9;
 
   get skip(): number {
     return (this.page! - 1) * this.take!;
