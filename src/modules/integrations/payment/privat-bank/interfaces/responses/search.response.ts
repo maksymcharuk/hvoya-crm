@@ -42,6 +42,7 @@ class SearchResponseData {
               $: {
                 amountToPay: string,
               }
+              _: string,
             }
           ]
           PayerInfo: [
@@ -85,7 +86,8 @@ class SearchResponseData {
               {
                 $: {
                   amountToPay: '0.00',
-                }
+                },
+                _: ' '
               }
             ],
             PayerInfo: [
