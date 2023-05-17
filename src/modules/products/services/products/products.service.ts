@@ -3,23 +3,21 @@ import { DataSource, SelectQueryBuilder } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateProductDto } from '@dtos/create-product.dto';
-import { UpdateProductDto } from '@dtos/update-product.dto';
+import { PageMetaDto } from '@dtos/page-meta.dto';
 import { PageOptionsDto } from '@dtos/page-options.dto';
 import { PageDto } from '@dtos/page.dto';
-import { PageMetaDto } from '@dtos/page-meta.dto';
-
+import { UpdateProductDto } from '@dtos/update-product.dto';
 import { FileEntity } from '@entities/file.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
-
 import { ProductPropertiesEntity } from '@entities/product-properties.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 
+import { ProductCategoryEntity } from '../../../../entities/product-category.entity';
 import { CaslAbilityFactory } from '../../../../modules/casl/casl-ability/casl-ability.factory';
 import { FilesService } from '../../../../modules/files/services/files.service';
-import { ProductCategoryEntity } from '../../../../entities/product-category.entity';
 
 @Injectable()
 export class ProductsService {
@@ -27,7 +25,7 @@ export class ProductsService {
     private dataSource: DataSource,
     private filesService: FilesService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) { }
+  ) {}
 
   async createProduct(
     createProductDto: CreateProductDto,
@@ -236,7 +234,7 @@ export class ProductsService {
     const user = await this.dataSource.manager.findOneByOrFail(UserEntity, {
       id: userId,
     });
-    let products = await this.getProductQuery().getMany();
+    let products = await this.getProductQuery(undefined, false).getMany();
     const ability = this.caslAbilityFactory.createForUser(user);
 
     products = products
@@ -288,13 +286,20 @@ export class ProductsService {
   }
 
   async getFilteredProducts(
-    pageOptionsDto: PageOptionsDto
+    userId: string,
+    pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<ProductBaseEntity>> {
+    const user = await this.dataSource.manager.findOneByOrFail(UserEntity, {
+      id: userId,
+    });
+    const ability = this.caslAbilityFactory.createForUser(user);
     const queryBuilder = this.getProductQuery();
 
     if (pageOptionsDto.category) {
       const categoryIds = pageOptionsDto.category.split(',');
-      queryBuilder.andWhere('category.id IN (:...categoryIds)', { categoryIds });
+      queryBuilder.andWhere('category.id IN (:...categoryIds)', {
+        categoryIds,
+      });
     }
 
     if (pageOptionsDto.size) {
@@ -307,28 +312,44 @@ export class ProductsService {
       queryBuilder.andWhere('color.id IN (:...colorIds)', { colorIds });
     }
 
-    if (pageOptionsDto.searchKey) {
-      queryBuilder.andWhere('LOWER(properties.name) LIKE LOWER(:searchKey)', { searchKey: `%${pageOptionsDto.searchKey}%` })
+    if (pageOptionsDto.searchQuery) {
+      queryBuilder.andWhere('LOWER(properties.name) LIKE LOWER(:searchQuery)', {
+        searchQuery: `%${pageOptionsDto.searchQuery}%`,
+      });
     }
 
     queryBuilder
-      .orderBy(`productBase.${pageOptionsDto.orderBy}`, pageOptionsDto.order)
+      // .orderBy(`properties.${pageOptionsDto.orderBy}`, pageOptionsDto.order)
+      // .orderBy(`productBase.createdAt`, SortOrder.ASC)
       .skip(pageOptionsDto.skip)
       .take(pageOptionsDto.take);
 
     const itemCount = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
+    const products = entities
+      .map((product) => {
+        product.variants = product.variants.filter((variant) => {
+          return ability.can(Action.Read, variant);
+        });
+        return product;
+      })
+      .filter((product) => {
+        return product.variants.length;
+      });
 
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
-    return new PageDto(entities, pageMetaDto);
+    return new PageDto(products, pageMetaDto);
   }
 
   async getProductsCategories(): Promise<ProductCategoryEntity[]> {
     return this.dataSource.manager.find(ProductCategoryEntity);
   }
 
-  getProductQuery(id?: string): SelectQueryBuilder<ProductBaseEntity> {
+  getProductQuery(
+    id?: string,
+    skipEmpty: boolean = true,
+  ): SelectQueryBuilder<ProductBaseEntity> {
     const query = this.dataSource.createQueryBuilder(
       ProductBaseEntity,
       'productBase',
@@ -338,12 +359,18 @@ export class ProductsService {
       query.where('productBase.id = :id', { id });
     }
 
-    return query
+    query
       .leftJoinAndSelect('productBase.category', 'category')
       .leftJoinAndSelect('productBase.variants', 'variants')
       .leftJoinAndSelect('variants.properties', 'properties')
       .leftJoinAndSelect('properties.images', 'images')
       .leftJoinAndSelect('properties.size', 'size')
       .leftJoinAndSelect('properties.color', 'color');
+
+    if (skipEmpty) {
+      query.andWhere('variants.id IS NOT NULL');
+    }
+
+    return query;
   }
 }

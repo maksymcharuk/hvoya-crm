@@ -1,3 +1,4 @@
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -8,13 +9,14 @@ import { EditorModule } from 'primeng/editor';
 import { GalleriaModule } from 'primeng/galleria';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { PanelModule } from 'primeng/panel';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
-import { MultiSelectModule } from 'primeng/multiselect';
 
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -23,8 +25,6 @@ import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AbilityModule } from '@casl/angular';
-
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 import { DeliveryServiceBadgeComponent } from './components/delivery-service-badge/delivery-service-badge.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
@@ -97,6 +97,7 @@ const PRIMENG_MODULES = [
   VirtualScrollerModule,
   MultiSelectModule,
   TagModule,
+  ProgressSpinnerModule,
 ];
 
 @NgModule({
@@ -127,4 +128,4 @@ const PRIMENG_MODULES = [
   ],
   exports: [...COMPONENTS, ...PIPES],
 })
-export class SharedModule { }
+export class SharedModule {}
