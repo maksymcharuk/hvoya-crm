@@ -34,6 +34,14 @@ export class OrderEntity extends BaseEntity {
   })
   status: OrderStatus;
 
+  @Column({
+    type: 'varchar',
+    update: false,
+    unique: true,
+    nullable: true,
+  })
+  number: string | null;
+
   @OneToMany(() => OrderItemEntity, (item) => item.order)
   items: OrderItemEntity[];
 

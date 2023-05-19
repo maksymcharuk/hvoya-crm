@@ -63,11 +63,12 @@ export class UserEntity extends BaseEntity {
   userFreezed: boolean;
 
   @Column({
+    type: 'varchar',
     update: false,
     unique: true,
     nullable: true,
   })
-  accountNumber: string;
+  accountNumber: string | null;
 
   @Column({
     default: false,

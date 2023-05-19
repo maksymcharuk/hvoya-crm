@@ -3,7 +3,7 @@
     <div class="card">
       <div *ngIf="order$ | async as order">
         <h4 class="flex align-items-center">
-          <span>Замовлення №{{ order.id }}</span>
+          <span>Замовлення №{{ order.number }}</span>
           <app-order-status-badge
             class="ml-5"
             [status]="order.status"
@@ -86,7 +86,7 @@
                   <p-dialog
                     [header]="
                       'Товарно-транспортна накладна (замовлення №' +
-                      order.id +
+                      order.number +
                       ')'
                     "
                     [(visible)]="showWaybillViewDialog"

@@ -15,7 +15,7 @@ const routes: Routes = [
     component: OrderCreateComponent,
   },
   {
-    path: ':id',
+    path: ':number',
     component: OrderViewComponent,
   },
 ];

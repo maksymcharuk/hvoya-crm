@@ -224,6 +224,10 @@ export class ProductsCreationService {
     });
 
     if (productVariantExists) {
+      await manager.update(ProductPropertiesEntity, properties.id, {
+        product: { id: productVariantExists.id },
+      });
+
       await manager.update(ProductVariantEntity, productVariantExists.id, {
         sku: productVariant.sku,
         externalIds: Array.from(
@@ -239,12 +243,18 @@ export class ProductsCreationService {
       return productVariantExists;
     }
 
-    return manager.save(ProductVariantEntity, {
+    const variant = await manager.save(ProductVariantEntity, {
       sku: productVariant.sku,
       externalIds: [productVariant.externalId],
       baseProduct: { id: productBaseId },
       properties,
     });
+
+    await manager.update(ProductPropertiesEntity, properties.id, {
+      product: { id: variant.id },
+    });
+
+    return variant;
   }
 
   async upsertProductBase(productBase: NormalizedProductBase) {

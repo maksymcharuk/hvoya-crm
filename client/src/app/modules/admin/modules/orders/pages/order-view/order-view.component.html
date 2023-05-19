@@ -3,7 +3,7 @@
     <div class="card">
       <div *ngIf="order$ | async as order">
         <h4 class="flex align-items-center">
-          <span>Замовлення №{{ order.id }}</span>
+          <span>Замовлення №{{ order.number }}</span>
           <form
             [formGroup]="updateOrderStatusForm"
             class="flex align-items-center ml-5"
@@ -121,7 +121,7 @@
                   <p-dialog
                     [header]="
                       'Товарно-транспортна накладна (замовлення №' +
-                      order.id +
+                      order.number +
                       ')'
                     "
                     [(visible)]="showWaybillViewDialog"

@@ -131,9 +131,9 @@ export class OrderCreateComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Замовлення успішно створено',
-          detail: `Ваше замовлення №${order.id} успішно створено`,
+          detail: `Ваше замовлення №${order.number} успішно створено`,
         });
-        this.router.navigate(['/dashboard/orders', order.id]);
+        this.router.navigate(['/dashboard/orders', order.number]);
       });
   }
 }
