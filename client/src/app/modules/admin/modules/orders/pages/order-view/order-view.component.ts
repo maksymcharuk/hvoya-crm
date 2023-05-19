@@ -52,7 +52,7 @@ export class OrderViewComponent {
     private messageService: MessageService,
   ) {
     this.ordersService
-      .getOrder(this.route.snapshot.params['id'])
+      .getOrder(this.route.snapshot.params['number'])
       .subscribe((order) => {
         this.order$.next(order);
       });
@@ -98,7 +98,7 @@ export class OrderViewComponent {
 
     this.statusSubmitting$.next(true);
     this.ordersService
-      .orderUpdate(this.route.snapshot.params['id'], formData)
+      .orderUpdate(this.route.snapshot.params['number'], formData)
       .pipe(finalize(() => this.statusSubmitting$.next(false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
@@ -125,7 +125,7 @@ export class OrderViewComponent {
 
     this.waybillSubmitting$.next(true);
     this.ordersService
-      .updateWaybill(this.route.snapshot.params['id'], formData)
+      .updateWaybill(this.route.snapshot.params['number'], formData)
       .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((order: Order) => {
         this.order$.next(order);

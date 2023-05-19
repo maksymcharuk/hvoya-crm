@@ -32,13 +32,13 @@ import { OrdersService } from './services/orders.service';
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
-  @Get(':id')
+  @Get(':number')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderEntity))
   async getOrder(
     @User('id') userId: string,
-    @Param('id') id: string,
+    @Param('number') number: string,
   ): Promise<OrderEntity> {
-    return this.ordersService.getOrder(userId, id);
+    return this.ordersService.getOrder(userId, number);
   }
 
   @Get()
@@ -47,13 +47,13 @@ export class OrdersController {
     return this.ordersService.getOrders(userId);
   }
 
-  @Put(':id')
+  @Put(':number')
   @UseInterceptors(FileInterceptor('waybill'))
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.SuperUpdate, OrderEntity),
   )
   async updateOrder(
-    @Param('id') orderId: string,
+    @Param('number') orderNumber: string,
     @Body() updateOrderDto: UpdateOrderDto,
     @UploadedFile(
       new ParseFilePipe({
@@ -66,17 +66,17 @@ export class OrdersController {
     )
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
-    return this.ordersService.updateOrder(orderId, updateOrderDto, waybill);
+    return this.ordersService.updateOrder(orderNumber, updateOrderDto, waybill);
   }
 
-  @Put(':id/update-waybill')
+  @Put(':number/update-waybill')
   @UseInterceptors(FileInterceptor('waybill'))
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Update, OrderEntity),
   )
   async updateOrderWaybill(
     @User('id') userId: string,
-    @Param('id') orderId: string,
+    @Param('number') orderNumber: string,
     @Body() updateOrderWaybillDto: UpdateOrderWaybillDto,
     @UploadedFile(
       new ParseFilePipe({
@@ -91,7 +91,7 @@ export class OrdersController {
   ): Promise<OrderEntity> {
     return this.ordersService.updateOrderWaybill(
       userId,
-      orderId,
+      orderNumber,
       updateOrderWaybillDto,
       waybill,
     );

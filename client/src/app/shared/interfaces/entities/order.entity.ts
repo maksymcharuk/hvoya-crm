@@ -53,6 +53,7 @@ export class Order extends BaseEntity {
   items: OrderItem[];
   delivery: OrderDelivery;
   status: OrderStatus;
+  number: number;
   total?: number;
   customer: User;
 
@@ -61,6 +62,7 @@ export class Order extends BaseEntity {
     this.items = data?.items?.map((item) => new OrderItem(item)) || [];
     this.delivery = new OrderDelivery(data?.delivery);
     this.status = data?.status || OrderStatus.Pending;
+    this.number = data?.number || 0;
     this.total = data?.total;
     this.customer = new User(data?.customer);
   }

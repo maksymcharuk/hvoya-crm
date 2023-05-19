@@ -34,7 +34,7 @@ export class OrdersService {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async getOrder(userId: string, orderId: string): Promise<OrderEntity> {
+  async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
     const user = await manager.findOneOrFail(UserEntity, {
       where: { id: userId },
@@ -42,7 +42,9 @@ export class OrdersService {
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    const order = await this.getOrderWhere({ id: orderId }, ['customer']);
+    const order = await this.getOrderWhere({ number: orderNumber }, [
+      'customer',
+    ]);
 
     if (ability.cannot(Action.Read, order)) {
       throw new HttpException(
@@ -175,19 +177,22 @@ export class OrdersService {
 
       await this.cartService.clearCart(userId);
 
+      // Fetch order again to get order with populated number
+      order = await queryRunner.manager.findOneOrFail(OrderEntity, {
+        where: { id: order.id },
+      });
+
       this.eventEmitter.emit(NotificationEvent.OrderCreated, {
-        message: `Нове замовлення №${order.id}`,
+        message: `Нове замовлення №${order.number}`,
         data: {
-          id: order.id,
+          id: order.number,
         },
         type: NotificationType.Order,
       });
 
       await queryRunner.commitTransaction();
-      return this.getOrder(userId, order.id);
+      return this.getOrder(userId, order.number!);
     } catch (err) {
-      console.log(err);
-
       try {
         if (waybillScan) {
           await this.filesService.deleteFilesCloudinary([waybillScan]);
@@ -202,7 +207,7 @@ export class OrdersService {
   }
 
   async updateOrder(
-    orderId: string,
+    orderNumber: string,
     updateOrderDto?: UpdateOrderDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
@@ -212,7 +217,9 @@ export class OrdersService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      let order = await this.getOrderWhere({ id: orderId }, ['customer']);
+      let order = await this.getOrderWhere({ number: orderNumber }, [
+        'customer',
+      ]);
 
       if (waybill) {
         waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
@@ -246,21 +253,21 @@ export class OrdersService {
         );
 
         this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
-          message: `Статус вашого замовлення ${order.id} змінено на ${order.status}`,
+          message: `Статус вашого замовлення ${order.number} змінено на ${order.status}`,
           data: {
-            id: order.id,
+            id: order.number,
           },
           userId: order.customer.id,
           type: NotificationType.Order,
         });
 
-        await queryRunner.manager.update(OrderEntity, orderId, {
+        await queryRunner.manager.update(OrderEntity, order.id, {
           status: updateOrderDto.orderStatus,
         });
       }
 
       await queryRunner.commitTransaction();
-      return this.getOrderWhere({ id: orderId }, ['customer']);
+      return this.getOrderWhere({ id: order.id }, ['customer']);
     } catch (err) {
       try {
         if (waybillScan) {
@@ -277,7 +284,7 @@ export class OrdersService {
 
   async updateOrderWaybill(
     userId: string,
-    orderId: string,
+    orderNumber: string,
     updateOrderWaybillDto: UpdateOrderWaybillDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
@@ -294,7 +301,7 @@ export class OrdersService {
 
       const ability = this.caslAbilityFactory.createForUser(user);
 
-      order = await this.getOrderWhere({ id: orderId }, ['customer']);
+      order = await this.getOrderWhere({ number: orderNumber }, ['customer']);
 
       if (ability.cannot(Action.Update, order)) {
         throw new HttpException(
@@ -314,7 +321,7 @@ export class OrdersService {
       });
 
       await queryRunner.commitTransaction();
-      return this.getOrderWhere({ id: orderId });
+      return this.getOrderWhere({ id: order.id });
     } catch (err) {
       try {
         if (waybillScan) {

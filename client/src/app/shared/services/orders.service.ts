@@ -18,19 +18,22 @@ export class OrdersService {
       .pipe(map((order) => new Order(order)));
   }
 
-  orderUpdate(id: string, updateOrderFormData: FormData): Observable<Order> {
+  orderUpdate(
+    number: string,
+    updateOrderFormData: FormData,
+  ): Observable<Order> {
     return this.http
-      .put<Order>(`${environment.apiUrl}/orders/${id}`, updateOrderFormData)
+      .put<Order>(`${environment.apiUrl}/orders/${number}`, updateOrderFormData)
       .pipe(map((order) => new Order(order)));
   }
 
   updateWaybill(
-    id: string,
+    number: string,
     updateWaybillFormData: FormData,
   ): Observable<Order> {
     return this.http
       .put<Order>(
-        `${environment.apiUrl}/orders/${id}/update-waybill`,
+        `${environment.apiUrl}/orders/${number}/update-waybill`,
         updateWaybillFormData,
       )
       .pipe(map((order) => new Order(order)));
@@ -42,9 +45,9 @@ export class OrdersService {
       .pipe(map((orders) => orders.map((order) => new Order(order))));
   }
 
-  getOrder(id: string): Observable<Order> {
+  getOrder(number: string): Observable<Order> {
     return this.http
-      .get<Order>(`${environment.apiUrl}/orders/${id}`)
+      .get<Order>(`${environment.apiUrl}/orders/${number}`)
       .pipe(map((order) => new Order(order)));
   }
 }

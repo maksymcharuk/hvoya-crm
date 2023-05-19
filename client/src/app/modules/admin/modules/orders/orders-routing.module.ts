@@ -10,7 +10,7 @@ const routes: Routes = [
     component: OrderListComponent,
   },
   {
-    path: ':id',
+    path: ':number',
     component: OrderViewComponent,
   },
 ];

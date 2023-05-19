@@ -138,10 +138,10 @@
     <ng-template pTemplate="body" let-order>
       <tr
         class="p-selectable-row"
-        [routerLink]="[order.id]"
+        [routerLink]="[order.number]"
         data-cy="order-list-item"
       >
-        <td data-cy="order-list-item-id">{{ order.id }}</td>
+        <td data-cy="order-list-item-id">{{ order.number }}</td>
         <td>
           <div class="flex">
             <img
