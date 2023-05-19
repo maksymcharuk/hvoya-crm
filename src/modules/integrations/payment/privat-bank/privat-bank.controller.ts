@@ -78,7 +78,7 @@ export class PrivatBankController {
         }
       }).buildObject(xmlData);
 
-      res.set('Content-Type', 'text/html;charset=UTF-8');
+      res.set({ 'content-type': 'application/xml; charset=utf-8' });
       res.send(buildXml);
     } else {
       const calcBody = body as PrivatJSONRequest;
