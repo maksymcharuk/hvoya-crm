@@ -30,7 +30,7 @@ class SearchResponseData {
       DebtService: [
         {
           $: {
-            ServiceCode: string,
+            serviceCode: string,
           },
           CompanyInfo: [
             {
@@ -75,7 +75,7 @@ class SearchResponseData {
         DebtService: [
           {
             $: {
-              ServiceCode: params.serviceCode,
+              serviceCode: params.serviceCode,
             },
             CompanyInfo: [
               {
