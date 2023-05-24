@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import helmet from 'helmet';
 import * as https from 'https';
 import { Logger } from 'nestjs-pino';
+import * as newrelic from 'newrelic';
 import * as nocache from 'nocache';
 
 import { ValidationPipe } from '@nestjs/common';
@@ -69,6 +70,8 @@ async function bootstrap() {
   );
   app.useLogger(app.get(Logger));
   app.use(xmlparser());
+
+  newrelic.instrumentLoadedModule('express', server);
 
   await app.init();
 
