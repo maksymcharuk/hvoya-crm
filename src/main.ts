@@ -1,16 +1,13 @@
 import * as compression from 'compression';
-import * as dotenv from 'dotenv';
 import * as express from 'express';
 import * as rateLimit from 'express-rate-limit';
 import * as xmlparser from 'express-xml-bodyparser';
-import * as fs from 'fs';
 import helmet from 'helmet';
 import * as https from 'https';
-import { Logger } from 'nestjs-pino';
+import * as newrelic from 'newrelic';
 import * as nocache from 'nocache';
 
 import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 
@@ -18,30 +15,24 @@ import { ExtendedSocketIoAdapter } from '@adapters/extended-socket-io.adapter';
 import { Env } from '@enums/env.enum';
 
 import { AppModule } from './app.module';
-import { appOrigin } from './config';
+import config from './config';
 
-dotenv.config();
+const { APP_ORIGIN, HTTPS_OPTIONS, LOGGER, isProduction } = config();
 
-const httpsOptions = {
-  cert: process.env['CERT_PATH']
-    ? fs.readFileSync(process.env['CERT_PATH'])
-    : '',
-  key: process.env['KEY_PATH'] ? fs.readFileSync(process.env['KEY_PATH']) : '',
-  ca: process.env['CA_PATH'] ? fs.readFileSync(process.env['CA_PATH']) : '',
-  requestCert: true,
-  rejectUnauthorized: false,
-};
+const logger = LOGGER;
 
 async function bootstrap() {
   const server = express();
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
-  const configService = app.get(ConfigService);
-  const httpsServer = https.createServer(httpsOptions, server);
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server), {
+    logger,
+  });
 
-  app.useWebSocketAdapter(new ExtendedSocketIoAdapter(httpsServer));
+  const httpsServer = https.createServer(HTTPS_OPTIONS, server);
+
+  app.useWebSocketAdapter(new ExtendedSocketIoAdapter(httpsServer, logger));
 
   // Security configs
-  if (configService.get('NODE_ENV') === Env.Production) {
+  if (isProduction()) {
     app.use(
       helmet({
         contentSecurityPolicy: false,
@@ -57,8 +48,14 @@ async function bootstrap() {
     app.use(compression());
   }
 
+  // Other configs
+  if (process.env['NEW_RELIC_ENABLED']) {
+    const loaded = newrelic.instrumentLoadedModule('express', server);
+    logger.log('New Relic loaded: ' + loaded);
+  }
+
   app.enableCors({
-    origin: appOrigin.get(configService.get('NODE_ENV') || Env.Development),
+    origin: APP_ORIGIN.get(process.env['NODE_ENV'] || Env.Development),
   });
   app.setGlobalPrefix('api', { exclude: ['/'] });
   app.useGlobalPipes(
@@ -67,11 +64,18 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  app.useLogger(app.get(Logger));
   app.use(xmlparser());
 
   await app.init();
 
-  httpsServer.listen(configService.get('PORT') || '3000');
+  httpsServer.listen(process.env['PORT'] || '3000');
 }
-bootstrap();
+bootstrap().then(() => {
+  logger.log(`Application listening on port ${process.env['PORT'] || '3000'}`);
+
+  if (process.env['NEW_RELIC_ENABLED']) {
+    newrelic.shutdown({ collectPendingData: true }, () => {
+      process.exit();
+    });
+  }
+});

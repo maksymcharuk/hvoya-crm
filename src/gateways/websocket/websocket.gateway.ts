@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 
-import { UseGuards } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import {
   // ConnectedSocket,
   OnGatewayConnection,
@@ -32,24 +32,25 @@ export class WSocketGateway
   userIdToConnectionData: { [key: string]: ConnectionData } = {};
 
   constructor(
+    private readonly logger: Logger,
     private readonly webSocketAuthMiddleware: WebSocketAuthMiddleware,
   ) {}
 
   afterInit(server: Server) {
-    console.log('WebSocketGateway initialized');
+    this.logger.log('WebSocketGateway initialized');
     server.use(this.webSocketAuthMiddleware.use() as any);
   }
 
   handleConnection(client: Socket) {
     const user = this.getUserFromClient(client);
     this.identify(user, client);
-    console.log(`Client connected: ${user.id}`);
+    this.logger.log(`Client connected: ${user.id}`);
   }
 
   handleDisconnect(client: Socket) {
     const user = this.getUserFromClient(client);
     delete this.userIdToConnectionData[user.id];
-    console.log(`Client disconnected: ${user.id}`);
+    this.logger.log(`Client disconnected: ${user.id}`);
   }
 
   identify(user: JwtTokenPayload['user'], client: Socket) {

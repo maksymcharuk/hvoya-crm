@@ -1,7 +1,6 @@
-import { LoggerModule } from 'nestjs-pino';
 import { join } from 'path';
 
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -16,6 +15,7 @@ import { WSocketModule } from '@gateways/websocket/websocket.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
+import { AppLoggerMiddleware } from './middlewares/app-logger.middleware';
 import { AccountModule } from './modules/account/account.module';
 import { BalanceModule } from './modules/balance/balance.module';
 import { CartModule } from './modules/cart/cart.module';
@@ -39,11 +39,6 @@ import { UsersModule } from './modules/users/users.module';
         ? `${process.cwd()}/env/${process.env['NODE_ENV']}.env`
         : `${process.cwd()}/env/.env`,
       isGlobal: true,
-    }),
-    LoggerModule.forRoot({
-      pinoHttp: {
-        transport: { target: 'pino-pretty' },
-      },
     }),
     DatabaseModule,
     UsersModule,
@@ -72,4 +67,8 @@ import { UsersModule } from './modules/users/users.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AppLoggerMiddleware).forRoutes('*');
+  }
+}
