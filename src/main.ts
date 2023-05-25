@@ -49,7 +49,7 @@ async function bootstrap() {
   }
 
   // Other configs
-  if (process.env['NEW_RELIC_ENABLED']) {
+  if (process.env['NEW_RELIC_ENABLED'] === 'true') {
     const loaded = newrelic.instrumentLoadedModule('express', server);
     logger.log('New Relic loaded: ' + loaded);
   }
@@ -73,7 +73,7 @@ async function bootstrap() {
 bootstrap().then(() => {
   logger.log(`Application listening on port ${process.env['PORT'] || '3000'}`);
 
-  if (process.env['NEW_RELIC_ENABLED']) {
+  if (process.env['NEW_RELIC_ENABLED'] === 'true') {
     newrelic.shutdown({ collectPendingData: true }, () => {
       process.exit();
     });

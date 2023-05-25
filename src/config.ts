@@ -32,7 +32,6 @@ export default () => {
   ]);
 
   // Helpers
-
   const isProduction = () => process.env['NODE_ENV'] === Env.Production;
   const isStaging = () => process.env['NODE_ENV'] === Env.Staging;
   const isDevelopment = () => process.env['NODE_ENV'] === Env.Development;
@@ -49,7 +48,7 @@ export default () => {
       }),
     ];
 
-    if (process.env['NEW_RELIC_ENABLED']) {
+    if (process.env['NEW_RELIC_ENABLED'] === 'true') {
       formatters.unshift(newrelicFormatter());
     }
 
