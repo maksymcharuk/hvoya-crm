@@ -37,7 +37,6 @@ export default () => {
   const isStaging = () => process.env['NODE_ENV'] === Env.Staging;
   const isDevelopment = () => process.env['NODE_ENV'] === Env.Development;
   const isTest = () => process.env['NODE_ENV'] === Env.Test;
-  const isNewRelicEnabled = () => isProduction() || isStaging();
 
   // Logger
   const getLoggerConfigs = () => {
@@ -50,7 +49,7 @@ export default () => {
       }),
     ];
 
-    if (isNewRelicEnabled()) {
+    if (process.env['NEW_RELIC_ENABLED']) {
       formatters.unshift(newrelicFormatter());
     }
 
@@ -67,7 +66,6 @@ export default () => {
     APP_ORIGIN,
     HTTPS_OPTIONS,
     LOGGER,
-    isNewRelicEnabled,
     isProduction,
     isStaging,
     isDevelopment,

@@ -4,7 +4,7 @@ import * as rateLimit from 'express-rate-limit';
 import * as xmlparser from 'express-xml-bodyparser';
 import helmet from 'helmet';
 import * as https from 'https';
-// import * as newrelic from 'newrelic';
+import * as newrelic from 'newrelic';
 import * as nocache from 'nocache';
 
 import { ValidationPipe } from '@nestjs/common';
@@ -17,8 +17,7 @@ import { Env } from '@enums/env.enum';
 import { AppModule } from './app.module';
 import config from './config';
 
-const { APP_ORIGIN, HTTPS_OPTIONS, LOGGER, isNewRelicEnabled, isProduction } =
-  config();
+const { APP_ORIGIN, HTTPS_OPTIONS, LOGGER, isProduction } = config();
 
 const logger = LOGGER;
 
@@ -50,9 +49,9 @@ async function bootstrap() {
   }
 
   // Other configs
-  if (isNewRelicEnabled()) {
-    // const loaded = newrelic.instrumentLoadedModule('express', server);
-    // logger.log('New Relic loaded: ' + loaded);
+  if (process.env['NEW_RELIC_ENABLED']) {
+    const loaded = newrelic.instrumentLoadedModule('express', server);
+    logger.log('New Relic loaded: ' + loaded);
   }
 
   app.enableCors({
@@ -74,9 +73,9 @@ async function bootstrap() {
 bootstrap().then(() => {
   logger.log(`Application listening on port ${process.env['PORT'] || '3000'}`);
 
-  if (isNewRelicEnabled()) {
-    // newrelic.shutdown({ collectPendingData: true }, () => {
-    //   process.exit();
-    // });
+  if (process.env['NEW_RELIC_ENABLED']) {
+    newrelic.shutdown({ collectPendingData: true }, () => {
+      process.exit();
+    });
   }
 });
