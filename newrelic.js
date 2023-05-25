@@ -1,4 +1,9 @@
 'use strict';
+
+require('dotenv').config({
+  path: `env/.env`,
+});
+
 /**
  * New Relic agent configuration.
  *
@@ -13,7 +18,7 @@ exports.config = {
   /**
    * Your New Relic license key.
    */
-  license_key: 'NRAK-XJZQ6RQXQ1744NPHMN2HKOK5AVB',
+  license_key: process.env.NEW_RELIC_LICENSE_KEY,
   logging: {
     /**
      * Level at which to log. 'trace' is most useful to New Relic when diagnosing
@@ -49,5 +54,10 @@ exports.config = {
       'response.headers.setCookie*',
       'response.headers.x*',
     ],
+  },
+  application_logging: {
+    forwarding: {
+      enabled: true,
+    },
   },
 };
