@@ -1,5 +1,3 @@
-import { WinstonLogger } from 'nest-winston';
-
 import { Logger, Module } from '@nestjs/common';
 
 import { AuthModule } from '@auth/auth.module';
@@ -10,13 +8,7 @@ import { WSocketGateway } from './websocket.gateway';
 
 @Module({
   imports: [AuthModule],
-  providers: [
-    WebSocketAuthMiddleware,
-    WSocketGateway,
-    WsJwtGuard,
-    WinstonLogger,
-    Logger,
-  ],
+  providers: [WebSocketAuthMiddleware, WSocketGateway, WsJwtGuard, Logger],
   exports: [WSocketGateway],
 })
 export class WSocketModule {}

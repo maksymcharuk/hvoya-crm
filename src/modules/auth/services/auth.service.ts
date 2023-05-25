@@ -21,12 +21,14 @@ import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 
-import { appOrigin } from '../../../config';
+import config from '../../../config';
 import { ConfirmEmailMail } from '../../../modules/mail/mails/confirm-email.mail';
 import { ConfirmUserMail } from '../../../modules/mail/mails/confirm-user.mail';
 import { ResetPasswordEmailMail } from '../../../modules/mail/mails/reset-password-email.mail';
 import { MailService } from '../../../modules/mail/services/mail.service';
 import { UsersService } from '../../../modules/users/services/users.service';
+
+const { APP_ORIGIN } = config();
 
 @Injectable()
 export class AuthService {
@@ -90,10 +92,10 @@ export class AuthService {
       user = await this.usersService.create(queryRunner, authSignUpDto);
 
       const { access_token } = this.signToken(user);
-      const url = `${appOrigin.get(
+      const url = `${APP_ORIGIN.get(
         this.configService.get('NODE_ENV') || Env.Development,
       )}/auth/confirm-email?token=${access_token}`;
-      const userUrl = `${appOrigin.get(
+      const userUrl = `${APP_ORIGIN.get(
         this.configService.get('NODE_ENV') || Env.Development,
       )}/admin/users/${user.id}`;
       await this.mailService.send(new ConfirmEmailMail(user, url), user.email);
@@ -151,7 +153,7 @@ export class AuthService {
     }
 
     const { access_token } = this.signToken(user, { expiresIn: '10m' });
-    const url = `${appOrigin.get(
+    const url = `${APP_ORIGIN.get(
       this.configService.get('NODE_ENV') || Env.Development,
     )}/auth/reset-password?token=${access_token}`;
     await this.mailService.send(
@@ -203,7 +205,7 @@ export class AuthService {
     }
 
     const { access_token } = this.signToken(user);
-    const url = `${appOrigin.get(
+    const url = `${APP_ORIGIN.get(
       this.configService.get('NODE_ENV') || Env.Development,
     )}/auth/confirm-email?token=${access_token}`;
     await this.mailService.send(new ConfirmEmailMail(user, url), user.email);

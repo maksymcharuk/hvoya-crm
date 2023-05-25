@@ -1,4 +1,3 @@
-import { WinstonLogger } from 'nest-winston';
 import { join } from 'path';
 
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
@@ -62,7 +61,6 @@ import { UsersModule } from './modules/users/users.module';
   controllers: [AppController],
   providers: [
     AppService,
-    WinstonLogger,
     {
       provide: APP_INTERCEPTOR,
       useClass: UserFreezeInterceptor,

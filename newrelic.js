@@ -1,7 +1,7 @@
 'use strict';
 
 require('dotenv').config({
-  path: `env/.env`,
+  path: `env/${process.env.NODE_ENV ? '.env.' + process.env.NODE_ENV : '.env'}`,
 });
 
 /**
@@ -11,6 +11,7 @@ require('dotenv').config({
  * description of configuration variables and their potential values.
  */
 exports.config = {
+  agent_enabled: process.env.NEW_RELIC_ENABLED,
   /**
    * Array of application names.
    */
