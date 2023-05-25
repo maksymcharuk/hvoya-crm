@@ -44,6 +44,7 @@ export class PrivatBankController {
           xmlData = await this.paymentApiService.check(
             xmlCheck.transfer.data[0].$.id,
             xmlCheck.transfer.data[0].payerinfo[0].$.billIdentifier,
+            xmlCheck.transfer.data[0].totalsum[0],
           );
           break;
         case Action.Pay:

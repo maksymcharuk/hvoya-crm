@@ -30,6 +30,7 @@
               ]"
             >
               <th>Сума</th>
+              <th>Статус</th>
               <th>Дата</th>
               <th class="w-1">Замовлення</th>
             </tr>
@@ -40,9 +41,11 @@
                 data-cy="widget-transaction-amount"
                 [class.text-green-600]="+transaction.amount > 0"
                 [class.text-red-600]="+transaction.amount < 0"
+                [class.text-yellow-600]="transaction.status === 'Pending'"
               >
                 {{ transaction.amount | currency }}
               </td>
+              <td>{{ transaction.status | transactionStatus }}</td>
               <td>{{ transaction.createdAt | date : 'short' }}</td>
               <td
                 *ngIf="transaction.order.total; else noOrder"

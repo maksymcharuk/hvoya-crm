@@ -20,7 +20,7 @@ export class PaymentApiService {
   constructor(
     private dataSource: DataSource,
     private balanceService: BalanceService,
-  ) {}
+  ) { }
 
   async presearch(
     accountNumber: string,
@@ -85,6 +85,7 @@ export class PaymentApiService {
   async check(
     bankTransactionId: string,
     accountNumber: string | undefined,
+    amount: string,
   ): Promise<CheckResponse | ErrorResponse> {
     if (!accountNumber) {
       return Promise.resolve(
@@ -106,7 +107,7 @@ export class PaymentApiService {
       });
       const transaction = await queryRunner.manager.save(
         PaymentTransactionEntity,
-        { bankTransactionId, balance: user.balance },
+        { bankTransactionId, balance: user.balance, amount: +amount },
       );
       await queryRunner.commitTransaction();
       return Promise.resolve(

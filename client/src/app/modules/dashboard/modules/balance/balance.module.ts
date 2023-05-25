@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BalanceWidgetComponent } from './components/balance-widget/balance-widget.component';
 import { TransactionHistoryComponent } from './pages/transaction-history/transaction-history.component';
 import { BalanceRoutingModule } from './balance-routing.module';
+import { SharedModule } from "../../../../shared/shared.module";
 
 
 
@@ -19,6 +20,9 @@ import { BalanceRoutingModule } from './balance-routing.module';
   declarations: [
     BalanceWidgetComponent,
     TransactionHistoryComponent,
+  ],
+  exports: [
+    BalanceWidgetComponent,
   ],
   imports: [
     CommonModule,
@@ -31,9 +35,7 @@ import { BalanceRoutingModule } from './balance-routing.module';
     ReactiveFormsModule,
     InputTextModule,
     TooltipModule,
-  ],
-  exports: [
-    BalanceWidgetComponent,
+    SharedModule,
   ]
 })
 export class BalanceModule { }

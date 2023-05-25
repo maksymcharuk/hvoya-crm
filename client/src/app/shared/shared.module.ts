@@ -49,6 +49,7 @@ import {
   PhoneNumberPipe,
   ProductSizePipe,
   RoleNamePipe,
+  TransactionStatusPipe,
 } from './pipes';
 
 registerLocaleData(localeUk);
@@ -58,6 +59,7 @@ const PIPES = [
   DeliveryServiceNamePipe,
   RoleNamePipe,
   PhoneNumberPipe,
+  TransactionStatusPipe,
 ];
 
 const COMPONENTS = [
@@ -128,4 +130,4 @@ const PRIMENG_MODULES = [
   ],
   exports: [...COMPONENTS, ...PIPES],
 })
-export class SharedModule {}
+export class SharedModule { }
