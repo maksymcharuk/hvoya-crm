@@ -45,7 +45,7 @@ export class CheckRequest {
             address?: [''];
           }
         ]
-        totalSum: [''];
+        totalsum: [''];
         createTime?: [''];
         servicegroup?: [
           {

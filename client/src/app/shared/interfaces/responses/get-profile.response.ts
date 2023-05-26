@@ -12,4 +12,5 @@ export interface GetProfileResponse {
   emailConfirmed: boolean;
   createdAt: string;
   updatedAt: string;
+  accountNumber: string;
 }

@@ -14,7 +14,7 @@ export class BalanceService {
   constructor(
     @InjectRepository(BalanceEntity)
     private balanceRepository: Repository<BalanceEntity>,
-  ) {}
+  ) { }
 
   getByUserId(userId: string): Promise<BalanceEntity> {
     return this.balanceRepository.findOneOrFail({

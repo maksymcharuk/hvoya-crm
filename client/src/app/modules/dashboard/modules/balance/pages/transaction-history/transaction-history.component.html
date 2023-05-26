@@ -37,6 +37,10 @@
                 Сума
                 <p-sortIcon field="amount"></p-sortIcon>
               </th>
+              <th class="w-4" pSortableColumn="status">
+                Статус
+                <p-sortIcon field="status"></p-sortIcon>
+              </th>
               <th class="w-4" pSortableColumn="createdAt">
                 <div class="flex justify-content-between align-items-center">
                   Дата
@@ -58,9 +62,13 @@
                 data-cy="transaction-amount"
                 [class.text-green-600]="+transaction.amount > 0"
                 [class.text-red-600]="+transaction.amount < 0"
+                [class.text-yellow-600]="
+                  transaction.status === transactionStatus.Pending
+                "
               >
                 {{ transaction.amount | currency }}
               </td>
+              <td>{{ transaction.status | transactionStatus }}</td>
               <td>{{ transaction.createdAt | date : 'short' }}</td>
               <td
                 *ngIf="transaction.order.total; else noOrder"
