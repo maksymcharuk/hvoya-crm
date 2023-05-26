@@ -4,6 +4,7 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
 import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
+import { TransactionStatus } from '@shared/enums/transaction-status.enum';
 import { UserBalanceService } from '../../services/user-balance.service';
 
 import { debounceTime, Subject, takeUntil } from 'rxjs';
@@ -20,6 +21,7 @@ export class TransactionHistoryComponent implements OnDestroy {
   searchForm = this.fb.group({
     search: [''],
   });
+  transactionStatus = TransactionStatus;
   private destroy$ = new Subject();
 
   @ViewChild('transactionsTable') transactionsTable!: Table;

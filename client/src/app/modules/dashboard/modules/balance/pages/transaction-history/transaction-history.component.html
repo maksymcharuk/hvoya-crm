@@ -62,7 +62,9 @@
                 data-cy="transaction-amount"
                 [class.text-green-600]="+transaction.amount > 0"
                 [class.text-red-600]="+transaction.amount < 0"
-                [class.text-yellow-600]="transaction.status === 'Pending'"
+                [class.text-yellow-600]="
+                  transaction.status === transactionStatus.Pending
+                "
               >
                 {{ transaction.amount | currency }}
               </td>

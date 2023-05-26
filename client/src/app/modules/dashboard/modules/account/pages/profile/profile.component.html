@@ -6,6 +6,19 @@
   <h5>Персональні дані</h5>
 
   <div class="field">
+    <label for="phoneNumber">Номер договору:</label>
+    <span class="p-input-icon-right">
+      <input
+        [value]="accountNumber"
+        type="text"
+        pInputText
+        readonly
+        (click)="copyAccountNumber()"
+      />
+      <i [ngClass]="accountNumberCopied ? 'pi pi-check' : 'pi pi-copy'"></i>
+    </span>
+  </div>
+  <div class="field">
     <label for="phoneNumber">Номер телефону:</label>
     <p-inputMask
       name="phoneNumber"

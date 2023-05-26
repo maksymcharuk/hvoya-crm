@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { environment } from '@environment/environment';
+
 import { UserBalanceService } from '../../services/user-balance.service';
 
 @Component({
@@ -9,13 +11,17 @@ import { UserBalanceService } from '../../services/user-balance.service';
 })
 export class BalanceWidgetComponent {
   balance$ = this.userBalance.balance$;
+  topUpTooltipMessage = 'Номер договору для поповнення рахунку вказаний на сторінці аккаунту.'
 
   constructor(
-    private userBalance: UserBalanceService,
+    private userBalance: UserBalanceService
   ) { }
 
-
-  addFunds() {
+  addFundsTest() {
     this.userBalance.addFunds();
+  }
+
+  redirectToBank() {
+    window.open(environment.privatBankPaymentUrl, '_blank');
   }
 }

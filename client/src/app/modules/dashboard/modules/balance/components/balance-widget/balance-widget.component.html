@@ -1,9 +1,23 @@
-<div class="cart-widget w-30rem">
-  <div class="text-900 text-xl pb-3 border-bottom-1 surface-border">Баланс</div>
+<div class="cart-widget widget-width">
+  <div
+    class="text-900 text-xl pb-3 border-bottom-1 surface-border flex justify-content-between"
+  >
+    <span>Баланс</span>
+    <p-button
+      styleClass="p-button-raised p-button-text p-button-secondary p-button-sm"
+      label="Тестове поповнення"
+      (onClick)="addFundsTest()"
+    ></p-button>
+  </div>
   <ng-container *ngIf="balance$ | async as balance; else skeleton">
     <div class="grid mt-2">
       <div class="col-6 flex justify-content-start">
-        <p-button label="Поповнити баланс" (onClick)="addFunds()"></p-button>
+        <p-button
+          label="Поповнити баланс"
+          (onClick)="redirectToBank()"
+          [pTooltip]="topUpTooltipMessage"
+          tooltipPosition="bottom"
+        ></p-button>
       </div>
       <div class="col-6 flex justify-content-end">
         <p-button

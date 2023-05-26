@@ -4,6 +4,7 @@ import { finalize } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 import {
   UpdateAdminProfileDTO,
@@ -18,6 +19,8 @@ import { AccountService } from '@shared/services/account.service';
 })
 export class ProfileComponent implements OnInit {
   isLoading = false;
+  accountNumber: string = '';
+  accountNumberCopied = false;
 
   updateProfileForm = this.formBuilder.group({
     phoneNumber: ['', Validators.required],
@@ -30,7 +33,8 @@ export class ProfileComponent implements OnInit {
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private messageService: MessageService,
-  ) {}
+    private clipboard: Clipboard,
+  ) { }
 
   ngOnInit(): void {
     this.accountService.profile$.subscribe((profile) => {
@@ -61,5 +65,14 @@ export class ProfileComponent implements OnInit {
           detail: 'Профіль було успішно оновлено',
         });
       });
+  }
+
+  copyAccountNumber() {
+    this.clipboard.copy(this.accountNumber);
+    this.accountNumberCopied = true;
+    this.messageService.add({
+      severity: 'success',
+      detail: 'Номер договору було скопійовано',
+    });
   }
 }
