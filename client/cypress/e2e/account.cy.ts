@@ -20,7 +20,7 @@ describe('Account', () => {
         const lastName = 'TestLname';
         const firstName = 'TestFname';
         const middleName = 'TestMname';
-        const location = 'TestLocation';
+        const storeName = 'TestStoreName';
         const website = 'https://hvoya.com';
         const bio = 'TestBio';
 
@@ -28,7 +28,7 @@ describe('Account', () => {
         cy.getCyEl('last-name').clear().type(lastName);
         cy.getCyEl('first-name').clear().type(firstName);
         cy.getCyEl('middle-name').clear().type(middleName);
-        cy.getCyEl('location').clear().type(location);
+        cy.getCyEl('store-name').clear().type(storeName);
         cy.getCyEl('website').clear().type(website);
         cy.getCyEl('bio').clear().type(bio);
 
@@ -48,7 +48,7 @@ describe('Account', () => {
         cy.getCyEl('last-name').should('have.value', lastName);
         cy.getCyEl('first-name').should('have.value', firstName);
         cy.getCyEl('middle-name').should('have.value', middleName);
-        cy.getCyEl('location').should('have.value', location);
+        cy.getCyEl('store-name').should('have.value', storeName);
         cy.getCyEl('website').should('have.value', website);
         cy.getCyEl('bio').should('have.value', bio);
         cy.get('.user-info .user-info__name').contains(

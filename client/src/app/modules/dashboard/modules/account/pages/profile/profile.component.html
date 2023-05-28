@@ -97,24 +97,32 @@
     </app-form-control-error-message>
   </div>
   <div class="field">
-    <label for="location">Місцезнаходження:</label>
+    <label for="storeName">Назва магазину:</label>
     <input
-      id="location"
+      id="storeName"
       pInputText
       pKeyFilter="alpha"
-      formControlName="location"
-      data-cy="location"
+      formControlName="storeName"
+      data-cy="store-name"
     />
     <app-form-control-error-message
       [formGroup]="updateProfileForm"
-      controlName="location"
+      controlName="storeName"
       errorType="required"
-      errorMessage="Потрібно ввести місцезнаходження"
+      errorMessage="Потрібно ввести назву магазину"
     >
     </app-form-control-error-message>
   </div>
   <div class="field">
-    <label for="website">Веб-сайт або сторінка у соц. мережі:</label>
+    <label for="website">
+      Веб-сайт або сторінка у соц. мережі
+      <i
+        class="pi pi-info-circle"
+        pTooltip="Посилання на веб-сайт або сторінку магазину на маркетплейсі де будуть розміщені товари"
+        tooltipPosition="top"
+      ></i>
+      :
+    </label>
     <input
       id="website"
       name="website"

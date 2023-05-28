@@ -31,8 +31,8 @@ export class CreateUserDto {
   @IsPhoneNumber('UA', { message: 'Номер телефону невірний' })
   phoneNumber: string;
 
-  @IsNotEmpty({ message: 'Потрібно ввести місцезнаходження' })
-  location: string;
+  @IsNotEmpty({ message: 'Потрібно ввести назву магазину' })
+  storeName: string;
 
   @IsNotEmpty()
   @IsUrl(

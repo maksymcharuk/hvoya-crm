@@ -8,7 +8,7 @@ export class User extends BaseEntity {
   middleName: string;
   lastName: string;
   phoneNumber: string;
-  location: string;
+  storeName: string;
   bio: string;
   role: Role;
   emailConfirmed: boolean;
@@ -26,7 +26,7 @@ export class User extends BaseEntity {
     this.middleName = data?.middleName || '';
     this.lastName = data?.lastName || '';
     this.phoneNumber = data?.phoneNumber || '';
-    this.location = data?.location || '';
+    this.storeName = data?.storeName || '';
     this.bio = data?.bio || '';
     this.role = data?.role || Role.User;
     this.emailConfirmed =

@@ -5,6 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { PasswordModule } from 'primeng/password';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -50,6 +51,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     InputTextareaModule,
     SharedModule,
     ProgressBarModule,
+    TooltipModule,
   ],
   exports: [RouterModule],
 })

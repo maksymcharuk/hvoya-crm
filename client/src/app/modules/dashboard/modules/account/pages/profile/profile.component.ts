@@ -1,10 +1,10 @@
 import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
 
+import { Clipboard } from '@angular/cdk/clipboard';
 import { Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
-import { Clipboard } from '@angular/cdk/clipboard';
 
 import {
   UpdateUserProfileDTO,
@@ -27,7 +27,7 @@ export class ProfileComponent implements OnInit {
     lastName: ['', Validators.required],
     firstName: ['', Validators.required],
     middleName: ['', Validators.required],
-    location: ['', Validators.required],
+    storeName: ['', Validators.required],
     website: ['', Validators.required],
     bio: ['', Validators.required],
   }) as UpdateUserProfileFormGroup;
@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit {
     private accountService: AccountService,
     private messageService: MessageService,
     private clipboard: Clipboard,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.accountService.profile$.subscribe((profile) => {
@@ -47,7 +47,7 @@ export class ProfileComponent implements OnInit {
           lastName: profile.lastName,
           firstName: profile.firstName,
           middleName: profile.middleName,
-          location: profile.location,
+          storeName: profile.storeName,
           website: profile.website,
           bio: profile.bio,
         });

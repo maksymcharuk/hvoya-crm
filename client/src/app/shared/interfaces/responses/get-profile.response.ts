@@ -6,7 +6,7 @@ export interface GetProfileResponse {
   middleName: string;
   phoneNumber: string;
   website: string;
-  location: string;
+  storeName: string;
   bio: string;
   role: string;
   emailConfirmed: boolean;

@@ -44,6 +44,7 @@ export class UpdateProductDto {
   @IsNumberString()
   productVariantWeight: number;
 
+  @Transform(({ value }) => (value === 'true' ? true : false))
   @IsNotEmpty()
   productVariantIsPublished: boolean;
 

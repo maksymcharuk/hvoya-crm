@@ -12,9 +12,10 @@ import { CartRoutingModule } from './cart-routing.module';
 import { CartItemComponent } from './components/cart-item/cart-item.component';
 import { CartWidgetComponent } from './components/cart-widget/cart-widget.component';
 import { CartComponent } from './pages/cart/cart.component';
+import { CartWidgetItemComponent } from './components/cart-widget-item/cart-widget-item.component';
 
 @NgModule({
-  declarations: [CartWidgetComponent, CartComponent, CartItemComponent],
+  declarations: [CartWidgetComponent, CartComponent, CartItemComponent, CartWidgetItemComponent],
   imports: [
     CommonModule,
     CartRoutingModule,
