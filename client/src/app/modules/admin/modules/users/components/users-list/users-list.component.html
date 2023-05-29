@@ -30,7 +30,7 @@
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th>ID</th>
+        <th>Номер договору</th>
         <th pSortableColumn="firstName">
           <div class="flex justify-content-between align-items-center">
             ПІБ
@@ -59,7 +59,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-user>
       <tr class="p-selectable-row" [routerLink]="[user.id]">
-        <td>{{ user.id }}</td>
+        <td>{{ user.accountNumber }}</td>
         <td>
           <span class="p-column-title">ПІБ</span>
           {{ user.lastName }} {{ user.firstName }}

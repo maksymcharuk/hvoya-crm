@@ -1,6 +1,6 @@
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -56,6 +56,45 @@ export class UsersService {
 
   findById(id: string): Promise<UserEntity | null> {
     return this.usersRepository.findOneBy({ id });
+  }
+
+  async findByIdFull(
+    id: string,
+    currentUserId: string,
+  ): Promise<UserEntity | null> {
+    const currentUser = await this.usersRepository.findOneOrFail({
+      where: { id: currentUserId },
+    });
+    const ability = this.caslAbilityFactory.createForUser(currentUser);
+
+    const user = await this.usersRepository.findOneOrFail({
+      where: { id },
+      relations: [
+        'balance',
+        'balance.paymentTransactions.order',
+        'orders.items',
+        'orders.items.productProperties.images',
+      ],
+      order: {
+        balance: {
+          paymentTransactions: {
+            createdAt: 'DESC',
+          },
+        },
+        orders: {
+          createdAt: 'DESC',
+        },
+      },
+    });
+
+    if (!ability.can(Action.Read, user)) {
+      throw new HttpException(
+        'Ви не маєте прав для перегляду даних цього користувача',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    return user;
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {

@@ -9,10 +9,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
+import { Role } from '@shared/enums/role.enum';
 import { Order } from '@shared/interfaces/entities/order.entity';
+import { UserService } from '@shared/services/user.service';
 
 @Component({
   selector: 'app-order-list',
@@ -21,6 +24,16 @@ import { Order } from '@shared/interfaces/entities/order.entity';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderListComponent implements OnDestroy {
+  @Input() adminView = false;
+  @Input() set orders(orders: Order[] | null) {
+    if (!orders) {
+      return;
+    }
+    this.orderInternal = orders;
+    this.loading = false;
+  }
+  @ViewChild('ordersTable') ordersTable!: Table;
+
   loading = true;
   searchForm = this.fb.group({
     search: [''],
@@ -42,19 +55,6 @@ export class OrderListComponent implements OnDestroy {
     };
   });
 
-  private orderInternal: any[] = [];
-  private destroy$ = new Subject();
-
-  @Input() adminView = false;
-  @Input() set orders(orders: Order[] | null) {
-    if (!orders) {
-      return;
-    }
-    this.orderInternal = orders;
-    this.loading = false;
-  }
-  @ViewChild('ordersTable') ordersTable!: Table;
-
   get orders(): any[] {
     return this.orderInternal;
   }
@@ -70,7 +70,14 @@ export class OrderListComponent implements OnDestroy {
     return this.searchForm.get('search');
   }
 
-  constructor(private fb: FormBuilder) {
+  private orderInternal: any[] = [];
+  private destroy$ = new Subject();
+
+  constructor(
+    private fb: FormBuilder,
+    private readonly router: Router,
+    private readonly userService: UserService,
+  ) {
     this.searchControl?.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe((query) => {
@@ -94,5 +101,13 @@ export class OrderListComponent implements OnDestroy {
 
   getOrderItemsNumber(order: Order) {
     return order.items.reduce((acc, item) => acc + item.quantity, 0);
+  }
+
+  navigateToOrder(orderNumber: number) {
+    const role = this.userService.getUser()?.role;
+    // TODO: create URL builder service and move this logic there
+    const path =
+      role === Role.Admin || role === Role.SuperAdmin ? '/admin' : '/dashboard';
+    this.router.navigate([`${path}/orders/${orderNumber}`]);
   }
 }

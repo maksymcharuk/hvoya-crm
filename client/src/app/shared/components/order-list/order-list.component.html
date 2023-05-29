@@ -138,8 +138,8 @@
     <ng-template pTemplate="body" let-order>
       <tr
         class="p-selectable-row"
-        [routerLink]="[order.number]"
         data-cy="order-list-item"
+        (click)="navigateToOrder(order.number)"
       >
         <td data-cy="order-list-item-id">{{ order.number }}</td>
         <td>

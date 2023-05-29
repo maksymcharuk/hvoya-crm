@@ -1,0 +1,111 @@
+<ng-container *ngIf="!loading; else skeleton">
+  <p-table
+    #transactionsTable
+    dataKey="id"
+    currentPageReportTemplate="Показано {first} до {last} з {totalRecords} транзакцій"
+    [value]="balance!.paymentTransactions"
+    [rowHover]="true"
+    [rows]="50"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[25, 50, 100]"
+    [paginator]="true"
+    [filterDelay]="0"
+    [globalFilterFields]="globalFilterFields"
+  >
+    <ng-template pTemplate="caption">
+      <div class="table-header flex justify-content-between align-items-center">
+        Список транзакцій
+        <form [formGroup]="searchForm" class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            formControlName="search"
+            type="text"
+            placeholder="Пошук"
+          />
+        </form>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="w-4" pSortableColumn="amount">
+          Сума
+          <p-sortIcon field="amount"></p-sortIcon>
+        </th>
+        <th class="w-4" pSortableColumn="status">
+          Статус
+          <p-sortIcon field="status"></p-sortIcon>
+        </th>
+        <th class="w-4" pSortableColumn="createdAt">
+          <div class="flex justify-content-between align-items-center">
+            Дата
+            <p-sortIcon field="createdAt"></p-sortIcon>
+            <p-columnFilter
+              type="date"
+              field="createdAt"
+              display="menu"
+              class="ml-auto"
+            ></p-columnFilter>
+          </div>
+        </th>
+        <th class="w-1">Замовлення</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-transaction>
+      <tr class="p-selectable-row">
+        <td
+          data-cy="transaction-amount"
+          [class.text-green-600]="+transaction.amount > 0"
+          [class.text-red-600]="+transaction.amount < 0"
+          [class.text-yellow-600]="
+            transaction.status === transactionStatus.Pending
+          "
+        >
+          {{ transaction.amount | currency }}
+        </td>
+        <td>{{ transaction.status | transactionStatus }}</td>
+        <td>{{ transaction.createdAt | date : 'short' }}</td>
+        <td *ngIf="transaction.order.total; else noOrder" class="text-center">
+          <button
+            pButton
+            pTooltip="Натистіть для перегляду замовлення"
+            tooltipPosition="left"
+            icon="pi pi-arrow-up-right"
+            (click)="navigateToOrder(transaction.order.number)"
+          ></button>
+        </td>
+        <ng-template #noOrder><td></td></ng-template>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8">Транзакцій не знайдено</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</ng-container>
+
+<ng-template #skeleton>
+  <div class="p-4 border-bottom-1 border-300">
+    <div class="flex justify-content-between align-items-center">
+      <p-skeleton height="16px" width="85px"></p-skeleton>
+      <p-skeleton height="39px" width="228px"></p-skeleton>
+    </div>
+  </div>
+  <div class="p-4 border-bottom-1 border-300">
+    <div class="flex justify-content-between align-items-center">
+      <p-skeleton height="28px" width="290px"></p-skeleton>
+      <p-skeleton height="28px" width="290px"></p-skeleton>
+      <p-skeleton height="28px" width="100px"></p-skeleton>
+    </div>
+  </div>
+  <ng-container *ngFor="let _ of [].constructor(5)">
+    <div class="p-4 border-bottom-1 border-300">
+      <div class="flex justify-content-between align-items-center">
+        <p-skeleton height="28px" width="290px"></p-skeleton>
+        <p-skeleton height="16px" width="290px"></p-skeleton>
+        <p-skeleton height="28px" width="100px"></p-skeleton>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

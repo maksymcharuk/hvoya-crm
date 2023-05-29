@@ -63,7 +63,10 @@ export class CaslAbilityFactory {
     }
 
     if (user.role === Role.Admin) {
-      can([Action.Read, Action.Update], UserEntity);
+      can([Action.Read], UserEntity);
+      can([Action.Update], UserEntity, ({ id }: UserEntity) => {
+        return id === user.id;
+      });
       // Products
       can([Action.Read, Action.Create, Action.Update], ProductCategoryEntity);
       can([Action.Read, Action.Create, Action.Update], ProductBaseEntity);
@@ -90,7 +93,9 @@ export class CaslAbilityFactory {
     }
 
     if (user.role === Role.User) {
-      can([Action.Read, Action.Update], UserEntity);
+      can([Action.Read, Action.Update], UserEntity, ({ id }: UserEntity) => {
+        return id === user.id;
+      });
       // Products
       can(Action.Read, ProductCategoryEntity);
       can(Action.Read, ProductBaseEntity);
