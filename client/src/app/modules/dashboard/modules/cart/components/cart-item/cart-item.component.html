@@ -54,11 +54,14 @@
           ></app-stock-badge>
         </div>
         <div class="flex flex-column sm:align-items-end">
-          <span class="text-900 text-2xl font-medium mb-2 sm:mb-3">
+          <span class="text-900 text-2xl font-medium mb-1 sm:mb-2">
             <ng-container *ngIf="(updating$ | async) === 0; else priceSkeleton">
               {{
                 cartItem.product.properties.price * cartItem.quantity | currency
               }}
+              <div class="text-600 text-base">
+                {{ cartItem.product.properties.price | currency }} / од.
+              </div>
             </ng-container>
             <ng-template #priceSkeleton>
               <p-skeleton height="1.75rem" width="5rem"></p-skeleton>

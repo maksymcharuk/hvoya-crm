@@ -16,7 +16,7 @@ export class UpdateProfileDto {
   phoneNumber?: string;
 
   @IsOptional()
-  location?: string;
+  storeName?: string;
 
   @IsOptional()
   website?: string;

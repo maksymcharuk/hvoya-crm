@@ -1,0 +1,69 @@
+<td class="py-3">
+  <a
+    [routerLink]="[
+      '/dashboard',
+      'products',
+      cartItem.product.baseProduct.id,
+      cartItem.product.id
+    ]"
+  >
+    <img
+      [src]="
+        cartItem.product.properties.images
+          ? cartItem.product.properties.images[0]?.url
+          : ''
+      "
+      class="w-4rem h-4rem flex-shrink-0 shadow-1"
+    />
+  </a>
+</td>
+<td class="pl-5 mr-8">
+  <a
+    [routerLink]="[
+      '/dashboard',
+      'products',
+      cartItem.product.baseProduct.id,
+      cartItem.product.id
+    ]"
+    class="text-900 font-medium"
+  >
+    {{ cartItem.product.properties.name }}
+  </a>
+  <div class="text-600 mt-2">{{ cartItem.product.sku }}</div>
+</td>
+<td class="pl-5 font-medium ml-auto mr-2">
+  <form [formGroup]="quantityForm">
+    <p-inputNumber
+      mode="decimal"
+      formControlName="quantity"
+      [showButtons]="true"
+      [min]="1"
+    ></p-inputNumber>
+  </form>
+  <app-stock-badge
+    class="inline-flex mt-2 text-600"
+    [value]="cartItem.product.stock"
+  ></app-stock-badge>
+</td>
+<td class="pl-5 text-900 font-medium">
+  <ng-container *ngIf="(updating$ | async) === 0; else priceSkeleton">
+    {{ cartItem.product.properties.price * cartItem.quantity | currency }}
+    <div class="text-600 text-sm mt-1">
+      {{ cartItem.product.properties.price | currency }} / од.
+    </div>
+  </ng-container>
+  <ng-template #priceSkeleton>
+    <p-skeleton height="1.2rem" width="5rem"></p-skeleton>
+    <p-skeleton class="block mt-1" height="1rem" width="6rem"></p-skeleton>
+  </ng-template>
+</td>
+<td class="pl-5 text-900 font-medium">
+  <a
+    (click)="removeCartItem()"
+    tabindex="0"
+    title="Видалити"
+    class="cursor-pointer text-pink-500 font-medium hover:text-pink-600 transition-colors transition-duration-300"
+  >
+    <i class="pi pi-times"></i>
+  </a>
+</td>

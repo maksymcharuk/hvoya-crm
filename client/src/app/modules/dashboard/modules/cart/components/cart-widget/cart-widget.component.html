@@ -1,62 +1,44 @@
 <div class="cart-widget">
   <div class="text-900 text-xl pb-3 border-bottom-1 surface-border">Кошик</div>
-  <ng-container *ngIf="(cartLoading$ | async) === 0; else skeleton">
-    <ng-container *ngIf="cart$ | async as cart">
-      <ng-container *ngIf="cartNotEmpty$ | async; else emptyCart">
+  <ng-container
+    *ngIf="
+      {
+        cart: cart$ | async,
+        cartLoading: cartLoading$ | async,
+        cartNotEmpty: cartNotEmpty$ | async
+      } as state;
+      else skeleton
+    "
+  >
+    <ng-container *ngIf="state.cart">
+      <ng-container *ngIf="state.cartNotEmpty; else emptyCart">
         <div class="max-h-15rem overflow-y-auto">
           <table class="w-full">
-            <ng-container *ngFor="let cartItem of cart.items">
-              <tr data-cy="cart-widget-item">
-                <td class="py-3">
-                  <a
-                    [routerLink]="[
-                      '/dashboard',
-                      'products',
-                      cartItem.product.baseProduct.id,
-                      cartItem.product.id
-                    ]"
-                  >
-                    <img
-                      [src]="
-                        cartItem.product.properties.images
-                          ? cartItem.product.properties.images[0]?.url
-                          : ''
-                      "
-                      class="w-4rem h-4rem flex-shrink-0 shadow-1"
-                    />
-                  </a>
-                </td>
-                <td class="pl-5 mr-8">
-                  <a
-                    [routerLink]="[
-                      '/dashboard',
-                      'products',
-                      cartItem.product.baseProduct.id,
-                      cartItem.product.id
-                    ]"
-                    class="text-900 font-medium"
-                  >
-                    {{ cartItem.product.properties.name }}
-                  </a>
-                  <div class="text-600 mt-2">{{ cartItem.product.sku }}</div>
-                </td>
-                <td class="pl-5 font-medium ml-auto mr-2">
-                  К-ть: {{ cartItem.quantity }}
-                </td>
-                <td class="pl-5 text-900 font-medium">
-                  {{
-                    cartItem.product.properties.price * cartItem.quantity
-                      | currency
-                  }}
-                </td>
-              </tr>
+            <ng-container *ngFor="let cartItem of state.cart.items">
+              <tr
+                app-cart-widget-item
+                data-cy="cart-widget-item"
+                [cartItem]="cartItem"
+              ></tr>
             </ng-container>
           </table>
         </div>
         <div class="py-3 border-bottom-1 surface-border">
           <div class="flex align-items-center justify-content-between">
             <span class="text-900 font-bold"> Всього </span>
-            <div class="text-900 font-bold">{{ cart.total | currency }}</div>
+            <span
+              class="text-xl text-900 font-bold text-3xl ml-5"
+              data-cy="order-total"
+            >
+              <ng-container
+                *ngIf="state.cartLoading === 0; else totalPriceSkeleton"
+              >
+                {{ state.cart.total | currency }}
+              </ng-container>
+              <ng-template #totalPriceSkeleton>
+                <p-skeleton height="1.75rem" width="8rem"></p-skeleton>
+              </ng-template>
+            </span>
           </div>
         </div>
         <div class="py-3 flex align-items-center p-fluid">

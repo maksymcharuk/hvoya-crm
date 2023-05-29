@@ -60,6 +60,9 @@
               {{
                 cartItem.product.properties.price * cartItem.quantity | currency
               }}
+              <div class="text-600 text-base">
+                {{ cartItem.product.properties.price | currency }} / од.
+              </div>
             </ng-container>
             <ng-template #priceSkeleton>
               <p-skeleton height="1.75rem" width="5rem"></p-skeleton>

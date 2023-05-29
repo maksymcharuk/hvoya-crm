@@ -14,10 +14,12 @@ export class BalanceService {
   constructor(
     @InjectRepository(BalanceEntity)
     private balanceRepository: Repository<BalanceEntity>,
-  ) { }
+    @InjectRepository(PaymentTransactionEntity)
+    private paymentTransactionRepository: Repository<PaymentTransactionEntity>,
+  ) {}
 
-  getByUserId(userId: string): Promise<BalanceEntity> {
-    return this.balanceRepository.findOneOrFail({
+  async getByUserId(userId: string): Promise<BalanceEntity> {
+    const balance = await this.balanceRepository.findOneOrFail({
       where: { owner: { id: userId } },
       relations: ['paymentTransactions.order'],
       order: {
@@ -26,6 +28,8 @@ export class BalanceService {
         },
       },
     });
+
+    return balance;
   }
 
   async update(
@@ -36,6 +40,7 @@ export class BalanceService {
   ): Promise<BalanceEntity> {
     let balance = await manager.findOneOrFail(BalanceEntity, {
       where: { owner: { id: userId } },
+      relations: ['paymentTransactions'],
     });
 
     const paymentTransaction = await manager.create(PaymentTransactionEntity, {
@@ -52,8 +57,7 @@ export class BalanceService {
       if (balance.amount.lessThan(amount.neg())) {
         throw new HttpException('Недостатньо коштів на балансі.', 400);
       }
-
-      manager.save(BalanceEntity, {
+      await manager.save(BalanceEntity, {
         id: balance.id,
         amount: balance.amount.minus(amount.neg()),
         paymentTransactions: [
@@ -62,7 +66,7 @@ export class BalanceService {
         ],
       });
     } else {
-      manager.save(BalanceEntity, {
+      await manager.save(BalanceEntity, {
         id: balance.id,
         amount: balance.amount.plus(amount),
         paymentTransactions: [
@@ -72,16 +76,36 @@ export class BalanceService {
       });
     }
 
+    // TODO: investigate why last transaction is missing in the balance
+    // in case of order cretion, but it is present during addign funds operation
     return this.getByUserId(userId);
   }
 
-  // temporary "testing" solution;
+  // Temporary "testing" solution
+  // TODO: remove this method
   async addFunds(userId: string, amount: number): Promise<BalanceEntity> {
-    return await this.update(
+    const balance = await this.update(
       userId,
       new Decimal(amount),
       this.balanceRepository.manager,
     );
+
+    const transaction = balance.paymentTransactions[0];
+
+    if (!transaction) {
+      throw new HttpException('Транзакція не знайдена.', 400);
+    }
+
+    await this.paymentTransactionRepository.save({
+      id: transaction.id,
+      status: TransactionStatus.Success,
+    });
+
+    await this.paymentTransactionRepository.findOneOrFail({
+      where: { id: transaction.id },
+    });
+
+    return this.getByUserId(userId);
   }
 
   async addFundsBanking(

@@ -20,7 +20,10 @@ export class BalanceEntity extends BaseEntity {
   @OneToOne(() => UserEntity, (user) => user.balance)
   owner: UserEntity;
 
-  @OneToMany(() => PaymentTransactionEntity, (transaction) => transaction.balance, { eager: true })
+  @OneToMany(
+    () => PaymentTransactionEntity,
+    (transaction) => transaction.balance,
+  )
   paymentTransactions: PaymentTransactionEntity[];
 
   @VersionColumn()

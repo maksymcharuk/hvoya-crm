@@ -5,7 +5,7 @@ export interface UpdateUserProfileDTO {
   firstName: string;
   lastName: string;
   middleName: string;
-  location: string;
+  storeName: string;
   website: string;
   bio: string;
 }
@@ -18,7 +18,7 @@ export interface UpdateUserProfileFormGroup extends FormGroup {
     firstName: AbstractControl;
     lastName: AbstractControl;
     middleName: AbstractControl;
-    location: AbstractControl;
+    storeName: AbstractControl;
     website: AbstractControl;
     bio: AbstractControl;
   };

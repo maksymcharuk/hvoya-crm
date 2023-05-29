@@ -12,12 +12,14 @@ import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
 import { OrderEntity } from '@entities/order.entity';
+import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
+import { TransactionStatus } from '@enums/transaction-status.enum';
 
 import { BalanceService } from '../../../modules/balance/services/balance.service';
 import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
@@ -140,11 +142,33 @@ export class OrdersService {
         },
       );
 
-      const balance = await this.balanceService.update(
+      await this.balanceService.update(
         userId,
         this.calculateTotal(orderItems).neg(),
         queryRunner.manager,
         order.id,
+      );
+
+      const transaction = await queryRunner.manager.findOneOrFail(
+        PaymentTransactionEntity,
+        {
+          where: { order: { id: order.id } },
+        },
+      );
+
+      if (!transaction) {
+        throw new HttpException(
+          'Не вдалось опрацювати замолення. Спробуйте очистити кошик і вибрати товари знову.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      await queryRunner.manager.update(
+        PaymentTransactionEntity,
+        transaction.id,
+        {
+          status: TransactionStatus.Success,
+        },
       );
 
       const variants = await queryRunner.manager.find(ProductVariantEntity, {
@@ -170,8 +194,7 @@ export class OrdersService {
         id: order.id,
         items: orderItems,
         delivery: orderDelivery,
-        paymentTransaction:
-          balance.paymentTransactions[balance.paymentTransactions.length - 1],
+        paymentTransaction: transaction,
         total: this.calculateTotal(orderItems),
       });
 
@@ -217,7 +240,7 @@ export class OrdersService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      let order = await this.getOrderWhere({ number: orderNumber }, [
+      const order = await this.getOrderWhere({ number: orderNumber }, [
         'customer',
       ]);
 
@@ -252,17 +275,18 @@ export class OrdersService {
           },
         );
 
+        const updatedOrder = await queryRunner.manager.save(OrderEntity, {
+          id: order.id,
+          status: updateOrderDto.orderStatus,
+        });
+
         this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
-          message: `Статус вашого замовлення ${order.number} змінено на ${order.status}`,
+          message: `Статус вашого замовлення ${order.number} змінено на ${updatedOrder.status}`,
           data: {
             id: order.number,
           },
           userId: order.customer.id,
           type: NotificationType.Order,
-        });
-
-        await queryRunner.manager.update(OrderEntity, order.id, {
-          status: updateOrderDto.orderStatus,
         });
       }
 

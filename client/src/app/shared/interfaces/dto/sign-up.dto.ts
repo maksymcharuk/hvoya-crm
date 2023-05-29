@@ -7,7 +7,7 @@ export interface SignUpDTO {
   middleName: string;
   lastName: string;
   phoneNumber: string;
-  location: string;
+  storeName: string;
   website: string;
   bio: string;
 }
@@ -22,7 +22,7 @@ export interface SignUpDTOFormGroup extends FormGroup {
     middleName: AbstractControl;
     lastName: AbstractControl;
     phoneNumber: AbstractControl;
-    location: AbstractControl;
+    storeName: AbstractControl;
     website: AbstractControl;
     bio: AbstractControl;
   };

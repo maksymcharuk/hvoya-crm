@@ -152,7 +152,7 @@ function signUp(email: string, password: string): void {
   cy.getCyEl('last-name').type('test-lastName');
   cy.getCyEl('first-name').type('test-firstName');
   cy.getCyEl('middle-name').type('test-middleName');
-  cy.getCyEl('location').type('Lutsk');
+  cy.getCyEl('store-name').type('test-storeName');
   cy.getCyEl('website').type('https://hvoya.com');
   cy.getCyEl('bio').type('test-bio');
   cy.getCyEl('password').type(password).find('input').blur();

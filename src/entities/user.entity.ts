@@ -29,7 +29,7 @@ export class UserEntity extends BaseEntity {
   phoneNumber: string;
 
   @Column({ default: '' })
-  location: string;
+  storeName: string;
 
   @Column({ default: '' })
   website: string;

@@ -4,6 +4,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { PasswordModule } from 'primeng/password';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -30,6 +31,7 @@ import { SettingsComponent } from './pages/settings/settings.component';
     PasswordModule,
     DividerModule,
     AccountRoutingModule,
+    TooltipModule,
   ],
 })
 export class AccountModule {}

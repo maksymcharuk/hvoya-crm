@@ -35,24 +35,27 @@ describe('Cart', () => {
     });
 
     describe('Add to cart', () => {
+      let productCard: Cypress.Chainable;
       let productName: string;
       let productPrice: string;
-      let productAddToCartButton: Cypress.Chainable;
+      let productAddToCartButton: JQuery<HTMLElement>;
 
       beforeEach(() => {
         cy.visit(productListPageUrl);
 
-        productAddToCartButton = cy
-          .get('[data-cy="product-add-to-cart-button"]')
-          .first();
-        cy.get('[data-cy="product-name"]')
-          .first()
-          .invoke('text')
-          .then((text) => (productName = text));
-        cy.get('[data-cy="product-price"]')
-          .first()
-          .invoke('text')
-          .then((text) => (productPrice = text));
+        cy.get('[data-cy="product-item"]')
+          .contains(
+            '[data-cy="product-add-to-cart-button"]:not(:disabled)',
+            'Додати в кошик',
+          )
+          .parent()
+          .then(($el) => {
+            productAddToCartButton = $el.find(
+              '[data-cy="product-add-to-cart-button"]',
+            );
+            productName = $el.find('[data-cy="product-name"]').text();
+            productPrice = $el.find('[data-cy="product-price"]').text();
+          });
       });
 
       it('Adds product to cart from product list page and change number', () => {
@@ -65,7 +68,7 @@ describe('Cart', () => {
         cy.get('app-cart-widget').contains('Кошик пустий');
 
         // Add product to cart
-        productAddToCartButton.click();
+        productAddToCartButton.trigger('click');
         cy.checkToastMessage(productName.trim());
 
         // Cart widget should have badge with product count
