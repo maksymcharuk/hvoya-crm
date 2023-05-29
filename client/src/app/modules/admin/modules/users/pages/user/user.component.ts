@@ -29,7 +29,7 @@ export class UserComponent implements OnInit {
 
   ngOnInit(): void {
     this.userService
-      .getUserById(this.route.snapshot.params['id'])
+      .getUserByIdFull(this.route.snapshot.params['id'])
       .subscribe((user: User) => {
         this.user = user;
       });

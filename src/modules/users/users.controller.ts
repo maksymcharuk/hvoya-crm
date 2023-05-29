@@ -59,6 +59,15 @@ export class UsersController {
     return this.usersService.showById(id);
   }
 
+  @Get(':id/full')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
+  async getUserByIdFull(
+    @User('id') currentUserId: string,
+    @Param('id') id: string,
+  ) {
+    return this.usersService.findByIdFull(id, currentUserId);
+  }
+
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
   async getUsers(@User('id') userId: string) {

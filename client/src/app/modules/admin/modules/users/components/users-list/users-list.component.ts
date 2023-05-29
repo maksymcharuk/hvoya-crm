@@ -17,6 +17,7 @@ export class UsersListComponent implements OnDestroy {
     search: [''],
   });
   globalFilterFields = [
+    'accountNumber',
     'firstName',
     'lastName',
     'middleName',

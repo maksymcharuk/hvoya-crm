@@ -1,3 +1,13 @@
+.user {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+}
+
 :host ::ng-deep {
   .p-dialog .p-dialog-header-icons {
     display: none;
@@ -10,5 +20,9 @@
   .p-dialog .p-dialog-footer {
     display: flex;
     justify-content: center;
+  }
+
+  .p-tabview-panels {
+    padding: 0;
   }
 }

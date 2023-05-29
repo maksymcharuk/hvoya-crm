@@ -1,102 +1,116 @@
-<div class="grid">
+<div *ngIf="user" class="grid user">
   <div class="col-12">
     <div class="card">
-      <div *ngIf="user">
-        <div class="my-5">
-          <ul class="striped-list">
-            <li class="striped-list__item">
-              <div class="striped-list__item-key">ПІБ</div>
-              <div class="striped-list__item-value">
-                {{ user.firstName }} {{ user.lastName }}
-                {{ user.middleName }}
-              </div>
-            </li>
-            <li class="striped-list__item">
-              <div class="striped-list__item-key">Пошта</div>
-              <div class="striped-list__item-value">
-                {{ user.email }}
-              </div>
-            </li>
-            <li class="striped-list__item">
-              <div class="striped-list__item-key">Номер тефону</div>
-              <div class="striped-list__item-value">
-                {{ user.phoneNumber | phoneNumber }}
-              </div>
-            </li>
-            <li class="striped-list__item">
-              <div class="striped-list__item-key">Локація</div>
-              <div class="striped-list__item-value">
-                {{ user.storeName }}
-              </div>
-            </li>
-            <li class="striped-list__item">
-              <div class="striped-list__item-key">Опис</div>
-              <div class="striped-list__item-value">
-                {{ user.bio }}
-              </div>
-            </li>
-            <li class="striped-list__item">
-              <div class="striped-list__item-key">Дата створення</div>
-              <div class="striped-list__item-value">
-                {{ user.createdAt | date : 'short' }}
-              </div>
-            </li>
-            <li class="striped-list__item" *ngIf="'update' | able : user">
-              <div class="striped-list__item-key">Керування</div>
-              <div class="striped-list__item-value">
+      <div class="user__header">
+        <h4 class="mb-0">{{ user.fullName }}</h4>
+        <span *ngIf="user.isUser">
+          Поточний баланс: <b>{{ user.balance?.amount | currency }}</b>
+        </span>
+      </div>
+      <div class="my-5">
+        <ul class="striped-list">
+          <li class="striped-list__item">
+            <div class="striped-list__item-key">Пошта</div>
+            <div class="striped-list__item-value">
+              {{ user.email }}
+            </div>
+          </li>
+          <li class="striped-list__item">
+            <div class="striped-list__item-key">Номер тефону</div>
+            <div class="striped-list__item-value">
+              {{ user.phoneNumber | phoneNumber }}
+            </div>
+          </li>
+          <li class="striped-list__item">
+            <div class="striped-list__item-key">Назва магазину</div>
+            <div class="striped-list__item-value">
+              {{ user.storeName }}
+            </div>
+          </li>
+          <li class="striped-list__item">
+            <div class="striped-list__item-key">
+              Веб-сайт/сторінка у соц. мережі
+            </div>
+            <div class="striped-list__item-value">
+              <a [href]="user.website" target="_blank">{{ user.website }}</a>
+            </div>
+          </li>
+          <li class="striped-list__item">
+            <div class="striped-list__item-key">Опис</div>
+            <div class="striped-list__item-value">
+              {{ user.bio }}
+            </div>
+          </li>
+          <li class="striped-list__item">
+            <div class="striped-list__item-key">Дата реєстрації</div>
+            <div class="striped-list__item-value">
+              {{ user.createdAt | date : 'short' }}
+            </div>
+          </li>
+          <li class="striped-list__item" *ngIf="'update' | able : user">
+            <div class="striped-list__item-key">Керування</div>
+            <div class="striped-list__item-value">
+              <button
+                *ngIf="!user.userConfirmed; else confirmed"
+                pButton
+                pRipple
+                label="Надати доступ до системи"
+                (click)="confirmUser()"
+                class="p-button-success mr-4"
+                data-cy="confirm-user-button"
+              ></button>
+              <ng-template #confirmed>
                 <button
-                  *ngIf="!user.userConfirmed; else confirmed"
                   pButton
                   pRipple
-                  label="Надати доступ до системи"
-                  (click)="confirmUser()"
-                  class="p-button-success mr-4"
-                  data-cy="confirm-user-button"
+                  [disabled]="true"
+                  label="Доступ надано"
+                  class="p-button-outlined p-button-success mr-4"
                 ></button>
-                <ng-template #confirmed>
-                  <button
-                    pButton
-                    pRipple
-                    [disabled]="true"
-                    label="Доступ надано"
-                    class="p-button-outlined p-button-success mr-4"
-                  ></button>
-                </ng-template>
+              </ng-template>
 
-                <p-confirmDialog
-                  rejectButtonStyleClass="p-button-text"
-                  [header]="
-                    'Ви впевнені, що хочете ' +
-                    (user.userFreezed ? 'відновити' : 'призупинити') +
-                    ' акаунт цього користувача?'
-                  "
-                ></p-confirmDialog>
+              <p-confirmDialog
+                rejectButtonStyleClass="p-button-text"
+                [header]="
+                  'Ви впевнені, що хочете ' +
+                  (user.userFreezed ? 'відновити' : 'призупинити') +
+                  ' акаунт цього користувача?'
+                "
+              ></p-confirmDialog>
+              <button
+                *ngIf="user.userFreezed; else freeze"
+                pButton
+                pRipple
+                label="Відновити"
+                (click)="confirmFreezeToggle()"
+                class="p-button-success"
+                icon="pi pi-unlock"
+                data-cy="unfreeze-user-button"
+              ></button>
+              <ng-template #freeze>
                 <button
-                  *ngIf="user.userFreezed; else freeze"
                   pButton
                   pRipple
-                  label="Відновити"
+                  label="Призупинити"
                   (click)="confirmFreezeToggle()"
-                  class="p-button-success"
-                  icon="pi pi-unlock"
-                  data-cy="unfreeze-user-button"
+                  class="p-button-danger"
+                  icon="pi pi-lock"
+                  data-cy="freeze-user-button"
                 ></button>
-                <ng-template #freeze>
-                  <button
-                    pButton
-                    pRipple
-                    label="Призупинити"
-                    (click)="confirmFreezeToggle()"
-                    class="p-button-danger"
-                    icon="pi pi-lock"
-                    data-cy="freeze-user-button"
-                  ></button>
-                </ng-template>
-              </div>
-            </li>
-          </ul>
-        </div>
+              </ng-template>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
+
+    <p-tabView *ngIf="user.isUser">
+      <p-tabPanel header="Історія замовлень">
+        <app-order-list [orders]="user.orders || []"></app-order-list>
+      </p-tabPanel>
+      <p-tabPanel header="Історія транзакцій">
+        <app-transactions-list [balance]="user.balance"></app-transactions-list>
+      </p-tabPanel>
+    </p-tabView>
   </div>
 </div>

@@ -38,6 +38,12 @@ export class UserService {
       .pipe(map((user) => new User(user)));
   }
 
+  getUserByIdFull(userId: string): Observable<User> {
+    return this.http
+      .get<User>(`${environment.apiUrl}/users/${userId}/full`)
+      .pipe(map((user) => new User(user)));
+  }
+
   confirmUser(userId: string): Observable<User> {
     return this.http
       .post<User>(`${environment.apiUrl}/users/confirm`, { userId })

@@ -41,6 +41,7 @@ import { ProductListComponent } from './components/product-list/product-list.com
 import { ProductViewComponent } from './components/product-view/product-view.component';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { StockBadgeComponent } from './components/stock-badge/stock-badge.component';
+import { TransactionsListComponent } from './components/transactions-list/transactions-list.component';
 import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
@@ -79,6 +80,7 @@ const COMPONENTS = [
   StockBadgeComponent,
   ProductColorBadgeComponent,
   NotificationsComponent,
+  TransactionsListComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -103,7 +105,7 @@ const PRIMENG_MODULES = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS, ...PIPES, NotificationsComponent],
+  declarations: [...COMPONENTS, ...PIPES],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -130,4 +132,4 @@ const PRIMENG_MODULES = [
   ],
   exports: [...COMPONENTS, ...PIPES],
 })
-export class SharedModule { }
+export class SharedModule {}
