@@ -2,19 +2,19 @@ describe('Cart', () => {
   const productListPageUrl = '/dashboard/products';
   const cartPageUrl = '/dashboard/cart';
 
-  // describe('Admins', () => {
-  //   describe('Cart widget', () => {
-  //     it('Is not available for super admins', () => {
-  //       cy.signInAsSuperAdmin({ full: true });
-  //       cy.getShoppingCartWidgetMenuButton().should('not.exist');
-  //     });
+  describe('Admins', () => {
+    describe('Cart widget', () => {
+      it('Is not available for super admins', () => {
+        cy.signInAsSuperAdmin({ full: true });
+        cy.getShoppingCartWidgetMenuButton().should('not.exist');
+      });
 
-  //     it('Is not available for admins', () => {
-  //       cy.signInAsAdmin({ full: true });
-  //       cy.getShoppingCartWidgetMenuButton().should('not.exist');
-  //     });
-  //   });
-  // });
+      it('Is not available for admins', () => {
+        cy.signInAsAdmin({ full: true });
+        cy.getShoppingCartWidgetMenuButton().should('not.exist');
+      });
+    });
+  });
 
   describe('Users', () => {
     const testUserEmail = `user+${Date.now()}@email.com`;
@@ -28,11 +28,11 @@ describe('Cart', () => {
       cy.signIn(testUserEmail, testUserPassword, { full: true });
     });
 
-    // describe('Cart widget', () => {
-    //   it('Is available for users', () => {
-    //     cy.getShoppingCartWidgetMenuButton().should('exist');
-    //   });
-    // });
+    describe('Cart widget', () => {
+      it('Is available for users', () => {
+        cy.getShoppingCartWidgetMenuButton().should('exist');
+      });
+    });
 
     describe('Add to cart', () => {
       let productCard: Cypress.Chainable;
