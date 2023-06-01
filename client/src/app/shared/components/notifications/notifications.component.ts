@@ -32,7 +32,7 @@ export class NotificationsComponent {
     const root = [Role.Admin, Role.SuperAdmin].includes(this.user!.role) ? '/admin' : '/dashboard';
     switch (notification.type) {
       case NotificationType.Order:
-        return `${root}/orders/${notification.data.id}`;
+        return `${root}/orders/${notification.data.number}`;
       case NotificationType.User:
         return `${root}/users/${notification.data.id}`;
       default:

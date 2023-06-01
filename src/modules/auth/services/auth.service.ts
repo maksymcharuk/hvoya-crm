@@ -39,7 +39,7 @@ export class AuthService {
     private mailService: MailService,
     private configService: ConfigService,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
@@ -105,10 +105,8 @@ export class AuthService {
       );
 
       this.eventEmitter.emit(NotificationEvent.UserCreated, {
-        message: `Користувач ${user.firstName} ${user.lastName} створив акаунт`,
-        data: {
-          id: user.id,
-        },
+        message: `Користувач створив акаунт`,
+        data: user,
         type: NotificationType.User,
       });
 

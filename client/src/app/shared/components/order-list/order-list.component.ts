@@ -16,6 +16,8 @@ import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Role } from '@shared/enums/role.enum';
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { UserService } from '@shared/services/user.service';
+import { NotificationsService } from '@shared/services/notifications.service';
+import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
 
 @Component({
   selector: 'app-order-list',
@@ -34,6 +36,7 @@ export class OrderListComponent implements OnDestroy {
   }
   @ViewChild('ordersTable') ordersTable!: Table;
 
+  notifications$ = this.notificationsService.notifications$;
   loading = true;
   searchForm = this.fb.group({
     search: [''],
@@ -77,6 +80,7 @@ export class OrderListComponent implements OnDestroy {
     private fb: FormBuilder,
     private readonly router: Router,
     private readonly userService: UserService,
+    private readonly notificationsService: NotificationsService,
   ) {
     this.searchControl?.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
@@ -103,11 +107,26 @@ export class OrderListComponent implements OnDestroy {
     return order.items.reduce((acc, item) => acc + item.quantity, 0);
   }
 
-  navigateToOrder(orderNumber: number) {
+  navigateToOrder(order: Order) {
     const role = this.userService.getUser()?.role;
     // TODO: create URL builder service and move this logic there
     const path =
       role === Role.Admin || role === Role.SuperAdmin ? '/admin' : '/dashboard';
-    this.router.navigate([`${path}/orders/${orderNumber}`]);
+    this.router.navigate([`${path}/orders/${order.number}`]);
+
+    if (order.notification) {
+      this.notificationsService.checkNotification(order.notification.id);
+    }
+  }
+
+  showOrderNotification(order: Order, notificationList: NotificationEntity[] | null) {
+    if (!notificationList) {
+      return;
+    }
+    const notification = notificationList.find((notification) => {
+      return notification.data.number === order.number;
+    });
+    order.notification = notification;
+    return notification ? !notification.checked : false;
   }
 }

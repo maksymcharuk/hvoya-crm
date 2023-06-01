@@ -34,7 +34,7 @@ export class OrdersService {
     private caslAbilityFactory: CaslAbilityFactory,
     private balanceService: BalanceService,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -202,14 +202,13 @@ export class OrdersService {
 
       // Fetch order again to get order with populated number
       order = await queryRunner.manager.findOneOrFail(OrderEntity, {
+        relations: ['customer'],
         where: { id: order.id },
       });
 
       this.eventEmitter.emit(NotificationEvent.OrderCreated, {
         message: `Нове замовлення №${order.number}`,
-        data: {
-          id: order.number,
-        },
+        data: order,
         type: NotificationType.Order,
       });
 
@@ -281,10 +280,8 @@ export class OrdersService {
         });
 
         this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
-          message: `Статус вашого замовлення ${order.number} змінено на ${updatedOrder.status}`,
-          data: {
-            id: order.number,
-          },
+          message: `Статус замовлення змінено.`,
+          data: { ...order, newStatus: updatedOrder.status },
           userId: order.customer.id,
           type: NotificationType.Order,
         });

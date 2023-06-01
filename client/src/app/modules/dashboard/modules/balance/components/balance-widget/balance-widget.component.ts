@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { environment } from '@environment/environment';
+import { AccountService } from '@shared/services/account.service';
 
 import { UserBalanceService } from '../../services/user-balance.service';
 
@@ -11,10 +12,12 @@ import { UserBalanceService } from '../../services/user-balance.service';
 })
 export class BalanceWidgetComponent {
   balance$ = this.userBalance.balance$;
-  topUpTooltipMessage = 'Номер договору для поповнення рахунку вказаний на сторінці аккаунту.'
+  profile$ = this.accountService.profile$;
+  topUpTooltipMessage = 'Для поповнення рахунку потрібно вказати номер договору, який вказано на цьому сайті.'
 
   constructor(
-    private userBalance: UserBalanceService
+    private userBalance: UserBalanceService,
+    private accountService: AccountService,
   ) { }
 
   addFundsTest() {

@@ -58,8 +58,18 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-user>
-      <tr class="p-selectable-row" [routerLink]="[user.id]">
-        <td>{{ user.accountNumber }}</td>
+      <tr
+        class="p-selectable-row"
+        [routerLink]="[user.id]"
+        (click)="checkUserNotification(user)"
+      >
+        <td>
+          <span>{{ user.accountNumber }}</span>
+          <i
+            *ngIf="showUserNotification(user, notifications$ | async)"
+            class="pi pi-circle-fill text-green-600 ml-2"
+          ></i>
+        </td>
         <td>
           <span class="p-column-title">ПІБ</span>
           {{ user.lastName }} {{ user.firstName }}

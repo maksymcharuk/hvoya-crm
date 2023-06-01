@@ -39,9 +39,9 @@ export class NotificationsService {
   );
 
   constructor(private readonly http: HttpClient) {
-    this.getNotifications().subscribe((notifications) =>
-      this.notifications$.next(notifications),
-    );
+    this.getNotifications().subscribe((notifications) => {
+      this.notifications$.next(notifications)
+    });
   }
 
   getNotifications() {
