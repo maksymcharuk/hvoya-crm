@@ -11,7 +11,7 @@
             <ng-container *ngIf="!statusEdit; else statusEditView">
               <app-order-status-badge
                 data-cy="order-status-current"
-                [status]="order.status"
+                [status]="order.statuses[0]?.status!"
               ></app-order-status-badge>
               <button
                 pButton

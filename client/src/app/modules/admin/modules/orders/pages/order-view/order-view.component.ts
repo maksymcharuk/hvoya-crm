@@ -64,7 +64,7 @@ export class OrderViewComponent {
         trackingId: order.delivery.trackingId,
       });
       this.updateOrderStatusForm.patchValue({
-        orderStatus: order.status,
+        orderStatus: order.statuses[0]?.status,
       });
     });
 

@@ -11,6 +11,7 @@ import { UpdateOrderDto } from '@dtos/update-order.dto';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
+import { OrderStatusEntity } from '@entities/order-status.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
@@ -34,7 +35,7 @@ export class OrdersService {
     private caslAbilityFactory: CaslAbilityFactory,
     private balanceService: BalanceService,
     private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -111,6 +112,10 @@ export class OrdersService {
 
       let order = await queryRunner.manager.save(OrderEntity, {
         customer: { id: userId },
+      });
+
+      const status = await queryRunner.manager.save(OrderStatusEntity, {
+        order: { id: order.id },
       });
 
       const orderItems = await queryRunner.manager.save(
@@ -190,21 +195,22 @@ export class OrdersService {
       });
       await queryRunner.manager.save(ProductVariantEntity, variants);
 
-      order = await queryRunner.manager.save(OrderEntity, {
+      // Fetch order again to get order with populated fields
+      order = await queryRunner.manager.findOneOrFail(OrderEntity, {
+        where: { id: order.id },
+        relations: ['statuses', 'customer'],
+      });
+
+      await queryRunner.manager.save(OrderEntity, {
         id: order.id,
         items: orderItems,
         delivery: orderDelivery,
         paymentTransaction: transaction,
         total: this.calculateTotal(orderItems),
+        statuses: [...order.statuses, status],
       });
 
       await this.cartService.clearCart(userId);
-
-      // Fetch order again to get order with populated number
-      order = await queryRunner.manager.findOneOrFail(OrderEntity, {
-        relations: ['customer'],
-        where: { id: order.id },
-      });
 
       this.eventEmitter.emit(NotificationEvent.OrderCreated, {
         message: `Нове замовлення №${order.number}`,
@@ -221,7 +227,7 @@ export class OrdersService {
         }
       } finally {
         await queryRunner.rollbackTransaction();
-        throw new HttpException(err.response, HttpStatus.BAD_REQUEST);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
       }
     } finally {
       await queryRunner.release();
@@ -230,6 +236,7 @@ export class OrdersService {
 
   async updateOrder(
     orderNumber: string,
+    userId: string,
     updateOrderDto?: UpdateOrderDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
@@ -274,14 +281,21 @@ export class OrdersService {
           },
         );
 
-        const updatedOrder = await queryRunner.manager.save(OrderEntity, {
-          id: order.id,
+        const status = await queryRunner.manager.save(OrderStatusEntity, {
           status: updateOrderDto.orderStatus,
+          comment: updateOrderDto.orderStatusComment,
+          order: { id: order.id },
+          createdBy: { id: userId },
+        });
+
+        await queryRunner.manager.save(OrderEntity, {
+          id: order.id,
+          statuses: [...order.statuses, status],
         });
 
         this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
           message: `Статус замовлення змінено.`,
-          data: { ...order, newStatus: updatedOrder },
+          data: order,
           userId: order.customer.id,
           type: NotificationType.Order,
         });
@@ -377,8 +391,14 @@ export class OrdersService {
         'items.productProperties',
         'delivery.waybill',
         'paymentTransactions',
+        'statuses',
         ...relations,
       ],
+      order: {
+        statuses: {
+          createdAt: 'DESC',
+        },
+      },
     });
   }
 
@@ -391,9 +411,15 @@ export class OrdersService {
         'items.productProperties',
         'delivery.waybill',
         'paymentTransactions',
+        'statuses',
         'customer',
       ],
-      order: { createdAt: 'DESC' },
+      order: {
+        createdAt: 'DESC',
+        statuses: {
+          createdAt: 'DESC',
+        },
+      },
     });
   }
 }

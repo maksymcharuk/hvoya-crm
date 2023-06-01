@@ -1,6 +1,6 @@
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
-import { OrderStatus } from '@shared/enums/order-status.enum';
+import { OrderStatus as OrderStatusEnum } from '@shared/enums/order-status.enum';
 
 import { BaseEntity } from './base.entity';
 import { File } from './file.entity';
@@ -49,10 +49,23 @@ export class OrderItem extends BaseEntity {
   }
 }
 
+export class OrderStatus extends BaseEntity {
+  status: OrderStatusEnum;
+  comment: string;
+  createdBy: User | null;
+
+  constructor(data?: OrderStatus) {
+    super(data);
+    this.status = data?.status || OrderStatusEnum.Pending;
+    this.comment = data?.comment || '';
+    this.createdBy = data?.createdBy ? new User(data?.createdBy) : null;
+  }
+}
+
 export class Order extends BaseEntity {
   items: OrderItem[];
   delivery: OrderDelivery;
-  status: OrderStatus;
+  statuses: OrderStatus[];
   number: number;
   total?: number;
   customer: User;
@@ -61,7 +74,8 @@ export class Order extends BaseEntity {
     super(data);
     this.items = data?.items?.map((item) => new OrderItem(item)) || [];
     this.delivery = new OrderDelivery(data?.delivery);
-    this.status = data?.status || OrderStatus.Pending;
+    this.statuses =
+      data?.statuses?.map((status) => new OrderStatus(status)) || [];
     this.number = data?.number || 0;
     this.total = data?.total;
     this.customer = new User(data?.customer);

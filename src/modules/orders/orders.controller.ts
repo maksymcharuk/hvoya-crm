@@ -53,6 +53,7 @@ export class OrdersController {
     ability.can(Action.SuperUpdate, OrderEntity),
   )
   async updateOrder(
+    @User('id') userId: string,
     @Param('number') orderNumber: string,
     @Body() updateOrderDto: UpdateOrderDto,
     @UploadedFile(
@@ -66,7 +67,12 @@ export class OrdersController {
     )
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
-    return this.ordersService.updateOrder(orderNumber, updateOrderDto, waybill);
+    return this.ordersService.updateOrder(
+      orderNumber,
+      userId,
+      updateOrderDto,
+      waybill,
+    );
   }
 
   @Put(':number/update-waybill')
