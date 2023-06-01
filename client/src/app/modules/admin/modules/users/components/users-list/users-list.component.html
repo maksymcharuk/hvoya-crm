@@ -64,11 +64,13 @@
         (click)="checkUserNotification(user)"
       >
         <td>
-          <span>{{ user.accountNumber }}</span>
+          <div class="flex align-items-center">
+            <span>{{ user.accountNumber }}</span>
           <i
             *ngIf="showUserNotification(user, notifications$ | async)"
             class="pi pi-circle-fill text-green-600 ml-2"
           ></i>
+          </div>
         </td>
         <td>
           <span class="p-column-title">ПІБ</span>

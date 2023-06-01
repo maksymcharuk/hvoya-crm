@@ -141,12 +141,14 @@
         data-cy="order-list-item"
         (click)="navigateToOrder(order)"
       >
-        <td data-cy="order-list-item-id flex align-items-center">
-          <span>{{ order.number }}</span>
-          <i
-            *ngIf="showOrderNotification(order, notifications$ | async)"
-            class="pi pi-circle-fill text-green-600 ml-2"
-          ></i>
+        <td>
+          <div class="flex align-items-center">
+            <span data-cy="order-list-item-id">{{ order.number }}</span>
+            <i
+              *ngIf="showOrderNotification(order, notifications$ | async)"
+              class="pi pi-circle-fill text-green-600 ml-2"
+            ></i>
+          </div>
         </td>
         <td>
           <div class="flex">
