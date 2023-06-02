@@ -1,6 +1,6 @@
 <div *ngIf="profile$ | async as profile" class="user-info">
   <h5 class="user-info__name">
-    {{ profile.firstName }} {{ profile.lastName }}
+    {{ profile.lastName }} {{ profile.firstName }}
   </h5>
   <div>Номер договору: {{ profile.accountNumber }}</div>
 </div>

@@ -70,6 +70,10 @@ export class Order extends BaseEntity {
   total?: number;
   customer: User;
 
+  get currentStatus(): OrderStatus {
+    return this.statuses.length ? this.statuses[0]! : new OrderStatus();
+  }
+
   constructor(data?: Order) {
     super(data);
     this.items = data?.items?.map((item) => new OrderItem(item)) || [];

@@ -95,12 +95,16 @@ describe('Orders', () => {
         cy.getCyEl('order-status-current').should('contain', 'Нове');
         cy.getCyEl('order-status-edit-button').click();
         cy.selectFromDropdown('order-status-edit-dropdown', 'Опрацьовується');
+        cy.getCyEl('order-status-edit-submit').click();
         cy.checkToastMessage('Статус замовлення успішно оновлено');
+        cy.getCyEl('order-status-edit-cancel').click(); // close dialog
 
         // Revert order status
         cy.getCyEl('order-status-edit-button').click();
         cy.selectFromDropdown('order-status-edit-dropdown', 'Нове');
+        cy.getCyEl('order-status-edit-submit').click();
         cy.checkToastMessage('Статус замовлення успішно оновлено');
+        cy.getCyEl('order-status-edit-cancel').click(); // close dialog
 
         // Check order waybill preview
         cy.getCyEl('order-waybill-view-button').click();

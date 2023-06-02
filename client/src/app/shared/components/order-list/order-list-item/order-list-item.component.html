@@ -26,7 +26,9 @@
 </td>
 <td>
   <span class="p-column-title">Статус</span>
-  <app-order-status-badge [status]="order.status"></app-order-status-badge>
+  <app-order-status-badge
+    [status]="order.currentStatus.status"
+  ></app-order-status-badge>
 </td>
 <td>
   <span class="p-column-title">Статус доставки</span>

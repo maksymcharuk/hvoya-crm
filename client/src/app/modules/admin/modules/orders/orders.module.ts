@@ -3,6 +3,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -23,6 +24,7 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     FormsModule,
     ReactiveFormsModule,
     InputTextModule,
+    InputTextareaModule,
     FileUploadModule,
     DropdownModule,
     DialogModule,

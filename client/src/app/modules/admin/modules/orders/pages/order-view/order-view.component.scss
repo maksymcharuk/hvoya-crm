@@ -1,0 +1,22 @@
+.order-view {
+  &__status-column {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.statuses-history {
+  border: 1px solid var(--surface-300);
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 1rem;
+
+  &__item {
+    padding: 1rem 0;
+
+    & + & {
+      border-top: 1px dashed var(--surface-300);
+    }
+  }
+}

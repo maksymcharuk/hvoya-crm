@@ -35,10 +35,7 @@ describe('Cart', () => {
     });
 
     describe('Add to cart', () => {
-      let productCard: Cypress.Chainable;
       let productName: string;
-      let productPrice: string;
-      let productAddToCartButton: JQuery<HTMLElement>;
 
       beforeEach(() => {
         cy.visit(productListPageUrl);
@@ -48,13 +45,10 @@ describe('Cart', () => {
             '[data-cy="product-add-to-cart-button"]:not(:disabled)',
             'Додати в кошик',
           )
+          .as('productAddToCartButton')
           .parent()
           .then(($el) => {
-            productAddToCartButton = $el.find(
-              '[data-cy="product-add-to-cart-button"]',
-            );
             productName = $el.find('[data-cy="product-name"]').text();
-            productPrice = $el.find('[data-cy="product-price"]').text();
           });
       });
 
@@ -68,7 +62,7 @@ describe('Cart', () => {
         cy.get('app-cart-widget').contains('Кошик пустий');
 
         // Add product to cart
-        productAddToCartButton.trigger('click');
+        cy.get('@productAddToCartButton').click();
         cy.checkToastMessage(productName.trim());
 
         // Cart widget should have badge with product count

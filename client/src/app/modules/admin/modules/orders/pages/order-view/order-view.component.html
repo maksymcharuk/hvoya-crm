@@ -1,59 +1,46 @@
-<div class="grid" data-cy="order-view-page">
+<div class="order-view grid" data-cy="order-view-page">
   <div class="col-12">
     <div class="card">
       <div *ngIf="order$ | async as order">
         <h4 class="flex align-items-center">
           <span>Замовлення №{{ order.number }}</span>
-          <form
-            [formGroup]="updateOrderStatusForm"
-            class="flex align-items-center ml-5"
-          >
-            <ng-container *ngIf="!statusEdit; else statusEditView">
-              <app-order-status-badge
-                data-cy="order-status-current"
-                [status]="order.statuses[0]?.status!"
-              ></app-order-status-badge>
-              <button
-                pButton
-                type="button"
-                icon="pi pi-pencil"
-                class="p-button-sm p-button-link ml-1"
-                data-cy="order-status-edit-button"
-                (click)="statusEdit = true"
-              ></button>
-            </ng-container>
-            <ng-template #statusEditView>
-              <p-dropdown
-                formControlName="orderStatus"
-                placeholder="Статус"
-                data-cy="order-status-edit-dropdown"
-                [options]="orderStatuses"
-                (onChange)="updateStatus()"
-              >
-                <ng-template let-selected pTemplate="selectedItem">
-                  <app-order-status-badge
-                    [status]="selected.label"
-                  ></app-order-status-badge>
-                </ng-template>
-                <ng-template let-option pTemplate="item">
-                  <app-order-status-badge
-                    [status]="option.label"
-                  ></app-order-status-badge>
-                </ng-template>
-              </p-dropdown>
-              <button
-                pButton
-                type="button"
-                icon="pi pi-times"
-                class="ml-2"
-                (click)="statusEdit = false"
-                [disabled]="statusSubmitting$ | async"
-              ></button>
-            </ng-template>
-          </form>
         </h4>
         <div class="my-5">
           <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Статус</div>
+              <div class="striped-list__item-value order-view__status-column">
+                <div class="py-2 mr-5">
+                  <div class="flex align-items-center mb-1">
+                    <span class="mr-3">
+                      <u>
+                        {{ order.currentStatus.createdAt | date : 'short' }}
+                      </u>
+                    </span>
+                    <app-order-status-badge
+                      data-cy="order-status-current"
+                      [status]="order.currentStatus.status"
+                    ></app-order-status-badge>
+                  </div>
+                  <div *ngIf="order.currentStatus.comment">
+                    <b>Коментар:</b> {{ order.currentStatus.comment }}
+                  </div>
+                  <div *ngIf="order.currentStatus.createdBy">
+                    <b>Оновлено:</b>
+                    {{ order.currentStatus.createdBy.fullName }}
+                  </div>
+                </div>
+                <button
+                  pButton
+                  type="button"
+                  class="p-button-sm flex-none"
+                  data-cy="order-status-edit-button"
+                  (click)="showOrderStatusDialog = true"
+                >
+                  Оновити статус
+                </button>
+              </div>
+            </li>
             <li class="striped-list__item">
               <div class="striped-list__item-key">Дата</div>
               <div class="striped-list__item-value">
@@ -214,3 +201,105 @@
     </div>
   </div>
 </div>
+
+<p-dialog
+  [(visible)]="showOrderStatusDialog"
+  [style]="{ width: '600px' }"
+  header="Статус замовлення"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <form [formGroup]="updateOrderStatusForm" class="flex align-items-center">
+      <div class="formgrid w-full">
+        <div class="field">
+          <label for="delivery-service">Статус:</label>
+          <p-dropdown
+            formControlName="orderStatus"
+            placeholder="Статус"
+            data-cy="order-status-edit-dropdown"
+            [options]="orderStatuses"
+          >
+            <ng-template let-selected pTemplate="selectedItem">
+              <app-order-status-badge
+                [status]="selected.label"
+              ></app-order-status-badge>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+              <app-order-status-badge
+                [status]="option.label"
+              ></app-order-status-badge>
+            </ng-template>
+          </p-dropdown>
+          <app-form-control-error-message
+            [formGroup]="updateOrderStatusForm"
+            controlName="orderStatus"
+            errorType="required"
+            errorMessage="Це є обов'язковим полем"
+          ></app-form-control-error-message>
+        </div>
+        <div class="field">
+          <label for="delivery-service">Статус:</label>
+          <textarea
+            formControlName="orderStatusComment"
+            pInputTextarea
+            placeholder="Коментар"
+            rows="5"
+            data-cy="order-status-edit-comment"
+          ></textarea>
+          <app-form-control-error-message
+            [formGroup]="updateOrderStatusForm"
+            controlName="orderStatusComment"
+            errorType="required"
+            errorMessage="Для зміни на даний статус потрібно вказати причину"
+          ></app-form-control-error-message>
+        </div>
+      </div>
+    </form>
+    <div *ngIf="order$ | async as order" class="mt-5">
+      <h5>Історія статусів:</h5>
+      <div class="statuses-history">
+        <div
+          *ngFor="let status of order.statuses"
+          class="statuses-history__item"
+        >
+          <div class="flex align-items-center mb-1">
+            <span class="mr-3">
+              <u>
+                {{ status.createdAt | date : 'short' }}
+              </u>
+            </span>
+            <app-order-status-badge
+              [status]="status.status"
+            ></app-order-status-badge>
+          </div>
+          <div *ngIf="status.comment">
+            <b>Коментар:</b> {{ status.comment }}
+          </div>
+          <div *ngIf="status.createdBy">
+            <b>Оновлено:</b> {{ status.createdBy.fullName }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      class="p-button-danger"
+      label="Відмінити"
+      icon="pi pi-times"
+      data-cy="order-status-edit-cancel"
+      (click)="hideOrderStatusDialog()"
+    ></button>
+    <button
+      pButton
+      label="Зберегти"
+      icon="pi pi-check"
+      data-cy="order-status-edit-submit"
+      [disabled]="statusSubmitting$ | async"
+      (click)="saveOrderStatus()"
+    ></button>
+  </ng-template>
+</p-dialog>

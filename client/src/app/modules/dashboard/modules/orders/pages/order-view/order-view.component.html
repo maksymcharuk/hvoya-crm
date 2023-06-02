@@ -6,7 +6,7 @@
           <span>Замовлення №{{ order.number }}</span>
           <app-order-status-badge
             class="ml-5"
-            [status]="order.statuses[0]?.status!"
+            [status]="order.currentStatus.status"
           ></app-order-status-badge>
         </h4>
         <div class="my-5">

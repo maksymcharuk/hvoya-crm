@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 import { FilesService } from 'src/modules/files/services/files.service';
-import { DataSource, In } from 'typeorm';
+import { DataSource, In, QueryRunner } from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -20,6 +20,7 @@ import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
+import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 
 import { BalanceService } from '../../../modules/balance/services/balance.service';
@@ -281,24 +282,15 @@ export class OrdersService {
           },
         );
 
-        const status = await queryRunner.manager.save(OrderStatusEntity, {
-          status: updateOrderDto.orderStatus,
-          comment: updateOrderDto.orderStatusComment,
-          order: { id: order.id },
-          createdBy: { id: userId },
-        });
-
-        await queryRunner.manager.save(OrderEntity, {
-          id: order.id,
-          statuses: [...order.statuses, status],
-        });
-
-        this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
-          message: `Статус замовлення змінено.`,
-          data: order,
-          userId: order.customer.id,
-          type: NotificationType.Order,
-        });
+        if (updateOrderDto.orderStatus) {
+          await this.updateOrderStatus(
+            queryRunner,
+            order.id,
+            userId,
+            updateOrderDto.orderStatus,
+            updateOrderDto.orderStatusComment,
+          );
+        }
       }
 
       await queryRunner.commitTransaction();
@@ -377,6 +369,42 @@ export class OrdersService {
         total.add(item.productProperties.price.times(item.quantity)),
       new Decimal(0),
     );
+  }
+
+  private async updateOrderStatus(
+    queryRunner: QueryRunner,
+    orderId: string,
+    userId: string,
+    status: OrderStatus,
+    comment?: string,
+  ): Promise<void> {
+    const order = await this.getOrderWhere({ id: orderId }, ['customer']);
+
+    if (status === order.statuses[0]!.status) {
+      throw new HttpException(
+        'Статус замовлення не може бути змінений на попередній.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const newStatus = await queryRunner.manager.save(OrderStatusEntity, {
+      status: status,
+      comment: comment,
+      order: { id: order.id },
+      createdBy: { id: userId },
+    });
+
+    await queryRunner.manager.save(OrderEntity, {
+      id: order.id,
+      statuses: [...order.statuses, newStatus],
+    });
+
+    this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
+      message: `Статус замовлення змінено.`,
+      data: order,
+      userId: order.customer.id,
+      type: NotificationType.Order,
+    });
   }
 
   private getOrderWhere(

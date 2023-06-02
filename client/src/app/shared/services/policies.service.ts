@@ -74,7 +74,7 @@ export class PoliciesService {
         can(
           'update',
           Order,
-          (order: Order) => order.statuses[0]?.status === OrderStatus.Pending,
+          (order: Order) => order.currentStatus.status === OrderStatus.Pending,
         );
         break;
     }

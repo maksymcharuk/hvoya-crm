@@ -7,6 +7,7 @@ import { OrderCreateDTO } from './create-order.dto';
 
 export interface OrderUpdateDTO extends Partial<OrderCreateDTO> {
   orderStatus?: OrderStatus;
+  orderStatusComment?: string;
   deliveryStatus?: OrderDeliveryStatus;
 }
 
@@ -25,6 +26,7 @@ export interface OrderUpdateFormGroup extends FormGroup {
     postOffice?: AbstractControl;
     waybill?: AbstractControl;
     orderStatus?: AbstractControl;
+    orderStatusComment?: AbstractControl;
     deliveryStatus?: AbstractControl;
   };
 }

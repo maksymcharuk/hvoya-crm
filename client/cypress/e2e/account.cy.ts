@@ -36,7 +36,7 @@ describe('Account', () => {
 
         cy.checkToastMessage('Профіль було успішно оновлено');
         cy.get('.user-info .user-info__name').contains(
-          `${firstName} ${lastName}`,
+          `${lastName} ${firstName}`,
         );
 
         cy.reload();
@@ -52,7 +52,7 @@ describe('Account', () => {
         cy.getCyEl('website').should('have.value', website);
         cy.getCyEl('bio').should('have.value', bio);
         cy.get('.user-info .user-info__name').contains(
-          `${firstName} ${lastName}`,
+          `${lastName} ${firstName}`,
         );
       });
 
@@ -132,7 +132,7 @@ describe('Account', () => {
 
         cy.checkToastMessage('Профіль було успішно оновлено');
         cy.get('.user-info .user-info__name').contains(
-          `${firstName} ${lastName}`,
+          `${lastName} ${firstName}`,
         );
 
         cy.reload();
@@ -145,7 +145,7 @@ describe('Account', () => {
         cy.getCyEl('last-name').should('have.value', lastName);
         cy.getCyEl('middle-name').should('have.value', middleName);
         cy.get('.user-info .user-info__name').contains(
-          `${firstName} ${lastName}`,
+          `${lastName} ${firstName}`,
         );
       });
 
