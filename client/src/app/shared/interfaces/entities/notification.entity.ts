@@ -1,26 +1,27 @@
 import { NotificationType } from '@shared/enums/notification-type.enum';
 
 import { BaseEntity } from './base.entity';
-
-class Data {
-  id: string | null;
-
-  constructor(data?: Data) {
-    this.id = data?.id || null;
-  }
-}
+import { Order } from './order.entity';
+import { User } from './user.entity';
 
 export class NotificationEntity extends BaseEntity {
   message: string;
-  data: Data;
+  data: Order | User | null;
   checked: boolean;
   type: NotificationType;
 
   constructor(data?: NotificationEntity) {
     super(data);
     this.message = data?.message || '';
-    this.data = data?.data || new Data();
+    this.data = data?.data ? this.dataToEntity(data) : null;
     this.checked = data?.checked || false;
     this.type = data?.type || NotificationType.Info;
+  }
+
+  private dataToEntity(data: NotificationEntity): Order | User {
+    if (data.type === NotificationType.Order) {
+      return new Order(data?.data as Order);
+    }
+    return new User(data?.data as User);
   }
 }

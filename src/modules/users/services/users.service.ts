@@ -22,7 +22,7 @@ export class UsersService {
     private dataSource: DataSource,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   async create(
     queryRunner: QueryRunner,
@@ -130,10 +130,8 @@ export class UsersService {
     const user = await this.usersRepository.findOneByOrFail({ id: userId });
 
     this.eventEmitter.emit(NotificationEvent.UserConfirmed, {
-      message: `Акаунт користувача ${user.firstName} ${user.lastName} підтвердженно`,
-      data: {
-        id: user.id,
-      },
+      message: `Акаунт підтвердженно`,
+      data: user,
       type: NotificationType.User,
     });
 

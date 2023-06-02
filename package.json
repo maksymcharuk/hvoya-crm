@@ -57,7 +57,6 @@
     "@nestjs/serve-static": "^3.0.0",
     "@nestjs/typeorm": "^9.0.1",
     "@nestjs/websockets": "^9.0.0",
-    "@newrelic/native-metrics": "^9.0.0",
     "@newrelic/winston-enricher": "^4.0.1",
     "@types/winston": "^2.4.4",
     "bcrypt": "^5.1.0",

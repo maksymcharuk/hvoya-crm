@@ -2,38 +2,34 @@
   <p-virtualScroller
     *ngIf="list.length > 0; else noNotifications"
     [value]="list"
-    [style]="{ width: '200px' }"
-    scrollHeight="200px"
-    [itemSize]="50"
+    [style]="{ width: '250px' }"
+    scrollHeight="240px"
+    [itemSize]="90"
   >
     <ng-template pTemplate="item" let-notification>
       <a
-        *ngIf="
-          notification.type !== notificationType.Info;
-          else infoNotification
-        "
         [routerLink]="getPath(notification)"
-        class="flex align-items-center justify-content-between p-2 h-full cursor-pointer text-color"
+        class="flex flex-column justify-content-between h-full cursor-pointer text-color p-3 h-6rem border-solid background"
+        [ngClass]="notification.checked ? 'border-300' : 'border-primary'"
         (click)="checkNotification(notification)"
       >
-        <span>{{ notification.message }}</span>
-        <i
-          class="pi pi-circle-fill"
-          [style]="notification.checked ? 'color: #a6a6a6' : 'color: #f9d10a'"
-        ></i>
+        <div>{{ notification.message }}</div>
+        <div [ngSwitch]="notification.type">
+          <div *ngSwitchCase="notificationType.Order">
+            Замовник: {{ notification.data.customer.lastName }}
+            {{ notification.data.customer.firstName }}
+            {{ notification.data.customer.middleName }}
+          </div>
+          <div *ngSwitchCase="notificationType.User">
+            {{ notification.data.lastName }}
+            {{ notification.data.firstName }}
+            {{ notification.data.middleName }}
+          </div>
+          <div *ngSwitchCase="notificationType.Info">
+            {{ notification.message }}
+          </div>
+        </div>
       </a>
-      <ng-template #infoNotification>
-        <span
-          class="flex align-items-center justify-content-between p-2 h-full cursor-pointer text-color"
-          (click)="checkNotification(notification)"
-        >
-          <span>{{ notification.message }}</span>
-          <i
-            class="pi pi-circle-fill"
-            [style]="notification.checked ? 'color: #a6a6a6' : 'color: #f9d10a'"
-          ></i>
-        </span>
-      </ng-template>
     </ng-template>
   </p-virtualScroller>
 </ng-container>

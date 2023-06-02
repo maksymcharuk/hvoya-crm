@@ -47,7 +47,9 @@ export class UsersListComponent implements OnDestroy {
     return this.searchForm.get('search');
   }
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+  ) {
     this.searchControl?.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe((query) => {

@@ -1,0 +1,19 @@
+<td>
+  <div class="flex align-items-center">
+    <span>{{ user.accountNumber }}</span>
+    <i
+      *ngIf="showUserNotification(user, notifications$ | async)"
+      class="pi pi-circle-fill text-green-600 ml-2"
+    ></i>
+  </div>
+</td>
+<td>
+  <span class="p-column-title">ПІБ</span>
+  {{ user.lastName }} {{ user.firstName }}
+  {{ user.middleName }}
+</td>
+<td>{{ user.email }}</td>
+<td>{{ user.phoneNumber | phoneNumber }}</td>
+<td>{{ user.userConfirmed ? 'Так' : 'Ні' }}</td>
+<td>{{ user.emailConfirmed ? 'Так' : 'Ні' }}</td>
+<td>{{ user.userFreezed ? 'Так' : 'Ні' }}</td>

@@ -362,32 +362,43 @@ function addProductToCart(productName?: string): Cypress.Chainable<Product> {
   cy.visit('/dashboard/products');
 
   if (productName) {
-    cy.contains('app-product-item', productName)
-      .find('[data-cy="product-name"]')
-      .invoke('text')
-      .then((text) => (productData.name = text));
-    cy.contains('app-product-item', productName)
-      .find('[data-cy="product-price"]')
-      .invoke('text')
-      .then((text) => (productData.price = text));
-    cy.contains('app-product-item', productName)
-      .find('[data-cy="product-add-to-cart-button"]')
-      .click();
+    cy.contains('[data-cy="product-item"]', productName)
+      .contains(
+        '[data-cy="product-add-to-cart-button"]:not(:disabled)',
+        'Додати в кошик',
+      )
+      .parent()
+      .then(($el) => {
+        productData.name = $el.find('[data-cy="product-name"]').text();
+        productData.price = $el.find('[data-cy="product-price"]').text();
+
+        cy.contains('[data-cy="product-item"]', productName)
+          .contains(
+            '[data-cy="product-add-to-cart-button"]:not(:disabled)',
+            'Додати в кошик',
+          )
+          .click()
+      });
+
+
   } else {
-    cy.get('app-product-item')
-      .first()
-      .find('[data-cy="product-name"]')
-      .invoke('text')
-      .then((text) => (productData.name = text));
-    cy.get('app-product-item')
-      .first()
-      .find('[data-cy="product-price"]')
-      .invoke('text')
-      .then((text) => (productData.price = text));
-    cy.get('app-product-item')
-      .first()
-      .find('[data-cy="product-add-to-cart-button"]')
-      .click();
+    cy.get('[data-cy="product-item"]')
+      .contains(
+        '[data-cy="product-add-to-cart-button"]:not(:disabled)',
+        'Додати в кошик',
+      )
+      .parent()
+      .then(($el) => {
+        productData.name = $el.find('[data-cy="product-name"]').text();
+        productData.price = $el.find('[data-cy="product-price"]').text();
+
+        cy.get('[data-cy="product-item"]')
+          .contains(
+            '[data-cy="product-add-to-cart-button"]:not(:disabled)',
+            'Додати в кошик',
+          )
+          .click()
+      });
   }
 
   return cy.wrap(productData);

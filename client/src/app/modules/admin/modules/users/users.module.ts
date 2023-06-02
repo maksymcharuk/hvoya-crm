@@ -18,9 +18,10 @@ import { UsersListComponent } from './components/users-list/users-list.component
 import { UserComponent } from './pages/user/user.component';
 import { UsersListPageComponent } from './pages/users-list/users-list-page.component';
 import { UsersRoutingModule } from './users-routing.module';
+import { UserListItemComponent } from './components/user-list-item/user-list-item.component';
 
 @NgModule({
-  declarations: [UsersListPageComponent, UsersListComponent, UserComponent],
+  declarations: [UsersListPageComponent, UsersListComponent, UserComponent, UserListItemComponent],
   imports: [
     UsersRoutingModule,
     CommonModule,

@@ -9,7 +9,7 @@ export class Balance extends BaseEntity {
     super(data);
     this.amount = data?.amount || 0;
     this.paymentTransactions =
-      data?.paymentTransactions.map(
+      data?.paymentTransactions?.map(
         (transaction) => new PaymentTransaction(transaction),
       ) || [];
   }

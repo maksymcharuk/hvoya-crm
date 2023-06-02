@@ -57,20 +57,14 @@
         </td>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-user>
-      <tr class="p-selectable-row" [routerLink]="[user.id]">
-        <td>{{ user.accountNumber }}</td>
-        <td>
-          <span class="p-column-title">ПІБ</span>
-          {{ user.lastName }} {{ user.firstName }}
-          {{ user.middleName }}
-        </td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.phoneNumber | phoneNumber }}</td>
-        <td>{{ user.userConfirmed ? 'Так' : 'Ні' }}</td>
-        <td>{{ user.emailConfirmed ? 'Так' : 'Ні' }}</td>
-        <td>{{ user.userFreezed ? 'Так' : 'Ні' }}</td>
-      </tr>
+    <ng-template pTemplate="body" let-user let-notification>
+      <tr
+        class="p-selectable-row"
+        [routerLink]="[user.id]"
+        app-user-list-item
+        [user]="user"
+        [userNotification]="notification"
+      ></tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>

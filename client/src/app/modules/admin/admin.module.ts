@@ -24,4 +24,4 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
     SharedModule,
   ],
 })
-export class AdminModule {}
+export class AdminModule { }
