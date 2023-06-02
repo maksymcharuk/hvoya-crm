@@ -4,7 +4,6 @@ import { OrderStatus } from '@shared/enums/order-status.enum';
 
 import { BaseEntity } from './base.entity';
 import { File } from './file.entity';
-import { NotificationEntity } from './notification.entity';
 import { ProductProperties, ProductVariant } from './product.entity';
 import { User } from './user.entity';
 
@@ -57,7 +56,6 @@ export class Order extends BaseEntity {
   number: number;
   total?: number;
   customer: User;
-  notification: NotificationEntity | undefined;
 
   constructor(data?: Order) {
     super(data);
@@ -67,6 +65,5 @@ export class Order extends BaseEntity {
     this.number = data?.number || 0;
     this.total = data?.total;
     this.customer = new User(data?.customer);
-    this.notification = undefined;
   }
 }

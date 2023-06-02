@@ -281,7 +281,7 @@ export class OrdersService {
 
         this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
           message: `Статус замовлення змінено.`,
-          data: { ...order, newStatus: updatedOrder.status },
+          data: { ...order, newStatus: updatedOrder },
           userId: order.customer.id,
           type: NotificationType.Order,
         });

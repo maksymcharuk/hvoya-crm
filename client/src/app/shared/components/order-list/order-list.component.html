@@ -135,64 +135,15 @@
         </ng-container>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-order>
+    <ng-template pTemplate="body" let-order let-notification>
       <tr
         class="p-selectable-row"
         data-cy="order-list-item"
-        (click)="navigateToOrder(order)"
-      >
-        <td>
-          <div class="flex align-items-center">
-            <span data-cy="order-list-item-id">{{ order.number }}</span>
-            <i
-              *ngIf="showOrderNotification(order, notifications$ | async)"
-              class="pi pi-circle-fill text-green-600 ml-2"
-            ></i>
-          </div>
-        </td>
-        <td>
-          <div class="flex">
-            <img
-              *ngFor="let image of getPreviewThumbs(order); let first = first"
-              [src]="image.url"
-              [ngClass]="{ '-ml-4': !first }"
-              [alt]="image.alt"
-              [title]="image.alt"
-              class="w-3rem h-3rem border-circle border border-1 border-200"
-            />
-          </div>
-        </td>
-        <td>{{ getOrderItemsNumber(order) }}</td>
-        <td>
-          <span class="p-column-title">Дата</span>
-          {{ order.createdAt | date : 'short' }}
-        </td>
-        <td>
-          <span class="p-column-title">Статус</span>
-          <app-order-status-badge
-            [status]="order.status"
-          ></app-order-status-badge>
-        </td>
-        <td>
-          <span class="p-column-title">Статус доставки</span>
-          <app-order-delivery-status-badge
-            [status]="order.delivery.status"
-          ></app-order-delivery-status-badge>
-        </td>
-        <td>
-          <span class="p-column-title" data-cy="order-list-item-amount"
-            >Сума</span
-          >
-          {{ order.total | currency }}
-        </td>
-        <ng-container *ngIf="adminView">
-          <td>
-            <span class="p-column-title">ПІБ</span>
-            {{ order.customer.firstName }} {{ order.customer.lastName }}
-            {{ order.customer.middleName }}
-          </td>
-        </ng-container>
-      </tr>
+        app-order-list-item
+        [order]="order"
+        [orderNotification]="notification"
+        [adminView]="adminView"
+      ></tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>

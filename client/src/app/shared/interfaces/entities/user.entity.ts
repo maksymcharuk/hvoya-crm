@@ -2,7 +2,6 @@ import { Role } from '@shared/enums/role.enum';
 
 import { Balance } from './balance.entity';
 import { BaseEntity } from './base.entity';
-import { NotificationEntity } from './notification.entity';
 import { Order } from './order.entity';
 
 export class User extends BaseEntity {
@@ -19,8 +18,6 @@ export class User extends BaseEntity {
   userConfirmed: boolean;
   userFreezed: boolean;
   accountNumber: string | null;
-
-  notification: NotificationEntity | undefined;
 
   orders: Order[] | undefined;
   balance: Balance | undefined;
@@ -61,6 +58,5 @@ export class User extends BaseEntity {
     this.accountNumber = data?.accountNumber || null;
     this.orders = data?.orders?.map((order) => new Order(order)) || [];
     this.balance = new Balance(data?.balance);
-    this.notification = undefined;
   }
 }

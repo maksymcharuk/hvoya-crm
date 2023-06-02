@@ -52,6 +52,7 @@ import {
   RoleNamePipe,
   TransactionStatusPipe,
 } from './pipes';
+import { OrderListItemComponent } from './components/order-list/order-list-item/order-list-item.component';
 
 registerLocaleData(localeUk);
 
@@ -105,7 +106,7 @@ const PRIMENG_MODULES = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS, ...PIPES],
+  declarations: [...COMPONENTS, ...PIPES, OrderListItemComponent],
   imports: [
     CommonModule,
     HttpClientModule,
