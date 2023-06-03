@@ -31,6 +31,7 @@ export class OrderViewComponent {
   }));
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   showWaybillViewDialog = false;
+  showOrderStatusDialog = false;
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: ['', Validators.required],
@@ -39,10 +40,19 @@ export class OrderViewComponent {
 
   updateOrderStatusForm = this.formBuilder.group({
     orderStatus: ['', Validators.required],
+    orderStatusComment: [''],
   }) as OrderUpdateFormGroup;
 
   get waybillControl(): AbstractControl {
     return this.updateWaybillForm.controls.waybill;
+  }
+
+  get orderStatusControl(): AbstractControl {
+    return this.updateOrderStatusForm.controls.orderStatus!;
+  }
+
+  get orderStatusCommentControl(): AbstractControl {
+    return this.updateOrderStatusForm.controls.orderStatusComment!;
   }
 
   constructor(
@@ -64,7 +74,7 @@ export class OrderViewComponent {
         trackingId: order.delivery.trackingId,
       });
       this.updateOrderStatusForm.patchValue({
-        orderStatus: order.status,
+        orderStatus: order.currentStatus.status,
       });
     });
 
@@ -79,6 +89,23 @@ export class OrderViewComponent {
         ? this.updateOrderStatusForm.disable()
         : this.updateOrderStatusForm.enable();
     });
+
+    this.orderStatusControl.valueChanges.subscribe((value) => {
+      const statusesWithRestrictions = [
+        OrderStatus.TransferedToDelivery,
+        OrderStatus.Fulfilled,
+        OrderStatus.Cancelled,
+        OrderStatus.Refunded,
+      ];
+
+      if (statusesWithRestrictions.includes(value)) {
+        this.orderStatusCommentControl.setValidators(Validators.required);
+        this.orderStatusCommentControl.updateValueAndValidity();
+      } else {
+        this.orderStatusCommentControl.clearValidators();
+        this.orderStatusCommentControl.updateValueAndValidity();
+      }
+    });
   }
 
   onFileUpload(event: any) {
@@ -87,27 +114,6 @@ export class OrderViewComponent {
 
   showWaybillViewDialogHandler() {
     this.showWaybillViewDialog = true;
-  }
-
-  updateStatus() {
-    const formData = new FormData();
-    formData.append(
-      'orderStatus',
-      this.updateOrderStatusForm.get('orderStatus')?.value,
-    );
-
-    this.statusSubmitting$.next(true);
-    this.ordersService
-      .orderUpdate(this.route.snapshot.params['number'], formData)
-      .pipe(finalize(() => this.statusSubmitting$.next(false)))
-      .subscribe((order: Order) => {
-        this.order$.next(order);
-        this.statusEdit = false;
-        this.messageService.add({
-          severity: 'success',
-          detail: 'Статус замовлення успішно оновлено',
-        });
-      });
   }
 
   updateWaybill() {
@@ -134,6 +140,43 @@ export class OrderViewComponent {
         this.messageService.add({
           severity: 'success',
           detail: 'ТТП успішно оновлено',
+        });
+      });
+  }
+
+  hideOrderStatusDialog() {
+    this.showOrderStatusDialog = false;
+  }
+
+  saveOrderStatus() {
+    if (!this.updateOrderStatusForm.valid) {
+      this.updateOrderStatusForm.markAllAsTouched();
+      return;
+    }
+
+    const formData = new FormData();
+    for (let key in this.updateOrderStatusForm.value) {
+      const value = this.updateOrderStatusForm.get(key)?.value;
+      if (value) {
+        formData.append(key, this.updateOrderStatusForm.get(key)?.value);
+      }
+    }
+
+    this.statusSubmitting$.next(true);
+    this.ordersService
+      .orderUpdate(this.route.snapshot.params['number'], formData)
+      .pipe(
+        finalize(() => {
+          this.statusSubmitting$.next(false);
+          this.updateOrderStatusForm.get('orderStatusComment')?.reset();
+        }),
+      )
+      .subscribe((order: Order) => {
+        this.order$.next(order);
+        this.statusEdit = false;
+        this.messageService.add({
+          severity: 'success',
+          detail: 'Статус замовлення успішно оновлено',
         });
       });
   }

@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator';
 
 import { PartialType } from '@nestjs/mapped-types';
 
@@ -12,5 +12,17 @@ export class UpdateOrderDto extends PartialType(CreateOrderDto) {
 
   @IsOptional()
   @IsEnum(OrderStatus)
-  orderStatus: OrderStatus;
+  orderStatus?: OrderStatus;
+
+  @ValidateIf((o) => {
+    return [
+      // Comment is required if order status is one of the following:
+      OrderStatus.Cancelled,
+      OrderStatus.Fulfilled,
+      OrderStatus.Refunded,
+      OrderStatus.TransferedToDelivery,
+    ].includes(o.orderStatus);
+  })
+  @IsNotEmpty({ message: 'Необхідно вказати причину зміни на даний статус' })
+  orderStatusComment?: string;
 }

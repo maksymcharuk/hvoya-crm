@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 import { FilesService } from 'src/modules/files/services/files.service';
-import { DataSource, In } from 'typeorm';
+import { DataSource, In, QueryRunner } from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -11,6 +11,7 @@ import { UpdateOrderDto } from '@dtos/update-order.dto';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
+import { OrderStatusEntity } from '@entities/order-status.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
@@ -19,6 +20,7 @@ import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
+import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 
 import { BalanceService } from '../../../modules/balance/services/balance.service';
@@ -34,7 +36,7 @@ export class OrdersService {
     private caslAbilityFactory: CaslAbilityFactory,
     private balanceService: BalanceService,
     private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -111,6 +113,10 @@ export class OrdersService {
 
       let order = await queryRunner.manager.save(OrderEntity, {
         customer: { id: userId },
+      });
+
+      const status = await queryRunner.manager.save(OrderStatusEntity, {
+        order: { id: order.id },
       });
 
       const orderItems = await queryRunner.manager.save(
@@ -190,21 +196,22 @@ export class OrdersService {
       });
       await queryRunner.manager.save(ProductVariantEntity, variants);
 
-      order = await queryRunner.manager.save(OrderEntity, {
+      // Fetch order again to get order with populated fields
+      order = await queryRunner.manager.findOneOrFail(OrderEntity, {
+        where: { id: order.id },
+        relations: ['statuses', 'customer'],
+      });
+
+      await queryRunner.manager.save(OrderEntity, {
         id: order.id,
         items: orderItems,
         delivery: orderDelivery,
         paymentTransaction: transaction,
         total: this.calculateTotal(orderItems),
+        statuses: [...order.statuses, status],
       });
 
       await this.cartService.clearCart(userId);
-
-      // Fetch order again to get order with populated number
-      order = await queryRunner.manager.findOneOrFail(OrderEntity, {
-        relations: ['customer'],
-        where: { id: order.id },
-      });
 
       this.eventEmitter.emit(NotificationEvent.OrderCreated, {
         message: `Нове замовлення №${order.number}`,
@@ -221,7 +228,7 @@ export class OrdersService {
         }
       } finally {
         await queryRunner.rollbackTransaction();
-        throw new HttpException(err.response, HttpStatus.BAD_REQUEST);
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
       }
     } finally {
       await queryRunner.release();
@@ -230,6 +237,7 @@ export class OrdersService {
 
   async updateOrder(
     orderNumber: string,
+    userId: string,
     updateOrderDto?: UpdateOrderDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
@@ -274,17 +282,15 @@ export class OrdersService {
           },
         );
 
-        const updatedOrder = await queryRunner.manager.save(OrderEntity, {
-          id: order.id,
-          status: updateOrderDto.orderStatus,
-        });
-
-        this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
-          message: `Статус замовлення змінено.`,
-          data: { ...order, newStatus: updatedOrder },
-          userId: order.customer.id,
-          type: NotificationType.Order,
-        });
+        if (updateOrderDto.orderStatus) {
+          await this.updateOrderStatus(
+            queryRunner,
+            order.id,
+            userId,
+            updateOrderDto.orderStatus,
+            updateOrderDto.orderStatusComment,
+          );
+        }
       }
 
       await queryRunner.commitTransaction();
@@ -365,6 +371,42 @@ export class OrdersService {
     );
   }
 
+  private async updateOrderStatus(
+    queryRunner: QueryRunner,
+    orderId: string,
+    userId: string,
+    status: OrderStatus,
+    comment?: string,
+  ): Promise<void> {
+    const order = await this.getOrderWhere({ id: orderId }, ['customer']);
+
+    if (status === order.statuses[0]!.status) {
+      throw new HttpException(
+        'Статус замовлення не може бути змінений на попередній.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const newStatus = await queryRunner.manager.save(OrderStatusEntity, {
+      status: status,
+      comment: comment,
+      order: { id: order.id },
+      createdBy: { id: userId },
+    });
+
+    await queryRunner.manager.save(OrderEntity, {
+      id: order.id,
+      statuses: [...order.statuses, newStatus],
+    });
+
+    this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
+      message: `Статус замовлення змінено.`,
+      data: order,
+      userId: order.customer.id,
+      type: NotificationType.Order,
+    });
+  }
+
   private getOrderWhere(
     params: any,
     relations: string[] = [],
@@ -377,8 +419,14 @@ export class OrdersService {
         'items.productProperties',
         'delivery.waybill',
         'paymentTransactions',
+        'statuses',
         ...relations,
       ],
+      order: {
+        statuses: {
+          createdAt: 'DESC',
+        },
+      },
     });
   }
 
@@ -391,9 +439,15 @@ export class OrdersService {
         'items.productProperties',
         'delivery.waybill',
         'paymentTransactions',
+        'statuses',
         'customer',
       ],
-      order: { createdAt: 'DESC' },
+      order: {
+        createdAt: 'DESC',
+        statuses: {
+          createdAt: 'DESC',
+        },
+      },
     });
   }
 }

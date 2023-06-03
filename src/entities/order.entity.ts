@@ -8,11 +8,11 @@ import {
   OneToOne,
 } from 'typeorm';
 
-import { OrderStatus } from '../enums/order-status.enum';
 import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BaseEntity } from './base.entity';
 import { OrderDeliveryEntity } from './order-delivery.entity';
 import { OrderItemEntity } from './order-item.entity';
+import { OrderStatusEntity } from './order-status.entity';
 import { PaymentTransactionEntity } from './payment-transaction.entity';
 import { UserEntity } from './user.entity';
 
@@ -28,19 +28,15 @@ export class OrderEntity extends BaseEntity {
   total: Decimal;
 
   @Column({
-    type: 'enum',
-    enum: OrderStatus,
-    default: OrderStatus.Pending,
-  })
-  status: OrderStatus;
-
-  @Column({
     type: 'varchar',
     update: false,
     unique: true,
     nullable: true,
   })
   number: string | null;
+
+  @OneToMany(() => OrderStatusEntity, (status) => status.order)
+  statuses: OrderStatusEntity[];
 
   @OneToMany(() => OrderItemEntity, (item) => item.order)
   items: OrderItemEntity[];

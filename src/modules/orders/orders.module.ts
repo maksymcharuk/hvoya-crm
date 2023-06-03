@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
+import { OrderStatusEntity } from '@entities/order-status.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { UserEntity } from '@entities/user.entity';
@@ -22,6 +23,7 @@ import { OrdersService } from './services/orders.service';
       OrderEntity,
       OrderItemEntity,
       OrderDeliveryEntity,
+      OrderStatusEntity,
       PaymentTransactionEntity,
     ]),
     CaslModule,
