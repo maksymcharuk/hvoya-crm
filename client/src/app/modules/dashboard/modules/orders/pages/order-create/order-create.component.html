@@ -216,6 +216,12 @@
                     errorType="required"
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
+                  <app-form-control-error-message
+                    [formGroup]="orderCreateForm"
+                    controlName="trackingId"
+                    errorType="alphanumeric"
+                    errorMessage="Номер ТТН повинен містити тільки літери та цифри"
+                  ></app-form-control-error-message>
                 </div>
               </div>
             </div>

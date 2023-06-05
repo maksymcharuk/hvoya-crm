@@ -12,6 +12,7 @@ import { OrderUpdateFormGroup } from '@shared/interfaces/dto/update-order.dto';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { OrdersService } from '@shared/services/orders.service';
+import { alphanumeric } from '@shared/validators/alphanumeric.validator';
 
 @Component({
   selector: 'app-order-view',
@@ -34,7 +35,7 @@ export class OrderViewComponent {
   showOrderStatusDialog = false;
 
   updateWaybillForm = this.formBuilder.group({
-    trackingId: ['', Validators.required],
+    trackingId: ['', [Validators.required, alphanumeric]],
     waybill: [''],
   }) as UpdateWaybillFormGroup;
 

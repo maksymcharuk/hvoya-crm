@@ -7,7 +7,7 @@ export interface OrderCreateDTO {
   // lastName: string;
   // middleName: string;
   // phoneNumber: string;
-  trackingId?: string;
+  trackingId: string;
   // NOTE: Keep this for a waybill generation logic in future
   // deliveryType: string;
   // city: string;

@@ -15,6 +15,7 @@ import {
 import { Cart, CartItem } from '@shared/interfaces/entities/cart.entity';
 import { AccountService } from '@shared/services/account.service';
 import { OrdersService } from '@shared/services/orders.service';
+import { alphanumeric } from '@shared/validators/alphanumeric.validator';
 
 import { UserBalanceService } from '../../../balance/services/user-balance.service';
 import { CartService } from '../../../cart/services/cart/cart.service';
@@ -46,7 +47,7 @@ export class OrderCreateComponent implements OnInit {
     // middleName: ['', Validators.required],
     // phoneNumber: ['', Validators.required],
     deliveryService: [this.deliveryServices[0], Validators.required],
-    trackingId: ['', Validators.required],
+    trackingId: ['', [Validators.required, alphanumeric]],
     // NOTE: Keep this for a waybill generation logic in future
     // deliveryType: [this.deliveryTypes[0]?.value, Validators.required],
     // city: ['', Validators.required],
