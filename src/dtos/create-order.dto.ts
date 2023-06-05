@@ -1,9 +1,14 @@
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsAlphanumeric, IsEnum, IsNotEmpty } from 'class-validator';
 
 import { DeliveryService } from '@enums/delivery-service.enum';
 
 export class CreateOrderDto {
   @IsNotEmpty({ message: 'Необхідно вказати номер ТТН' })
+  @Transform(({ value }) => value?.replaceAll(' ', ''))
+  @IsAlphanumeric(undefined, {
+    message: 'Номер ТТН повинен містити лише літери та цифри',
+  })
   trackingId: string;
 
   @IsEnum(DeliveryService)

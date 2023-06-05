@@ -1,4 +1,11 @@
-import { IsEnum, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsAlphanumeric,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  ValidateIf,
+} from 'class-validator';
 
 import { PartialType } from '@nestjs/mapped-types';
 
@@ -8,6 +15,10 @@ import { CreateOrderDto } from './create-order.dto';
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {
   @IsNotEmpty({ message: 'Необхідно вказати номер ТТН' })
+  @Transform(({ value }) => value?.replaceAll(' ', ''))
+  @IsAlphanumeric(undefined, {
+    message: 'Номер ТТН повинен містити лише літери та цифри',
+  })
   override trackingId: string;
 
   @IsOptional()
