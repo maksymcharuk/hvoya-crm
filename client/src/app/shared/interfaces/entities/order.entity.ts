@@ -16,6 +16,7 @@ export class OrderDelivery extends BaseEntity {
   deliveryService?: DeliveryService;
   deliveryType?: string;
   status: OrderDeliveryStatus;
+  rawStatus: string;
   city?: string;
   postOffice?: string;
   waybill?: File | null;
@@ -30,6 +31,7 @@ export class OrderDelivery extends BaseEntity {
     this.deliveryService = data?.deliveryService;
     this.deliveryType = data?.deliveryType;
     this.status = data?.status || OrderDeliveryStatus.Pending;
+    this.rawStatus = data?.rawStatus || '';
     this.city = data?.city;
     this.postOffice = data?.postOffice;
     this.waybill = data?.waybill ? new File(data?.waybill) : null;

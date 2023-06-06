@@ -56,6 +56,7 @@ export class UkrPoshtaApiService extends DeliveryApiService {
                   trackingId: status.barcode,
                   date: new Date(status.date).toString(),
                   status: getStatus(status.eventName),
+                  rawStatus: status.eventName,
                 })),
               });
             },

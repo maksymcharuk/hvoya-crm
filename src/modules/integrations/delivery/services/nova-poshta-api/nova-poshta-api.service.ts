@@ -62,6 +62,7 @@ export class NovaPoshtaApiService extends DeliveryApiService {
                   trackingId: status.Number,
                   date: new Date(status.TrackingUpdateDate).toString(),
                   status: getStatus(status.Status),
+                  rawStatus: status.Status,
                 })),
               });
             },

@@ -30,6 +30,11 @@ export class OrderDeliveryEntity extends BaseEntity {
   @Column({
     default: '',
   })
+  rawStatus: string;
+
+  @Column({
+    default: '',
+  })
   email: string;
 
   @Column({

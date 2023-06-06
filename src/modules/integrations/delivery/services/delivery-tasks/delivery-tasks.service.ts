@@ -20,6 +20,29 @@ export class DeliveryTasksService {
     private readonly deliveryServiceFactory: DeliveryServiceFactory,
   ) {}
 
+  // Map delivery statuses to order statuses
+  private readonly deliveryStatusesToOrderStatuses = new Map<
+    OrderDeliveryStatus[],
+    OrderStatus
+  >([
+    [
+      [
+        OrderDeliveryStatus.Declined,
+        OrderDeliveryStatus.Received,
+        OrderDeliveryStatus.Returned,
+      ],
+      OrderStatus.Fulfilled,
+    ],
+    [
+      [
+        OrderDeliveryStatus.Accepted,
+        OrderDeliveryStatus.Processing,
+        OrderDeliveryStatus.Sent,
+      ],
+      OrderStatus.Processing,
+    ],
+  ]);
+
   @Cron(CronExpression.EVERY_HOUR)
   async updateOrderDeliveryStatuses() {
     const manager = this.dataSource.createEntityManager();
@@ -90,43 +113,36 @@ export class DeliveryTasksService {
       if (deliveryStatus) {
         const status = deliveryStatus.status;
         await manager.update(OrderDeliveryEntity, order.delivery.id, {
-          status,
+          status: deliveryStatus.status,
+          rawStatus: deliveryStatus.rawStatus,
         });
-        if (
-          [
-            OrderDeliveryStatus.Declined,
-            OrderDeliveryStatus.Received,
-            OrderDeliveryStatus.Returned,
-          ].includes(status)
-        ) {
-          const newStatus = await manager.save(OrderStatusEntity, {
-            status: OrderStatus.Fulfilled,
-            comment: 'Оновлено автоматично',
-            order: { id: order.id },
-          });
-          await manager.save(OrderEntity, {
-            id: order.id,
-            statuses: [...order.statuses, newStatus],
-          });
-        }
-        if (
-          [
-            OrderDeliveryStatus.Accepted,
-            OrderDeliveryStatus.Processing,
-            OrderDeliveryStatus.Sent,
-          ].includes(status)
-        ) {
-          const newStatus = await manager.save(OrderStatusEntity, {
-            status: OrderStatus.TransferedToDelivery,
-            comment: 'Оновлено автоматично',
-            order: { id: order.id },
-          });
-          await manager.save(OrderEntity, {
-            id: order.id,
-            statuses: [...order.statuses, newStatus],
-          });
-        }
+        await this.updateOrderStatus(status, order);
       }
     }
+  }
+
+  private async updateOrderStatus(
+    currentDeliveryStatus: OrderDeliveryStatus,
+    order: OrderEntity,
+  ) {
+    const manager = this.dataSource.createEntityManager();
+    this.deliveryStatusesToOrderStatuses.forEach(async (value, key) => {
+      if (key.includes(currentDeliveryStatus)) {
+        // Create new status only if it is not the same as the latest one
+        if (order.statuses[order.statuses.length - 1]?.status === value) {
+          return;
+        }
+
+        const newStatus = await manager.save(OrderStatusEntity, {
+          status: value,
+          comment: 'Оновлено автоматично',
+          order: { id: order.id },
+        });
+        await manager.save(OrderEntity, {
+          id: order.id,
+          statuses: [...order.statuses, newStatus],
+        });
+      }
+    });
   }
 }

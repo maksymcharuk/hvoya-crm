@@ -11,6 +11,9 @@ class Status {
 
   @IsString()
   status: OrderDeliveryStatus;
+
+  @IsString()
+  rawStatus: string;
 }
 
 export class GetDeliveryStatusesResponse {
