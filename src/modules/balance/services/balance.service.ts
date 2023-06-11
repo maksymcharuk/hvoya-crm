@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js';
-import { EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,13 +9,15 @@ import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 
+import { OneCApiService } from '../../../modules/integrations/one-c/services/one-c-api/one-c-api.service';
+
 @Injectable()
 export class BalanceService {
   constructor(
     @InjectRepository(BalanceEntity)
     private balanceRepository: Repository<BalanceEntity>,
-    @InjectRepository(PaymentTransactionEntity)
-    private paymentTransactionRepository: Repository<PaymentTransactionEntity>,
+    private readonly dataSource: DataSource,
+    private readonly oneCService: OneCApiService,
   ) {}
 
   async getByUserId(userId: string): Promise<BalanceEntity> {
@@ -40,7 +42,6 @@ export class BalanceService {
   ): Promise<BalanceEntity> {
     let balance = await manager.findOneOrFail(BalanceEntity, {
       where: { owner: { id: userId } },
-      relations: ['paymentTransactions'],
     });
 
     const paymentTransaction = await manager.create(PaymentTransactionEntity, {
@@ -84,28 +85,51 @@ export class BalanceService {
   // Temporary "testing" solution
   // TODO: remove this method
   async addFunds(userId: string, amount: number): Promise<BalanceEntity> {
-    const balance = await this.update(
-      userId,
-      new Decimal(amount),
-      this.balanceRepository.manager,
-    );
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    const transaction = balance.paymentTransactions[0];
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const balance = await this.update(
+        userId,
+        new Decimal(amount),
+        queryRunner.manager,
+      );
 
-    if (!transaction) {
-      throw new HttpException('Транзакція не знайдена.', 400);
+      // Find last created transaction where balance is equal to the current balance
+      let transaction = await queryRunner.manager.findOneOrFail(
+        PaymentTransactionEntity,
+        {
+          where: { balance: { id: balance.id } },
+          order: {
+            createdAt: 'DESC',
+          },
+        },
+      );
+
+      if (!transaction) {
+        throw new HttpException('Транзакція не знайдена.', 400);
+      }
+
+      transaction = await queryRunner.manager.save(PaymentTransactionEntity, {
+        id: transaction.id,
+        status: TransactionStatus.Success,
+      });
+
+      await this.oneCService.depositFunds({
+        userId,
+        amount,
+        createdAt: transaction.updatedAt,
+      });
+
+      await queryRunner.commitTransaction();
+      return this.getByUserId(userId);
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
     }
-
-    await this.paymentTransactionRepository.save({
-      id: transaction.id,
-      status: TransactionStatus.Success,
-    });
-
-    await this.paymentTransactionRepository.findOneOrFail({
-      where: { id: transaction.id },
-    });
-
-    return this.getByUserId(userId);
   }
 
   async addFundsBanking(
@@ -115,11 +139,11 @@ export class BalanceService {
     bankTransactionId: string,
     paymentTransaction: PaymentTransactionEntity,
   ) {
-    let balance = await manager.findOneOrFail(BalanceEntity, {
+    const balance = await manager.findOneOrFail(BalanceEntity, {
       where: { owner: { id: userId } },
     });
 
-    await manager.save(PaymentTransactionEntity, {
+    const transaction = await manager.save(PaymentTransactionEntity, {
       ...paymentTransaction,
       bankTransactionId,
       amount: new Decimal(amount),
@@ -130,6 +154,12 @@ export class BalanceService {
       id: balance.id,
       amount: balance.amount.plus(amount),
       paymentTransactions: [...balance.paymentTransactions, paymentTransaction],
+    });
+
+    await this.oneCService.depositFunds({
+      userId,
+      amount: amount,
+      createdAt: transaction.updatedAt,
     });
   }
 

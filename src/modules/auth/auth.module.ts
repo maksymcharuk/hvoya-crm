@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserEntity } from '@entities/user.entity';
 
+import { OneCModule } from '../integrations/one-c/one-c.module';
 import { MailModule } from '../mail/mail.module';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
@@ -17,6 +18,7 @@ import { AuthService } from './services/auth.service';
     UsersModule,
     PassportModule,
     MailModule,
+    OneCModule,
     JwtModule.registerAsync({
       imports: [ConfigModule, TypeOrmModule.forFeature([UserEntity])],
       inject: [ConfigService],

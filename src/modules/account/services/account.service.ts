@@ -1,32 +1,32 @@
-import { Repository } from 'typeorm';
-
-import { HttpException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { ChangePasswordDto } from '@dtos/change-password.dto';
 import { UpdateProfileDto } from '@dtos/update-profile.dto';
 import { UserEntity } from '@entities/user.entity';
 
+import { UsersService } from '@modules/users/services/users.service';
+
 @Injectable()
 export class AccountService {
-  constructor(
-    @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   async changePassword(
     userId: string,
     changePasswordDto: ChangePasswordDto,
   ): Promise<UserEntity> {
-    let user = await this.usersRepository.findOneByOrFail({ id: userId });
+    let user = await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('Користувача нe знайдено');
+    }
 
     if (!(await user.validatePassword(changePasswordDto.currentPassword))) {
       throw new HttpException('Поточний пароль неправильний', 400);
     }
 
     try {
-      user = await this.usersRepository.save({
-        ...user,
+      user = await this.usersService.update({
+        id: userId,
         password: changePasswordDto.password,
       });
     } catch (error) {
@@ -40,11 +40,15 @@ export class AccountService {
     userId: string,
     updateProfileDto: UpdateProfileDto,
   ): Promise<UserEntity> {
-    let user = await this.usersRepository.findOneByOrFail({ id: userId });
+    let user = await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('Користувача нe знайдено');
+    }
 
     try {
-      user = await this.usersRepository.save({
-        ...user,
+      user = await this.usersService.update({
+        id: userId,
         ...updateProfileDto,
       });
     } catch (error) {
@@ -55,7 +59,11 @@ export class AccountService {
   }
 
   async findById(id: string): Promise<UserEntity | null> {
-    const user = await this.usersRepository.findOneByOrFail({ id });
+    const user = await this.usersService.findById(id);
+
+    if (!user) {
+      throw new NotFoundException('Користувача нe знайдено');
+    }
 
     return this.sanitizeUser(user);
   }

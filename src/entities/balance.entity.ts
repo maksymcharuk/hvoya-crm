@@ -23,6 +23,7 @@ export class BalanceEntity extends BaseEntity {
   @OneToMany(
     () => PaymentTransactionEntity,
     (transaction) => transaction.balance,
+    { eager: true },
   )
   paymentTransactions: PaymentTransactionEntity[];
 
