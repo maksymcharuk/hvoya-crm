@@ -37,13 +37,16 @@
   ></app-order-delivery-status-badge>
 </td>
 <td>
+  <span class="p-column-title" data-cy="order-list-item-amount">Номер ТТН</span>
+  {{ order.delivery.trackingId }}
+</td>
+<td>
   <span class="p-column-title" data-cy="order-list-item-amount">Сума</span>
   {{ order.total | currency }}
 </td>
 <ng-container *ngIf="adminView">
   <td>
     <span class="p-column-title">ПІБ</span>
-    {{ order.customer.firstName }} {{ order.customer.lastName }}
-    {{ order.customer.middleName }}
+    {{ order.customer.fullName }}
   </td>
 </ng-container>

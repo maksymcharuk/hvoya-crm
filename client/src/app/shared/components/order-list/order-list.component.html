@@ -35,104 +35,151 @@
           <div class="flex justify-content-between align-items-center">
             Дата
             <p-sortIcon field="createdAt"></p-sortIcon>
-            <p-columnFilter
-              type="date"
-              field="createdAt"
-              display="menu"
-              class="ml-auto"
-            ></p-columnFilter>
           </div>
         </th>
         <th pSortableColumn="status">
           <div class="flex justify-content-between align-items-center">
             Статус
             <p-sortIcon field="status"></p-sortIcon>
-            <p-columnFilter
-              field="status"
-              matchMode="equals"
-              display="menu"
-              class="ml-auto"
-            >
-              <ng-template
-                pTemplate="filter"
-                let-value
-                let-filter="filterCallback"
-              >
-                <p-dropdown
-                  [ngModel]="value"
-                  [options]="orderStatuses"
-                  (onChange)="filter($event.value)"
-                  placeholder="Any"
-                >
-                  <ng-template let-option pTemplate="item">
-                    <app-order-status-badge
-                      [status]="option.label"
-                    ></app-order-status-badge>
-                  </ng-template>
-                </p-dropdown>
-              </ng-template>
-            </p-columnFilter>
           </div>
         </th>
         <th pSortableColumn="delivery.status">
           <div class="flex justify-content-between align-items-center">
             Статус доставки
             <p-sortIcon field="delivery.status"></p-sortIcon>
-            <p-columnFilter
-              field="delivery.status"
-              matchMode="equals"
-              display="menu"
-              class="ml-auto"
-            >
-              <ng-template
-                pTemplate="filter"
-                let-value
-                let-filter="filterCallback"
-              >
-                <p-dropdown
-                  [ngModel]="value"
-                  [options]="orderDeliveryStatuses"
-                  (onChange)="filter($event.value)"
-                  placeholder="Any"
-                >
-                  <ng-template let-option pTemplate="item">
-                    <app-order-delivery-status-badge
-                      [status]="option.label"
-                    ></app-order-delivery-status-badge>
-                  </ng-template>
-                </p-dropdown>
-              </ng-template>
-            </p-columnFilter>
+          </div>
+        </th>
+        <th>
+          <div class="flex justify-content-between align-items-center">
+            Номер ТТН
           </div>
         </th>
         <th pSortableColumn="total">
           <div class="flex justify-content-between align-items-center">
             Сума
             <p-sortIcon field="total"></p-sortIcon>
-            <p-columnFilter
-              type="numeric"
-              field="total"
-              display="menu"
-              currency="UAH"
-              class="ml-auto"
-            ></p-columnFilter>
           </div>
         </th>
         <ng-container *ngIf="adminView">
-          <th pSortableColumn="total">
+          <th pSortableColumn="customer.lastName">
             <div class="flex justify-content-between align-items-center">
               ПІБ
-              <p-sortIcon field="total"></p-sortIcon>
-              <p-columnFilter
-                type="numeric"
-                field="total"
-                display="menu"
-                currency="UAH"
-                class="ml-auto"
-              ></p-columnFilter>
+              <p-sortIcon field="customer.lastName"></p-sortIcon>
             </div>
           </th>
         </ng-container>
+      </tr>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>
+          <p-columnFilter type="date" field="createdAt" [showMenu]="false">
+            <ng-template pTemplate="filter" let-filter="filterCallback">
+              <p-calendar
+                (onSelect)="filter($event)"
+                (onClear)="filter($event)"
+                appendTo="body"
+                placeholder="Дата"
+                [showClear]="true"
+              ></p-calendar>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter
+            field="status"
+            matchMode="equals"
+            [showMenu]="false"
+            class="ml-auto"
+          >
+            <ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <p-dropdown
+                [ngModel]="value"
+                [options]="orderStatuses"
+                (onChange)="filter($event.value)"
+                [showClear]="true"
+                placeholder="Cтатус"
+                appendTo="body"
+              >
+                <ng-template let-option pTemplate="item">
+                  <app-order-status-badge
+                    [status]="option.label"
+                  ></app-order-status-badge>
+                </ng-template>
+                <ng-template let-item pTemplate="selectedItem">
+                  <app-order-status-badge
+                  [status]="item.label"
+                ></app-order-status-badge>
+                </ng-template>
+              </p-dropdown>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter
+            field="delivery.status"
+            matchMode="equals"
+            [showMenu]="false"
+            class="ml-auto"
+          >
+            <ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <p-dropdown
+                [ngModel]="value"
+                [options]="orderDeliveryStatuses"
+                (onChange)="filter($event.value)"
+                [showClear]="true"
+                placeholder="Статус"
+                appendTo="body"
+              >
+                <ng-template let-option pTemplate="item">
+                  <app-order-delivery-status-badge
+                    [status]="option.label"
+                  ></app-order-delivery-status-badge>
+                </ng-template>
+                <ng-template let-item pTemplate="selectedItem">
+                  <app-order-delivery-status-badge
+                    [status]="item.label"
+                  ></app-order-delivery-status-badge>
+                </ng-template>
+              </p-dropdown>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th></th>
+        <th></th>
+        <th>
+          <p-columnFilter
+            field="customers"
+            matchMode="in"
+            [showMenu]="false"
+            class="ml-auto"
+          >
+            <ng-template pTemplate="filter" let-value>
+              <p-multiSelect
+                [ngModel]="value"
+                [options]="customers"
+                placeholder="Виберіть ПІБ"
+                appendTo="body"
+                (onChange)="filterByName($event.value)"
+                optionLabel="lastName"
+                selectedItemsLabel="ellipsis"
+              >
+                <ng-template let-option pTemplate="item">
+                  <span>{{ option.fullName }}</span>
+                </ng-template>
+              </p-multiSelect>
+            </ng-template>
+          </p-columnFilter>
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-order let-notification>
@@ -147,7 +194,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td [attr.colspan]="adminView ? 8 : 7">Замовлень не знайдено</td>
+        <td [attr.colspan]="adminView ? 9 : 7">Замовлень не знайдено</td>
       </tr>
     </ng-template>
   </p-table>
