@@ -13,6 +13,8 @@ import { FormBuilder } from '@angular/forms';
 import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Order } from '@shared/interfaces/entities/order.entity';
+import { User } from '@shared/interfaces/entities/user.entity';
+import { getUniqueObjectsByKey } from '@shared/utils/get-unique-objects-by-key.util';
 
 @Component({
   selector: 'app-order-list',
@@ -26,12 +28,14 @@ export class OrderListComponent implements OnDestroy {
     if (!orders) {
       return;
     }
+    this.customers = this.getUniqueCustomers(orders);
     this.orderInternal = orders;
     this.loading = false;
   }
   @ViewChild('ordersTable') ordersTable!: Table;
 
   loading = true;
+  customers: User[] = []
   searchForm = this.fb.group({
     search: [''],
   });
@@ -59,7 +63,7 @@ export class OrderListComponent implements OnDestroy {
   get globalFilterFields() {
     const defaultFilterFields = ['total'];
     return this.adminView
-      ? [...defaultFilterFields, 'customer.firstName', 'customer.lastName']
+      ? [...defaultFilterFields, 'customer.firstName', 'customer.lastName', 'customer.middleName', 'delivery.trackingId']
       : defaultFilterFields;
   }
 
@@ -83,5 +87,14 @@ export class OrderListComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  getUniqueCustomers(orders: Order[]) {
+    const customers = orders.map((order) => order.customer);
+    return getUniqueObjectsByKey(customers, 'id')
+  }
+
+  filterByName(customers: User[]) {
+    this.ordersTable.filter(customers.map((customer) => customer.fullName), 'customer.fullName', 'in');
   }
 }

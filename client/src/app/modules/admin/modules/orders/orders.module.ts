@@ -31,4 +31,4 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     NgxDocViewerModule,
   ],
 })
-export class OrdersModule {}
+export class OrdersModule { }
