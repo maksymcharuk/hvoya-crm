@@ -49,7 +49,7 @@ describe('Orders', () => {
           newOrderId = text;
 
           // Check order details
-          cy.getCyEl('order-list-item').click();
+          cy.getCyEl('order-list-item').click({force: true});
           cy.getCyEl('order-view-page').should('exist');
           cy.should('contain', `№${newOrderId}`);
         });

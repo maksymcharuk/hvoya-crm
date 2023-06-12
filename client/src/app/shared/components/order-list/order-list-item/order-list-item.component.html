@@ -47,7 +47,6 @@
 <ng-container *ngIf="adminView">
   <td>
     <span class="p-column-title">ПІБ</span>
-    {{ order.customer.lastName }} {{ order.customer.firstName }}
-    {{ order.customer.middleName }}
+    {{ order.customer.fullName }}
   </td>
 </ng-container>
