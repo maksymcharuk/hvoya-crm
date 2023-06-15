@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js';
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
@@ -119,8 +119,7 @@ export class CartService {
     return this.getCart(userId);
   }
 
-  async clearCart(userId: string): Promise<CartEntity> {
-    const manager = this.dataSource.createEntityManager();
+  async clearCart(userId: string, manager: EntityManager): Promise<CartEntity> {
     const cart = await this.getCart(userId);
 
     cart.items = [];

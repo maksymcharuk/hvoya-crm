@@ -91,6 +91,7 @@ export class AdminComponent {
     private notificationsService: NotificationsService,
     private webSocketGatewayService: WebSocketGatewayService,
   ) {
+    // TODO: find a way to remove this but keep initialization of webSocketGatewayService
     console.log(this.webSocketGatewayService);
   }
 

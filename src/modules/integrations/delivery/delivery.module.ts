@@ -14,6 +14,5 @@ import { UkrPoshtaApiService } from './services/ukr-poshta-api/ukr-poshta-api.se
     DeliveryServiceFactory,
     DeliveryTasksService,
   ],
-  exports: [NovaPoshtaApiService, UkrPoshtaApiService],
 })
 export class DeliveryModule {}

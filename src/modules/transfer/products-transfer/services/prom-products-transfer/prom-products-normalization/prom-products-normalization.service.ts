@@ -24,14 +24,14 @@ export class PromProductsNormalizationService
   normalize(data: PromProducts): NormalizedProductsData {
     let products: NormalizedProductBase[] | undefined = [];
     try {
-      const categories = data.yml_catalog.shop[0]?.categories[0]?.category
-        .filter((category: PromCategory) => category.$.parentId === undefined)
-        .map((category: PromCategory) => {
+      const categories = data.yml_catalog.shop[0]?.categories[0]?.category.map(
+        (category: PromCategory) => {
           return {
             name: category._.trim(),
             externalId: category.$.id,
           };
-        });
+        },
+      );
       const productBaseList =
         data.yml_catalog.shop[0]?.categories[0]?.category.filter(
           (category: PromCategory) => category.$.parentId !== undefined,

@@ -13,6 +13,7 @@ import {
   OrderCreateFormGroup,
 } from '@shared/interfaces/dto/create-order.dto';
 import { Cart, CartItem } from '@shared/interfaces/entities/cart.entity';
+import { OrderCreateResponseError } from '@shared/interfaces/responses/order-create-error.response';
 import { AccountService } from '@shared/services/account.service';
 import { OrdersService } from '@shared/services/orders.service';
 import { alphanumeric } from '@shared/validators/alphanumeric.validator';
@@ -119,7 +120,7 @@ export class OrderCreateComponent implements OnInit {
         finalize(() => {
           this.submitting = false;
         }),
-        catchError((err: { error: { message: string; cart: Cart } }) => {
+        catchError((err: OrderCreateResponseError) => {
           if (err.error.cart) {
             this.cartService.cart$.next(new Cart(err.error.cart));
           }

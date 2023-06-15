@@ -24,6 +24,7 @@ import { Action } from '@enums/action.enum';
 import { AppAbility } from '../../../modules/casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../../../modules/casl/check-policies.decorator';
 import { PoliciesGuard } from '../../../modules/casl/policies.guard';
+import { OneCSyncService } from '../../integrations/one-c/services/one-c-sync/one-c-sync.service';
 import { ImportProductsDto } from './dtos/import-products.dto';
 import { ProductsImportSource } from './enums/product-import-source.enum';
 import { PromProductsTransferService } from './services/prom-products-transfer/prom-products-transfer.service';
@@ -34,6 +35,7 @@ export class ProductsTransferController {
   constructor(
     private readonly httpService: HttpService,
     private readonly promProductsTransferService: PromProductsTransferService,
+    private readonly oneCSyncService: OneCSyncService,
   ) {}
 
   @Post('import')
@@ -89,11 +91,17 @@ export class ProductsTransferController {
       );
     }
 
+    let response;
     switch (source) {
       case ProductsImportSource.Prom:
-        return this.promProductsTransferService.import(result);
+        response = await this.promProductsTransferService.import(result);
+        await this.oneCSyncService.syncProducts();
+        return response;
       default:
-        throw new HttpException('Unknown source', HttpStatus.BAD_REQUEST);
+        throw new HttpException(
+          'Джерело імпорту має бути коректним "Prom" і тд.',
+          HttpStatus.BAD_REQUEST,
+        );
     }
   }
 }

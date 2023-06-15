@@ -31,12 +31,14 @@
       "@entities/*": ["src/entities/*"],
       "@enums/*": ["src/enums/*"],
       "@interfaces/*": ["src/interfaces/*"],
+      "@modules/*": ["src/modules/*"],
       "@auth/*": ["src/modules/auth/*"],
       "@decorators/*": ["src/decorators/*"],
       "@transformers/*": ["src/transformers/*"],
       "@adapters/*": ["src/adapters/*"],
       "@gateways/*": ["src/gateways/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@root/*": ["src/*"]
     }
   }
 }

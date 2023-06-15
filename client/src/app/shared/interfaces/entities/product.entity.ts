@@ -62,7 +62,9 @@ export class ProductProperties extends BaseEntity {
     this.price = data?.price || 0;
     this.size = new ProductSize(data?.size);
     this.color = new ProductColor(data?.color);
-    this.images = data?.images.map((image) => new File(image)) || [];
+    this.images = data?.images
+      ? data.images.map((image) => new File(image))
+      : [];
   }
 }
 

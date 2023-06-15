@@ -22,9 +22,11 @@ import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
+import { SyncProduct } from '@interfaces/one-c';
 
 import { BalanceService } from '../../../modules/balance/services/balance.service';
 import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
+import { OneCApiService } from '../../../modules/integrations/one-c/services/one-c-api/one-c-api.service';
 import { CartService } from '../../cart/services/cart.service';
 
 @Injectable()
@@ -33,8 +35,9 @@ export class OrdersService {
     private dataSource: DataSource,
     private filesService: FilesService,
     private cartService: CartService,
-    private caslAbilityFactory: CaslAbilityFactory,
     private balanceService: BalanceService,
+    private oneCApiService: OneCApiService,
+    private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
   ) {}
 
@@ -129,6 +132,7 @@ export class OrdersService {
           order: { id: order.id },
         })),
       );
+      const orderTotal = this.calculateTotal(orderItems);
 
       const orderDelivery = await queryRunner.manager.save(
         OrderDeliveryEntity,
@@ -150,7 +154,7 @@ export class OrdersService {
 
       await this.balanceService.update(
         userId,
-        this.calculateTotal(orderItems).neg(),
+        orderTotal.neg(),
         queryRunner.manager,
         order.id,
       );
@@ -199,7 +203,7 @@ export class OrdersService {
       // Fetch order again to get order with populated fields
       order = await queryRunner.manager.findOneOrFail(OrderEntity, {
         where: { id: order.id },
-        relations: ['statuses', 'customer'],
+        relations: ['statuses', 'customer', 'items', 'items.product'],
       });
 
       await queryRunner.manager.save(OrderEntity, {
@@ -207,11 +211,13 @@ export class OrdersService {
         items: orderItems,
         delivery: orderDelivery,
         paymentTransaction: transaction,
-        total: this.calculateTotal(orderItems),
-        statuses: [...order.statuses, status],
+        total: orderTotal,
+        statuses: [status],
       });
 
-      await this.cartService.clearCart(userId);
+      await this.cartService.clearCart(userId, queryRunner.manager);
+
+      await this.upsertOrderToOneC(userId, order, status.status);
 
       this.eventEmitter.emit(NotificationEvent.OrderCreated, {
         message: `Нове замовлення №${order.number}`,
@@ -228,7 +234,16 @@ export class OrdersService {
         }
       } finally {
         await queryRunner.rollbackTransaction();
-        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+        if (err.response.data) {
+          await this.syncProductsStock(err.response.data);
+        }
+        throw new HttpException(
+          {
+            message: err.message,
+            cart: await this.cartService.getCart(userId),
+          },
+          HttpStatus.BAD_REQUEST,
+        );
       }
     } finally {
       await queryRunner.release();
@@ -291,6 +306,8 @@ export class OrdersService {
             updateOrderDto.orderStatusComment,
           );
         }
+
+        await this.upsertOrderToOneC(userId, order, updateOrderDto.orderStatus);
       }
 
       await queryRunner.commitTransaction();
@@ -302,7 +319,16 @@ export class OrdersService {
         }
       } finally {
         await queryRunner.rollbackTransaction();
-        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+        if (err.response.data) {
+          await this.syncProductsStock(err.response.data);
+        }
+        throw new HttpException(
+          {
+            message: err.message,
+            cart: await this.cartService.getCart(userId),
+          },
+          HttpStatus.BAD_REQUEST,
+        );
       }
     } finally {
       await queryRunner.release();
@@ -405,6 +431,41 @@ export class OrdersService {
       userId: order.customer.id,
       type: NotificationType.Order,
     });
+  }
+
+  private async upsertOrderToOneC(
+    userId: string,
+    order: OrderEntity,
+    newStatus?: OrderStatus,
+  ) {
+    return this.oneCApiService.order({
+      userId: userId,
+      id: order.id,
+      total: this.calculateTotal(order.items),
+      status: newStatus,
+      items: order.items.map((item) => ({
+        sku: item.product.sku,
+        quantity: item.quantity,
+        price: item.productProperties.price,
+      })),
+      createdAt: order.createdAt, // '2023-05-29T14:06:07'
+    });
+  }
+
+  private async syncProductsStock(products: SyncProduct[]) {
+    const productsToUpdate = await this.dataSource.manager.find(
+      ProductVariantEntity,
+      {
+        where: products.map((product) => ({ sku: product.sku })),
+      },
+    );
+    await this.dataSource.manager.save(
+      ProductVariantEntity,
+      productsToUpdate.map((product) => ({
+        ...product,
+        stock: products.find((p) => p.sku === product.sku)!.stock,
+      })),
+    );
   }
 
   private getOrderWhere(

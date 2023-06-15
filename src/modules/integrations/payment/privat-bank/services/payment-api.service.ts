@@ -20,7 +20,7 @@ export class PaymentApiService {
   constructor(
     private dataSource: DataSource,
     private balanceService: BalanceService,
-  ) { }
+  ) {}
 
   async presearch(
     accountNumber: string,

@@ -34,19 +34,15 @@ const { APP_ORIGIN } = config();
 export class AuthService {
   constructor(
     private dataSource: DataSource,
-    private usersService: UsersService,
     private jwtService: JwtService,
+    private usersService: UsersService,
     private mailService: MailService,
     private configService: ConfigService,
     private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   async signIn(authSignInDto: AuthSignInDto) {
     const user = await this.validateUser(authSignInDto);
-
-    if (!user) {
-      throw new NotFoundException('Користувача на знайдено');
-    }
 
     if (user.emailConfirmed === false) {
       throw new ConflictException(
@@ -98,6 +94,7 @@ export class AuthService {
       const userUrl = `${APP_ORIGIN.get(
         this.configService.get('NODE_ENV') || Env.Development,
       )}/admin/users/${user.id}`;
+
       await this.mailService.send(new ConfirmEmailMail(user, url), user.email);
       await this.mailService.send(
         new ConfirmUserMail(user, userUrl),
@@ -215,7 +212,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
-      throw new NotFoundException('Користувача не знайдено');
+      throw new NotFoundException('Користувача нe знайдено');
     }
 
     if (!(await user.validatePassword(password))) {

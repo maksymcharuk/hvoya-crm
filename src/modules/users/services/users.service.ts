@@ -1,10 +1,16 @@
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateUserDto } from '@dtos/create-user.dto';
+import { UpdateUserDto } from '@dtos/update-user.dto';
 import { BalanceEntity } from '@entities/balance.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
@@ -12,7 +18,8 @@ import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { Role } from '@enums/role.enum';
 
-import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
+import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
+import { OneCApiService } from '@modules/integrations/one-c/services/one-c-api/one-c-api.service';
 
 @Injectable()
 export class UsersService {
@@ -22,7 +29,8 @@ export class UsersService {
     private dataSource: DataSource,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
-  ) { }
+    private readonly oneCApiService: OneCApiService,
+  ) {}
 
   async create(
     queryRunner: QueryRunner,
@@ -38,16 +46,36 @@ export class UsersService {
         new BalanceEntity(),
       );
       await queryRunner.manager.save(user);
+      await this.oneCApiService.counterparty(user);
       return user;
     } catch (error) {
       throw new HttpException(error.message, 500);
     }
   }
 
-  async update(user: UserEntity): Promise<UserEntity> {
-    const updatedUser = await this.usersRepository.save(user);
+  async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const queryRunner = this.dataSource.createQueryRunner();
 
-    return updatedUser;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      let user = await this.findById(updateUserDto.id);
+
+      if (!user) {
+        throw new NotFoundException('Користувача нe знайдено');
+      }
+
+      await queryRunner.manager.save(UserEntity, { ...user, ...updateUserDto });
+      await this.oneCApiService.counterparty({ ...user, ...updateUserDto });
+
+      await queryRunner.commitTransaction();
+      return this.usersRepository.findOneByOrFail({ id: updateUserDto.id });
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(err.message || err.response.message, err.status);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   showById(id: string): Promise<UserEntity | null> {
@@ -142,7 +170,7 @@ export class UsersService {
     let user = await this.usersRepository.findOneBy({ id: userId });
 
     if (!user) {
-      throw new HttpException('Користувача не знайдено', 404);
+      throw new HttpException('Користувача нe знайдено', 404);
     }
 
     return this.usersRepository.save({

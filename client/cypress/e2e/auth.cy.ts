@@ -14,7 +14,6 @@ describe('Auth', () => {
           cy.signInAsSuperAdmin();
           cy.contains(credentials.superAdmin.firstName);
           cy.contains(credentials.superAdmin.lastName);
-          cy.contains(credentials.superAdmin.email);
         });
     });
 
@@ -25,7 +24,6 @@ describe('Auth', () => {
           cy.signInAsAdmin();
           cy.contains(credentials.admin.firstName);
           cy.contains(credentials.admin.lastName);
-          cy.contains(credentials.admin.email);
         });
     });
 
@@ -36,14 +34,14 @@ describe('Auth', () => {
           cy.signInAsUser();
           cy.contains(credentials.user.firstName);
           cy.contains(credentials.user.lastName);
-          cy.contains(credentials.user.email);
+          cy.contains(credentials.user.accountNumber);
         });
     });
 
     it('Sign in with invalid credentials', () => {
       const uniqueEmail = `test+${Date.now()}@email.com`;
       cy.signIn(uniqueEmail, '12345');
-      cy.checkToastMessage('Користувача на знайдено');
+      cy.checkToastMessage('Користувача нe знайдено');
     });
   });
 
