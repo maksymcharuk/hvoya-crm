@@ -180,7 +180,6 @@ export class PaymentApiService {
   }
 
   async cancel(
-    accountNumber: string,
     bankTransactionId: string,
     amount: string,
   ): Promise<CancelResponse | ErrorResponse> {
@@ -189,16 +188,12 @@ export class PaymentApiService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const user = await queryRunner.manager.findOneOrFail(UserEntity, {
-        where: { accountNumber },
-      });
       const transaction = await queryRunner.manager.findOneOrFail(
         PaymentTransactionEntity,
         { where: { bankTransactionId } },
       );
       await this.balanceService.cancelTransactionBanking(
         queryRunner.manager,
-        user.id,
         +amount,
         bankTransactionId,
         transaction,

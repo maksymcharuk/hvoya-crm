@@ -165,30 +165,15 @@ export class BalanceService {
 
   async cancelTransactionBanking(
     manager: EntityManager,
-    userId: string,
     amount: number,
     bankTransactionId: string,
     paymentTransaction: PaymentTransactionEntity,
   ) {
-    let balance = await manager.findOneOrFail(BalanceEntity, {
-      where: { owner: { id: userId } },
-    });
-
-    if (balance.amount.lessThan(amount)) {
-      throw new HttpException('Недостатньо коштів на балансі.', 400);
-    }
-
     await manager.save(PaymentTransactionEntity, {
       ...paymentTransaction,
       bankTransactionId,
       amount: new Decimal(amount),
       status: TransactionStatus.Cancelled,
-    });
-
-    await manager.save(BalanceEntity, {
-      id: balance.id,
-      amount: balance.amount.minus(amount),
-      paymentTransactions: [...balance.paymentTransactions, paymentTransaction],
     });
   }
 }
