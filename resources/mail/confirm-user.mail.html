@@ -1,24 +1,29 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Підтвердження нового користувача</title>
-  </head>
-
-  <style></style>
-
-  <body style="margin: 0 auto 40px auto; padding: 0; background-color: #f7f7f7">
-    <p>
-      Користувач {{ user.lastName }} {{ user.firstName }} {{ user.middleName }},
-      надіслав запит на отримання доступу у систему.
-    </p>
-    <p>
-      Для того, щоб підтвердити цього користувача, перейдіть за посиланням
-      нижче.
-    </p>
-    <p>
-      <a href="{{ url }}">Сторінка підтвердження.</a>
-    </p>
-  </body>
-</html>
+{{#layout title="Підтвердження нового користувача"}}
+<h1 style="margin: 0 0 15px; font-size: 18px">
+  Вітаємо, у нас новий користувач!
+</h1>
+<p style="margin: 0 0 15px">
+  Користувач
+  <b>{{ user.lastName }} {{ user.firstName }} {{ user.middleName }}</b>,
+  надіслав запит на отримання доступу у систему.
+</p>
+<p style="margin: 0 0 15px">
+  Для того, щоб підтвердити цього користувача, перейдіть на сторінку за
+  посиланням нижче.
+</p>
+<div style="text-align: center">
+  <a
+    href="{{ url }}"
+    style="
+      display: inline-block;
+      background-color: #24a060;
+      padding: 10px 25px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    "
+  >
+    Сторінка підтвердження
+  </a>
+</div>
+{{/layout}}
