@@ -14,7 +14,7 @@ import { PrivatJSONRequest, PrivatXMLRequest } from './types/request.type';
 
 @Controller()
 export class PrivatBankController {
-  constructor(private readonly paymentApiService: PaymentApiService) { }
+  constructor(private readonly paymentApiService: PaymentApiService) {}
 
   @Post()
   async main(
@@ -61,7 +61,6 @@ export class PrivatBankController {
         case Action.Cancel:
           const xmlCancel = body as CancelRequest;
           xmlData = await this.paymentApiService.cancel(
-            xmlCancel.transfer.data[0].payerinfo[0].$.billIdentifier,
             xmlCancel.transfer.data[0].$.id,
             xmlCancel.transfer.data[0].totalsum[0],
           );
@@ -75,8 +74,8 @@ export class PrivatBankController {
         xmldec: {
           version: '1.0',
           encoding: 'UTF-8',
-          standalone: undefined
-        }
+          standalone: undefined,
+        },
       }).buildObject(xmlData);
 
       res.set({ 'content-type': 'application/xml; charset=utf-8' });
