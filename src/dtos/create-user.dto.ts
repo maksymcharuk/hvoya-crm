@@ -1,11 +1,16 @@
 import {
+  IsBoolean,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   IsUrl,
   Length,
 } from 'class-validator';
+
+import { Role } from '@enums/role.enum';
 
 export class CreateUserDto {
   @IsEmail({}, { message: 'Невірний формат електронної пошти' })
@@ -46,4 +51,28 @@ export class CreateUserDto {
 
   @IsNotEmpty({ message: 'Потрібно додати опис' })
   bio: string;
+
+  @IsEnum(Role, { message: 'Невірна роль' })
+  @IsOptional()
+  role?: Role = Role.User;
+
+  @IsBoolean()
+  @IsOptional()
+  emailConfirmed?: boolean = false;
+
+  @IsBoolean()
+  @IsOptional()
+  userConfirmed?: boolean = false;
+
+  @IsBoolean()
+  @IsOptional()
+  userFreezed?: boolean = false;
+
+  @IsString()
+  @IsOptional()
+  accountNumber?: string | null = null;
+
+  @IsBoolean()
+  @IsOptional()
+  userTest?: boolean = false;
 }

@@ -1,17 +1,6 @@
-import { DataSource } from 'typeorm';
-
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  Param,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { User } from '@decorators/user.decorator';
-import { CreateUserDto } from '@dtos/create-user.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 
@@ -24,34 +13,7 @@ import { UsersService } from './services/users.service';
 @Controller('users')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class UsersController {
-  constructor(
-    private dataSource: DataSource,
-    private usersService: UsersService,
-  ) {}
-
-  @Post()
-  @CheckPolicies((ability: AppAbility) =>
-    ability.can(Action.Create, UserEntity),
-  )
-  async createUser(@Body() body: CreateUserDto) {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      const user = await this.usersService.create(queryRunner, body);
-      await queryRunner.commitTransaction();
-      return user;
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      throw new HttpException(
-        'Будь ласка, спробуйте ще раз трішки пізніше.',
-        500,
-      );
-    } finally {
-      await queryRunner.release();
-    }
-  }
+  constructor(private usersService: UsersService) {}
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))

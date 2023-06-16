@@ -85,7 +85,7 @@ export class AuthService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      user = await this.usersService.create(queryRunner, authSignUpDto);
+      user = await this.usersService.create(authSignUpDto, queryRunner);
 
       const { access_token } = this.signToken(user);
       const url = `${APP_ORIGIN.get(

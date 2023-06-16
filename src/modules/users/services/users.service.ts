@@ -33,19 +33,14 @@ export class UsersService {
   ) {}
 
   async create(
-    queryRunner: QueryRunner,
     createUserDto: CreateUserDto,
+    queryRunner?: QueryRunner,
   ): Promise<UserEntity> {
+    const manager = queryRunner ? queryRunner.manager : this.dataSource.manager;
     try {
-      let user = await queryRunner.manager.create<UserEntity>(
-        UserEntity,
-        createUserDto,
-      );
-      user.balance = await queryRunner.manager.save(
-        BalanceEntity,
-        new BalanceEntity(),
-      );
-      await queryRunner.manager.save(user);
+      let user = await manager.create<UserEntity>(UserEntity, createUserDto);
+      user.balance = await manager.save(BalanceEntity, new BalanceEntity());
+      await manager.save(user);
       await this.oneCApiService.counterparty(user);
       return user;
     } catch (error) {
@@ -127,6 +122,10 @@ export class UsersService {
 
   async findByEmail(email: string): Promise<UserEntity | null> {
     return this.usersRepository.findOneBy({ email });
+  }
+
+  async findByAccountNumber(accountNumber: string): Promise<UserEntity | null> {
+    return this.usersRepository.findOneBy({ accountNumber });
   }
 
   async getAll(userId: string): Promise<UserEntity[]> {
