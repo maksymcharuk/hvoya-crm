@@ -8,7 +8,7 @@ export class ResetPasswordEmailMail implements Mail {
   build(): MailTemplate {
     return {
       templatePath: 'resources/mail/reset-password-email.mail.html',
-      subject: 'Reset password email mail',
+      subject: 'Зміна паролю',
       context: {
         user: this.user,
         url: this.url,
