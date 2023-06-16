@@ -14,6 +14,8 @@ import { ExpressAdapter } from '@nestjs/platform-express';
 import { ExtendedSocketIoAdapter } from '@adapters/extended-socket-io.adapter';
 import { Env } from '@enums/env.enum';
 
+import { SetupService } from '@modules/setup/services/setup.service';
+
 import { AppModule } from './app.module';
 import config from './config';
 
@@ -26,10 +28,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server), {
     logger,
   });
-
   const httpsServer = https.createServer(HTTPS_OPTIONS, server);
 
-  app.useWebSocketAdapter(new ExtendedSocketIoAdapter(httpsServer, logger));
+  const setupService = app.get(SetupService);
+  await setupService.setup();
 
   // Security configs
   if (isProduction()) {
@@ -53,7 +55,6 @@ async function bootstrap() {
     const loaded = newrelic.instrumentLoadedModule('express', server);
     logger.log('New Relic loaded: ' + loaded);
   }
-
   app.enableCors({
     origin: APP_ORIGIN.get(process.env['NODE_ENV'] || Env.Development),
   });
@@ -65,11 +66,13 @@ async function bootstrap() {
     }),
   );
   app.use(xmlparser());
+  app.useWebSocketAdapter(new ExtendedSocketIoAdapter(httpsServer, logger));
 
   await app.init();
 
   httpsServer.listen(process.env['PORT'] || '3000');
 }
+
 bootstrap().then(() => {
   logger.log(`Application listening on port ${process.env['PORT'] || '3000'}`);
 });

@@ -26,6 +26,7 @@ import { IntegrationsModule } from './modules/integrations/integrations.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
+import { SetupModule } from './modules/setup/setup.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { UsersModule } from './modules/users/users.module';
 
@@ -57,6 +58,7 @@ import { UsersModule } from './modules/users/users.module';
     EventEmitterModule.forRoot(),
     NotificationsModule,
     WSocketModule,
+    SetupModule,
   ],
   controllers: [AppController],
   providers: [
