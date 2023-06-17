@@ -244,7 +244,7 @@ export class MenuitemComponent implements OnInit, OnDestroy {
     this.notificationsService.notifications$.subscribe((notifications) => {
       const filteredNotifications = notifications.filter(
         (notification) =>
-          notification.type === this.item.title && !notification.checked,
+          this.item.title.includes(notification.type) && !notification.checked,
       );
       this.item.badge =
         filteredNotifications.length > 0

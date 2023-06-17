@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { NotificationType } from '@shared/enums/notification-type.enum';
+import { ORDER_NOTIFICATIONS } from '@shared/constants/notification.constants';
 import { AccountService } from '@shared/services/account.service';
 import { AuthService } from '@shared/services/auth.service';
 import { NotificationsService } from '@shared/services/notifications.service';
@@ -44,7 +44,7 @@ export class DashboardComponent {
           icon: 'pi pi-fw pi-shopping-bag',
           routerLink: ['orders'],
           badge: '',
-          title: NotificationType.Order,
+          title: ORDER_NOTIFICATIONS as any,
         },
         // {
         //   label: 'Запити',

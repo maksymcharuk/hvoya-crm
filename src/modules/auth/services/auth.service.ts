@@ -102,9 +102,8 @@ export class AuthService {
       );
 
       this.eventEmitter.emit(NotificationEvent.UserCreated, {
-        message: `Користувач створив акаунт`,
         data: user,
-        type: NotificationType.User,
+        type: NotificationType.UserCreated,
       });
 
       await queryRunner.commitTransaction();

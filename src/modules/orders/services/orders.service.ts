@@ -220,9 +220,8 @@ export class OrdersService {
       await this.upsertOrderToOneC(userId, order, status.status);
 
       this.eventEmitter.emit(NotificationEvent.OrderCreated, {
-        message: `Нове замовлення №${order.number}`,
         data: order,
-        type: NotificationType.Order,
+        type: NotificationType.OrderCreated,
       });
 
       await queryRunner.commitTransaction();
@@ -319,7 +318,7 @@ export class OrdersService {
         }
       } finally {
         await queryRunner.rollbackTransaction();
-        if (err.response.data) {
+        if (err.response && err.response.data) {
           await this.syncProductsStock(err.response.data);
         }
         throw new HttpException(
@@ -426,10 +425,9 @@ export class OrdersService {
     });
 
     this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
-      message: `Статус замовлення змінено.`,
-      data: order,
+      data: { ...order, statuses: [newStatus, ...order.statuses] },
       userId: order.customer.id,
-      type: NotificationType.Order,
+      type: NotificationType.OrderStatusUpdated,
     });
   }
 

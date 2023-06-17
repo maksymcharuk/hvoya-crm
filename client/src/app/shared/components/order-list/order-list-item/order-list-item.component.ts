@@ -12,11 +12,10 @@ import { UserService } from '@shared/services/user.service';
   templateUrl: './order-list-item.component.html',
   styleUrls: ['./order-list-item.component.scss'],
   host: {
-    '(click)': "navigateToOrder()"
-  }
+    '(click)': 'navigateToOrder()',
+  },
 })
 export class OrderListItemComponent {
-
   notifications$ = this.notificationsService.notifications$;
 
   @Input() adminView: boolean = false;
@@ -27,7 +26,7 @@ export class OrderListItemComponent {
     private readonly userService: UserService,
     private readonly router: Router,
     private readonly notificationsService: NotificationsService,
-  ) { }
+  ) {}
 
   navigateToOrder() {
     const role = this.userService.getUser()?.role;
@@ -41,12 +40,17 @@ export class OrderListItemComponent {
     }
   }
 
-  showOrderNotification(order: Order, notificationList: NotificationEntity[] | null) {
+  showOrderNotification(
+    order: Order,
+    notificationList: NotificationEntity[] | null,
+  ) {
     if (!notificationList) {
       return;
     }
     const notification = notificationList.find((notification) => {
-      return (notification.data as Order).number === order.number;
+      return notification.dataIsOrder(notification.data)
+        ? notification.data.number === order.number
+        : false;
     });
     this.orderNotification = notification;
     return notification ? !notification.checked : false;

@@ -1,3 +1,57 @@
-.background {
-  background: linear-gradient(to bottom, var(--surface-300) 50%, white 0%); 
+.notification-card {
+  color: var(--text-color);
+  display: block;
+  position: relative;
+
+  & + & {
+    margin-top: 10px;
+  }
+
+  &.checked {
+    .notification-card__inner {
+      border-color: var(--surface-300);
+    }
+  }
+
+  &__inner {
+    border: 3px solid var(--primary-color);
+  }
+
+  &__title {
+    background-color: var(--surface-300);
+  }
+
+  &__date-wrapper {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__date {
+    font-size: 0.8rem;
+    color: var(--gray-700);
+    background-color: white;
+    border: 1px solid var(--surface-300);
+    border-bottom: 0;
+    padding: 2px;
+  }
+
+  &__title,
+  &__body {
+    padding: 0.5rem;
+  }
+}
+
+::ng-deep {
+  .notifications-list__scroll-panel.p-scrollpanel {
+    .p-scrollpanel-bar {
+      background-color: var(--surface-400);
+      opacity: 0.6;
+    }
+
+    &:hover {
+      .p-scrollpanel-bar {
+        background-color: var(--surface-400);
+      }
+    }
+  }
 }
