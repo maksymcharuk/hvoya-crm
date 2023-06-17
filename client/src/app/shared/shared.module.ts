@@ -1,6 +1,7 @@
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DragDropModule } from 'primeng/dragdrop';
@@ -12,12 +13,11 @@ import { MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PanelModule } from 'primeng/panel';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { VirtualScrollerModule } from 'primeng/virtualscroller';
-import { CalendarModule } from 'primeng/calendar';
 
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -33,6 +33,7 @@ import { FaqListComponent } from './components/faq-list/faq-list.component';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { OrderDeliveryStatusBadgeComponent } from './components/order-delivery-status-badge/order-delivery-status-badge.component';
+import { OrderListItemComponent } from './components/order-list/order-list-item/order-list-item.component';
 import { OrderListComponent } from './components/order-list/order-list.component';
 import { OrderStatusBadgeComponent } from './components/order-status-badge/order-status-badge.component';
 import { OrderViewItemComponent } from './components/order-view-item/order-view-item.component';
@@ -47,13 +48,13 @@ import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
 import {
+  DateAgoPipe,
   DeliveryServiceNamePipe,
   PhoneNumberPipe,
   ProductSizePipe,
   RoleNamePipe,
   TransactionStatusPipe,
 } from './pipes';
-import { OrderListItemComponent } from './components/order-list/order-list-item/order-list-item.component';
 
 registerLocaleData(localeUk);
 
@@ -63,6 +64,7 @@ const PIPES = [
   RoleNamePipe,
   PhoneNumberPipe,
   TransactionStatusPipe,
+  DateAgoPipe,
 ];
 
 const COMPONENTS = [
@@ -83,6 +85,7 @@ const COMPONENTS = [
   ProductColorBadgeComponent,
   NotificationsComponent,
   TransactionsListComponent,
+  OrderListItemComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -100,7 +103,7 @@ const PRIMENG_MODULES = [
   DialogModule,
   EditorModule,
   BadgeModule,
-  VirtualScrollerModule,
+  ScrollPanelModule,
   MultiSelectModule,
   TagModule,
   ProgressSpinnerModule,
@@ -108,7 +111,7 @@ const PRIMENG_MODULES = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS, ...PIPES, OrderListItemComponent],
+  declarations: [...COMPONENTS, ...PIPES],
   imports: [
     CommonModule,
     HttpClientModule,

@@ -5,7 +5,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
-import { NotificationType } from '@shared/enums/notification-type.enum';
+import {
+  ORDER_NOTIFICATIONS,
+  USER_NOTIFICATION,
+} from '@shared/constants/notification.constants';
 import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
 
 @Injectable()
@@ -23,7 +26,7 @@ export class NotificationsService {
         notifications.filter(
           (notification) =>
             !notification.checked &&
-            notification.type === NotificationType.Order,
+            ORDER_NOTIFICATIONS.includes(notification.type),
         ).length,
     ),
   );
@@ -33,14 +36,14 @@ export class NotificationsService {
         notifications.filter(
           (notification) =>
             !notification.checked &&
-            notification.type === NotificationType.User,
+            USER_NOTIFICATION.includes(notification.type),
         ).length,
     ),
   );
 
   constructor(private readonly http: HttpClient) {
     this.getNotifications().subscribe((notifications) => {
-      this.notifications$.next(notifications)
+      this.notifications$.next(notifications);
     });
   }
 

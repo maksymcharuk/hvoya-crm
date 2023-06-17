@@ -9,24 +9,28 @@ import { NotificationsService } from '@shared/services/notifications.service';
   templateUrl: './user-list-item.component.html',
   styleUrls: ['./user-list-item.component.scss'],
   host: {
-    '(click)': "checkUserNotification()"
-  }
+    '(click)': 'checkUserNotification()',
+  },
 })
 export class UserListItemComponent {
-
   notifications$ = this.notificationsService.notifications$;
 
   @Input() user!: User;
   @Input() userNotification: any;
 
-  constructor(private readonly notificationsService: NotificationsService) { }
+  constructor(private readonly notificationsService: NotificationsService) {}
 
-  showUserNotification(user: User, notificationList: NotificationEntity[] | null) {
+  showUserNotification(
+    user: User,
+    notificationList: NotificationEntity[] | null,
+  ) {
     if (!notificationList) {
       return;
     }
     const notification = notificationList.find((notification) => {
-      return notification.data!.id === user.id;
+      return notification.dataIsUser(notification.data)
+        ? notification.data.id === user.id
+        : false;
     });
     this.userNotification = notification;
     return notification ? !notification.checked : false;
