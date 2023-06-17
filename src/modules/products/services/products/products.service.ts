@@ -25,7 +25,7 @@ export class ProductsService {
     private dataSource: DataSource,
     private filesService: FilesService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+  ) { }
 
   async createProduct(
     createProductDto: CreateProductDto,
@@ -313,9 +313,13 @@ export class ProductsService {
     }
 
     if (pageOptionsDto.searchQuery) {
-      queryBuilder.andWhere('LOWER(properties.name) LIKE LOWER(:searchQuery)', {
+      queryBuilder.andWhere('LOWER(properties.name) LIKE LOWER(:searchQuery) OR LOWER(variants.sku) LIKE LOWER(:searchQuery)', {
         searchQuery: `%${pageOptionsDto.searchQuery}%`,
       });
+    }
+
+    if (pageOptionsDto.inStockOnly) {
+      queryBuilder.andWhere('variants.stock > 0');
     }
 
     queryBuilder

@@ -135,4 +135,4 @@ const PRIMENG_MODULES = [
   ],
   exports: [...COMPONENTS, ...PIPES],
 })
-export class SharedModule {}
+export class SharedModule { }

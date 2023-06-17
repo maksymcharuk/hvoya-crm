@@ -44,6 +44,9 @@
       class="p-0 mt-0 mb-5 line-height-3 text-700"
       [innerHTML]="selectedVariant?.properties?.description"
     ></p>
+    <div class="font-bold text-900 mb-3">
+      Артикул: <span class="text-600">{{ selectedVariant?.sku }}</span>
+    </div>
     <div class="font-bold text-900 mb-3">Колір</div>
     <div class="flex align-items-center mb-5">
       <p-selectButton

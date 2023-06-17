@@ -35,3 +35,29 @@
     z-index: 100 !important;
   }
 }
+
+
+.in-stock {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  border: 1px solid var(--surface-400);
+  cursor: pointer;
+
+  &-true {
+    animation: change-color 0.2s linear;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+}
+
+@keyframes change-color {
+  from {
+    background-color: #ffffff;
+    border-color: var(--surface-400);
+  }
+  to {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+}
