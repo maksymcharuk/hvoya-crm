@@ -62,8 +62,7 @@
     >
     <span
       *ngIf="selectedVariant?.sku; else skuSkeleton"
-      class="text-600 text-base"
-      data-cy="product-sku"
+      class="text-600 text-base overflow-hidden w-6rem"
       >{{ selectedVariant?.sku }}</span
     >
   </div>
