@@ -1,38 +1,140 @@
-<ng-container *ngIf="notificationsList$ | async as list">
-  <p-virtualScroller
-    *ngIf="list.length > 0; else noNotifications"
-    [value]="list"
-    [style]="{ width: '250px' }"
-    scrollHeight="240px"
-    [itemSize]="90"
+<ng-container *ngIf="notifications$ | async as notifications">
+  <p-scrollPanel
+    *ngIf="notifications.length > 0; else noNotifications"
+    class="notifications-list"
+    styleClass="notifications-list__scroll-panel"
+    [style]="{ width: '100%', maxHeight: '400px' }"
   >
-    <ng-template pTemplate="item" let-notification>
-      <a
-        [routerLink]="getPath(notification)"
-        class="flex flex-column justify-content-between h-full cursor-pointer text-color p-3 h-6rem border-solid background"
-        [ngClass]="notification.checked ? 'border-300' : 'border-primary'"
-        (click)="checkNotification(notification)"
-      >
-        <div>{{ notification.message }}</div>
-        <div [ngSwitch]="notification.type">
-          <div *ngSwitchCase="notificationType.Order">
-            Замовник: {{ notification.data.customer.lastName }}
-            {{ notification.data.customer.firstName }}
-            {{ notification.data.customer.middleName }}
-          </div>
-          <div *ngSwitchCase="notificationType.User">
-            {{ notification.data.lastName }}
-            {{ notification.data.firstName }}
-            {{ notification.data.middleName }}
-          </div>
-          <div *ngSwitchCase="notificationType.Info">
-            {{ notification.message }}
-          </div>
+    <a
+      *ngFor="let notification of notifications"
+      class="notification-card"
+      [routerLink]="getPath(notification)"
+      [class.checked]="notification.checked"
+      (click)="checkNotification(notification)"
+    >
+      <div class="notification-card__date-wrapper">
+        <div class="notification-card__date">
+          {{ notification.createdAt | dateAgo }}
         </div>
-      </a>
-    </ng-template>
-  </p-virtualScroller>
+      </div>
+      <div class="notification-card__inner">
+        <ng-container *ngIf="notification.type === notificationType.Info">
+          <div class="notification-card__body">{{ notification?.message }}</div>
+        </ng-container>
+        <ng-container *ngIf="notification.type !== notificationType.Info">
+          <ng-container [ngSwitch]="notification.type">
+            <ng-container *ngSwitchCase="notificationType.OrderCreated">
+              <ng-container *ngIf="notification.dataIsOrder(notification.data)">
+                <ng-template #title>
+                  Нове замовлення №{{ notification.data.number }}
+                </ng-template>
+                <ng-template #body>
+                  Замовник: {{ notification.data.customer.fullName }}
+                </ng-template>
+                <ng-container
+                  *ngTemplateOutlet="
+                    notificationTmpl;
+                    context: {
+                      title: title,
+                      body: body,
+                      notification: notification
+                    }
+                  "
+                ></ng-container>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="notificationType.OrderStatusUpdated">
+              <ng-container *ngIf="notification.dataIsOrder(notification.data)">
+                <ng-template #title>
+                  Замовлення №{{ notification.data.number }} (статус змінено)
+                </ng-template>
+                <ng-template #body>
+                  <div
+                    *ngIf="notification.data.statuses[1] as prevStatus"
+                    class="flex mb-1"
+                  >
+                    <div class="mb-1 mr-2">Попередній статус:</div>
+                    <app-order-status-badge
+                      [status]="prevStatus.status"
+                    ></app-order-status-badge>
+                  </div>
+                  <div class="flex">
+                    <div class="mb-1 mr-2">Новий статус:</div>
+                    <app-order-status-badge
+                      [status]="notification.data.currentStatus.status"
+                    ></app-order-status-badge>
+                  </div>
+                </ng-template>
+                <ng-container
+                  *ngTemplateOutlet="
+                    notificationTmpl;
+                    context: {
+                      title: title,
+                      body: body,
+                      notification: notification
+                    }
+                  "
+                ></ng-container>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="notificationType.UserCreated">
+              <ng-container *ngIf="notification.dataIsUser(notification.data)">
+                <ng-template #title>Користувач створив акаунт</ng-template>
+                <ng-template #body>
+                  {{ notification.data.fullName }}
+                </ng-template>
+                <ng-container
+                  *ngTemplateOutlet="
+                    notificationTmpl;
+                    context: {
+                      title: title,
+                      body: body,
+                      notification: notification
+                    }
+                  "
+                ></ng-container>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="notificationType.UserConfirmed">
+              <ng-container *ngIf="notification.dataIsUser(notification.data)">
+                <ng-template #title>Акаунт підтвердженно</ng-template>
+                <ng-template #body>
+                  {{ notification.data.fullName }}
+                </ng-template>
+                <ng-container
+                  *ngTemplateOutlet="
+                    notificationTmpl;
+                    context: {
+                      title: title,
+                      body: body,
+                      notification: notification
+                    }
+                  "
+                ></ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </a>
+  </p-scrollPanel>
 </ng-container>
+
+<ng-template
+  #notificationTmpl
+  let-title="title"
+  let-body="body"
+  let-notification="notification"
+>
+  <div class="notification-card__title">
+    <div>
+      <ng-container *ngTemplateOutlet="title"></ng-container>
+    </div>
+  </div>
+  <div class="notification-card__body">
+    <ng-container *ngTemplateOutlet="body"></ng-container>
+  </div>
+</ng-template>
 
 <ng-template #noNotifications>
   <div class="flex align-items-center justify-content-center p-2 h-full">

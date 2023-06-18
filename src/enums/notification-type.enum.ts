@@ -1,5 +1,9 @@
 export enum NotificationType {
   Info = 'info',
-  Order = 'order',
-  User = 'user',
+
+  UserCreated = 'user.created',
+  UserConfirmed = 'user.confirmed',
+
+  OrderCreated = 'order.created',
+  OrderStatusUpdated = 'order.status.updated',
 }

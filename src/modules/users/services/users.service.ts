@@ -157,9 +157,8 @@ export class UsersService {
     const user = await this.usersRepository.findOneByOrFail({ id: userId });
 
     this.eventEmitter.emit(NotificationEvent.UserConfirmed, {
-      message: `Акаунт підтвердженно`,
       data: user,
-      type: NotificationType.User,
+      type: NotificationType.UserConfirmed,
     });
 
     return this.usersRepository.save({ ...user, userConfirmed: true });
