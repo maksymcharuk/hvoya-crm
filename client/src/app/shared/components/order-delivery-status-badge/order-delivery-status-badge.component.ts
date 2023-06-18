@@ -15,13 +15,15 @@ export class OrderDeliveryStatusBadgeComponent {
 
   get style() {
     switch (this.status) {
+      case OrderDeliveryStatus.Unspecified:
+        return 'default';
       case OrderDeliveryStatus.Pending:
         return 'default';
-      case OrderDeliveryStatus.Processing:
-        return 'accent';
       case OrderDeliveryStatus.Accepted:
-        return 'warn';
-      case OrderDeliveryStatus.Sent:
+        return 'accent';
+      case OrderDeliveryStatus.InTransit:
+        return 'accent';
+      case OrderDeliveryStatus.Arrived:
         return 'warn';
       case OrderDeliveryStatus.Received:
         return 'success';
@@ -36,14 +38,16 @@ export class OrderDeliveryStatusBadgeComponent {
 
   get text() {
     switch (this.status) {
+      case OrderDeliveryStatus.Unspecified:
+        return 'Потребує уточнення';
       case OrderDeliveryStatus.Pending:
         return 'В очікуванні';
-      case OrderDeliveryStatus.Processing:
-        return 'Опрацьовується';
-      case OrderDeliveryStatus.Sent:
-        return 'Відправлено';
       case OrderDeliveryStatus.Accepted:
-        return 'Прийнято';
+        return 'Отримано службою доставки';
+      case OrderDeliveryStatus.InTransit:
+        return 'В дорозі';
+      case OrderDeliveryStatus.Arrived:
+        return 'Прибув у відділення';
       case OrderDeliveryStatus.Received:
         return 'Отримано';
       case OrderDeliveryStatus.Declined:

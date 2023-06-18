@@ -1,8 +1,9 @@
 export enum OrderDeliveryStatus {
+  Unspecified = 'Unspecified',
   Pending = 'Pending',
   Accepted = 'Accepted',
-  Processing = 'Processing',
-  Sent = 'Sent',
+  InTransit = 'InTransit',
+  Arrived = 'Arrived',
   Received = 'Received',
   Returned = 'Returned',
   Declined = 'Declined',

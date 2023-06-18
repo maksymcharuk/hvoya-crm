@@ -36,10 +36,10 @@ export class DeliveryTasksService {
     [
       [
         OrderDeliveryStatus.Accepted,
-        OrderDeliveryStatus.Processing,
-        OrderDeliveryStatus.Sent,
+        OrderDeliveryStatus.InTransit,
+        OrderDeliveryStatus.Arrived,
       ],
-      OrderStatus.Processing,
+      OrderStatus.TransferedToDelivery,
     ],
   ]);
 
@@ -110,14 +110,16 @@ export class DeliveryTasksService {
       const deliveryStatus = deliveryStatusesRes?.statuses.find(
         (status) => status.trackingId === order.delivery.trackingId,
       );
-      if (deliveryStatus) {
-        const status = deliveryStatus.status;
-        await manager.update(OrderDeliveryEntity, order.delivery.id, {
-          status: deliveryStatus.status,
-          rawStatus: deliveryStatus.rawStatus,
-        });
-        await this.updateOrderStatus(status, order);
+      // If delivery status for order is not found, skip
+      if (!deliveryStatus) {
+        continue;
       }
+      const status = deliveryStatus.status;
+      await manager.update(OrderDeliveryEntity, order.delivery.id, {
+        status: deliveryStatus.status,
+        rawStatus: deliveryStatus.rawStatus,
+      });
+      await this.updateOrderStatus(status, order);
     }
   }
 
