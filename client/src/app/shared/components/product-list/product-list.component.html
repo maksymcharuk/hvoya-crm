@@ -10,28 +10,36 @@
       styleClass="mb-2 md:mb-0"
       [options]="sortOptions"
     ></p-dropdown> -->
-    <p-multiSelect
-      formControlName="filters"
-      defaultLabel="Виберіть фільтри"
-      display="chip"
-      dataKey="uuid"
-      optionLabel="label"
-      [options]="(filterOptions$ | async) || []"
-      [group]="true"
-    >
-      <ng-template let-filter pTemplate="group">
-        <div class="flex align-items-center">
-          <span>{{ filter.label }}</span>
-        </div>
-      </ng-template>
-    </p-multiSelect>
+    <div class="flex justify-content-between align-items-start">
+      <p-multiSelect
+        formControlName="filters"
+        defaultLabel="Виберіть фільтри"
+        display="chip"
+        dataKey="uuid"
+        optionLabel="label"
+        [options]="(filterOptions$ | async) || []"
+        [group]="true"
+        class="mr-2"
+      >
+        <ng-template let-filter pTemplate="group">
+          <div class="flex align-items-center">
+            <span>{{ filter.label }}</span>
+          </div>
+        </ng-template>
+      </p-multiSelect>
+      <div class="flex align-items-center h-full">
+        <p-inputSwitch formControlName="stock"></p-inputSwitch>
+        <label class="ml-1">Тільки в наявності</label>
+      </div>
+    </div>
     <span class="p-input-icon-left p-mb-2 p-mb-md-0">
       <i class="pi pi-search"></i>
       <input
         pInputText
         formControlName="search"
         type="text"
-        placeholder="Пошук по назві"
+        placeholder="Пошук по назві/артикулу"
+        class="w-16rem"
       />
     </span>
   </form>
@@ -58,8 +66,9 @@
             <div class="my-2">
               <p-skeleton width="100%" height="25px"></p-skeleton>
             </div>
-            <div class="my-4">
-              <p-skeleton width="30%" height="16px"></p-skeleton>
+            <div class="my-4 flex justify-content-between">
+              <p-skeleton width="5rem" height="16px"></p-skeleton>
+              <p-skeleton width="5rem" height="16px"></p-skeleton>
             </div>
             <p-skeleton width="100%" height="39px"></p-skeleton>
           </div>

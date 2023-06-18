@@ -53,15 +53,23 @@
   <ng-template #productNameSkeleton>
     <p-skeleton height="2rem" width="100%"></p-skeleton>
   </ng-template>
-  <div class="my-3">
+  <div class="my-3 flex justify-content-between">
     <span
       *ngIf="selectedVariant?.properties?.price; else priceSkeleton"
       class="font-bold text-900"
       data-cy="product-price"
       >{{ selectedVariant?.properties?.price | currency }}</span
     >
+    <span
+      *ngIf="selectedVariant?.sku; else skuSkeleton"
+      class="text-600 text-base overflow-hidden w-6rem"
+      >{{ selectedVariant?.sku }}</span
+    >
   </div>
   <ng-template #priceSkeleton>
+    <p-skeleton height="2rem" width="100%"></p-skeleton>
+  </ng-template>
+  <ng-template #skuSkeleton>
     <p-skeleton height="2rem" width="100%"></p-skeleton>
   </ng-template>
   <div class="my-3">

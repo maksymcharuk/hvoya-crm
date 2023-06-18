@@ -21,6 +21,9 @@ export class PageOptionsDto {
   readonly category?: string;
 
   @IsOptional()
+  readonly inStockOnly?: boolean;
+
+  @IsOptional()
   readonly searchQuery?: string;
 
   @Type(() => Number)

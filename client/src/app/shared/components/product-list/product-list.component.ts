@@ -72,6 +72,7 @@ export class ProductListComponent implements OnDestroy {
     // sort: [this.sortOptions[0]],
     filters: [[]],
     search: [''],
+    stock: [false],
   });
 
   // get sortControl(): AbstractControl {
@@ -84,6 +85,10 @@ export class ProductListComponent implements OnDestroy {
 
   get searchControl(): AbstractControl {
     return this.filtersForm.get('search')!;
+  }
+
+  get stockControl(): AbstractControl {
+    return this.filtersForm.get('stock')!;
   }
 
   filterOptions$ = zip([
@@ -116,6 +121,7 @@ export class ProductListComponent implements OnDestroy {
       // this.setSelectedSortOption(params);
       this.setFilterValue(params);
       this.setSearchQuery(params);
+      this.setInStockValue(params.inStockOnly);
     });
 
     this.productList$.pipe(takeUntil(this.destroy$), skip(1)).subscribe(() => {
@@ -136,6 +142,11 @@ export class ProductListComponent implements OnDestroy {
       .pipe(takeUntil(this.destroy$), debounceTime(400), distinctUntilChanged())
       .subscribe((value) => {
         this.onSearchFilter(value);
+      });
+    this.stockControl.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(400), distinctUntilChanged())
+      .subscribe((value) => {
+        this.onStockFilter(value);
       });
   }
 
@@ -202,7 +213,8 @@ export class ProductListComponent implements OnDestroy {
         !queryParamsObject[key] &&
         key !== 'orderBy' &&
         key !== 'order' &&
-        key !== 'search'
+        key !== 'search' &&
+        key !== 'inStockOnly'
       ) {
         queryParamsObject[key] = null;
       }
@@ -227,6 +239,24 @@ export class ProductListComponent implements OnDestroy {
     });
 
     this.page = 1;
+  }
+
+  onStockFilter(inStock: boolean) {
+    this.showSkeletonLoading = true;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { inStockOnly: inStock || null },
+      queryParamsHandling: 'merge',
+    });
+
+    this.page = 1;
+  }
+
+  setInStockValue(isInStock: boolean) {
+    this.stockControl.patchValue(!!isInStock, {
+      emitEvent: false,
+    });
   }
 
   onScroll() {
@@ -267,14 +297,32 @@ export class ProductListComponent implements OnDestroy {
               label:
                 size.diameter != 0
                   ? `Діаметр: ${size.diameter}`
-                  : `Висота: ${size.height} - Ширина: ${size.width}`,
+                  : `Висота: ${size.height}`,
               value: { size: size.id },
               uuid: `size-${size.id}`,
             };
           })
-          .sort((a, b) => (a.label! > b.label! ? 1 : -1)),
+          .sort((a: any, b: any) => {
+            const typeA = this.getSizeType(a.label);
+            const typeB = this.getSizeType(b.label);
+            const valueA = this.getSizeValue(a.label);
+            const valueB = this.getSizeValue(b.label);
+
+            if (typeA === typeB) {
+              return valueA - valueB;
+            } else {
+              return typeA!.localeCompare(typeB!);
+            }
+          }),
       })),
     );
+  }
+
+  private getSizeValue(str: string) {
+    return parseInt(str.split(': ')[1]!);
+  };
+  private getSizeType(str: string) {
+    return str.split(': ')[0];
   }
 
   // private bySizeLabel(a: any, b: any) {
@@ -322,7 +370,7 @@ export class ProductListComponent implements OnDestroy {
     const selectedFilterOptions = Object.entries(params)
       .filter(
         ([key]) =>
-          key !== 'searchQuery' && key !== 'order' && key !== 'orderBy',
+          key !== 'searchQuery' && key !== 'order' && key !== 'orderBy' && key !== 'inStockOnly',
       )
       .flatMap(([key, value]: any) =>
         value
