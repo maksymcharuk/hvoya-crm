@@ -72,6 +72,7 @@ export class ProductListComponent implements OnDestroy {
     // sort: [this.sortOptions[0]],
     filters: [[]],
     search: [''],
+    stock: [false],
   });
 
   // get sortControl(): AbstractControl {
@@ -86,6 +87,10 @@ export class ProductListComponent implements OnDestroy {
     return this.filtersForm.get('search')!;
   }
 
+  get stockControl(): AbstractControl {
+    return this.filtersForm.get('stock')!;
+  }
+
   filterOptions$ = zip([
     this.getCategoryList(),
     this.getSizesList(),
@@ -98,7 +103,6 @@ export class ProductListComponent implements OnDestroy {
   page = 1;
   showSkeletonLoading = true;
   showMoreLoader = false;
-  inStockOnly = false;
 
   constructor(
     private productSizesService: ProductSizesService,
@@ -138,6 +142,11 @@ export class ProductListComponent implements OnDestroy {
       .pipe(takeUntil(this.destroy$), debounceTime(400), distinctUntilChanged())
       .subscribe((value) => {
         this.onSearchFilter(value);
+      });
+    this.stockControl.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(400), distinctUntilChanged())
+      .subscribe((value) => {
+        this.onStockFilter(value);
       });
   }
 
@@ -211,10 +220,6 @@ export class ProductListComponent implements OnDestroy {
       }
     });
 
-    if (this.inStockOnly) {
-      queryParamsObject['inStockOnly'] = true;
-    }
-
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: queryParamsObject,
@@ -236,27 +241,22 @@ export class ProductListComponent implements OnDestroy {
     this.page = 1;
   }
 
-  onStockFilter() {
+  onStockFilter(inStock: boolean) {
     this.showSkeletonLoading = true;
 
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { inStockOnly: this.inStockOnly ? this.inStockOnly : null },
+      queryParams: { inStockOnly: inStock || null },
       queryParamsHandling: 'merge',
     });
 
     this.page = 1;
   }
 
-  inStockChange() {
-    this.inStockOnly = !this.inStockOnly;
-    this.onStockFilter();
-  }
-
   setInStockValue(isInStock: boolean) {
-    if (isInStock) {
-      this.inStockOnly = isInStock;
-    }
+    this.stockControl.patchValue(!!isInStock, {
+      emitEvent: false,
+    });
   }
 
   onScroll() {

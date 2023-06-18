@@ -18,6 +18,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
 import { CalendarModule } from 'primeng/calendar';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -105,6 +106,7 @@ const PRIMENG_MODULES = [
   TagModule,
   ProgressSpinnerModule,
   CalendarModule,
+  InputSwitchModule,
 ];
 
 @NgModule({

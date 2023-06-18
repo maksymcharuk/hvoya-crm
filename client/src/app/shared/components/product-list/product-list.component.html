@@ -27,12 +27,9 @@
           </div>
         </ng-template>
       </p-multiSelect>
-      <div
-        class="in-stock"
-        [ngClass]="{ 'in-stock-true': inStockOnly }"
-        (click)="inStockChange()"
-      >
-        Тільки доступні
+      <div class="flex align-items-center h-full">
+        <p-inputSwitch formControlName="stock"></p-inputSwitch>
+        <label class="ml-1">Тільки в наявності</label>
       </div>
     </div>
     <span class="p-input-icon-left p-mb-2 p-mb-md-0">
