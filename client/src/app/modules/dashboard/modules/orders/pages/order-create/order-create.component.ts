@@ -48,7 +48,10 @@ export class OrderCreateComponent implements OnInit {
     // middleName: ['', Validators.required],
     // phoneNumber: ['', Validators.required],
     deliveryService: [this.deliveryServices[0], Validators.required],
-    trackingId: ['', [Validators.required, alphanumeric]],
+    trackingId: [
+      '',
+      [Validators.required, alphanumeric({ allowSpaces: true })],
+    ],
     // NOTE: Keep this for a waybill generation logic in future
     // deliveryType: [this.deliveryTypes[0]?.value, Validators.required],
     // city: ['', Validators.required],

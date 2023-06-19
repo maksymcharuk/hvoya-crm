@@ -37,7 +37,7 @@
             <p-sortIcon field="createdAt"></p-sortIcon>
           </div>
         </th>
-        <th pSortableColumn="status">
+        <th pSortableColumn="currentStatus.status">
           <div class="flex justify-content-between align-items-center">
             Статус
             <p-sortIcon field="status"></p-sortIcon>
@@ -88,7 +88,7 @@
         </th>
         <th>
           <p-columnFilter
-            field="status"
+            field="currentStatus.status"
             matchMode="equals"
             [showMenu]="false"
             class="ml-auto"
@@ -113,8 +113,8 @@
                 </ng-template>
                 <ng-template let-item pTemplate="selectedItem">
                   <app-order-status-badge
-                  [status]="item.label"
-                ></app-order-status-badge>
+                    [status]="item.label"
+                  ></app-order-status-badge>
                 </ng-template>
               </p-dropdown>
             </ng-template>

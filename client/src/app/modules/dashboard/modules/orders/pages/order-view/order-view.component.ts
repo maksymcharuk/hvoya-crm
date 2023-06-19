@@ -32,7 +32,10 @@ export class OrderViewComponent {
   showWaybillViewDialog = false;
 
   updateWaybillForm = this.formBuilder.group({
-    trackingId: ['', [Validators.required, alphanumeric]],
+    trackingId: [
+      '',
+      [Validators.required, alphanumeric({ allowSpaces: true })],
+    ],
     waybill: [''],
   }) as UpdateWaybillFormGroup;
 

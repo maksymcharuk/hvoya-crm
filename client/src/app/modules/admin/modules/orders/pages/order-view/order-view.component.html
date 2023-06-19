@@ -99,7 +99,7 @@
                       [status]="order.delivery.status"
                     ></app-order-delivery-status-badge>
                   </div>
-                  <div *ngIf="order.currentStatus.comment">
+                  <div *ngIf="order.delivery.rawStatus">
                     <b>Повний статус:</b> {{ order.delivery.rawStatus }}
                   </div>
                 </div>
