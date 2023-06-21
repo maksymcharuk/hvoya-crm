@@ -37,6 +37,9 @@ export class UserEntity extends BaseEntity {
   @Column({ default: '' })
   bio: string;
 
+  @Column({ default: '' })
+  note: string;
+
   @Column()
   password: string;
 

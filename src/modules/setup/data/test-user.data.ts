@@ -17,4 +17,5 @@ export const TEST_USER_DATA: CreateUserDto = {
   bio: 'I am a test user',
   userTest: true,
   accountNumber: '44444',
+  note: 'Test user',
 };

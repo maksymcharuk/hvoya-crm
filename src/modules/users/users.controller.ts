@@ -3,6 +3,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { User } from '@decorators/user.decorator';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
+import { UpdateUserDto } from '@dtos/update-user.dto';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
@@ -13,7 +14,7 @@ import { UsersService } from './services/users.service';
 @Controller('users')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
@@ -50,5 +51,13 @@ export class UsersController {
   )
   async freezeToggleUser(@Body('userId') userId: string) {
     return this.usersService.freezeToggleUser(userId);
+  }
+
+  @Post('update')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Update, UserEntity),
+  )
+  async update(@Body() user: UpdateUserDto) {
+    return this.usersService.update(user);
   }
 }

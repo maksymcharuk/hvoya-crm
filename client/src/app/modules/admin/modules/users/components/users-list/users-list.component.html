@@ -43,6 +43,7 @@
             ></p-columnFilter>
           </div>
         </th>
+        <th>Нотатка</th>
         <th>Пошта</th>
         <th>Номер телефону</th>
         <th>Підтверджений</th>
@@ -52,7 +53,7 @@
     </ng-template>
     <ng-template pTemplate="groupheader" let-user>
       <tr *ngIf="'read' | able : user" pRowGroupHeader>
-        <td colspan="7">
+        <td colspan="8">
           <span class="font-bold ml-2">{{ user.role | roleName }}</span>
         </td>
       </tr>

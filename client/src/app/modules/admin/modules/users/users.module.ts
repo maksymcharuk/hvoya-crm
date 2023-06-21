@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -36,7 +37,8 @@ import { UserListItemComponent } from './components/user-list-item/user-list-ite
     AbilityModule,
     ConfirmDialogModule,
     TabViewModule,
+    InputTextareaModule,
   ],
   providers: [ConfirmationService],
 })
-export class UsersModule {}
+export class UsersModule { }

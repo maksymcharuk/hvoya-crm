@@ -16,4 +16,5 @@ export const DEFAULT_ADMIN_DATA: CreateUserDto = {
   bio: 'I am a super admin',
   accountNumber: '11111',
   website: 'https://hvoya.com',
+  note: 'Super admin',
 };

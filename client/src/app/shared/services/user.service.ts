@@ -15,7 +15,7 @@ import { TokenService } from './token.service';
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private tokenService: TokenService, private http: HttpClient) {}
+  constructor(private tokenService: TokenService, private http: HttpClient) { }
 
   getUser(): TokenUser | null {
     const token = this.tokenService.getToken();
@@ -53,6 +53,12 @@ export class UserService {
   freezeUserToggle(userId: string): Observable<User> {
     return this.http
       .post<User>(`${environment.apiUrl}/users/freeze-toggle`, { userId })
+      .pipe(map((user) => new User(user)));
+  }
+
+  updateUser(user: User): Observable<User> {
+    return this.http
+      .post<User>(`${environment.apiUrl}/users/update`, user)
       .pipe(map((user) => new User(user)));
   }
 }
