@@ -9,6 +9,7 @@ import { AbstractControl, FormBuilder } from '@angular/forms';
 import { Role } from '@shared/enums/role.enum';
 import { User } from '@shared/interfaces/entities/user.entity';
 import { UserService } from '@shared/services/user.service';
+import { UpdateUserByAdminDTO, UpdateUserByAdminFormGroup } from '@shared/interfaces/dto/update-user-by-admin.dto';
 
 @Component({
   selector: 'app-user',
@@ -24,7 +25,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   userForm = this.formBuilder.group({
     note: [''],
-  });
+  }) as UpdateUserByAdminFormGroup;
 
   get noteControl(): AbstractControl {
     return this.userForm.get('note')!;
@@ -46,12 +47,12 @@ export class UserComponent implements OnInit, OnDestroy {
         this.userForm.patchValue({
           note: this.user.note,
         });
-        this.noteControl.valueChanges
-          .pipe(takeUntil(this.destroy$), debounceTime(700), distinctUntilChanged())
-          .subscribe((note) => {
-            this.user.note = note;
-            this.updateUser();
-          });
+      });
+
+    this.noteControl.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(700), distinctUntilChanged())
+      .subscribe((note) => {
+        this.updateUserByAdmin({ note });
       });
   }
 
@@ -99,8 +100,8 @@ export class UserComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateUser() {
-    this.userService.updateUser(this.user).subscribe((user: User) => {
+  updateUserByAdmin(updateData: UpdateUserByAdminDTO) {
+    this.userService.updateUserByAdmin(this.user.id, updateData).subscribe((user: User) => {
       this.user = user;
       this.messageService.add({
         severity: 'success',
