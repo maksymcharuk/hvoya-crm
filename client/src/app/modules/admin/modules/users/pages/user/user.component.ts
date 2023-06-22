@@ -1,38 +1,64 @@
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
-import { finalize } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, Subject, takeUntil } from 'rxjs';
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AbstractControl, FormBuilder } from '@angular/forms';
 
 import { Role } from '@shared/enums/role.enum';
 import { User } from '@shared/interfaces/entities/user.entity';
 import { UserService } from '@shared/services/user.service';
+import { UpdateUserByAdminDTO, UpdateUserByAdminFormGroup } from '@shared/interfaces/dto/update-user-by-admin.dto';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
   user!: User;
   isFreezing: boolean = false;
 
   readonly roleEnum = Role;
+  private readonly destroy$ = new Subject<void>();
+
+  userForm = this.formBuilder.group({
+    note: [''],
+  }) as UpdateUserByAdminFormGroup;
+
+  get noteControl(): AbstractControl {
+    return this.userForm.get('note')!;
+  }
 
   constructor(
+    private formBuilder: FormBuilder,
     private userService: UserService,
     private route: ActivatedRoute,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userService
       .getUserByIdFull(this.route.snapshot.params['id'])
       .subscribe((user: User) => {
         this.user = user;
+        this.userForm.patchValue({
+          note: this.user.note,
+        });
       });
+
+    this.noteControl.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(700), distinctUntilChanged())
+      .subscribe((note) => {
+        this.updateUserByAdmin({ note });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   confirmUser() {
@@ -72,5 +98,15 @@ export class UserComponent implements OnInit {
           });
         }
       });
+  }
+
+  updateUserByAdmin(updateData: UpdateUserByAdminDTO) {
+    this.userService.updateUserByAdmin(this.user.id, updateData).subscribe((user: User) => {
+      this.user = user;
+      this.messageService.add({
+        severity: 'success',
+        detail: 'Дані користувача оновлено',
+      });
+    });
   }
 }

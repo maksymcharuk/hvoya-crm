@@ -10,12 +10,13 @@ import { JwtTokenPayload } from '@shared/interfaces/jwt-payload.interface';
 import { TokenUser } from '@shared/interfaces/token-user.interface';
 
 import { TokenService } from './token.service';
+import { UpdateUserByAdminDTO } from '@shared/interfaces/dto/update-user-by-admin.dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private tokenService: TokenService, private http: HttpClient) {}
+  constructor(private tokenService: TokenService, private http: HttpClient) { }
 
   getUser(): TokenUser | null {
     const token = this.tokenService.getToken();
@@ -53,6 +54,12 @@ export class UserService {
   freezeUserToggle(userId: string): Observable<User> {
     return this.http
       .post<User>(`${environment.apiUrl}/users/freeze-toggle`, { userId })
+      .pipe(map((user) => new User(user)));
+  }
+
+  updateUserByAdmin(userId: string, updateData: UpdateUserByAdminDTO): Observable<User> {
+    return this.http
+      .post<User>(`${environment.apiUrl}/users/${userId}/update-by-admin`, updateData)
       .pipe(map((user) => new User(user)));
   }
 }

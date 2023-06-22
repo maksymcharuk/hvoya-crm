@@ -30,7 +30,7 @@ export class UsersService {
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
     private readonly oneCApiService: OneCApiService,
-  ) {}
+  ) { }
 
   async create(
     createUserDto: CreateUserDto,

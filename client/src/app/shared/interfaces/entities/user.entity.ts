@@ -18,6 +18,7 @@ export class User extends BaseEntity {
   userConfirmed: boolean;
   userFreezed: boolean;
   accountNumber: string | null;
+  note: string;
 
   orders: Order[] | undefined;
   balance: Balance | undefined;
@@ -58,5 +59,6 @@ export class User extends BaseEntity {
     this.accountNumber = data?.accountNumber || null;
     this.orders = data?.orders?.map((order) => new Order(order)) || [];
     this.balance = new Balance(data?.balance);
+    this.note = data?.note || '';
   }
 }

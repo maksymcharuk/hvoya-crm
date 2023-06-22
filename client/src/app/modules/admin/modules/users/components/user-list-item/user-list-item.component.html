@@ -11,6 +11,10 @@
   <span class="p-column-title">ПІБ</span>
   {{ user.fullName }}
 </td>
+<td>
+  <span class="p-column-title">Нотатка</span>
+  {{ user.note }}
+</td>
 <td>{{ user.email }}</td>
 <td>{{ user.phoneNumber | phoneNumber }}</td>
 <td>{{ user.userConfirmed ? 'Так' : 'Ні' }}</td>

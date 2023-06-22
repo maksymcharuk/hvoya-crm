@@ -52,6 +52,10 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'Потрібно додати опис' })
   bio: string;
 
+  @IsString()
+  @IsOptional()
+  note?: string = '';
+
   @IsEnum(Role, { message: 'Невірна роль' })
   @IsOptional()
   role?: Role = Role.User;

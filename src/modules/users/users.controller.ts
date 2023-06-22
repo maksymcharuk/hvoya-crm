@@ -9,11 +9,12 @@ import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';
 import { UsersService } from './services/users.service';
+import { UpdateUserByAdminDto } from '@dtos/update-user-by-admin.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
@@ -50,5 +51,13 @@ export class UsersController {
   )
   async freezeToggleUser(@Body('userId') userId: string) {
     return this.usersService.freezeToggleUser(userId);
+  }
+
+  @Post(':id/update-by-admin')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.SuperUpdate, UserEntity),
+  )
+  async update(@Param('id') userId: string, @Body() userUpgrade: UpdateUserByAdminDto) {
+    return this.usersService.update({ ...userUpgrade, id: userId });
   }
 }
