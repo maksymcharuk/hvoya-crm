@@ -65,9 +65,14 @@ export class UserComponent implements OnInit, OnDestroy {
     this.route.params.subscribe((params) => {
       this.userService.getUserByIdFull(params['id']).subscribe((user: User) => {
         this.user = user;
-        this.userForm.patchValue({
-          note: this.user.note,
-        });
+        this.userForm.patchValue(
+          {
+            note: user.note,
+          },
+          {
+            emitEvent: false,
+          },
+        );
         this.userConfirmationForm.patchValue(
           {
             managerId: user.manager?.id,

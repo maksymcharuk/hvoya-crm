@@ -50,8 +50,8 @@ export class PromProductsNormalizationService
               sku: offer.vendorCode[0]!.trim(),
               externalId: offer.$.id,
               properties: {
-                name: offer.name_ua[0]!,
-                description: offer.description_ua[0]!,
+                name: offer.name_ua?.[0] || offer.name[0]!,
+                description: offer.description_ua?.[0] || offer.description[0]!,
                 price: Number(offer.price[0]),
                 weight: this.getWeight(offer.param),
                 images: offer.picture.map((picture: string) => ({
@@ -98,10 +98,8 @@ export class PromProductsNormalizationService
     // Fetch size from sku first
     if (sku) {
       const { size } = this.getDataBaseOnSku(sku);
-      if (
-        offer.name_ua[0]!.includes('вінок') ||
-        offer.name_ua[0]!.includes('Вінок')
-      ) {
+      const name = offer.name_ua?.[0] || offer.name[0];
+      if (name!.includes('вінок') || name!.includes('Вінок')) {
         return {
           height: 0,
           width: 0,
