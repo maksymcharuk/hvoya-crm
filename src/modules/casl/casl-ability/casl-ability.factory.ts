@@ -63,7 +63,9 @@ export class CaslAbilityFactory {
     }
 
     if (user.role === Role.Admin) {
-      can([Action.Read], UserEntity);
+      can([Action.Read], UserEntity, ({ role }: UserEntity) => {
+        return role !== Role.SuperAdmin;
+      });
       can([Action.Update], UserEntity, ({ id }: UserEntity) => {
         return id === user.id;
       });

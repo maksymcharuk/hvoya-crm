@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { User } from '@decorators/user.decorator';
+import { ConfirmUserDto } from '@dtos/confirm-user.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 
@@ -15,6 +16,12 @@ import { UpdateUserByAdminDto } from '@dtos/update-user-by-admin.dto';
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class UsersController {
   constructor(private usersService: UsersService) { }
+
+  @Get('admins')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
+  async getAllAdmins(@User('id') userId: string) {
+    return this.usersService.getAllAdmins(userId);
+  }
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
@@ -41,8 +48,11 @@ export class UsersController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Update, UserEntity),
   )
-  async confirmUser(@Body('userId') userId: string) {
-    return this.usersService.confirmUser(userId);
+  async confirmUser(
+    @User('id') currentUserId: string,
+    @Body() confirmUserDto: ConfirmUserDto,
+  ) {
+    return this.usersService.confirmUser(confirmUserDto, currentUserId);
   }
 
   @Post('freeze-toggle')

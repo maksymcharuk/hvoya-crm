@@ -75,9 +75,9 @@
                 pButton
                 pRipple
                 label="Надати доступ до системи"
-                (click)="confirmUser()"
+                (click)="openConfirmUserDialog()"
                 class="p-button-success mr-4"
-                data-cy="confirm-user-button"
+                data-cy="confirm-user-open-dialog-button"
               ></button>
               <ng-template #confirmed>
                 <button
@@ -90,7 +90,8 @@
               </ng-template>
 
               <p-confirmDialog
-                rejectButtonStyleClass="p-button-text"
+                rejectButtonStyleClass="p-button-outlined p-button-secondary"
+                acceptButtonStyleClass="p-button-danger"
                 [header]="
                   'Ви впевнені, що хочете ' +
                   (user.userFreezed ? 'відновити' : 'призупинити') +
@@ -132,5 +133,68 @@
         <app-transactions-list [balance]="user.balance"></app-transactions-list>
       </p-tabPanel>
     </p-tabView>
+
+    <p-tabView *ngIf="user.isAnyAdmin">
+      <p-tabPanel header="Підлеглі дропшипери">
+        <app-users-list [users]="user.managedUsers || []"></app-users-list>
+      </p-tabPanel>
+    </p-tabView>
   </div>
 </div>
+
+<p-dialog
+  [(visible)]="showConfirmUserDialog"
+  [style]="{ width: '450px' }"
+  header="Відповідальний менеджер"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <form [formGroup]="userConfirmationForm">
+      <div class="field">
+        <label for="name">Менеджер</label>
+        <p-dropdown
+          optionValue="id"
+          filterBy="fullName"
+          placeholder="Виберіть менеджера"
+          appendTo="body"
+          formControlName="managerId"
+          data-cy="manager-list-dropdown"
+          [filter]="true"
+          [options]="(admins$ | async)!"
+          [showClear]="true"
+        >
+          <ng-template let-selectedAdmin pTemplate="selectedItem">
+            <div>{{ selectedAdmin.fullName }}</div>
+          </ng-template>
+          <ng-template let-admin pTemplate="item">
+            <div>{{ admin.fullName }}</div>
+          </ng-template>
+        </p-dropdown>
+        <app-form-control-error-message
+          [formGroup]="userConfirmationForm"
+          controlName="managerId"
+          errorType="required"
+          errorMessage="Необхідно вибрати менеджера"
+        >
+        </app-form-control-error-message>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Відмінити"
+      icon="pi pi-times"
+      styleClass="p-button-outlined p-button-secondary"
+      (onClick)="hideDialog()"
+    ></p-button>
+    <p-button
+      label="Надати доступ"
+      icon="pi pi-check"
+      data-cy="confirm-user-submit-button"
+      [disabled]="submitting"
+      (onClick)="confirmUser()"
+    ></p-button>
+  </ng-template>
+</p-dialog>

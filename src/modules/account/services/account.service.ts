@@ -25,10 +25,13 @@ export class AccountService {
     }
 
     try {
-      user = await this.usersService.update({
-        id: userId,
-        password: changePasswordDto.password,
-      });
+      user = await this.usersService.update(
+        {
+          id: userId,
+          password: changePasswordDto.password,
+        },
+        userId,
+      );
     } catch (error) {
       throw new HttpException(error.message, 400);
     }
@@ -47,10 +50,13 @@ export class AccountService {
     }
 
     try {
-      user = await this.usersService.update({
-        id: userId,
-        ...updateProfileDto,
-      });
+      user = await this.usersService.update(
+        {
+          id: userId,
+          ...updateProfileDto,
+        },
+        userId,
+      );
     } catch (error) {
       throw new HttpException(error.message, 400);
     }

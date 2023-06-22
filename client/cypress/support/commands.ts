@@ -377,10 +377,8 @@ function addProductToCart(productName?: string): Cypress.Chainable<Product> {
             '[data-cy="product-add-to-cart-button"]:not(:disabled)',
             'Додати в кошик',
           )
-          .click()
+          .click();
       });
-
-
   } else {
     cy.get('[data-cy="product-item"]')
       .contains(
@@ -397,7 +395,7 @@ function addProductToCart(productName?: string): Cypress.Chainable<Product> {
             '[data-cy="product-add-to-cart-button"]:not(:disabled)',
             'Додати в кошик',
           )
-          .click()
+          .click();
       });
   }
 
@@ -424,7 +422,9 @@ function confirmUser(email: string): void {
   cy.get('li').contains('Користувачі').click();
   cy.get('input[formcontrolname="search"]').type(email);
   cy.get('td').contains(email).click();
-  cy.getCyEl('confirm-user-button').click();
+  cy.getCyEl('confirm-user-open-dialog-button').click();
+  cy.selectFromDropdown('manager-list-dropdown', 'John');
+  cy.getCyEl('confirm-user-submit-button').click();
   cy.checkToastMessage('Користувача підтверджено');
 }
 

@@ -15,6 +15,7 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 
 import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
+import { ResetPasswordDto } from '@dtos/reset-password.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Env } from '@enums/env.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
@@ -156,7 +157,7 @@ export class AuthService {
     );
   }
 
-  async resetPassword(changePassword: { token: string; password: string }) {
+  async resetPassword(changePassword: ResetPasswordDto) {
     const { token, password } = changePassword;
     let decodedToken;
 
