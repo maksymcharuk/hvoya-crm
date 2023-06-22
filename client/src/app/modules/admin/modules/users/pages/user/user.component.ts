@@ -68,11 +68,14 @@ export class UserComponent implements OnInit, OnDestroy {
         this.userForm.patchValue({
           note: this.user.note,
         });
-        this.userConfirmationForm
-          .get('managerId')
-          ?.patchValue(user.manager?.id, {
+        this.userConfirmationForm.patchValue(
+          {
+            managerId: user.manager?.id,
+          },
+          {
             emitEvent: false,
-          });
+          },
+        );
       });
     });
 
