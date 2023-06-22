@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
+import { ConfirmUserDto } from '@shared/interfaces/dto/confirm-user.dto';
 import { User } from '@shared/interfaces/entities/user.entity';
 import { JwtTokenPayload } from '@shared/interfaces/jwt-payload.interface';
 import { TokenUser } from '@shared/interfaces/token-user.interface';
@@ -33,6 +34,12 @@ export class UserService {
       .pipe(map((users) => users.map((user) => new User(user))));
   }
 
+  getAdmins(): Observable<User[]> {
+    return this.http
+      .get<User[]>(`${environment.apiUrl}/users/admins`)
+      .pipe(map((users) => users.map((user) => new User(user))));
+  }
+
   getUserById(userId: string): Observable<User> {
     return this.http
       .get<User>(`${environment.apiUrl}/users/${userId}`)
@@ -45,9 +52,9 @@ export class UserService {
       .pipe(map((user) => new User(user)));
   }
 
-  confirmUser(userId: string): Observable<User> {
+  confirmUser(confirmUserDto: ConfirmUserDto): Observable<User> {
     return this.http
-      .post<User>(`${environment.apiUrl}/users/confirm`, { userId })
+      .post<User>(`${environment.apiUrl}/users/confirm`, confirmUserDto)
       .pipe(map((user) => new User(user)));
   }
 

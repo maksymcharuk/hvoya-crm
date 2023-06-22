@@ -16,7 +16,31 @@
   {{ user.note }}
 </td>
 <td>{{ user.email }}</td>
-<td>{{ user.phoneNumber | phoneNumber }}</td>
-<td>{{ user.userConfirmed ? 'Так' : 'Ні' }}</td>
-<td>{{ user.emailConfirmed ? 'Так' : 'Ні' }}</td>
-<td>{{ user.userFreezed ? 'Так' : 'Ні' }}</td>
+<td>
+  <span class="white-space-nowrap">{{ user.phoneNumber | phoneNumber }}</span>
+</td>
+<td>{{ user.manager ? user.manager.fullName : '-' }}</td>
+<td
+  [ngClass]="{
+    'text-red-500': !user.userConfirmed,
+    'text-green-500': user.userConfirmed
+  }"
+>
+  {{ user.userConfirmed ? 'Так' : 'Ні' }}
+</td>
+<td
+  [ngClass]="{
+    'text-red-500': !user.emailConfirmed,
+    'text-green-500': user.emailConfirmed
+  }"
+>
+  {{ user.emailConfirmed ? 'Так' : 'Ні' }}
+</td>
+<td
+  [ngClass]="{
+    'text-red-500': user.userFreezed,
+    'text-green-500': !user.userFreezed
+  }"
+>
+  {{ user.userFreezed ? 'Так' : 'Ні' }}
+</td>

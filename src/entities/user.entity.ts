@@ -1,5 +1,12 @@
 import * as bcrypt from 'bcrypt';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 
 import { Role } from '../enums/role.enum';
 import { BalanceEntity } from './balance.entity';
@@ -92,6 +99,12 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => NotificationEntity, (notification) => notification.user)
   notifications: NotificationEntity[];
+
+  @ManyToOne(() => UserEntity, (user) => user.managedUsers)
+  manager: UserEntity;
+
+  @OneToMany(() => UserEntity, (user) => user.manager)
+  managedUsers: UserEntity[];
 
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);

@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEmail,
@@ -8,9 +9,12 @@ import {
   IsString,
   IsUrl,
   Length,
+  ValidateNested,
 } from 'class-validator';
 
 import { Role } from '@enums/role.enum';
+
+import { BaseRelationDto } from './shared/base-relation.dto';
 
 export class CreateUserDto {
   @IsEmail({}, { message: 'Невірний формат електронної пошти' })
@@ -79,4 +83,9 @@ export class CreateUserDto {
   @IsBoolean()
   @IsOptional()
   userTest?: boolean = false;
+
+  @ValidateNested()
+  @Type(() => BaseRelationDto)
+  @IsOptional()
+  manager?: BaseRelationDto;
 }

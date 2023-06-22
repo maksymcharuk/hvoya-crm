@@ -1,14 +1,11 @@
+import { validate } from 'class-validator';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { ConfirmUserDto } from '@dtos/confirm-user.dto';
 import { CreateUserDto } from '@dtos/create-user.dto';
 import { UpdateUserDto } from '@dtos/update-user.dto';
 import { BalanceEntity } from '@entities/balance.entity';
@@ -48,23 +45,45 @@ export class UsersService {
     }
   }
 
-  async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(
+    updateUserDto: UpdateUserDto,
+    currentUserId?: string,
+  ): Promise<UserEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      let user = await this.findById(updateUserDto.id);
+      await validate(updateUserDto);
 
-      if (!user) {
-        throw new NotFoundException('Користувача нe знайдено');
+      let user = await queryRunner.manager.findOneOrFail(UserEntity, {
+        where: { id: updateUserDto.id },
+        relations: ['manager'],
+      });
+
+      if (currentUserId) {
+        let currentUser = await queryRunner.manager.findOneOrFail(UserEntity, {
+          where: { id: currentUserId },
+        });
+
+        const ability = this.caslAbilityFactory.createForUser(currentUser);
+
+        if (ability.cannot(Action.Update, user)) {
+          throw new HttpException(
+            'Ви не можете редагувати цього користувача',
+            HttpStatus.FORBIDDEN,
+          );
+        }
       }
 
       await queryRunner.manager.save(UserEntity, { ...user, ...updateUserDto });
       await this.oneCApiService.counterparty({ ...user, ...updateUserDto });
 
       await queryRunner.commitTransaction();
-      return this.usersRepository.findOneByOrFail({ id: updateUserDto.id });
+      return this.dataSource.manager.findOneOrFail(UserEntity, {
+        where: { id: updateUserDto.id },
+        relations: ['manager'],
+      });
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw new HttpException(err.message || err.response.message, err.status);
@@ -97,6 +116,8 @@ export class UsersService {
         'balance.paymentTransactions.order',
         'orders.items',
         'orders.items.productProperties.images',
+        'manager',
+        'managedUsers',
       ],
       order: {
         balance: {
@@ -135,33 +156,76 @@ export class UsersService {
     });
 
     const ability = this.caslAbilityFactory.createForUser(user);
+    const users = await manager.find(UserEntity, {
+      relations: ['manager'],
+    });
 
-    if (ability.can(Action.SuperRead, UserEntity)) {
-      return this.usersRepository.find();
-    } else {
-      return this.usersRepository.findBy({ role: Role.User });
-    }
+    return users.filter((user) => ability.can(Action.Read, user));
   }
 
   getAllSuperAdmins(): Promise<UserEntity[]> {
     return this.usersRepository.findBy({ role: Role.SuperAdmin });
   }
 
-  async getAllAdmins(): Promise<UserEntity[]> {
-    return await this.usersRepository.find({
+  async getAllAdmins(currentUserId?: string): Promise<UserEntity[]> {
+    const admins = await this.usersRepository.find({
       where: [{ role: Role.SuperAdmin }, { role: Role.Admin }],
     });
+
+    if (currentUserId) {
+      let currentUser = await this.dataSource.manager.findOneOrFail(
+        UserEntity,
+        {
+          where: { id: currentUserId },
+        },
+      );
+
+      const ability = this.caslAbilityFactory.createForUser(currentUser);
+
+      return admins.filter((admin) => ability.can(Action.Read, admin));
+    }
+
+    return admins;
   }
 
-  async confirmUser(userId: string): Promise<UserEntity> {
-    const user = await this.usersRepository.findOneByOrFail({ id: userId });
+  async confirmUser(
+    confirmUserDto: ConfirmUserDto,
+    currentUserId: string,
+  ): Promise<UserEntity> {
+    const manager = this.dataSource.manager;
+
+    let user = await manager.findOneOrFail(UserEntity, {
+      where: { id: confirmUserDto.userId },
+      relations: ['manager'],
+    });
+    let currentUser = await manager.findOneOrFail(UserEntity, {
+      where: { id: currentUserId },
+    });
+
+    const ability = this.caslAbilityFactory.createForUser(currentUser);
+
+    if (ability.cannot(Action.Confirm, user)) {
+      throw new HttpException(
+        'На жаль, ви не маєте прав на здійснення цієї операції',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    user = await this.update(
+      {
+        id: confirmUserDto.userId,
+        userConfirmed: true,
+        manager: { id: confirmUserDto.managerId },
+      },
+      currentUserId,
+    );
 
     this.eventEmitter.emit(NotificationEvent.UserConfirmed, {
       data: user,
       type: NotificationType.UserConfirmed,
     });
 
-    return this.usersRepository.save({ ...user, userConfirmed: true });
+    return user;
   }
 
   async freezeToggleUser(userId: string): Promise<UserEntity> {

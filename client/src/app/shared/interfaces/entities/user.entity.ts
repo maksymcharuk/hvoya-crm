@@ -19,12 +19,18 @@ export class User extends BaseEntity {
   userFreezed: boolean;
   accountNumber: string | null;
   note: string;
+  manager?: User | null;
+  managedUsers?: User[];
 
   orders: Order[] | undefined;
   balance: Balance | undefined;
 
   get fullName(): string {
     return `${this.lastName} ${this.firstName} ${this.middleName}`;
+  }
+
+  get isAnyAdmin(): boolean {
+    return this.role === Role.SuperAdmin || this.role === Role.Admin;
   }
 
   get isSuperAdmin(): boolean {
@@ -60,5 +66,7 @@ export class User extends BaseEntity {
     this.orders = data?.orders?.map((order) => new Order(order)) || [];
     this.balance = new Balance(data?.balance);
     this.note = data?.note || '';
+    this.manager = data?.manager ? new User(data.manager) : null;
+    this.managedUsers = data?.managedUsers?.map((user) => new User(user)) || [];
   }
 }

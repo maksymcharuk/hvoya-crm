@@ -46,9 +46,28 @@
         <th>Нотатка</th>
         <th>Пошта</th>
         <th>Номер телефону</th>
-        <th>Підтверджений</th>
-        <th>Пошта підтверджена</th>
-        <th>Призупинений</th>
+        <th>Менеджер</th>
+        <th>
+          <i
+            class="pi pi-check-circle text-green-500"
+            pTooltip="Акаунт користувача підтверджено"
+            tooltipPosition="left"
+          ></i>
+        </th>
+        <th>
+          <i
+            class="pi pi-envelope text-green-500"
+            pTooltip="Електронна пошта користувача підтверджена"
+            tooltipPosition="left"
+          ></i>
+        </th>
+        <th>
+          <i
+            class="pi pi-times-circle text-red-500"
+            pTooltip="Акаунт користувача призупинено"
+            tooltipPosition="left"
+          ></i>
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="groupheader" let-user>
@@ -61,7 +80,7 @@
     <ng-template pTemplate="body" let-user let-notification>
       <tr
         class="p-selectable-row"
-        [routerLink]="[user.id]"
+        [routerLink]="['/admin', 'users', user.id]"
         app-user-list-item
         [user]="user"
         [userNotification]="notification"
