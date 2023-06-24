@@ -8,4 +8,5 @@ export const ORDER_NOTIFICATIONS = [
 export const USER_NOTIFICATION = [
   NotificationType.UserCreated,
   NotificationType.UserConfirmed,
+  NotificationType.AdminCreated,
 ];

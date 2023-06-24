@@ -5,9 +5,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { environment } from '@environment/environment';
+import { AdminSignUpDTO } from '@shared/interfaces/dto/admin-sign-up.dto';
 import { ForgotPasswordDTO } from '@shared/interfaces/dto/forgot-password.dto';
 import { SignInDTO } from '@shared/interfaces/dto/sign-in.dto';
 import { SignUpDTO } from '@shared/interfaces/dto/sign-up.dto';
+import { AdminSignUpResponse } from '@shared/interfaces/responses/admin-sign-up.response';
 import { SignInResponse } from '@shared/interfaces/responses/sign-in.response';
 import { SignUpResponse } from '@shared/interfaces/responses/sign-up.response';
 
@@ -38,6 +40,19 @@ export class AuthService {
       `${environment.apiUrl}/auth/sign-up`,
       value,
     );
+  }
+
+  adminSignUp(value: AdminSignUpDTO) {
+    return this.http
+      .post<AdminSignUpResponse>(
+        `${environment.apiUrl}/auth/admin/sign-up`,
+        value,
+      )
+      .pipe(
+        tap(({ access_token }: AdminSignUpResponse) => {
+          this.tokenService.setToken(access_token);
+        }),
+      );
   }
 
   confirmEmail(tokenObj: { confirmEmailToken: string }) {

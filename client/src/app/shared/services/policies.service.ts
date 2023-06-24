@@ -59,6 +59,7 @@ export class PoliciesService {
         can('manage', 'all');
         can('visit', AdminPage);
         can('read', User);
+        can('create', User);
         can('update', User, (user: User) => user.role !== Role.SuperAdmin);
         can(['create', 'update'], Faq);
         break;

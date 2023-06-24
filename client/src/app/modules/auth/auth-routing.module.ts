@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { AdminSignUpComponent } from './admin-sign-up/admin-sign-up.component';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { ForgotPasswordConfirmationComponent } from './forgot-password-confirmation/forgot-password-confirmation.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
@@ -19,6 +20,10 @@ const routes: Routes = [
       { path: '', component: SignUpComponent },
       { path: 'confirmation', component: SignUpConfirmationComponent },
     ],
+  },
+  {
+    path: 'admin/sign-up',
+    component: AdminSignUpComponent,
   },
   { path: 'confirm-email', component: ConfirmEmailComponent },
   {

@@ -40,10 +40,10 @@ export class CreateUserDto {
   @IsPhoneNumber('UA', { message: 'Номер телефону невірний' })
   phoneNumber: string;
 
-  @IsNotEmpty({ message: 'Потрібно ввести назву магазину' })
-  storeName: string;
+  @IsOptional()
+  storeName?: string = '';
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsUrl(
     {},
     {
@@ -51,10 +51,10 @@ export class CreateUserDto {
         'Невірний формат посилання на веб-сайт чи профіль у соціальній мережі',
     },
   )
-  website: string;
+  website?: string = '';
 
-  @IsNotEmpty({ message: 'Потрібно додати опис' })
-  bio: string;
+  @IsOptional()
+  bio?: string = '';
 
   @IsString()
   @IsOptional()

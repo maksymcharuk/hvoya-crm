@@ -25,6 +25,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpConfirmationComponent } from './sign-up-confirmation/sign-up-confirmation.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { AdminSignUpComponent } from './admin-sign-up/admin-sign-up.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     ForgotPasswordConfirmationComponent,
     FreezedComponent,
     ResetPasswordConfirmationComponent,
+    AdminSignUpComponent,
   ],
   imports: [
     HttpClientModule,

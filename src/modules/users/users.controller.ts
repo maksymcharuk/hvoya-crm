@@ -2,6 +2,8 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { User } from '@decorators/user.decorator';
 import { ConfirmUserDto } from '@dtos/confirm-user.dto';
+import { SendAdminInvitationDto } from '@dtos/send-admin-invitation.dto';
+import { UpdateUserByAdminDto } from '@dtos/update-user-by-admin.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 
@@ -10,12 +12,11 @@ import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';
 import { UsersService } from './services/users.service';
-import { UpdateUserByAdminDto } from '@dtos/update-user-by-admin.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class UsersController {
-  constructor(private usersService: UsersService) { }
+  constructor(private usersService: UsersService) {}
 
   @Get('admins')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
@@ -36,6 +37,17 @@ export class UsersController {
     @Param('id') id: string,
   ) {
     return this.usersService.findByIdFull(id, currentUserId);
+  }
+
+  @Post(':id/update-by-admin')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.SuperUpdate, UserEntity),
+  )
+  async update(
+    @Param('id') userId: string,
+    @Body() userUpgrade: UpdateUserByAdminDto,
+  ) {
+    return this.usersService.update({ ...userUpgrade, id: userId });
   }
 
   @Get()
@@ -63,11 +75,13 @@ export class UsersController {
     return this.usersService.freezeToggleUser(userId);
   }
 
-  @Post(':id/update-by-admin')
+  @Post('send-admin-invitation')
   @CheckPolicies((ability: AppAbility) =>
-    ability.can(Action.SuperUpdate, UserEntity),
+    ability.can(Action.Create, UserEntity),
   )
-  async update(@Param('id') userId: string, @Body() userUpgrade: UpdateUserByAdminDto) {
-    return this.usersService.update({ ...userUpgrade, id: userId });
+  async sendAdminInvitation(
+    @Body() sendAdminInvitationDto: SendAdminInvitationDto,
+  ) {
+    return this.usersService.sendAdminInvitation(sendAdminInvitationDto);
   }
 }

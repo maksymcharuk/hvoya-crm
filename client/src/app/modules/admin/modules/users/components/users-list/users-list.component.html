@@ -72,7 +72,7 @@
     </ng-template>
     <ng-template pTemplate="groupheader" let-user>
       <tr *ngIf="'read' | able : user" pRowGroupHeader>
-        <td colspan="8">
+        <td colspan="9">
           <span class="font-bold ml-2">{{ user.role | roleName }}</span>
         </td>
       </tr>
@@ -88,7 +88,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="8">Користувачів не знайдено</td>
+        <td colspan="9">Користувачів не знайдено</td>
       </tr>
     </ng-template>
   </p-table>

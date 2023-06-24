@@ -8,6 +8,7 @@ import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { UserEntity } from '@entities/user.entity';
 
 import { OneCModule } from '@modules/integrations/one-c/one-c.module';
+import { MailModule } from '@modules/mail/mail.module';
 
 import { CaslModule } from '../casl/casl.module';
 import { UsersService } from './services/users.service';
@@ -24,6 +25,7 @@ import { UsersController } from './users.controller';
     ]),
     CaslModule,
     OneCModule,
+    MailModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],
