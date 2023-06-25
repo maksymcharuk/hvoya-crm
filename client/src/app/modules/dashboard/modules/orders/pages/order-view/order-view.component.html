@@ -1,6 +1,12 @@
-<div class="grid" data-cy="order-view-page">
+<div class="grid order-view" data-cy="order-view-page">
   <div class="col-12">
-    <div class="card">
+    <div class="card order-view__content">
+      <p-progressBar
+        *ngIf="submitting"
+        class="order-view__progress"
+        mode="indeterminate"
+        [style]="{ height: '4px' }"
+      ></p-progressBar>
       <div *ngIf="order$ | async as order">
         <h4 class="flex align-items-center">
           <span>Замовлення №{{ order.number }}</span>
@@ -15,6 +21,28 @@
               <div class="striped-list__item-key">Дата</div>
               <div class="striped-list__item-value">
                 {{ order.createdAt | date : 'short' }}
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Коментар</div>
+              <div class="striped-list__item-value">
+                <form
+                  class="p-fluid"
+                  [formGroup]="orderNoteForm"
+                  *ngIf="'update' | able : order; else noUpdateNote"
+                >
+                  <textarea
+                    rows="5"
+                    cols="30"
+                    pInputTextarea
+                    [autoResize]="true"
+                    formControlName="customerNote"
+                  ></textarea>
+                </form>
+
+                <ng-template #noUpdateNote>
+                  {{ order.customerNote }}
+                </ng-template>
               </div>
             </li>
             <!-- <li class="striped-list__item">

@@ -71,6 +71,9 @@ export class Order extends BaseEntity {
   number: number;
   total?: number;
   customer: User;
+  customerNote?: string;
+  managerNote?: string;
+
 
   get currentStatus(): OrderStatus {
     return this.statuses.length ? this.statuses[0]! : new OrderStatus();
@@ -85,5 +88,7 @@ export class Order extends BaseEntity {
     this.number = data?.number || 0;
     this.total = data?.total;
     this.customer = new User(data?.customer);
+    this.customerNote = data?.customerNote;
+    this.managerNote = data?.managerNote;
   }
 }

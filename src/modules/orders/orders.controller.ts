@@ -16,7 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { User } from '@decorators/user.decorator';
 import { CreateOrderDto } from '@dtos/create-order.dto';
-import { UpdateOrderWaybillDto } from '@dtos/update-order-waybill.dto';
+import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
 import { OrderEntity } from '@entities/order.entity';
 import { Action } from '@enums/action.enum';
@@ -30,7 +30,7 @@ import { OrdersService } from './services/orders.service';
 @Controller('orders')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class OrdersController {
-  constructor(private ordersService: OrdersService) {}
+  constructor(private ordersService: OrdersService) { }
 
   @Get(':number')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderEntity))
@@ -75,7 +75,7 @@ export class OrdersController {
     );
   }
 
-  @Put(':number/update-waybill')
+  @Put(':number/update-by-customer')
   @UseInterceptors(FileInterceptor('waybill'))
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Update, OrderEntity),
@@ -83,7 +83,7 @@ export class OrdersController {
   async updateOrderWaybill(
     @User('id') userId: string,
     @Param('number') orderNumber: string,
-    @Body() updateOrderWaybillDto: UpdateOrderWaybillDto,
+    @Body() updateOrderWaybillDto: UpdateOrderByCustomerDto,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -95,7 +95,7 @@ export class OrdersController {
     )
     waybill: Express.Multer.File,
   ): Promise<OrderEntity> {
-    return this.ordersService.updateOrderWaybill(
+    return this.ordersService.updateOrderByCustomer(
       userId,
       orderNumber,
       updateOrderWaybillDto,

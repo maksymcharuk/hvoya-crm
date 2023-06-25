@@ -36,4 +36,7 @@ export class UpdateOrderDto extends PartialType(CreateOrderDto) {
   })
   @IsNotEmpty({ message: 'Необхідно вказати причину зміни на даний статус' })
   orderStatusComment?: string;
+
+  @IsOptional()
+  managerNote?: string;
 }

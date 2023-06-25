@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsAlphanumeric, IsEnum, IsNotEmpty } from 'class-validator';
+import { IsAlphanumeric, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
 import { DeliveryService } from '@enums/delivery-service.enum';
 
@@ -14,6 +14,9 @@ export class CreateOrderDto {
   @IsEnum(DeliveryService)
   @IsNotEmpty({ message: 'Необхідно вказати службу доставки' })
   deliveryService: DeliveryService;
+
+  @IsOptional()
+  customerNote?: string;
 
   // NOTE: Keep this for a waybill generation logic in future
   // @IsNotEmpty()

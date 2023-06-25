@@ -13,6 +13,7 @@ export interface OrderCreateDTO {
   // city: string;
   // postOffice: string;
   waybill?: File;
+  customerNote?: string;
 }
 
 export interface OrderCreateFormGroup extends FormGroup {
@@ -31,5 +32,6 @@ export interface OrderCreateFormGroup extends FormGroup {
     // city: AbstractControl;
     // postOffice: AbstractControl;
     waybill: AbstractControl;
+    customerNote: AbstractControl;
   };
 }

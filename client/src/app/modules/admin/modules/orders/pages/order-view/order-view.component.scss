@@ -4,6 +4,17 @@
     align-items: center;
     justify-content: space-between;
   }
+
+  &__content {
+    position: relative;
+  }
+
+  &__progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
 }
 
 .statuses-history {
