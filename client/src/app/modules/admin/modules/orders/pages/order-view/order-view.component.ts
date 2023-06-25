@@ -1,8 +1,8 @@
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { BehaviorSubject, finalize } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, finalize, Subject, takeUntil } from 'rxjs';
 
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -19,8 +19,10 @@ import { alphanumeric } from '@shared/validators/alphanumeric.validator';
   templateUrl: './order-view.component.html',
   styleUrls: ['./order-view.component.scss'],
 })
-export class OrderViewComponent {
+export class OrderViewComponent implements OnDestroy {
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
+
+  private readonly destroy$ = new Subject<void>();
 
   order$ = new BehaviorSubject<Order | null>(null);
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
@@ -41,6 +43,14 @@ export class OrderViewComponent {
     ],
     waybill: [''],
   }) as UpdateWaybillFormGroup;
+
+  orderNoteForm = this.formBuilder.group({
+    managerNote: [''],
+  }) as OrderUpdateFormGroup;
+
+  get managerNoteControl(): AbstractControl {
+    return this.orderNoteForm.controls.managerNote!;
+  }
 
   updateOrderStatusForm = this.formBuilder.group({
     orderStatus: ['', Validators.required],
@@ -80,6 +90,14 @@ export class OrderViewComponent {
       this.updateOrderStatusForm.patchValue({
         orderStatus: order.currentStatus.status,
       });
+      this.orderNoteForm.patchValue(
+        {
+          managerNote: order.managerNote,
+        },
+        {
+          emitEvent: false,
+        },
+      );
     });
 
     this.waybillSubmitting$.subscribe((submitting) => {
@@ -110,6 +128,19 @@ export class OrderViewComponent {
         this.orderStatusCommentControl.updateValueAndValidity();
       }
     });
+
+    this.managerNoteControl.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(700), distinctUntilChanged())
+      .subscribe((note) => {
+        const formData = new FormData();
+        formData.append('managerNote', note);
+        this.updateOrderNote(formData);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onFileUpload(event: any) {
@@ -135,7 +166,7 @@ export class OrderViewComponent {
 
     this.waybillSubmitting$.next(true);
     this.ordersService
-      .updateWaybill(this.route.snapshot.params['number'], formData)
+      .updateByCustomer(this.route.snapshot.params['number'], formData)
       .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
@@ -183,5 +214,17 @@ export class OrderViewComponent {
           detail: 'Статус замовлення успішно оновлено',
         });
       });
+  }
+
+
+  updateOrderNote(note: FormData) {
+    this.ordersService
+      .orderUpdate(this.route.snapshot.params['number'], note).subscribe((order: Order) => {
+        this.order$.next(order);
+        this.messageService.add({
+          severity: 'success',
+          detail: 'Нотатку успішно оновлено',
+        });
+      })
   }
 }

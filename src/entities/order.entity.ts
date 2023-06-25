@@ -35,6 +35,12 @@ export class OrderEntity extends BaseEntity {
   })
   number: string | null;
 
+  @Column({ default: '' })
+  customerNote: string;
+
+  @Column({ default: '' })
+  managerNote: string;
+
   @OneToMany(() => OrderStatusEntity, (status) => status.order)
   statuses: OrderStatusEntity[];
 

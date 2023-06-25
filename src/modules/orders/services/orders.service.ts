@@ -6,7 +6,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { CreateOrderDto } from '@dtos/create-order.dto';
-import { UpdateOrderWaybillDto } from '@dtos/update-order-waybill.dto';
+import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
@@ -39,7 +39,7 @@ export class OrdersService {
     private oneCApiService: OneCApiService,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -116,6 +116,7 @@ export class OrdersService {
 
       let order = await queryRunner.manager.save(OrderEntity, {
         customer: { id: userId },
+        customerNote: createOrderDto.customerNote,
       });
 
       const status = await queryRunner.manager.save(OrderStatusEntity, {
@@ -296,6 +297,13 @@ export class OrdersService {
           },
         );
 
+        console.log(updateOrderDto);
+        if (updateOrderDto.managerNote) {
+          await queryRunner.manager.update(OrderEntity, order.id, {
+            managerNote: updateOrderDto.managerNote,
+          });
+        };
+
         if (updateOrderDto.orderStatus) {
           await this.updateOrderStatus(
             queryRunner,
@@ -334,10 +342,10 @@ export class OrdersService {
     }
   }
 
-  async updateOrderWaybill(
+  async updateOrderByCustomer(
     userId: string,
     orderNumber: string,
-    updateOrderWaybillDto: UpdateOrderWaybillDto,
+    updateOrderByCustomerDto: UpdateOrderByCustomerDto,
     waybill?: Express.Multer.File,
   ): Promise<OrderEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -362,15 +370,23 @@ export class OrdersService {
         );
       }
 
-      if (waybill) {
-        waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
-          folder: Folder.OrderFiles,
+      if (updateOrderByCustomerDto.trackingId) {
+        if (waybill) {
+          waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
+            folder: Folder.OrderFiles,
+          });
+        }
+        await queryRunner.manager.update(OrderDeliveryEntity, order.delivery.id, {
+          trackingId: updateOrderByCustomerDto.trackingId,
+          waybill: waybillScan,
         });
       }
-      await queryRunner.manager.update(OrderDeliveryEntity, order.delivery.id, {
-        trackingId: updateOrderWaybillDto.trackingId,
-        waybill: waybillScan,
-      });
+
+      if (updateOrderByCustomerDto.customerNote) {
+        await queryRunner.manager.update(OrderEntity, order.id, {
+          customerNote: updateOrderByCustomerDto.customerNote,
+        });
+      }
 
       await queryRunner.commitTransaction();
       return this.getOrderWhere({ id: order.id });

@@ -10,7 +10,7 @@ import { Order } from '@shared/interfaces/entities/order.entity';
   providedIn: 'root',
 })
 export class OrdersService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   orderCreate(orderCreateFormData: FormData): Observable<Order> {
     return this.http
@@ -27,13 +27,13 @@ export class OrdersService {
       .pipe(map((order) => new Order(order)));
   }
 
-  updateWaybill(
+  updateByCustomer(
     number: string,
     updateWaybillFormData: FormData,
   ): Observable<Order> {
     return this.http
       .put<Order>(
-        `${environment.apiUrl}/orders/${number}/update-waybill`,
+        `${environment.apiUrl}/orders/${number}/update-by-customer`,
         updateWaybillFormData,
       )
       .pipe(map((order) => new Order(order)));

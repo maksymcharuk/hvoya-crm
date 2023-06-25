@@ -9,6 +9,8 @@ export interface OrderUpdateDTO extends Partial<OrderCreateDTO> {
   orderStatus?: OrderStatus;
   orderStatusComment?: string;
   deliveryStatus?: OrderDeliveryStatus;
+  managerNote?: string;
+  customerNote?: string;
 }
 
 export interface OrderUpdateFormGroup extends FormGroup {
@@ -28,5 +30,7 @@ export interface OrderUpdateFormGroup extends FormGroup {
     orderStatus?: AbstractControl;
     orderStatusComment?: AbstractControl;
     deliveryStatus?: AbstractControl;
+    managerNote?: AbstractControl;
+    customerNote?: AbstractControl;
   };
 }

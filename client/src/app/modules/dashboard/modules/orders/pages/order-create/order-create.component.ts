@@ -57,6 +57,7 @@ export class OrderCreateComponent implements OnInit {
     // city: ['', Validators.required],
     // postOffice: ['', Validators.required],
     waybill: ['', Validators.required],
+    customerNote: [''],
   }) as OrderCreateFormGroup;
 
   get trackingId() {
@@ -75,7 +76,7 @@ export class OrderCreateComponent implements OnInit {
     private accountService: AccountService,
     private messageService: MessageService,
     private userBalanceService: UserBalanceService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.profile$.subscribe((profile) => {

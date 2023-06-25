@@ -1,6 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { BehaviorSubject, finalize } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, finalize, Subject, takeUntil } from 'rxjs';
 
 import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
@@ -14,6 +14,7 @@ import { Order } from '@shared/interfaces/entities/order.entity';
 import { OrdersService } from '@shared/services/orders.service';
 import { UserService } from '@shared/services/user.service';
 import { alphanumeric } from '@shared/validators/alphanumeric.validator';
+import { OrderUpdateFormGroup } from '@shared/interfaces/dto/update-order.dto';
 
 @Component({
   selector: 'app-order-view',
@@ -23,6 +24,8 @@ import { alphanumeric } from '@shared/validators/alphanumeric.validator';
 export class OrderViewComponent {
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
 
+  private readonly destroy$ = new Subject<void>();
+
   order$ = new BehaviorSubject<Order | null>(null);
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
   orderStatusEnum = OrderStatus;
@@ -30,6 +33,14 @@ export class OrderViewComponent {
   user = this.userService.getUser();
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   showWaybillViewDialog = false;
+
+  orderNoteForm = this.formBuilder.group({
+    customerNote: [''],
+  }) as OrderUpdateFormGroup;
+
+  get customerNoteControl(): AbstractControl {
+    return this.orderNoteForm.controls.customerNote!;
+  }
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: [
@@ -62,6 +73,14 @@ export class OrderViewComponent {
       this.updateWaybillForm.patchValue({
         trackingId: order.delivery.trackingId,
       });
+      this.orderNoteForm.patchValue(
+        {
+          customerNote: order.customerNote,
+        },
+        {
+          emitEvent: false,
+        },
+      );
     });
 
     this.waybillSubmitting$.subscribe((submitting) => {
@@ -69,6 +88,19 @@ export class OrderViewComponent {
         ? this.updateWaybillForm.disable()
         : this.updateWaybillForm.enable();
     });
+
+    this.customerNoteControl.valueChanges
+      .pipe(takeUntil(this.destroy$), debounceTime(700), distinctUntilChanged())
+      .subscribe((note) => {
+        const formData = new FormData();
+        formData.append('customerNote', note);
+        this.updateOrderNote(formData);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onFileUpload(event: any) {
@@ -95,7 +127,7 @@ export class OrderViewComponent {
 
     this.waybillSubmitting$.next(true);
     this.ordersService
-      .updateWaybill(this.route.snapshot.params['number'], formData)
+      .updateByCustomer(this.route.snapshot.params['number'], formData)
       .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
@@ -106,5 +138,17 @@ export class OrderViewComponent {
           detail: 'ТТП успішно оновлено',
         });
       });
+  }
+
+  updateOrderNote(note: FormData) {
+    this.ordersService.updateByCustomer(this.route.snapshot.params['number'], note)
+      .subscribe((order: Order) => {
+        this.order$.next(order);
+        this.messageService.add({
+          severity: 'success',
+          detail: 'Примітку успішно оновлено',
+        });
+      });
+
   }
 }
