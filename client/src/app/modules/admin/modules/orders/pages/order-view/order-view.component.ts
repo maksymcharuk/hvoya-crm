@@ -35,6 +35,7 @@ export class OrderViewComponent implements OnDestroy {
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   showWaybillViewDialog = false;
   showOrderStatusDialog = false;
+  submitting = false;
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: [
@@ -166,7 +167,7 @@ export class OrderViewComponent implements OnDestroy {
 
     this.waybillSubmitting$.next(true);
     this.ordersService
-      .updateByCustomer(this.route.snapshot.params['number'], formData)
+      .orderUpdate(this.route.snapshot.params['number'], formData)
       .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
@@ -218,8 +219,11 @@ export class OrderViewComponent implements OnDestroy {
 
 
   updateOrderNote(note: FormData) {
+    this.submitting = true;
     this.ordersService
-      .orderUpdate(this.route.snapshot.params['number'], note).subscribe((order: Order) => {
+      .orderUpdate(this.route.snapshot.params['number'], note)
+      .pipe(finalize(() => this.submitting = false))
+      .subscribe((order: Order) => {
         this.order$.next(order);
         this.messageService.add({
           severity: 'success',

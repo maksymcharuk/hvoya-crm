@@ -297,7 +297,6 @@ export class OrdersService {
           },
         );
 
-        console.log(updateOrderDto);
         if (updateOrderDto.managerNote) {
           await queryRunner.manager.update(OrderEntity, order.id, {
             managerNote: updateOrderDto.managerNote,

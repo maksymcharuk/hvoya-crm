@@ -33,6 +33,7 @@ export class OrderViewComponent {
   user = this.userService.getUser();
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   showWaybillViewDialog = false;
+  submitting = false;
 
   orderNoteForm = this.formBuilder.group({
     customerNote: [''],
@@ -141,12 +142,14 @@ export class OrderViewComponent {
   }
 
   updateOrderNote(note: FormData) {
+    this.submitting = true;
     this.ordersService.updateByCustomer(this.route.snapshot.params['number'], note)
+      .pipe(finalize(() => this.submitting = false))
       .subscribe((order: Order) => {
         this.order$.next(order);
         this.messageService.add({
           severity: 'success',
-          detail: 'Примітку успішно оновлено',
+          detail: 'Коментар успішно оновлено',
         });
       });
 
