@@ -1,7 +1,82 @@
 <div class="grid">
   <div class="col-12">
+    <div class="flex justify-content-end mb-3">
+      <p-button
+        *ngIf="'create' | able : userEntity"
+        label="Запросити адміністратора"
+        icon="pi pi-plus"
+        (click)="openAdminInvitationDialog()"
+      ></p-button>
+    </div>
     <div class="card p-0">
       <app-users-list [users]="users$ | async"></app-users-list>
     </div>
   </div>
 </div>
+
+<p-dialog
+  *ngIf="'create' | able : userEntity"
+  header="Надіслати запрошення для нового адміністратора"
+  styleClass="p-fluid"
+  [modal]="true"
+  [style]="{ width: '400px', maxWidth: '90%' }"
+  [(visible)]="showAdminInvitationDialog"
+>
+  <ng-template pTemplate="content">
+    <form [formGroup]="adminInvitationForm">
+      <div class="field">
+        <label for="email">Ел. пошта:</label>
+        <input
+          pInputText
+          id="email"
+          name="email"
+          placeholder="Вкажіть ел. пошту"
+          formControlName="email"
+        />
+        <app-form-control-error-message
+          [formGroup]="adminInvitationForm"
+          controlName="email"
+          errorType="required"
+          errorMessage="Це є обов'язковим полем"
+        ></app-form-control-error-message>
+      </div>
+      <div class="field">
+        <label for="role">Роль:</label>
+        <p-dropdown
+          formControlName="role"
+          placeholder="Статус"
+          appendTo="body"
+          [options]="roles"
+        >
+          <ng-template let-selected pTemplate="selectedItem">
+            {{ selected | roleName }}
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            {{ option | roleName }}
+          </ng-template>
+        </p-dropdown>
+        <app-form-control-error-message
+          [formGroup]="adminInvitationForm"
+          controlName="role"
+          errorType="required"
+          errorMessage="Це є обов'язковим полем"
+        ></app-form-control-error-message>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Відмінити"
+      icon="pi pi-times"
+      styleClass="p-button-outlined p-button-secondary"
+      (onClick)="closeAdminInvitationDialog()"
+    ></p-button>
+    <p-button
+      label="Надіслати"
+      icon="pi pi-check"
+      [disabled]="adminInvitationLoading"
+      (onClick)="sendAdminInvitation()"
+    ></p-button>
+  </ng-template>
+</p-dialog>

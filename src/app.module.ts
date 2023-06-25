@@ -12,6 +12,8 @@ import { AuthModule } from '@auth/auth.module';
 import { UserEntity } from '@entities/user.entity';
 import { WSocketModule } from '@gateways/websocket/websocket.module';
 
+import { JwTokenModule } from '@modules/jw-token/jw-token.module';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
@@ -41,6 +43,7 @@ import { UsersModule } from './modules/users/users.module';
         : `${process.cwd()}/env/.env`,
       isGlobal: true,
     }),
+    JwTokenModule,
     DatabaseModule,
     UsersModule,
     AuthModule,

@@ -320,7 +320,7 @@ export class ProductListComponent implements OnDestroy {
 
   private getSizeValue(str: string) {
     return parseInt(str.split(': ')[1]!);
-  };
+  }
   private getSizeType(str: string) {
     return str.split(': ')[0];
   }
@@ -370,7 +370,10 @@ export class ProductListComponent implements OnDestroy {
     const selectedFilterOptions = Object.entries(params)
       .filter(
         ([key]) =>
-          key !== 'searchQuery' && key !== 'order' && key !== 'orderBy' && key !== 'inStockOnly',
+          key !== 'searchQuery' &&
+          key !== 'order' &&
+          key !== 'orderBy' &&
+          key !== 'inStockOnly',
       )
       .flatMap(([key, value]: any) =>
         value

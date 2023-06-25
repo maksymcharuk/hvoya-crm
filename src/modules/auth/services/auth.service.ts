@@ -1,6 +1,8 @@
+import { validate } from 'class-validator';
 import { DataSource } from 'typeorm';
 
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   HttpException,
@@ -13,9 +15,11 @@ import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 
+import { AuthAdminSignUpDto } from '@dtos/auth-admin-sign-up.dto';
 import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
 import { ResetPasswordDto } from '@dtos/reset-password.dto';
+import { SendAdminInvitationDto } from '@dtos/send-admin-invitation.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Env } from '@enums/env.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
@@ -33,6 +37,10 @@ const { APP_ORIGIN } = config();
 
 @Injectable()
 export class AuthService {
+  private readonly baseClientUrl = APP_ORIGIN.get(
+    this.configService.get('NODE_ENV') || Env.Development,
+  );
+
   constructor(
     private dataSource: DataSource,
     private jwtService: JwtService,
@@ -71,7 +79,7 @@ export class AuthService {
     let adminUsers = await this.usersService.getAllSuperAdmins();
     if (user) {
       throw new HttpException(
-        'Користувача з такою електронною поштою вже існує. Спробуйте іншу пошту.',
+        'Користувач з такою електронною поштою вже існує. Спробуйте іншу пошту.',
         HttpStatus.CONFLICT,
       );
     }
@@ -114,6 +122,51 @@ export class AuthService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async adminSignUp(authAdminSignUpDto: AuthAdminSignUpDto) {
+    try {
+      await validate(authAdminSignUpDto);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+
+    const decodedToken: SendAdminInvitationDto = this.jwtService.verify(
+      authAdminSignUpDto.token,
+    );
+
+    if (!decodedToken) {
+      throw new HttpException('Недійсний токен', HttpStatus.BAD_REQUEST);
+    }
+
+    const { email } = decodedToken;
+
+    let user = await this.usersService.findByEmail(email);
+    if (user) {
+      throw new HttpException(
+        'Користувач з такою електронною поштою вже існує. Спробуйте іншу пошту.',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    try {
+      user = await this.usersService.create({
+        ...authAdminSignUpDto,
+        email: decodedToken.email,
+        role: decodedToken.role,
+        emailConfirmed: true,
+        userConfirmed: true,
+      });
+    } catch (err) {
+      throw new HttpException(err.message, 500);
+    }
+
+    this.eventEmitter.emit(NotificationEvent.UserCreated, {
+      data: user,
+      type: NotificationType.AdminCreated,
+    });
+
+    return this.signToken(user);
   }
 
   async confirmEmail(confirmEmailToken: string) {
@@ -200,9 +253,7 @@ export class AuthService {
     }
 
     const { access_token } = this.signToken(user);
-    const url = `${APP_ORIGIN.get(
-      this.configService.get('NODE_ENV') || Env.Development,
-    )}/auth/confirm-email?token=${access_token}`;
+    const url = `${this.baseClientUrl}/auth/confirm-email?token=${access_token}`;
     await this.mailService.send(new ConfirmEmailMail(user, url), user.email);
   }
 

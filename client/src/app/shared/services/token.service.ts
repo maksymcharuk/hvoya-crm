@@ -1,3 +1,5 @@
+import jwtDecode from 'jwt-decode';
+
 import { Injectable } from '@angular/core';
 
 import { StorageService } from './storage.service';
@@ -20,5 +22,9 @@ export class TokenService {
 
   removeToken() {
     this.storageService.removeItem(this.tokenKey);
+  }
+
+  decode(token: string) {
+    return jwtDecode(token);
   }
 }

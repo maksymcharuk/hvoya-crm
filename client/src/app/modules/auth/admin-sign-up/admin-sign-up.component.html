@@ -1,0 +1,178 @@
+<div class="admin-sign-up">
+  <a routerLink="/">
+    <img src="assets/images/logo.svg" alt="logo" />
+  </a>
+  <div class="admin-sign-up-wrapper">
+    <div class="admin-sign-up-wrapper-title">
+      <h3>Реєстрація</h3>
+    </div>
+    <form [formGroup]="adminSignUpForm" (ngSubmit)="onSubmit()">
+      <div class="admin-sign-up-wrapper-form">
+        <div class="p-fluid formgrid grid">
+          <!-- Left column -->
+          <div class="col-12">
+            <div class="field">
+              <label for="email">Пошта</label>
+              <div class="p-input-icon-right">
+                <i class="pi pi-user"></i>
+                <input
+                  name="email"
+                  formControlName="email"
+                  type="email"
+                  pInputText
+                  data-cy="email"
+                  [readonly]="true"
+                  [disabled]="true"
+                />
+              </div>
+            </div>
+            <div class="field">
+              <label for="phoneNumber">Номер телефону</label>
+              <p-inputMask
+                name="phoneNumber"
+                inputId="phone-number"
+                formControlName="phoneNumber"
+                mask="+38 (999) 999-9999"
+                slotChar=" "
+                [unmask]="true"
+                [autoClear]="false"
+                placeholder="Введіть номер телефону"
+                data-cy="phone-number"
+              ></p-inputMask>
+              <app-form-control-error-message
+                [formGroup]="adminSignUpForm"
+                controlName="phoneNumber"
+                errorType="required"
+                errorMessage="Потрібно ввести номер телефону"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="lastName">Прізвище</label>
+              <input
+                name="lastName"
+                formControlName="lastName"
+                type="text"
+                pInputText
+                placeholder="Введіть прізвище"
+                data-cy="last-name"
+              />
+              <app-form-control-error-message
+                [formGroup]="adminSignUpForm"
+                controlName="lastName"
+                errorType="required"
+                errorMessage="Потрібно ввести прізвище"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="firstName">Ім'я</label>
+              <input
+                name="firstName"
+                formControlName="firstName"
+                type="text"
+                pInputText
+                placeholder="Введіть ваше ім'я"
+                data-cy="first-name"
+              />
+              <app-form-control-error-message
+                [formGroup]="adminSignUpForm"
+                controlName="firstName"
+                errorType="required"
+                errorMessage="Потрібно ввести ім'я"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="middleName">По батькові</label>
+              <input
+                name="middleName"
+                formControlName="middleName"
+                type="text"
+                pInputText
+                placeholder="Введіть ваші по батькові"
+                data-cy="middle-name"
+              />
+              <app-form-control-error-message
+                [formGroup]="adminSignUpForm"
+                controlName="middleName"
+                errorType="required"
+                errorMessage="Потрібно ввести ваше по батькові"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="password">Пароль</label>
+              <p-password
+                name="password"
+                formControlName="password"
+                [toggleMask]="true"
+                placeholder="Введіть пароль"
+                data-cy="password"
+              >
+                <ng-template pTemplate="footer">
+                  <p-divider></p-divider>
+                  <p class="mt-2">Вимоги до паролю</p>
+                  <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                    <li [ngClass]="{ valid: !hasLowerCase }">
+                      Хоча б одна мала літера
+                      <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
+                    </li>
+                    <li [ngClass]="{ valid: !hasUpperCase }">
+                      Хоча б одна велика літера
+                      <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
+                    </li>
+                    <li [ngClass]="{ valid: !hasNumeric }">
+                      Хоча б одна цифра
+                      <i class="pi pi-check" *ngIf="!hasNumeric"></i>
+                    </li>
+                    <li [ngClass]="{ valid: !hasMinLength }">
+                      Не менше 8 символів
+                      <i class="pi pi-check" *ngIf="!hasMinLength"></i>
+                    </li>
+                  </ul>
+                </ng-template>
+              </p-password>
+              <app-form-control-error-message
+                [formGroup]="adminSignUpForm"
+                controlName="password"
+                errorType="required"
+                errorMessage="Потрібно ввести пароль"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="confirmPassword">Підтвердіть пароль</label>
+              <p-password
+                name="confirmPassword"
+                formControlName="confirmPassword"
+                [toggleMask]="true"
+                [feedback]="false"
+                placeholder="Підтвердіть пароль"
+                data-cy="confirm-password"
+              >
+              </p-password>
+              <app-form-control-error-message
+                [formGroup]="adminSignUpForm"
+                controlName="confirmPassword"
+                errorType="required"
+                errorMessage="Потрібно підтвердити пароль"
+              >
+              </app-form-control-error-message>
+            </div>
+          </div>
+        </div>
+        <div class="flex align-items-center mt-5">
+          <a [routerLink]="['/', 'auth', 'sign-in']">Вхід</a>
+          <button
+            class="ml-5"
+            type="submit"
+            pButton
+            label="Зареєструватися"
+            [disabled]="isLoading"
+          ></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

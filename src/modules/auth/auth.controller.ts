@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
+import { AuthAdminSignUpDto } from '@dtos/auth-admin-sign-up.dto';
 import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
 import { ResetPasswordDto } from '@dtos/reset-password.dto';
@@ -18,6 +19,11 @@ export class AuthController {
   @Post('sign-up')
   async signUp(@Body() authSignUpDto: AuthSignUpDto) {
     return this.authService.signUp(authSignUpDto);
+  }
+
+  @Post('admin/sign-up')
+  async adminSignUp(@Body() authAdminSignUpDto: AuthAdminSignUpDto) {
+    return this.authService.adminSignUp(authAdminSignUpDto);
   }
 
   @Post('confirm-email')

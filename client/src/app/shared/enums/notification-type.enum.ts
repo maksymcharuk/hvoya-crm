@@ -4,6 +4,8 @@ export enum NotificationType {
   UserCreated = 'user.created',
   UserConfirmed = 'user.confirmed',
 
+  AdminCreated = 'admin.created',
+
   OrderCreated = 'order.created',
   OrderStatusUpdated = 'order.status.updated',
 }
