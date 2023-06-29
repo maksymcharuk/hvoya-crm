@@ -4,7 +4,7 @@ import { User } from '@decorators/user.decorator';
 import { BalanceEntity } from '@entities/balance.entity';
 import { Action } from '@enums/action.enum';
 
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';

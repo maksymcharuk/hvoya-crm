@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 
 import { FileEntity } from '@entities/file.entity';
 
-import { CloudinaryService } from '../../../modules/cloudinary/services/cloudinary.service';
+import { CloudinaryService } from '@modules/cloudinary/services/cloudinary.service';
 
 @Injectable()
 export class FilesService {

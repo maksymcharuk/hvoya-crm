@@ -4,7 +4,7 @@
   "importOrder": [
     "^(?:@nestjs|@casl|@angular)/(.*)$",
     "^(?:@root)/(.*)$",
-    "^(?:@enums|@interfaces|@entities|@dtos|@auth|@decorators|@transformers|@shared|@environment|@layout|@utils|@adapters|@gateways)/(.*)$",
+    "^(?:@constants|@enums|@interfaces|@entities|@dtos|@auth|@decorators|@transformers|@shared|@environment|@layout|@utils|@adapters|@gateways)/(.*)$",
     "^(?:@modules)/(.*)$",
     "^[./]"
   ],

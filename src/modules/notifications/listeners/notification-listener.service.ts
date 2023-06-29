@@ -4,7 +4,8 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationCreatedEvent } from '@interfaces/notifications/notification-created.interface';
 
-import { UsersService } from '../../../modules/users/services/users.service';
+import { UsersService } from '@modules/users/services/users.service';
+
 import { NotificationService } from '../services/notification/notification.service';
 
 @Injectable()

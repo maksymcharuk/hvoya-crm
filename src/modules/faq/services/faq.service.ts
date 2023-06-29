@@ -16,7 +16,7 @@ import { Action } from '@enums/action.enum';
 import { hasDuplicates } from '@utils/has-duplicates.util';
 import { mergeArraysByProperty } from '@utils/merge-arrays-by-property.util';
 
-import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
+import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 
 @Injectable()
 export class FaqService {

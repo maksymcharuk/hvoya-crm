@@ -8,12 +8,13 @@ import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { UserEntity } from '@entities/user.entity';
 
-import { BalanceModule } from '../balance/balance.module';
-import { CartModule } from '../cart/cart.module';
-import { CaslModule } from '../casl/casl.module';
-import { CloudinaryModule } from '../cloudinary/cloudinary.module';
-import { FilesModule } from '../files/files.module';
-import { OneCModule } from '../integrations/one-c/one-c.module';
+import { BalanceModule } from '@modules/balance/balance.module';
+import { CartModule } from '@modules/cart/cart.module';
+import { CaslModule } from '@modules/casl/casl.module';
+import { CloudinaryModule } from '@modules/cloudinary/cloudinary.module';
+import { FilesModule } from '@modules/files/files.module';
+import { OneCClientModule } from '@modules/integrations/one-c/one-c-client/one-c-client.module';
+
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './services/orders.service';
 
@@ -32,9 +33,10 @@ import { OrdersService } from './services/orders.service';
     CloudinaryModule,
     FilesModule,
     BalanceModule,
-    OneCModule,
+    OneCClientModule,
   ],
   controllers: [OrdersController],
   providers: [OrdersService],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

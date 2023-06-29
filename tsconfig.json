@@ -38,6 +38,7 @@
       "@adapters/*": ["src/adapters/*"],
       "@gateways/*": ["src/gateways/*"],
       "@utils/*": ["src/utils/*"],
+      "@constants/*": ["src/constants/*"],
       "@root/*": ["src/*"]
     }
   }

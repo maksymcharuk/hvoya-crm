@@ -3,7 +3,6 @@ import { OrderStatus } from '@enums/order-status.enum';
 export const orderStatusToNameMap = new Map<OrderStatus, string>([
   [OrderStatus.Pending, 'Нове'],
   [OrderStatus.Processing, 'Опрацьовується менеджером'],
-  [OrderStatus.Packaging, 'Укомплектовується'],
   [OrderStatus.TransferedToDelivery, 'Передано до служби доставки'],
   [OrderStatus.Fulfilled, 'Виконано'],
   [OrderStatus.Cancelled, 'Скасовано'],
@@ -11,5 +10,5 @@ export const orderStatusToNameMap = new Map<OrderStatus, string>([
 ]);
 
 export const getOrderStatusName = (status: OrderStatus | undefined) => {
-  return (status && orderStatusToNameMap.get(status)) || 'Нове';
+  return (status && orderStatusToNameMap.get(status)) || 'Потребує уточнення';
 };

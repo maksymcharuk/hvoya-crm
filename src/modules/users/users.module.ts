@@ -7,7 +7,7 @@ import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { UserEntity } from '@entities/user.entity';
 
-import { OneCModule } from '@modules/integrations/one-c/one-c.module';
+import { OneCClientModule } from '@modules/integrations/one-c/one-c-client/one-c-client.module';
 import { MailModule } from '@modules/mail/mail.module';
 
 import { CaslModule } from '../casl/casl.module';
@@ -24,7 +24,7 @@ import { UsersController } from './users.controller';
       PaymentTransactionEntity,
     ]),
     CaslModule,
-    OneCModule,
+    OneCClientModule,
     MailModule,
   ],
   controllers: [UsersController],
