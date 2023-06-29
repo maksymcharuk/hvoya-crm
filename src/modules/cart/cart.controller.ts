@@ -6,7 +6,7 @@ import { RemoveFromCartDto } from '@dtos/remove-from-cart.dto';
 import { CartEntity } from '@entities/cart.entity';
 import { Action } from '@enums/action.enum';
 
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';

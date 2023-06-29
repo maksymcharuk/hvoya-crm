@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js';
 import { FilesService } from 'src/modules/files/services/files.service';
-import { DataSource, In, QueryRunner } from 'typeorm';
+import { DataSource, EntityManager, In, QueryRunner } from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -8,6 +8,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
+import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
@@ -23,10 +24,12 @@ import { NotificationType } from '@enums/notification-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { SyncProduct } from '@interfaces/one-c';
+import { validateOrderStatus } from '@utils/orders/validate-orer-status.util';
 
-import { BalanceService } from '../../../modules/balance/services/balance.service';
-import { CaslAbilityFactory } from '../../../modules/casl/casl-ability/casl-ability.factory';
-import { OneCApiService } from '../../../modules/integrations/one-c/services/one-c-api/one-c-api.service';
+import { BalanceService } from '@modules/balance/services/balance.service';
+import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
+import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
+
 import { CartService } from '../../cart/services/cart.service';
 
 @Injectable()
@@ -36,10 +39,10 @@ export class OrdersService {
     private filesService: FilesService,
     private cartService: CartService,
     private balanceService: BalanceService,
-    private oneCApiService: OneCApiService,
+    private OneCApiClientService: OneCApiClientService,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -301,7 +304,7 @@ export class OrdersService {
           await queryRunner.manager.update(OrderEntity, order.id, {
             managerNote: updateOrderDto.managerNote,
           });
-        };
+        }
 
         if (updateOrderDto.orderStatus) {
           await this.updateOrderStatus(
@@ -371,14 +374,22 @@ export class OrdersService {
 
       if (updateOrderByCustomerDto.trackingId) {
         if (waybill) {
-          waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
-            folder: Folder.OrderFiles,
-          });
+          waybillScan = await this.filesService.uploadFile(
+            queryRunner,
+            waybill,
+            {
+              folder: Folder.OrderFiles,
+            },
+          );
         }
-        await queryRunner.manager.update(OrderDeliveryEntity, order.delivery.id, {
-          trackingId: updateOrderByCustomerDto.trackingId,
-          waybill: waybillScan,
-        });
+        await queryRunner.manager.update(
+          OrderDeliveryEntity,
+          order.delivery.id,
+          {
+            trackingId: updateOrderByCustomerDto.trackingId,
+            waybill: waybillScan,
+          },
+        );
       }
 
       if (updateOrderByCustomerDto.customerNote) {
@@ -401,6 +412,39 @@ export class OrdersService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async updateBalanceAndStockOnCancel(
+    manager: EntityManager,
+    order: OrderEntity,
+  ) {
+    // Update balance
+    const balance = await manager.findOneOrFail(BalanceEntity, {
+      where: { owner: { id: order.customer.id } },
+    });
+    const transaction = await manager.save(PaymentTransactionEntity, {
+      amount: order.total,
+      status: TransactionStatus.Success,
+      balance,
+      order,
+    });
+    await manager.save(BalanceEntity, {
+      id: balance.id,
+      amount: balance.amount.plus(order.total),
+      paymentTransactions: [...balance.paymentTransactions, transaction],
+    });
+
+    // Update products stock
+    const orderItems = await manager.find(OrderItemEntity, {
+      where: { order: { id: order.id } },
+      relations: ['product'],
+    });
+    const products = orderItems.map((orderItem) => {
+      const product = orderItem.product;
+      product.stock = product.stock + orderItem.quantity;
+      return product;
+    });
+    await manager.save(ProductVariantEntity, products);
   }
 
   private calculateTotal(orderItems: OrderItemEntity[]): Decimal {
@@ -427,6 +471,8 @@ export class OrdersService {
       );
     }
 
+    validateOrderStatus(order.statuses[0]!.status, status);
+
     const newStatus = await queryRunner.manager.save(OrderStatusEntity, {
       status: status,
       comment: comment,
@@ -438,6 +484,10 @@ export class OrdersService {
       id: order.id,
       statuses: [...order.statuses, newStatus],
     });
+
+    if (newStatus.status === OrderStatus.Cancelled) {
+      await this.updateBalanceAndStockOnCancel(queryRunner.manager, order);
+    }
 
     this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
       data: { ...order, statuses: [newStatus, ...order.statuses] },
@@ -451,7 +501,7 @@ export class OrdersService {
     order: OrderEntity,
     newStatus?: OrderStatus,
   ) {
-    return this.oneCApiService.order({
+    return this.OneCApiClientService.order({
       userId: userId,
       id: order.id,
       total: this.calculateTotal(order.items),

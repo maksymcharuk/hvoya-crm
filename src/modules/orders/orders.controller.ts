@@ -21,7 +21,7 @@ import { UpdateOrderDto } from '@dtos/update-order.dto';
 import { OrderEntity } from '@entities/order.entity';
 import { Action } from '@enums/action.enum';
 
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '../casl/check-policies.decorator';
 import { PoliciesGuard } from '../casl/policies.guard';
@@ -30,7 +30,7 @@ import { OrdersService } from './services/orders.service';
 @Controller('orders')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class OrdersController {
-  constructor(private ordersService: OrdersService) { }
+  constructor(private ordersService: OrdersService) {}
 
   @Get(':number')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderEntity))

@@ -55,7 +55,7 @@ export class OrderDeliveryStatusBadgeComponent {
       case OrderDeliveryStatus.Returned:
         return 'Повернуто';
       default:
-        return 'В очікуванні';
+        return 'Потребує уточнення';
     }
   }
 }

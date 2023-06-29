@@ -26,12 +26,13 @@ import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 
+import { ConfirmEmailMail } from '@modules/mail/mails/confirm-email.mail';
+import { ConfirmUserMail } from '@modules/mail/mails/confirm-user.mail';
+import { ResetPasswordEmailMail } from '@modules/mail/mails/reset-password-email.mail';
+import { MailService } from '@modules/mail/services/mail.service';
+import { UsersService } from '@modules/users/services/users.service';
+
 import config from '../../../config';
-import { ConfirmEmailMail } from '../../../modules/mail/mails/confirm-email.mail';
-import { ConfirmUserMail } from '../../../modules/mail/mails/confirm-user.mail';
-import { ResetPasswordEmailMail } from '../../../modules/mail/mails/reset-password-email.mail';
-import { MailService } from '../../../modules/mail/services/mail.service';
-import { UsersService } from '../../../modules/users/services/users.service';
 
 const { APP_ORIGIN } = config();
 

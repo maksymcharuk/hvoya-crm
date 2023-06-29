@@ -31,11 +31,11 @@ import {
 const { isTest } = config();
 
 @Injectable()
-export class OneCApiService {
+export class OneCApiClientService {
   private readonly username =
-    this.configService.get<string>('ONE_C_USERNAME') ?? '';
+    this.configService.get<string>('ONE_C_API_USERNAME') ?? '';
   private readonly password =
-    this.configService.get<string>('ONE_C_PASSWORD') ?? '';
+    this.configService.get<string>('ONE_C_API_PASSWORD') ?? '';
   private readonly apiUrl =
     this.configService.get<string>('ONE_C_API_URL') ?? '';
   private readonly auth = {

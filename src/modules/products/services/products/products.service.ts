@@ -15,9 +15,10 @@ import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 
+import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
+import { FilesService } from '@modules/files/services/files.service';
+
 import { ProductCategoryEntity } from '../../../../entities/product-category.entity';
-import { CaslAbilityFactory } from '../../../../modules/casl/casl-ability/casl-ability.factory';
-import { FilesService } from '../../../../modules/files/services/files.service';
 
 @Injectable()
 export class ProductsService {
@@ -25,7 +26,7 @@ export class ProductsService {
     private dataSource: DataSource,
     private filesService: FilesService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) { }
+  ) {}
 
   async createProduct(
     createProductDto: CreateProductDto,
@@ -313,9 +314,12 @@ export class ProductsService {
     }
 
     if (pageOptionsDto.searchQuery) {
-      queryBuilder.andWhere('LOWER(properties.name) LIKE LOWER(:searchQuery) OR LOWER(variants.sku) LIKE LOWER(:searchQuery)', {
-        searchQuery: `%${pageOptionsDto.searchQuery}%`,
-      });
+      queryBuilder.andWhere(
+        'LOWER(properties.name) LIKE LOWER(:searchQuery) OR LOWER(variants.sku) LIKE LOWER(:searchQuery)',
+        {
+          searchQuery: `%${pageOptionsDto.searchQuery}%`,
+        },
+      );
     }
 
     if (pageOptionsDto.inStockOnly) {

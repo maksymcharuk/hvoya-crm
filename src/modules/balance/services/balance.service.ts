@@ -9,7 +9,7 @@ import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 
-import { OneCApiService } from '../../../modules/integrations/one-c/services/one-c-api/one-c-api.service';
+import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
 
 @Injectable()
 export class BalanceService {
@@ -17,7 +17,7 @@ export class BalanceService {
     @InjectRepository(BalanceEntity)
     private balanceRepository: Repository<BalanceEntity>,
     private readonly dataSource: DataSource,
-    private readonly oneCService: OneCApiService,
+    private readonly oneCService: OneCApiClientService,
   ) {}
 
   async getByUserId(userId: string): Promise<BalanceEntity> {

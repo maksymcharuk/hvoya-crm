@@ -20,7 +20,7 @@ import { NotificationType } from '@enums/notification-type.enum';
 import { Role } from '@enums/role.enum';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
-import { OneCApiService } from '@modules/integrations/one-c/services/one-c-api/one-c-api.service';
+import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
 import { AdminInvitationMail } from '@modules/mail/mails/admin-invitation.mail';
 import { MailService } from '@modules/mail/services/mail.service';
 
@@ -39,7 +39,7 @@ export class UsersService {
     private dataSource: DataSource,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
-    private readonly oneCApiService: OneCApiService,
+    private readonly OneCApiClientService: OneCApiClientService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
@@ -54,7 +54,7 @@ export class UsersService {
       let user = await manager.create<UserEntity>(UserEntity, createUserDto);
       user.balance = await manager.save(BalanceEntity, new BalanceEntity());
       await manager.save(user);
-      await this.oneCApiService.counterparty(user);
+      await this.OneCApiClientService.counterparty(user);
       return user;
     } catch (error) {
       throw new HttpException(error.message, 500);
@@ -93,7 +93,10 @@ export class UsersService {
       }
 
       await queryRunner.manager.save(UserEntity, { ...user, ...updateUserDto });
-      await this.oneCApiService.counterparty({ ...user, ...updateUserDto });
+      await this.OneCApiClientService.counterparty({
+        ...user,
+        ...updateUserDto,
+      });
 
       await queryRunner.commitTransaction();
       return this.dataSource.manager.findOneOrFail(UserEntity, {
