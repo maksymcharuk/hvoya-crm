@@ -4,6 +4,7 @@
 // IDE or Text Editor.
 // ***********************************************
 import { signToken } from 'cypress/support/helpers';
+import { QueryResult } from 'pg';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 interface SignInOptions {
@@ -210,7 +211,7 @@ function registerNewUser(email: string, password: string, options: any): void {
   cy.contains(email);
   cy.contains('Дякуємо за реєстрацію');
 
-  cy.task<any[]>(
+  cy.task<QueryResult>(
     'connectDB',
     `
       SELECT * 
@@ -219,13 +220,13 @@ function registerNewUser(email: string, password: string, options: any): void {
       ORDER BY id ASC
       LIMIT 1
     `,
-  ).then((users) => {
-    const token = signToken(users[0].id);
+  ).then((res) => {
+    const token = signToken(res.rows[0].id);
     cy.visit(`/auth/confirm-email?token=${token}`);
   });
 
   if (options.confirm) {
-    cy.task<any[]>(
+    cy.task<QueryResult>(
       'connectDB',
       `
         UPDATE public."user"
@@ -238,7 +239,7 @@ function registerNewUser(email: string, password: string, options: any): void {
 
 function registerNewAdmin(email: string, password: string): void {
   cy.registerNewUser(email, password, { confirm: true });
-  cy.task<any[]>(
+  cy.task<QueryResult>(
     'connectDB',
     `
       UPDATE public."user" 
@@ -451,12 +452,12 @@ function unFreezeUser(email: string): void {
 }
 
 function addFundsToUserBalance(email: string, amount: number): void {
-  cy.task<any[]>(
+  cy.task<QueryResult>(
     'connectDB',
     `SELECT "balanceId" FROM public."user" WHERE email = '${email}'`,
   ).then((res) => {
-    const { balanceId } = res[0];
-    cy.task<any[]>(
+    const { balanceId } = res.rows[0];
+    cy.task<QueryResult>(
       'connectDB',
       `UPDATE public."balance" SET "amount" = ${amount} WHERE id = '${balanceId}'`,
     );
