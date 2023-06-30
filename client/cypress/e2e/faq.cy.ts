@@ -1,13 +1,23 @@
+import { QueryResult } from 'pg';
+
 describe('FAQ', () => {
   const getFaqList = () => {
-    return cy.task<any[]>('connectDB', 'SELECT * FROM public.faq');
+    return cy
+      .task<QueryResult>('connectDB', 'SELECT * FROM public.faq')
+      .then((res) => {
+        return res.rows;
+      });
   };
 
   const getFaqListPublished = () => {
-    return cy.task<any[]>(
-      'connectDB',
-      'SELECT * FROM public.faq WHERE "isPublished" = true',
-    );
+    return cy
+      .task<QueryResult>(
+        'connectDB',
+        'SELECT * FROM public.faq WHERE "isPublished" = true',
+      )
+      .then((res) => {
+        return res.rows;
+      });
   };
 
   const openFaqItemMenuAndSelect = (faqItemIndex: number, menuItem: string) => {

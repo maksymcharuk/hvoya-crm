@@ -6,7 +6,6 @@ import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Role } from '@shared/enums/role.enum';
 import { AppAbility } from '@shared/interfaces/casl.interface';
 import {
   SignInDTO,
@@ -61,9 +60,7 @@ export class SignInComponent {
             return;
           }
 
-          const { role } = user;
-
-          if (role === Role.SuperAdmin || role === Role.Admin) {
+          if (user.isAnyAdmin) {
             this.router.navigate(['admin']);
           } else {
             this.router.navigate(['dashboard']);

@@ -7,6 +7,11 @@ import { DashboardMainComponent } from './pages/main/main.component';
 const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
+    redirectTo: 'products',
+  },
+  {
+    path: '',
     component: DashboardComponent,
     children: [
       {
@@ -45,7 +50,9 @@ const routes: Routes = [
       {
         path: 'balance',
         loadChildren: () =>
-          import('./modules/balance/balance.module').then((m) => m.BalanceModule),
+          import('./modules/balance/balance.module').then(
+            (m) => m.BalanceModule,
+          ),
       },
     ],
   },
@@ -55,4 +62,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class DashboardRoutingModule { }
+export class DashboardRoutingModule {}

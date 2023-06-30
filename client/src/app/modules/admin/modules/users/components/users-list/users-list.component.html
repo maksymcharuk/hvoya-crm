@@ -31,22 +31,21 @@
     <ng-template pTemplate="header">
       <tr>
         <th>Номер договору</th>
-        <th pSortableColumn="firstName">
+        <th pSortableColumn="fullName">
           <div class="flex justify-content-between align-items-center">
             ПІБ
-            <p-sortIcon field="firstName"></p-sortIcon>
-            <p-columnFilter
-              type="text"
-              field="firstName"
-              display="menu"
-              class="ml-auto"
-            ></p-columnFilter>
+            <p-sortIcon field="fullName"></p-sortIcon>
           </div>
         </th>
         <th>Нотатка</th>
         <th>Пошта</th>
         <th>Номер телефону</th>
-        <th>Менеджер</th>
+        <th pSortableColumn="manager.fullName">
+          <div class="flex justify-content-between align-items-center">
+            Менеджер
+            <p-sortIcon field="manager.fullName"></p-sortIcon>
+          </div>
+        </th>
         <th>
           <i
             class="pi pi-check-circle text-green-500"
@@ -68,6 +67,40 @@
             tooltipPosition="left"
           ></i>
         </th>
+      </tr>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>
+          <p-columnFilter
+            field="managers"
+            matchMode="in"
+            [showMenu]="false"
+            class="ml-auto"
+          >
+            <ng-template pTemplate="filter" let-value>
+              <p-multiSelect
+                [ngModel]="value"
+                [options]="managers"
+                placeholder="Виберіть ПІБ"
+                appendTo="body"
+                (onChange)="filterByName($event.value)"
+                optionLabel="lastName"
+                selectedItemsLabel="ellipsis"
+              >
+                <ng-template let-option pTemplate="item">
+                  <span>{{ option.fullName }}</span>
+                </ng-template>
+              </p-multiSelect>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th></th>
+        <th></th>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="groupheader" let-user>

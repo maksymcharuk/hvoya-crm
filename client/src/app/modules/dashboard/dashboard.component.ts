@@ -29,11 +29,11 @@ export class DashboardComponent {
     {
       label: '',
       items: [
-        {
-          label: 'Головна',
-          icon: 'pi pi-fw pi-home',
-          routerLink: ['/'],
-        },
+        // {
+        //   label: 'Головна',
+        //   icon: 'pi pi-fw pi-home',
+        //   routerLink: ['/'],
+        // },
         {
           label: 'Продукти',
           icon: 'pi pi-fw pi-shopping-cart',

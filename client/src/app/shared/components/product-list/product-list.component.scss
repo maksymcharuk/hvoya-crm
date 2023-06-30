@@ -25,10 +25,16 @@
 :host ::ng-deep {
   .p-multiselect-label-container {
     width: 18rem;
+    max-width: 100%;
+  }
+
+  .p-multiselect-items-wrapper {
+    max-height: 400px;
   }
 
   .p-dropdown {
     width: 14rem;
+    max-width: 100%;
   }
 
   .p-overlay {

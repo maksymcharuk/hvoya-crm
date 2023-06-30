@@ -1,6 +1,6 @@
-import { Client } from 'pg';
+import { Client, QueryResult } from 'pg';
 
-export const connectDB = async (query: string): Promise<any> => {
+export const connectDB = async (query: string): Promise<QueryResult> => {
   const client = new Client({
     user: process.env['DB_USERNAME'] || 'postgres',
     password: process.env['DB_PASSWORD'] || 'postgres',
@@ -12,5 +12,5 @@ export const connectDB = async (query: string): Promise<any> => {
   await client.connect();
   const res = await client.query(query);
   await client.end();
-  return res.rows;
+  return res;
 };

@@ -5,6 +5,10 @@
   object-fit: cover;
 }
 
+.gallery-image {
+  height: 500px;
+}
+
 .gallery-thumbnail {
   max-height: 120px;
 }
@@ -25,6 +29,7 @@
   .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-prev,
   .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-next {
     color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   .colors {

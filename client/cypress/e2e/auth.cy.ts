@@ -1,4 +1,5 @@
 import { signToken } from 'cypress/support/helpers';
+import { QueryResult } from 'pg';
 
 describe('Auth', () => {
   describe('Sign in', () => {
@@ -87,22 +88,19 @@ describe('Auth', () => {
       cy.signInAsSuperAdmin();
       cy.confirmUser(email);
       cy.logout();
-      cy.signIn(email, password);
-      cy.contains('Привіт користувач');
+      cy.signIn(email, password, { full: true });
     });
   });
 
   describe('Logout', () => {
     it('Logout as admin', () => {
-      cy.signInAsAdmin();
-      cy.contains('Привіт адмін');
+      cy.signInAsAdmin({ full: true });
       cy.logout();
       cy.url().should('contain', '/auth/sign-in');
     });
 
     it('Logout as user', () => {
-      cy.signInAsUser();
-      cy.contains('Привіт користувач');
+      cy.signInAsUser({ full: true });
       cy.logout();
       cy.url().should('contain', '/auth/sign-in');
     });
@@ -147,7 +145,7 @@ describe('Auth', () => {
     });
 
     it('Visits Reset password page with token and resets password', () => {
-      cy.task<any[]>(
+      cy.task<QueryResult>(
         'connectDB',
         `
           SELECT * 
@@ -156,8 +154,8 @@ describe('Auth', () => {
           ORDER BY id ASC
           LIMIT 1
         `,
-      ).then((users) => {
-        const token = signToken(users[0].id);
+      ).then((res) => {
+        const token = signToken(res.rows[0].id);
         const password = `Test${Date.now()}`;
 
         cy.resetPassword(password, token);
@@ -166,7 +164,7 @@ describe('Auth', () => {
     });
 
     it('Reset password and login with new one', () => {
-      cy.task<any[]>(
+      cy.task<QueryResult>(
         'connectDB',
         `
           SELECT * 
@@ -175,14 +173,13 @@ describe('Auth', () => {
           ORDER BY id ASC
           LIMIT 1
         `,
-      ).then((users) => {
-        const user = users[0];
+      ).then((res) => {
+        const user = res.rows[0];
         const token = signToken(user.id);
         const password = `Test${Date.now()}`;
 
         cy.resetPassword(password, token);
-        cy.signIn(user.email, password);
-        cy.contains('Привіт користувач');
+        cy.signIn(user.email, password, { full: true });
       });
     });
   });
@@ -214,8 +211,7 @@ describe('Auth', () => {
 
     it('Unfreeze user', () => {
       cy.unFreezeUser(email);
-      cy.signIn(email, password);
-      cy.contains('Привіт користувач');
+      cy.signIn(email, password, { full: true });
     });
   });
 });
