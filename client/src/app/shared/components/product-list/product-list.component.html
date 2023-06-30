@@ -10,29 +10,7 @@
       styleClass="mb-2 md:mb-0"
       [options]="sortOptions"
     ></p-dropdown> -->
-    <div class="flex justify-content-between align-items-start">
-      <p-multiSelect
-        formControlName="filters"
-        defaultLabel="Виберіть фільтри"
-        display="chip"
-        dataKey="uuid"
-        optionLabel="label"
-        [options]="(filterOptions$ | async) || []"
-        [group]="true"
-        class="mr-2"
-      >
-        <ng-template let-filter pTemplate="group">
-          <div class="flex align-items-center">
-            <span>{{ filter.label }}</span>
-          </div>
-        </ng-template>
-      </p-multiSelect>
-      <div class="flex align-items-center h-full">
-        <p-inputSwitch formControlName="stock"></p-inputSwitch>
-        <label class="ml-1">Тільки в наявності</label>
-      </div>
-    </div>
-    <span class="p-input-icon-left p-mb-2 p-mb-md-0">
+    <span class="p-input-icon-left">
       <i class="pi pi-search"></i>
       <input
         pInputText
@@ -42,6 +20,32 @@
         class="w-16rem"
       />
     </span>
+    <div class="flex align-items-start">
+      <div class="flex align-items-center h-full">
+        <p-inputSwitch
+          formControlName="stock"
+          class="flex"
+          inputId="stock"
+        ></p-inputSwitch>
+        <label class="ml-2" for="stock">Тільки в наявності</label>
+      </div>
+      <p-multiSelect
+        formControlName="filters"
+        defaultLabel="Виберіть фільтри"
+        display="chip"
+        dataKey="uuid"
+        optionLabel="label"
+        [options]="(filterOptions$ | async) || []"
+        [group]="true"
+        class="ml-4"
+      >
+        <ng-template let-filter pTemplate="group">
+          <div class="flex align-items-center">
+            <span>{{ filter.label }}</span>
+          </div>
+        </ng-template>
+      </p-multiSelect>
+    </div>
   </form>
 </ng-container>
 

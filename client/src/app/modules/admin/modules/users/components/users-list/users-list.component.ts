@@ -5,6 +5,7 @@ import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
 import { User } from '@shared/interfaces/entities/user.entity';
+import { getUniqueObjectsByKey } from '@shared/utils';
 
 @Component({
   selector: 'app-users-list',
@@ -25,6 +26,7 @@ export class UsersListComponent implements OnDestroy {
     'phoneNumber',
   ];
   userEntity = User;
+  managers: User[] = [];
 
   private usersInternal: User[] = [];
   private destroy$ = new Subject();
@@ -33,6 +35,7 @@ export class UsersListComponent implements OnDestroy {
     if (!users) {
       return;
     }
+    this.managers = this.getUniqueManagers(users);
     this.usersInternal = users;
     this.loading = false;
   }
@@ -47,9 +50,7 @@ export class UsersListComponent implements OnDestroy {
     return this.searchForm.get('search');
   }
 
-  constructor(
-    private fb: FormBuilder,
-  ) {
+  constructor(private fb: FormBuilder) {
     this.searchControl?.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe((query) => {
@@ -60,5 +61,20 @@ export class UsersListComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  filterByName(managers: User[]) {
+    this.usersTable.filter(
+      managers.map((manager) => manager.fullName),
+      'manager.fullName',
+      'in',
+    );
+  }
+
+  private getUniqueManagers(users: User[]) {
+    const managers: User[] = users
+      .filter((user) => !!user.manager)
+      .map((user) => user.manager!);
+    return getUniqueObjectsByKey(managers, 'id');
   }
 }

@@ -9,7 +9,10 @@
       [showThumbnails]="images.length > 2"
     >
       <ng-template pTemplate="item" let-item>
-        <img class="gallery-image" [src]="item.url" />
+        <app-image-component
+          class="gallery-image"
+          [image]="item.url"
+        ></app-image-component>
       </ng-template>
       <ng-template pTemplate="thumbnail" let-item>
         <img class="gallery-thumbnail" [src]="item.url" />

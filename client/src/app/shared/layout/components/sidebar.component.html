@@ -2,6 +2,8 @@
   <h5 class="user-info__name">
     {{ profile.lastName }} {{ profile.firstName }}
   </h5>
-  <div>Номер договору: {{ profile.accountNumber }}</div>
+  <div class="user-info__number" *ngIf="currentUser?.isUser">
+    Номер договору: {{ profile.accountNumber }}
+  </div>
 </div>
 <app-menu [menuItems]="menuItems"></app-menu>

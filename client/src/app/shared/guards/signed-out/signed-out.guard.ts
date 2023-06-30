@@ -24,9 +24,7 @@ export class SignedOutGuard implements CanActivate {
         return true;
       }
 
-      const { role } = user;
-
-      if (role === 'SuperAdmin' || role === 'Admin') {
+      if (user.isAnyAdmin) {
         this.router.navigateByUrl('admin');
       } else {
         this.router.navigateByUrl('dashboard');

@@ -7,7 +7,10 @@
     "
   >
     <a [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]">
-      <img [src]="selectedImage" class="wrapper__img" />
+      <app-image-component
+        class="wrapper__img"
+        [image]="selectedImage"
+      ></app-image-component>
       <div
         *ngIf="selectedVariant?.properties?.isPublished === false"
         class="overlay"

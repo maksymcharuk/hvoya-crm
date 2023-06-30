@@ -35,7 +35,7 @@ export class OrderListComponent implements OnDestroy {
   @ViewChild('ordersTable') ordersTable!: Table;
 
   loading = true;
-  customers: User[] = []
+  customers: User[] = [];
   searchForm = this.fb.group({
     search: [''],
   });
@@ -63,7 +63,13 @@ export class OrderListComponent implements OnDestroy {
   get globalFilterFields() {
     const defaultFilterFields = ['total'];
     return this.adminView
-      ? [...defaultFilterFields, 'customer.firstName', 'customer.lastName', 'customer.middleName', 'delivery.trackingId']
+      ? [
+          ...defaultFilterFields,
+          'customer.firstName',
+          'customer.lastName',
+          'customer.middleName',
+          'delivery.trackingId',
+        ]
       : defaultFilterFields;
   }
 
@@ -74,9 +80,7 @@ export class OrderListComponent implements OnDestroy {
   private orderInternal: any[] = [];
   private destroy$ = new Subject();
 
-  constructor(
-    private fb: FormBuilder,
-  ) {
+  constructor(private fb: FormBuilder) {
     this.searchControl?.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe((query) => {
@@ -91,10 +95,14 @@ export class OrderListComponent implements OnDestroy {
 
   getUniqueCustomers(orders: Order[]) {
     const customers = orders.map((order) => order.customer);
-    return getUniqueObjectsByKey(customers, 'id')
+    return getUniqueObjectsByKey(customers, 'id');
   }
 
   filterByName(customers: User[]) {
-    this.ordersTable.filter(customers.map((customer) => customer.fullName), 'customer.fullName', 'in');
+    this.ordersTable.filter(
+      customers.map((customer) => customer.fullName),
+      'customer.fullName',
+      'in',
+    );
   }
 }

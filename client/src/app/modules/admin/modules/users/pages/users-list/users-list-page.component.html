@@ -1,8 +1,10 @@
 <div class="grid">
   <div class="col-12">
-    <div class="flex justify-content-end mb-3">
+    <div
+      *ngIf="'create' | able : userEntity"
+      class="flex justify-content-end mb-3"
+    >
       <p-button
-        *ngIf="'create' | able : userEntity"
         label="Запросити адміністратора"
         icon="pi pi-plus"
         (click)="openAdminInvitationDialog()"

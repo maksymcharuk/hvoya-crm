@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Role } from '@shared/enums/role.enum';
 import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { NotificationsService } from '@shared/services/notifications.service';
@@ -29,10 +28,10 @@ export class OrderListItemComponent {
   ) {}
 
   navigateToOrder() {
-    const role = this.userService.getUser()?.role;
     // TODO: create URL builder service and move this logic there
-    const path =
-      role === Role.Admin || role === Role.SuperAdmin ? '/admin' : '/dashboard';
+    const path = this.userService.getUser()?.isAnyAdmin
+      ? '/admin'
+      : '/dashboard';
     this.router.navigate([`${path}/orders/${this.order.number}`]);
 
     if (this.orderNotification) {

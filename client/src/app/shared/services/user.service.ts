@@ -8,9 +8,9 @@ import { environment } from '@environment/environment';
 import { ConfirmUserDTO } from '@shared/interfaces/dto/confirm-user.dto';
 import { SendAdminInvitationDTO } from '@shared/interfaces/dto/send-admin-invitation.dto';
 import { UpdateUserByAdminDTO } from '@shared/interfaces/dto/update-user-by-admin.dto';
+import { TokenUser } from '@shared/interfaces/entities/token-user.entity';
 import { User } from '@shared/interfaces/entities/user.entity';
 import { JwtTokenPayload } from '@shared/interfaces/jwt-payload.interface';
-import { TokenUser } from '@shared/interfaces/token-user.interface';
 
 import { TokenService } from './token.service';
 
@@ -26,7 +26,7 @@ export class UserService {
     if (!token) return null;
     const decodedToken: JwtTokenPayload = jwt_decode(token);
 
-    return decodedToken.user;
+    return new TokenUser(decodedToken.user);
   }
 
   getUsers(): Observable<User[]> {

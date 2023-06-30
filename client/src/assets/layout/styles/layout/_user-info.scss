@@ -3,6 +3,10 @@
   border-bottom: 2px solid var(--primary-color);
 
   &__name {
-    margin-bottom: 0.5rem;
+    margin: 0;
+  }
+
+  &__number {
+    margin-top: 0.5rem;
   }
 }

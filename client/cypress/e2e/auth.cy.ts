@@ -87,22 +87,19 @@ describe('Auth', () => {
       cy.signInAsSuperAdmin();
       cy.confirmUser(email);
       cy.logout();
-      cy.signIn(email, password);
-      cy.contains('Привіт користувач');
+      cy.signIn(email, password, { full: true });
     });
   });
 
   describe('Logout', () => {
     it('Logout as admin', () => {
-      cy.signInAsAdmin();
-      cy.contains('Привіт адмін');
+      cy.signInAsAdmin({ full: true });
       cy.logout();
       cy.url().should('contain', '/auth/sign-in');
     });
 
     it('Logout as user', () => {
-      cy.signInAsUser();
-      cy.contains('Привіт користувач');
+      cy.signInAsUser({ full: true });
       cy.logout();
       cy.url().should('contain', '/auth/sign-in');
     });
@@ -181,8 +178,7 @@ describe('Auth', () => {
         const password = `Test${Date.now()}`;
 
         cy.resetPassword(password, token);
-        cy.signIn(user.email, password);
-        cy.contains('Привіт користувач');
+        cy.signIn(user.email, password, { full: true });
       });
     });
   });
@@ -214,8 +210,7 @@ describe('Auth', () => {
 
     it('Unfreeze user', () => {
       cy.unFreezeUser(email);
-      cy.signIn(email, password);
-      cy.contains('Привіт користувач');
+      cy.signIn(email, password, { full: true });
     });
   });
 });

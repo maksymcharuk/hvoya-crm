@@ -32,6 +32,7 @@ import { DeliveryServiceBadgeComponent } from './components/delivery-service-bad
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
 import { FaqListComponent } from './components/faq-list/faq-list.component';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
+import { ImageComponentComponent } from './components/image-component/image-component.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { OrderDeliveryStatusBadgeComponent } from './components/order-delivery-status-badge/order-delivery-status-badge.component';
 import { OrderListItemComponent } from './components/order-list/order-list-item/order-list-item.component';
@@ -87,6 +88,7 @@ const COMPONENTS = [
   NotificationsComponent,
   TransactionsListComponent,
   OrderListItemComponent,
+  ImageComponentComponent,
 ];
 
 const PRIMENG_MODULES = [

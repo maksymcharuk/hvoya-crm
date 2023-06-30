@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 
 import { NotificationType } from '@shared/enums/notification-type.enum';
-import { Role } from '@shared/enums/role.enum';
 import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
 import { NotificationsService } from '@shared/services/notifications.service';
 import { UserService } from '@shared/services/user.service';
@@ -31,9 +30,7 @@ export class NotificationsComponent {
     if (!notification.data) {
       return '';
     }
-    const root = [Role.Admin, Role.SuperAdmin].includes(this.user!.role)
-      ? '/admin'
-      : '/dashboard';
+    const root = this.user?.isAnyAdmin ? '/admin' : '/dashboard';
     if (notification.dataIsOrder(notification.data)) {
       return `${root}/orders/${notification.data.number}`;
     } else if (notification.dataIsUser(notification.data)) {

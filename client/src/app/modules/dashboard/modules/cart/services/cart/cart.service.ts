@@ -13,6 +13,7 @@ import { environment } from '@environment/environment';
 import { AddToCartDTO } from '@shared/interfaces/dto/add-to-cart.dto';
 import { RemoveFromCartDTO } from '@shared/interfaces/dto/remove-from-cart.dto';
 import { Cart } from '@shared/interfaces/entities/cart.entity';
+import { UserService } from '@shared/services/user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -32,8 +33,10 @@ export class CartService {
     }),
   );
 
-  constructor(private http: HttpClient) {
-    this.getCart().subscribe();
+  constructor(private http: HttpClient, private userService: UserService) {
+    if (this.userService.getUser()?.isUser) {
+      this.getCart().subscribe();
+    }
   }
 
   getCart(): Observable<Cart> {
