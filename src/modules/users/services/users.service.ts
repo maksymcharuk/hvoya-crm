@@ -39,7 +39,7 @@ export class UsersService {
     private dataSource: DataSource,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
-    private readonly OneCApiClientService: OneCApiClientService,
+    private readonly oneCApiClientService: OneCApiClientService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
@@ -54,7 +54,7 @@ export class UsersService {
       let user = await manager.create<UserEntity>(UserEntity, createUserDto);
       user.balance = await manager.save(BalanceEntity, new BalanceEntity());
       await manager.save(user);
-      await this.OneCApiClientService.counterparty(user);
+      await this.oneCApiClientService.counterparty(user);
       return user;
     } catch (error) {
       throw new HttpException(error.message, 500);
@@ -93,7 +93,7 @@ export class UsersService {
       }
 
       await queryRunner.manager.save(UserEntity, { ...user, ...updateUserDto });
-      await this.OneCApiClientService.counterparty({
+      await this.oneCApiClientService.counterparty({
         ...user,
         ...updateUserDto,
       });
