@@ -39,7 +39,7 @@ export class OrdersService {
     private filesService: FilesService,
     private cartService: CartService,
     private balanceService: BalanceService,
-    private OneCApiClientService: OneCApiClientService,
+    private oneCApiClientService: OneCApiClientService,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -237,7 +237,7 @@ export class OrdersService {
         }
       } finally {
         await queryRunner.rollbackTransaction();
-        if (err.response.data) {
+        if (err.response && err.response.data) {
           await this.syncProductsStock(err.response.data);
         }
         throw new HttpException(
@@ -487,6 +487,7 @@ export class OrdersService {
 
     if (newStatus.status === OrderStatus.Cancelled) {
       await this.updateBalanceAndStockOnCancel(queryRunner.manager, order);
+      await this.oneCApiClientService.cancel(order.id);
     }
 
     this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
@@ -501,7 +502,7 @@ export class OrdersService {
     order: OrderEntity,
     newStatus?: OrderStatus,
   ) {
-    return this.OneCApiClientService.order({
+    return this.oneCApiClientService.order({
       userId: userId,
       id: order.id,
       total: this.calculateTotal(order.items),
@@ -511,11 +512,15 @@ export class OrdersService {
         quantity: item.quantity,
         price: item.productProperties.price,
       })),
-      createdAt: order.createdAt, // '2023-05-29T14:06:07'
+      createdAt: order.createdAt,
     });
   }
 
-  private async syncProductsStock(products: SyncProduct[]) {
+  private async syncProductsStock(products: SyncProduct[]): Promise<void> {
+    if (!Array.isArray(products)) {
+      return;
+    }
+
     const productsToUpdate = await this.dataSource.manager.find(
       ProductVariantEntity,
       {

@@ -125,6 +125,24 @@ export class OneCApiClientService {
     );
   }
 
+  cancel(orderId: string): Promise<void> {
+    return this.makeApiCall(
+      this.httpService
+        .post<void>(
+          `${this.apiUrl}/Cancel?id_order=${orderId}`,
+          {},
+          {
+            auth: this.auth,
+          },
+        )
+        .pipe(
+          map((response: AxiosResponse<void>) => {
+            return response.data;
+          }),
+        ),
+    );
+  }
+
   depositFunds(data: DepositFundsDtoData): Promise<void> {
     const requestData: DepositFundsDto = new DepositFundsDto(data);
     return this.makeApiCall(

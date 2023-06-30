@@ -13,14 +13,14 @@ import { OneCApiClientService } from '../one-c-api-client/one-c-api-client.servi
 export class OneCSyncService {
   constructor(
     private readonly dataSource: DataSource,
-    private readonly OneCApiClientService: OneCApiClientService,
+    private readonly oneCApiClientService: OneCApiClientService,
   ) {}
 
   async syncProducts(): Promise<void> {
     const products = await this.dataSource.manager.find(ProductVariantEntity, {
       relations: ['properties'],
     });
-    const oneCProducts = await this.OneCApiClientService.syncProducts();
+    const oneCProducts = await this.oneCApiClientService.syncProducts();
 
     for (let product of products) {
       const newProduct = oneCProducts.find(
