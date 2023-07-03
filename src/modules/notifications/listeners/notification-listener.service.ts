@@ -35,6 +35,11 @@ export class NotificationListenerService {
     this.sendNotificationToUser(payload);
   }
 
+  @OnEvent(NotificationEvent.OrderCancelled)
+  async handleOrderCancelledEvent(payload: NotificationCreatedEvent) {
+    this.sendNotificationToAdmins(payload);
+  }
+
   private async sendNotificationToAdmins(payload: NotificationCreatedEvent) {
     let adminUsers = await this.usersService.getAllAdmins();
 

@@ -73,7 +73,7 @@ export class PoliciesService {
         can('visit', DashboardPage);
         can('read', User, (user: User) => user.id === currentUser.id);
         can(
-          'update',
+          ['update', 'cancel'],
           Order,
           (order: Order) => order.currentStatus.status === OrderStatus.Pending,
         );

@@ -103,6 +103,17 @@ export class OrdersController {
     );
   }
 
+  @Post(':number/cancel-by-customer')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Update, OrderEntity),
+  )
+  async cancelByCustomer(
+    @User('id') userId: string,
+    @Param('number') orderNumber: string,
+  ): Promise<OrderEntity> {
+    return this.ordersService.cancelByCustomer(userId, orderNumber);
+  }
+
   @Post()
   @UseInterceptors(FileInterceptor('waybill'))
   @CheckPolicies((ability: AppAbility) =>

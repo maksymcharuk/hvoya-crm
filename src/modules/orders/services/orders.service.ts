@@ -473,6 +473,77 @@ export class OrdersService {
 
     validateOrderStatus(order.statuses[0]!.status, status);
 
+    const newStatus = await this.updateOrderStatusInternal(
+      queryRunner,
+      order,
+      userId,
+      status,
+      comment,
+    );
+
+    this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
+      data: { ...order, statuses: [newStatus, ...order.statuses] },
+      userId: order.customer.id,
+      type: NotificationType.OrderStatusUpdated,
+    });
+  }
+
+  async cancelByCustomer(
+    userId: string,
+    orderNumber: string,
+  ): Promise<OrderEntity> {
+    const user = await this.dataSource.manager.findOneOrFail(UserEntity, {
+      where: { id: userId },
+    });
+    const order = await this.getOrderWhere({ number: orderNumber }, [
+      'customer',
+    ]);
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    if (ability.cannot(Action.Cancel, order)) {
+      throw new HttpException(
+        'Неможливо скасувати дане замовлення',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const newStatus = await this.updateOrderStatusInternal(
+        queryRunner,
+        order,
+        userId,
+        OrderStatus.Cancelled,
+        'Скасовано клієнтом',
+      );
+
+      this.eventEmitter.emit(NotificationEvent.OrderCancelled, {
+        data: { ...order, statuses: [newStatus, ...order.statuses] },
+        userId: order.customer.id,
+        type: NotificationType.OrderCancelled,
+      });
+
+      await queryRunner.commitTransaction();
+      return this.getOrderWhere({ id: order.id });
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  private async updateOrderStatusInternal(
+    queryRunner: QueryRunner,
+    order: OrderEntity,
+    userId: string,
+    status: OrderStatus,
+    comment?: string,
+  ): Promise<OrderStatusEntity> {
     const newStatus = await queryRunner.manager.save(OrderStatusEntity, {
       status: status,
       comment: comment,
@@ -490,11 +561,7 @@ export class OrdersService {
       await this.oneCApiClientService.cancel(order.id);
     }
 
-    this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
-      data: { ...order, statuses: [newStatus, ...order.statuses] },
-      userId: order.customer.id,
-      type: NotificationType.OrderStatusUpdated,
-    });
+    return newStatus;
   }
 
   private async upsertOrderToOneC(

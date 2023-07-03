@@ -1,5 +1,7 @@
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
+import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -49,6 +51,8 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     SharedModule,
     AbilityModule,
     NgxDocViewerModule,
+    ConfirmDialogModule,
   ],
+  providers: [ConfirmationService],
 })
 export class OrdersModule {}

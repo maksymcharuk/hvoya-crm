@@ -119,7 +119,7 @@ export class CaslAbilityFactory {
         },
       ); // can read and create only his own orders
       can(
-        [Action.Update],
+        [Action.Update, Action.Cancel],
         OrderEntity,
         ({ customer, statuses }: OrderEntity) => {
           return (
@@ -127,7 +127,7 @@ export class CaslAbilityFactory {
             OrderStatus.Pending === statuses[0]?.status
           );
         },
-      ); // can update only his own orders with status pending
+      ); // can update or cancel only his own orders with status pending
       // FAQ
       can(
         [Action.Read],
