@@ -8,13 +8,22 @@
         [style]="{ height: '4px' }"
       ></p-progressBar>
       <div *ngIf="order$ | async as order">
-        <h4 class="flex align-items-center">
-          <span>Замовлення №{{ order.number }}</span>
-          <app-order-status-badge
-            class="ml-5"
-            [status]="order.currentStatus.status"
-          ></app-order-status-badge>
-        </h4>
+        <div class="flex align-items-center justify-content-between mb-3">
+          <h4 class="flex align-items-center m-0">
+            <span>Замовлення №{{ order.number }}</span>
+            <app-order-status-badge
+              class="ml-5"
+              [status]="order.currentStatus.status"
+            ></app-order-status-badge>
+          </h4>
+          <p-button
+            *ngIf="'cancel' | able : order"
+            icon="pi pi-times"
+            styleClass="p-button-danger"
+            label="Скасувати замовлення"
+            (click)="confirmOrderCancelation()"
+          ></p-button>
+        </div>
         <div class="my-5">
           <ul class="striped-list">
             <li class="striped-list__item">
@@ -223,6 +232,13 @@
             </div>
           </div>
         </div>
+
+        <p-confirmDialog
+          *ngIf="'cancel' | able : order"
+          rejectButtonStyleClass="p-button-outlined p-button-secondary"
+          acceptButtonStyleClass="p-button-danger"
+          header="Ви впевнені, що хочете скасувати дане замовлення?"
+        ></p-confirmDialog>
       </div>
     </div>
   </div>

@@ -1,11 +1,14 @@
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import {
   BehaviorSubject,
   Subject,
+  combineLatest,
   debounceTime,
   distinctUntilChanged,
   finalize,
+  mergeMap,
+  of,
   takeUntil,
 } from 'rxjs';
 
@@ -21,6 +24,8 @@ import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dt
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { OrdersService } from '@shared/services/orders.service';
 import { alphanumeric } from '@shared/validators/alphanumeric.validator';
+
+import { UserBalanceService } from '../../../balance/services/user-balance.service';
 
 @Component({
   selector: 'app-order-view',
@@ -39,6 +44,7 @@ export class OrderViewComponent {
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   showWaybillViewDialog = false;
   submitting = false;
+  orderId = this.route.snapshot.params['number'];
 
   orderNoteForm = this.formBuilder.group({
     customerNote: [''],
@@ -61,16 +67,16 @@ export class OrderViewComponent {
   }
 
   constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private ordersService: OrdersService,
-    private messageService: MessageService,
+    private readonly formBuilder: FormBuilder,
+    private readonly route: ActivatedRoute,
+    private readonly ordersService: OrdersService,
+    private readonly userBalanceService: UserBalanceService,
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService,
   ) {
-    this.ordersService
-      .getOrder(this.route.snapshot.params['number'])
-      .subscribe((order) => {
-        this.order$.next(order);
-      });
+    this.ordersService.getOrder(this.orderId).subscribe((order) => {
+      this.order$.next(order);
+    });
     this.order$.subscribe((order) => {
       if (!order) {
         return;
@@ -132,7 +138,7 @@ export class OrderViewComponent {
 
     this.waybillSubmitting$.next(true);
     this.ordersService
-      .updateByCustomer(this.route.snapshot.params['number'], formData)
+      .updateByCustomer(this.orderId, formData)
       .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
@@ -148,7 +154,7 @@ export class OrderViewComponent {
   updateOrderNote(note: FormData) {
     this.submitting = true;
     this.ordersService
-      .updateByCustomer(this.route.snapshot.params['number'], note)
+      .updateByCustomer(this.orderId, note)
       .pipe(finalize(() => (this.submitting = false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
@@ -157,5 +163,29 @@ export class OrderViewComponent {
           detail: 'Коментар успішно оновлено',
         });
       });
+  }
+
+  confirmOrderCancelation() {
+    this.confirmationService.confirm({
+      accept: () => {
+        this.ordersService
+          .cancelOrderByCustomer(this.orderId)
+          .pipe(
+            mergeMap((order) => {
+              return combineLatest([
+                of(order),
+                this.userBalanceService.getUserBalance(),
+              ]);
+            }),
+          )
+          .subscribe(([order]) => {
+            this.order$.next(order);
+            this.messageService.add({
+              severity: 'success',
+              detail: 'Замовлення успішно скасовано',
+            });
+          });
+      },
+    });
   }
 }

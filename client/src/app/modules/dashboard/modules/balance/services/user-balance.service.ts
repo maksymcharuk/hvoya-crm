@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, share } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
@@ -21,11 +21,15 @@ export class UserBalanceService {
   }
 
   getUserBalance() {
-    if (this.user) {
-      this.balanceService.getBalance().subscribe((res) => {
-        this.balance$.next(res);
-      });
+    if (!this.user) {
+      return new Observable<Balance>();
     }
+
+    const request$ = this.balanceService.getBalance().pipe(share());
+    request$.subscribe((res) => {
+      this.balance$.next(res);
+    });
+    return request$;
   }
 
   addFunds() {

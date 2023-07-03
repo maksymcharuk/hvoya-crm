@@ -4,4 +4,5 @@ export enum NotificationEvent {
 
   OrderCreated = 'notification.order.created',
   OrderUpdated = 'notification.order.updated',
+  OrderCancelled = 'notification.order.cancelled',
 }

@@ -10,7 +10,7 @@ import { Order } from '@shared/interfaces/entities/order.entity';
   providedIn: 'root',
 })
 export class OrdersService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   orderCreate(orderCreateFormData: FormData): Observable<Order> {
     return this.http
@@ -48,6 +48,15 @@ export class OrdersService {
   getOrder(number: string): Observable<Order> {
     return this.http
       .get<Order>(`${environment.apiUrl}/orders/${number}`)
+      .pipe(map((order) => new Order(order)));
+  }
+
+  cancelOrderByCustomer(number: string): Observable<Order> {
+    return this.http
+      .post<Order>(
+        `${environment.apiUrl}/orders/${number}/cancel-by-customer`,
+        {},
+      )
       .pipe(map((order) => new Order(order)));
   }
 }

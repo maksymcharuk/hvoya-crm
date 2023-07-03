@@ -77,6 +77,33 @@
                 ></ng-container>
               </ng-container>
             </ng-container>
+            <ng-container *ngSwitchCase="notificationType.OrderCancelled">
+              <ng-container *ngIf="notification.dataIsOrder(notification.data)">
+                <ng-template #title>
+                  Замовлення №{{ notification.data.number }}
+                </ng-template>
+                <ng-template #body>
+                  <div class="flex align-items-center">
+                    Замовлення
+                    <app-order-status-badge
+                      class="ml-2"
+                      [status]="notification.data.currentStatus.status"
+                    ></app-order-status-badge>
+                  </div>
+                  Замовник: {{ notification.data.customer.fullName }}
+                </ng-template>
+                <ng-container
+                  *ngTemplateOutlet="
+                    notificationTmpl;
+                    context: {
+                      title: title,
+                      body: body,
+                      notification: notification
+                    }
+                  "
+                ></ng-container>
+              </ng-container>
+            </ng-container>
             <ng-container *ngSwitchCase="notificationType.UserCreated">
               <ng-container *ngIf="notification.dataIsUser(notification.data)">
                 <ng-template #title>Користувач створив акаунт</ng-template>

@@ -13,6 +13,8 @@ export type Actions =
   | 'read'
   | 'update'
   | 'delete'
+  // Orders
+  | 'cancel'
   // Pages
   | 'visit';
 

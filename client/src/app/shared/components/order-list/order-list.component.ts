@@ -61,14 +61,13 @@ export class OrderListComponent implements OnDestroy {
   }
 
   get globalFilterFields() {
-    const defaultFilterFields = ['total'];
+    const defaultFilterFields = ['number', 'total', 'delivery.trackingId'];
     return this.adminView
       ? [
           ...defaultFilterFields,
           'customer.firstName',
           'customer.lastName',
           'customer.middleName',
-          'delivery.trackingId',
         ]
       : defaultFilterFields;
   }

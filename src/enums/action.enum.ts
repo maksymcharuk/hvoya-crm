@@ -5,6 +5,8 @@ export enum Action {
   Update = 'update',
   Delete = 'delete',
   Confirm = 'confirm',
+  // Orders
+  Cancel = 'cancel',
   // Cart
   AddTo = 'addTo',
   RemoveFrom = 'removeFrom',
