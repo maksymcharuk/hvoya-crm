@@ -12,9 +12,5 @@ export const DEFAULT_ADMIN_DATA: CreateUserDto = {
   userConfirmed: true,
   userFreezed: false,
   phoneNumber: '0673344123',
-  storeName: 'Hvoya',
-  bio: 'I am a super admin',
   accountNumber: '11111',
-  website: 'https://hvoya.com',
-  note: 'Super admin',
 };

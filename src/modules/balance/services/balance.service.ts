@@ -4,12 +4,19 @@ import { DataSource, EntityManager, Repository } from 'typeorm';
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import config from '@root/config';
+
 import { BalanceEntity } from '@entities/balance.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
+import { UserEntity } from '@entities/user.entity';
 import { TransactionStatus } from '@enums/transaction-status.enum';
+import { sanitizeEntity } from '@utils/serialize-entity.util';
 
+import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
+
+const { isDevelopment } = config();
 
 @Injectable()
 export class BalanceService {
@@ -18,12 +25,21 @@ export class BalanceService {
     private balanceRepository: Repository<BalanceEntity>,
     private readonly dataSource: DataSource,
     private readonly oneCService: OneCApiClientService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
-  async getByUserId(userId: string): Promise<BalanceEntity> {
+  async getByUserId(currentUserId: string): Promise<BalanceEntity> {
+    const user = await this.dataSource.manager.findOne(UserEntity, {
+      where: { id: currentUserId },
+    });
+
+    if (!user) {
+      throw new HttpException('Користувач не знайдений.', 400);
+    }
+
     const balance = await this.balanceRepository.findOneOrFail({
-      where: { owner: { id: userId } },
-      relations: ['paymentTransactions.order'],
+      where: { owner: { id: currentUserId } },
+      relations: ['paymentTransactions.order', 'owner'],
       order: {
         paymentTransactions: {
           createdAt: 'DESC',
@@ -31,7 +47,9 @@ export class BalanceService {
       },
     });
 
-    return balance;
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    return sanitizeEntity(ability, balance);
   }
 
   async update(
@@ -85,6 +103,10 @@ export class BalanceService {
   // Temporary "testing" solution
   // TODO: remove this method
   async addFunds(userId: string, amount: number): Promise<BalanceEntity> {
+    if (!isDevelopment()) {
+      throw new HttpException('Можливо тільки в режимі розробки.', 400);
+    }
+
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();

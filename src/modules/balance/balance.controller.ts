@@ -19,8 +19,8 @@ export class BalanceController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, BalanceEntity),
   )
-  getByUserId(@User('id') id: string): Promise<BalanceEntity> {
-    return this.balanceService.getByUserId(id);
+  getByUserId(@User('id') currentUserId: string): Promise<BalanceEntity> {
+    return this.balanceService.getByUserId(currentUserId);
   }
 
   // temporary "testing" solution
@@ -29,9 +29,9 @@ export class BalanceController {
     ability.can(Action.Read, BalanceEntity),
   )
   addFunds(
-    @User('id') id: string,
+    @User('id') currentUserId: string,
     @Body('amount') amount: number,
   ): Promise<BalanceEntity> {
-    return this.balanceService.addFunds(id, amount);
+    return this.balanceService.addFunds(currentUserId, amount);
   }
 }

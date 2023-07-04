@@ -41,13 +41,17 @@ export class UsersController {
 
   @Post(':id/update-by-admin')
   @CheckPolicies((ability: AppAbility) =>
-    ability.can(Action.SuperUpdate, UserEntity),
+    ability.can(Action.Update, UserEntity),
   )
   async update(
+    @User('id') currentUserId: string,
     @Param('id') userId: string,
-    @Body() userUpgrade: UpdateUserByAdminDto,
+    @Body() userUpdate: UpdateUserByAdminDto,
   ) {
-    return this.usersService.update({ ...userUpgrade, id: userId });
+    return this.usersService.update(
+      { ...userUpdate, id: userId },
+      currentUserId,
+    );
   }
 
   @Get()

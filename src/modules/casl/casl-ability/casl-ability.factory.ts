@@ -1,10 +1,9 @@
 import {
   AbilityBuilder,
-  AbilityClass,
   ExtractSubjectType,
   InferSubjects,
-  MatchConditions,
-  PureAbility,
+  MongoAbility,
+  createMongoAbility,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
@@ -23,6 +22,12 @@ import { Action } from '@enums/action.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { Role } from '@enums/role.enum';
 
+import { ANY_ADMIN_ORDER_READ_FIELDS } from './permitted-fields/any-admin/order';
+import { ANY_ADMIN_USER_READ_FIELDS } from './permitted-fields/any-admin/user';
+import { USER_BALANCE_READ_FIELDS } from './permitted-fields/user/balance';
+import { USER_ORDER_READ_FIELDS } from './permitted-fields/user/order';
+import { USER_USER_READ_FIELDS } from './permitted-fields/user/user';
+
 type Subjects =
   | InferSubjects<
       | typeof UserEntity
@@ -39,115 +44,186 @@ type Subjects =
     >
   | 'all';
 
-export type AppAbility = PureAbility<[Action, Subjects]>;
-const lambdaMatcher = (matchConditions: MatchConditions) => matchConditions;
+export type AppAbility = MongoAbility<[Action, Subjects]>;
 
 @Injectable()
 export class CaslAbilityFactory {
   createForUser(user: UserEntity) {
-    const { can, cannot, build } = new AbilityBuilder<
-      PureAbility<[Action, Subjects]>
-    >(PureAbility as AbilityClass<AppAbility>);
+    const ability = new AbilityBuilder<AppAbility>(createMongoAbility);
 
-    if (user.role === Role.SuperAdmin) {
-      can(Action.Manage, 'all'); // read-write access to everything
-      can(
-        [
-          Action.SuperRead,
-          Action.SuperCreate,
-          Action.SuperUpdate,
-          Action.SuperDelete,
-        ],
-        'all',
-      ); // read-write access to everything
-    }
+    this.setPermissionsForAnyAdmin(ability, user);
+    this.setPermissionsForSuperAdmin(ability, user);
+    this.setPermissionsForAdmin(ability, user);
+    this.setPermissionsForUser(ability, user);
 
-    if (user.role === Role.Admin) {
-      can([Action.Read], UserEntity, ({ role }: UserEntity) => {
-        return role !== Role.SuperAdmin;
-      });
-      can([Action.Update], UserEntity, ({ id }: UserEntity) => {
-        return id === user.id;
-      });
-      // Products
-      can([Action.Read, Action.Create, Action.Update], ProductCategoryEntity);
-      can([Action.Read, Action.Create, Action.Update], ProductBaseEntity);
-      can([Action.Read, Action.Create, Action.Update], ProductVariantEntity);
-      can([Action.Read, Action.Create, Action.Update], ProductColorEntity);
-      can([Action.Read, Action.Create, Action.Update], ProductSizeEntity);
-      // Orders
-      can(
-        [
-          Action.Read,
-          Action.Create,
-          Action.Update,
-          Action.SuperRead,
-          Action.SuperUpdate,
-        ],
-        OrderEntity,
-      );
-      // FAQ
-      can([Action.Read, Action.Create, Action.Update], FaqEntity);
-      // Balance
-      can([Action.Read, Action.Update], BalanceEntity);
-      // Notifications
-      can([Action.Read, Action.Create, Action.Update], NotificationEntity);
-    }
-
-    if (user.role === Role.User) {
-      can([Action.Read, Action.Update], UserEntity, ({ id }: UserEntity) => {
-        return id === user.id;
-      });
-      // Products
-      can(Action.Read, ProductCategoryEntity);
-      can(Action.Read, ProductBaseEntity);
-      can(
-        Action.Read,
-        ProductVariantEntity,
-        ({ properties }: ProductVariantEntity) => properties.isPublished,
-      );
-      can([Action.Read], ProductColorEntity);
-      can([Action.Read], ProductSizeEntity);
-      // Cart
-      can([Action.Read, Action.AddTo, Action.RemoveFrom], CartEntity);
-      // Orders
-      can(
-        [Action.Read, Action.Create],
-        OrderEntity,
-        ({ customer }: OrderEntity) => {
-          return customer.id === user.id;
-        },
-      ); // can read and create only his own orders
-      can(
-        [Action.Update, Action.Cancel],
-        OrderEntity,
-        ({ customer, statuses }: OrderEntity) => {
-          return (
-            customer.id === user.id &&
-            OrderStatus.Pending === statuses[0]?.status
-          );
-        },
-      ); // can update or cancel only his own orders with status pending
-      // FAQ
-      can(
-        [Action.Read],
-        FaqEntity,
-        ({ isPublished }: FaqEntity) => isPublished,
-      ); // can read only published faq
-      // Balance
-      can([Action.Read], BalanceEntity);
-      // Notifications
-      can([Action.Read], NotificationEntity);
-    }
-
-    if (user.role === Role.SuperAdmin || user.role === Role.Admin) {
-      cannot([Action.AddTo, Action.RemoveFrom], CartEntity);
-    }
-
-    return build({
+    return createMongoAbility<AppAbility>(ability.rules, {
       detectSubjectType: (item) =>
         item.constructor as ExtractSubjectType<Subjects>,
-      conditionsMatcher: lambdaMatcher,
     });
+  }
+
+  // Any Admin
+  private setPermissionsForAnyAdmin(
+    { cannot }: AbilityBuilder<AppAbility>,
+    currentUser: UserEntity,
+  ) {
+    if (![Role.Admin, Role.SuperAdmin].includes(currentUser.role)) {
+      return;
+    }
+
+    // Cart
+    // -------------------------------------------------------------------------
+    cannot([Action.AddTo, Action.RemoveFrom], CartEntity);
+    // -------------------------------------------------------------------------
+  }
+
+  // SuperAdmin
+  private setPermissionsForSuperAdmin(
+    { can }: AbilityBuilder<AppAbility>,
+    currentUser: UserEntity,
+  ) {
+    if (currentUser.role !== Role.SuperAdmin) {
+      return;
+    }
+
+    // All
+    // -------------------------------------------------------------------------
+    // Read-write access to everything
+    can(Action.Manage, 'all');
+    can(Action.SuperUpdate, 'all');
+    // -------------------------------------------------------------------------
+
+    // Users
+    // -------------------------------------------------------------------------
+    can([Action.Read], UserEntity, ANY_ADMIN_USER_READ_FIELDS);
+    // -------------------------------------------------------------------------
+
+    // Orders
+    // -------------------------------------------------------------------------
+    can(Action.Read, OrderEntity, ANY_ADMIN_ORDER_READ_FIELDS);
+    // -------------------------------------------------------------------------
+  }
+
+  // Admin
+  private setPermissionsForAdmin(
+    { can }: AbilityBuilder<AppAbility>,
+    currentUser: UserEntity,
+  ) {
+    if (currentUser.role !== Role.Admin) {
+      return;
+    }
+
+    // Users
+    // -------------------------------------------------------------------------
+    can([Action.Read], UserEntity, ANY_ADMIN_USER_READ_FIELDS, {
+      role: { $ne: Role.SuperAdmin },
+    });
+    can([Action.Update], UserEntity, { id: currentUser.id });
+    can([Action.Update, Action.Confirm], UserEntity, {
+      role: { $eq: Role.User },
+    });
+    // -------------------------------------------------------------------------
+
+    // Products
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.Create, Action.Update], ProductCategoryEntity);
+    can([Action.Read, Action.Create, Action.Update], ProductBaseEntity);
+    can([Action.Read, Action.Create, Action.Update], ProductVariantEntity);
+    can([Action.Read, Action.Create, Action.Update], ProductColorEntity);
+    can([Action.Read, Action.Create, Action.Update], ProductSizeEntity);
+    // -------------------------------------------------------------------------
+
+    // Orders
+    // -------------------------------------------------------------------------
+    can([Action.Create, Action.Update, Action.SuperUpdate], OrderEntity);
+    can(Action.Read, OrderEntity, ANY_ADMIN_ORDER_READ_FIELDS);
+    // -------------------------------------------------------------------------
+
+    // FAQ
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.Create, Action.Update], FaqEntity);
+    // -------------------------------------------------------------------------
+
+    // Balance
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.Update], BalanceEntity);
+    // -------------------------------------------------------------------------
+
+    // Notifications
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.Create, Action.Update], NotificationEntity);
+    // -------------------------------------------------------------------------
+  }
+
+  // User
+  private setPermissionsForUser(
+    { can }: AbilityBuilder<AppAbility>,
+    currentUser: UserEntity,
+  ) {
+    if (currentUser.role !== Role.User) {
+      return;
+    }
+
+    // Users
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.Update], UserEntity, USER_USER_READ_FIELDS, {
+      id: currentUser.id,
+    });
+    // -------------------------------------------------------------------------
+
+    // Products
+    // -------------------------------------------------------------------------
+    can(Action.Read, ProductCategoryEntity);
+    can(Action.Read, ProductBaseEntity);
+    can(Action.Read, ProductVariantEntity, {
+      ['properties.isPublished' as keyof ProductVariantEntity]: true,
+    });
+    can([Action.Read], ProductColorEntity);
+    can([Action.Read], ProductSizeEntity);
+    // -------------------------------------------------------------------------
+
+    // Cart
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.AddTo, Action.RemoveFrom], CartEntity, {
+      ['owner.id' as keyof CartEntity]: currentUser.id,
+    });
+    // -------------------------------------------------------------------------
+
+    // Orders
+    // -------------------------------------------------------------------------
+    can([Action.Create], OrderEntity);
+    // Can update or cancel only his own orders with status pending
+    can([Action.Update, Action.Cancel], OrderEntity, {
+      ['customer.id' as keyof OrderEntity]: currentUser.id,
+      ['statuses.0.status' as keyof OrderEntity]: OrderStatus.Pending,
+    });
+    // Can read only his own orders
+    can([Action.Read], OrderEntity, USER_ORDER_READ_FIELDS, {
+      ['customer.id' as keyof OrderEntity]: currentUser.id,
+    });
+
+    // -------------------------------------------------------------------------
+
+    // FAQ
+    // -------------------------------------------------------------------------
+    // Can read only published faq
+    can([Action.Read], FaqEntity, { isPublished: true });
+    // -------------------------------------------------------------------------
+
+    // Balance
+    // -------------------------------------------------------------------------
+    // Can read only his own balance
+    can([Action.Read], BalanceEntity, USER_BALANCE_READ_FIELDS, {
+      ['owner.id' as keyof BalanceEntity]: currentUser.id,
+    });
+    // -------------------------------------------------------------------------
+
+    // Notifications
+    // -------------------------------------------------------------------------
+    // Can read only his own notifications
+    can([Action.Read], NotificationEntity, {
+      ['user.id' as keyof NotificationEntity]: currentUser.id,
+    });
+    // -------------------------------------------------------------------------
   }
 }

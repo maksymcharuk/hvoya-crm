@@ -10,7 +10,7 @@ import { Balance } from '@shared/interfaces/entities/balance.entity';
   providedIn: 'root',
 })
 export class BalanceService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getBalance(): Observable<Balance> {
     return this.http

@@ -11,8 +11,5 @@ export enum Action {
   AddTo = 'addTo',
   RemoveFrom = 'removeFrom',
   // Super
-  SuperCreate = 'superCreate',
-  SuperRead = 'superRead',
   SuperUpdate = 'superUpdate',
-  SuperDelete = 'superDelete',
 }

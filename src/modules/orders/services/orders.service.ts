@@ -1,6 +1,12 @@
 import Decimal from 'decimal.js';
 import { FilesService } from 'src/modules/files/services/files.service';
-import { DataSource, EntityManager, In, QueryRunner } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  FindOptionsWhere,
+  In,
+  QueryRunner,
+} from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -25,6 +31,7 @@ import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { SyncProduct } from '@interfaces/one-c';
 import { validateOrderStatus } from '@utils/orders/validate-orer-status.util';
+import { sanitizeEntity } from '@utils/serialize-entity.util';
 
 import { BalanceService } from '@modules/balance/services/balance.service';
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
@@ -52,9 +59,7 @@ export class OrdersService {
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    const order = await this.getOrderWhere({ number: orderNumber }, [
-      'customer',
-    ]);
+    const order = await this.getOrderWhere({ number: orderNumber });
 
     if (ability.cannot(Action.Read, order)) {
       throw new HttpException(
@@ -63,7 +68,7 @@ export class OrdersService {
       );
     }
 
-    return order;
+    return sanitizeEntity(ability, order);
   }
 
   async getOrders(userId: string): Promise<OrderEntity[]> {
@@ -74,11 +79,11 @@ export class OrdersService {
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    if (ability.can(Action.SuperRead, OrderEntity)) {
-      return this.getOrdersWhere();
-    } else {
-      return this.getOrdersWhere({ customer: { id: userId } });
-    }
+    let orders = await this.getOrdersWhere();
+
+    return orders
+      .filter((order) => ability.can(Action.Read, order))
+      .map((order) => sanitizeEntity(ability, order));
   }
 
   async createOrder(
@@ -214,7 +219,6 @@ export class OrdersService {
         id: order.id,
         items: orderItems,
         delivery: orderDelivery,
-        paymentTransaction: transaction,
         total: orderTotal,
         statuses: [status],
       });
@@ -265,9 +269,7 @@ export class OrdersService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const order = await this.getOrderWhere({ number: orderNumber }, [
-        'customer',
-      ]);
+      const order = await this.getOrderWhere({ number: orderNumber });
 
       if (waybill) {
         waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
@@ -320,7 +322,7 @@ export class OrdersService {
       }
 
       await queryRunner.commitTransaction();
-      return this.getOrderWhere({ id: order.id }, ['customer']);
+      return this.getOrder(userId, orderNumber);
     } catch (err) {
       try {
         if (waybillScan) {
@@ -363,7 +365,7 @@ export class OrdersService {
 
       const ability = this.caslAbilityFactory.createForUser(user);
 
-      order = await this.getOrderWhere({ number: orderNumber }, ['customer']);
+      order = await this.getOrderWhere({ number: orderNumber });
 
       if (ability.cannot(Action.Update, order)) {
         throw new HttpException(
@@ -399,7 +401,7 @@ export class OrdersService {
       }
 
       await queryRunner.commitTransaction();
-      return this.getOrderWhere({ id: order.id });
+      return this.getOrder(userId, orderNumber);
     } catch (err) {
       try {
         if (waybillScan) {
@@ -462,7 +464,7 @@ export class OrdersService {
     status: OrderStatus,
     comment?: string,
   ): Promise<void> {
-    const order = await this.getOrderWhere({ id: orderId }, ['customer']);
+    const order = await this.getOrderWhere({ id: orderId });
 
     if (status === order.statuses[0]!.status) {
       throw new HttpException(
@@ -482,7 +484,10 @@ export class OrdersService {
     );
 
     this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
-      data: { ...order, statuses: [newStatus, ...order.statuses] },
+      data: this.dataSource.manager.create(OrderEntity, {
+        ...order,
+        statuses: [newStatus, ...order.statuses],
+      }),
       userId: order.customer.id,
       type: NotificationType.OrderStatusUpdated,
     });
@@ -495,9 +500,7 @@ export class OrdersService {
     const user = await this.dataSource.manager.findOneOrFail(UserEntity, {
       where: { id: userId },
     });
-    const order = await this.getOrderWhere({ number: orderNumber }, [
-      'customer',
-    ]);
+    const order = await this.getOrderWhere({ number: orderNumber });
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
@@ -522,13 +525,16 @@ export class OrdersService {
       );
 
       this.eventEmitter.emit(NotificationEvent.OrderCancelled, {
-        data: { ...order, statuses: [newStatus, ...order.statuses] },
+        data: this.dataSource.manager.create(OrderEntity, {
+          ...order,
+          statuses: [newStatus, ...order.statuses],
+        }),
         userId: order.customer.id,
         type: NotificationType.OrderCancelled,
       });
 
       await queryRunner.commitTransaction();
-      return this.getOrderWhere({ id: order.id });
+      return this.getOrder(userId, orderNumber);
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
@@ -604,8 +610,7 @@ export class OrdersService {
   }
 
   private getOrderWhere(
-    params: any,
-    relations: string[] = [],
+    params: FindOptionsWhere<OrderEntity>,
   ): Promise<OrderEntity> {
     return this.dataSource.manager.findOneOrFail(OrderEntity, {
       where: params,
@@ -614,9 +619,8 @@ export class OrdersService {
         'items.product.baseProduct',
         'items.productProperties',
         'delivery.waybill',
-        'paymentTransactions',
         'statuses',
-        ...relations,
+        'customer',
       ],
       order: {
         statuses: {
@@ -626,15 +630,14 @@ export class OrdersService {
     });
   }
 
-  private getOrdersWhere(params?: any): Promise<OrderEntity[]> {
+  private getOrdersWhere(
+    params?: FindOptionsWhere<OrderEntity>,
+  ): Promise<OrderEntity[]> {
     return this.dataSource.manager.find(OrderEntity, {
       where: params,
       relations: [
-        'items.product',
-        'items.product.baseProduct',
         'items.productProperties',
-        'delivery.waybill',
-        'paymentTransactions',
+        'delivery',
         'statuses',
         'customer',
       ],
