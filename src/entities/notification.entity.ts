@@ -1,7 +1,8 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 
+import { NotificationData } from '@interfaces/notifications/notification-data.interface';
+
 import { NotificationType } from '../enums/notification-type.enum';
-import { NotificationData } from '../interfaces/notifications/notification-data.interface';
 import { BaseEntity } from './base.entity';
 import { UserEntity } from './user.entity';
 
@@ -14,7 +15,7 @@ export class NotificationEntity extends BaseEntity {
   message: string | null;
 
   @Column('simple-json', { nullable: true })
-  data: NotificationData | null;
+  data: NotificationData;
 
   @Column({ default: false })
   checked: boolean;

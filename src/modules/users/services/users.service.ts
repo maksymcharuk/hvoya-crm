@@ -18,6 +18,7 @@ import { Env } from '@enums/env.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { Role } from '@enums/role.enum';
+import { sanitizeEntity } from '@utils/serialize-entity.util';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
@@ -35,10 +36,10 @@ export class UsersService {
 
   constructor(
     @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
-    private dataSource: DataSource,
-    private caslAbilityFactory: CaslAbilityFactory,
-    private eventEmitter: EventEmitter2,
+    private readonly usersRepository: Repository<UserEntity>,
+    private readonly dataSource: DataSource,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+    private readonly eventEmitter: EventEmitter2,
     private readonly oneCApiClientService: OneCApiClientService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -61,11 +62,18 @@ export class UsersService {
     }
   }
 
+  update(
+    updateUserDto: UpdateUserDto,
+    currentUserId: string,
+  ): Promise<UserEntity>;
+  update(updateUserDto: UpdateUserDto): Promise<void>;
+
   async update(
     updateUserDto: UpdateUserDto,
     currentUserId?: string,
-  ): Promise<UserEntity> {
+  ): Promise<UserEntity | void> {
     const queryRunner = this.dataSource.createQueryRunner();
+    let currentUser!: UserEntity;
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -78,11 +86,17 @@ export class UsersService {
       });
 
       if (currentUserId) {
-        let currentUser = await queryRunner.manager.findOneOrFail(UserEntity, {
+        currentUser = await queryRunner.manager.findOneOrFail(UserEntity, {
           where: { id: currentUserId },
         });
 
+        console.log('currentUser', currentUser);
+
         const ability = this.caslAbilityFactory.createForUser(currentUser);
+        console.log(
+          'ability.cannot(Action.Update, user)',
+          ability.cannot(Action.Update, user),
+        );
 
         if (ability.cannot(Action.Update, user)) {
           throw new HttpException(
@@ -99,10 +113,13 @@ export class UsersService {
       });
 
       await queryRunner.commitTransaction();
-      return this.dataSource.manager.findOneOrFail(UserEntity, {
-        where: { id: updateUserDto.id },
-        relations: ['manager'],
-      });
+
+      if (currentUser) {
+        return this.dataSource.manager.findOneOrFail(UserEntity, {
+          where: { id: updateUserDto.id },
+          relations: ['manager'],
+        });
+      }
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw new HttpException(err.message || err.response.message, err.status);
@@ -157,7 +174,7 @@ export class UsersService {
       );
     }
 
-    return user;
+    return sanitizeEntity(ability, user);
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
@@ -179,7 +196,9 @@ export class UsersService {
       relations: ['manager'],
     });
 
-    return users.filter((user) => ability.can(Action.Read, user));
+    return users
+      .filter((user) => ability.can(Action.Read, user))
+      .map((user) => sanitizeEntity(ability, user));
   }
 
   getAllSuperAdmins(): Promise<UserEntity[]> {

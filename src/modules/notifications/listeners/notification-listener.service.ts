@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
+import { OrderEntity } from '@entities/order.entity';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationCreatedEvent } from '@interfaces/notifications/notification-created.interface';
+import { sanitizeEntity } from '@utils/serialize-entity.util';
 
+import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 import { UsersService } from '@modules/users/services/users.service';
 
 import { NotificationService } from '../services/notification/notification.service';
@@ -13,6 +16,7 @@ export class NotificationListenerService {
   constructor(
     private usersService: UsersService,
     private notificationService: NotificationService,
+    private caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
   @OnEvent(NotificationEvent.UserCreated)
@@ -44,7 +48,11 @@ export class NotificationListenerService {
     let adminUsers = await this.usersService.getAllAdmins();
 
     adminUsers.forEach((user) => {
-      this.notificationService.create(user, payload);
+      const ability = this.caslAbilityFactory.createForUser(user);
+      this.notificationService.create(user, {
+        ...payload,
+        data: payload.data && sanitizeEntity(ability, payload.data),
+      });
     });
   }
 
@@ -55,6 +63,17 @@ export class NotificationListenerService {
       throw new Error('User not found');
     }
 
-    this.notificationService.create(user, payload);
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    console.log('typeof: ', typeof payload.data);
+    console.log(
+      'instanceof OrderEntity: ',
+      payload.data instanceof OrderEntity,
+    );
+
+    this.notificationService.create(user, {
+      ...payload,
+      data: payload.data && sanitizeEntity(ability, payload.data),
+    });
   }
 }

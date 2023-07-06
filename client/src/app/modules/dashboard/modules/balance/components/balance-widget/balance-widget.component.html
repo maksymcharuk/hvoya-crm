@@ -9,6 +9,7 @@
       ></span
     >
     <p-button
+      *ngIf="!environment.production"
       styleClass="p-button-raised p-button-text p-button-secondary p-button-sm"
       label="Тестове поповнення"
       (onClick)="addFundsTest()"

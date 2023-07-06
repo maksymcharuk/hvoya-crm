@@ -170,7 +170,7 @@ export class AuthService {
     return this.signToken(user);
   }
 
-  async confirmEmail(confirmEmailToken: string) {
+  async confirmEmail(confirmEmailToken: string): Promise<void> {
     const decodedToken = this.jwtService.verify(
       confirmEmailToken,
     ) as JwtTokenPayload;
@@ -211,7 +211,7 @@ export class AuthService {
     );
   }
 
-  async resetPassword(changePassword: ResetPasswordDto) {
+  async resetPassword(changePassword: ResetPasswordDto): Promise<void> {
     const { token, password } = changePassword;
     let decodedToken;
 

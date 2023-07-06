@@ -14,8 +14,7 @@ export const TEST_USER_DATA: CreateUserDto = {
   phoneNumber: '0679876542',
   storeName: 'Hvoya',
   website: 'https://hvoya.com',
-  bio: 'I am a test user',
+  bio: 'Тестовий дропшипер',
   userTest: true,
   accountNumber: '44444',
-  note: 'Test user',
 };

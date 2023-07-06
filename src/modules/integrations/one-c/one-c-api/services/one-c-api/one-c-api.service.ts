@@ -76,7 +76,10 @@ export class OneCApiService {
       }
 
       this.eventEmitter.emit(NotificationEvent.OrderUpdated, {
-        data: { ...order, statuses: [newStatus, ...order.statuses] },
+        data: this.dataSource.manager.create(OrderEntity, {
+          ...order,
+          statuses: [newStatus, ...order.statuses],
+        }),
         userId: order.customer.id,
         type: NotificationType.OrderStatusUpdated,
       });
