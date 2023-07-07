@@ -16,12 +16,12 @@ export class OrderStatusBadgeComponent {
   get style() {
     switch (this.status) {
       case OrderStatus.Pending:
-        return 'default';
+        return 'success';
       case OrderStatus.Processing:
       case OrderStatus.TransferedToDelivery:
         return 'accent';
       case OrderStatus.Fulfilled:
-        return 'success';
+        return 'default';
       case OrderStatus.Cancelled:
         return 'danger';
       case OrderStatus.Refunded:
@@ -46,7 +46,7 @@ export class OrderStatusBadgeComponent {
       case OrderStatus.Refunded:
         return 'Повернуто';
       default:
-        return 'Потребує уточнення';
+        return 'Уточнюється';
     }
   }
 }

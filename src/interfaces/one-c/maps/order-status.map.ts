@@ -10,5 +10,5 @@ export const orderStatusToNameMap = new Map<OrderStatus, string>([
 ]);
 
 export const getOrderStatusName = (status: OrderStatus | undefined) => {
-  return (status && orderStatusToNameMap.get(status)) || 'Потребує уточнення';
+  return (status && orderStatusToNameMap.get(status)) || 'Уточнюється';
 };

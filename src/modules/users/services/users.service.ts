@@ -90,13 +90,7 @@ export class UsersService {
           where: { id: currentUserId },
         });
 
-        console.log('currentUser', currentUser);
-
         const ability = this.caslAbilityFactory.createForUser(currentUser);
-        console.log(
-          'ability.cannot(Action.Update, user)',
-          ability.cannot(Action.Update, user),
-        );
 
         if (ability.cannot(Action.Update, user)) {
           throw new HttpException(
@@ -152,6 +146,7 @@ export class UsersService {
         'balance.paymentTransactions.order',
         'orders.items',
         'orders.items.productProperties.images',
+        'orders.statuses',
         'manager',
         'managedUsers',
       ],
@@ -163,6 +158,9 @@ export class UsersService {
         },
         orders: {
           createdAt: 'DESC',
+          statuses: {
+            createdAt: 'DESC',
+          },
         },
       },
     });

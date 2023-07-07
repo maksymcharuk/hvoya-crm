@@ -24,17 +24,31 @@ export const productColorsMap = new Map<ProductColor, NormalizedProductColor>([
     },
   ],
   [
-    ProductColor.Snowy,
+    ProductColor.GreenSnowy,
     {
-      name: 'Засніжений',
-      hex: '#F0F8FF',
+      name: 'Зелений|Засніжений',
+      hex: '#008000, #F0F8FF',
     },
   ],
   [
-    ProductColor.WhiteGreen,
+    ProductColor.GreenWhite,
     {
-      name: 'Білий|Зелений',
-      hex: '#FFFFFF, #008000',
+      name: 'Зелений|Білий',
+      hex: '#008000, #FFFFFF',
+    },
+  ],
+  [
+    ProductColor.BlueSnowy,
+    {
+      name: 'Блакитний|Засніжений',
+      hex: '#A6CAF0, #F0F8FF',
+    },
+  ],
+  [
+    ProductColor.WhiteSnowy,
+    {
+      name: 'Білий|Засніжений',
+      hex: '#FFFFFF, #F0F8FF',
     },
   ],
   [

@@ -37,6 +37,7 @@ export class UserComponent implements OnInit, OnDestroy {
   showConfirmUserDialog = false;
   userConfirmationForm!: FormGroup;
   submitting = false;
+  currentUser = this.userService.getUser();
 
   readonly roleEnum = Role;
   private readonly destroy$ = new Subject<void>();

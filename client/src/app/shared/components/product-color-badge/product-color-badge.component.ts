@@ -17,7 +17,7 @@ export class ProductColorBadgeComponent {
   }
 
   get gradient(): string {
-    const colors = this.color.hex.split(', ');
+    const colors = this.color.hex.split(', ').reverse();
     const angleStep = 360 / colors.length;
     const angles = Array.from(
       { length: colors.length },

@@ -22,7 +22,7 @@ export abstract class DeliveryApiService {
           throw new BadRequestException(
             'Не вдалось отримати інформацію від сервісу доставки',
             {
-              cause: new Error(error.message),
+              cause: error,
             },
           );
         }),
