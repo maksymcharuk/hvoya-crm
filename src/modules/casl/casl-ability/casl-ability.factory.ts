@@ -22,8 +22,13 @@ import { Action } from '@enums/action.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { Role } from '@enums/role.enum';
 
-import { ANY_ADMIN_ORDER_READ_FIELDS } from './permitted-fields/any-admin/order';
-import { ANY_ADMIN_USER_READ_FIELDS } from './permitted-fields/any-admin/user';
+import { ADMIN_ORDER_READ_FIELDS } from './permitted-fields/admin/order';
+import { ADMIN_USER_READ_FIELDS } from './permitted-fields/admin/user';
+import { SUPER_ADMIN_ORDER_READ_FIELDS } from './permitted-fields/super-admin/order';
+import {
+  SUPER_ADMIN_USER_READ_FIELDS,
+  SUPER_ADMIN_USER_WRITE_FIELDS,
+} from './permitted-fields/super-admin/user';
 import { USER_BALANCE_READ_FIELDS } from './permitted-fields/user/balance';
 import { USER_ORDER_READ_FIELDS } from './permitted-fields/user/order';
 import { USER_USER_READ_FIELDS } from './permitted-fields/user/user';
@@ -51,7 +56,6 @@ export class CaslAbilityFactory {
   createForUser(user: UserEntity) {
     const ability = new AbilityBuilder<AppAbility>(createMongoAbility);
 
-    this.setPermissionsForAnyAdmin(ability, user);
     this.setPermissionsForSuperAdmin(ability, user);
     this.setPermissionsForAdmin(ability, user);
     this.setPermissionsForUser(ability, user);
@@ -62,24 +66,9 @@ export class CaslAbilityFactory {
     });
   }
 
-  // Any Admin
-  private setPermissionsForAnyAdmin(
-    { cannot }: AbilityBuilder<AppAbility>,
-    currentUser: UserEntity,
-  ) {
-    if (![Role.Admin, Role.SuperAdmin].includes(currentUser.role)) {
-      return;
-    }
-
-    // Cart
-    // -------------------------------------------------------------------------
-    cannot([Action.AddTo, Action.RemoveFrom], CartEntity);
-    // -------------------------------------------------------------------------
-  }
-
   // SuperAdmin
   private setPermissionsForSuperAdmin(
-    { can }: AbilityBuilder<AppAbility>,
+    { can, cannot }: AbilityBuilder<AppAbility>,
     currentUser: UserEntity,
   ) {
     if (currentUser.role !== Role.SuperAdmin) {
@@ -95,18 +84,26 @@ export class CaslAbilityFactory {
 
     // Users
     // -------------------------------------------------------------------------
-    can([Action.Read], UserEntity, ANY_ADMIN_USER_READ_FIELDS);
+    can(Action.Read, UserEntity, SUPER_ADMIN_USER_READ_FIELDS);
+    can(Action.Update, UserEntity, SUPER_ADMIN_USER_WRITE_FIELDS, {
+      role: { $ne: Role.SuperAdmin },
+    });
     // -------------------------------------------------------------------------
 
     // Orders
     // -------------------------------------------------------------------------
-    can(Action.Read, OrderEntity, ANY_ADMIN_ORDER_READ_FIELDS);
+    can(Action.Read, OrderEntity, SUPER_ADMIN_ORDER_READ_FIELDS);
+    // -------------------------------------------------------------------------
+
+    // Cart
+    // -------------------------------------------------------------------------
+    cannot([Action.AddTo, Action.RemoveFrom], CartEntity);
     // -------------------------------------------------------------------------
   }
 
   // Admin
   private setPermissionsForAdmin(
-    { can }: AbilityBuilder<AppAbility>,
+    { can, cannot }: AbilityBuilder<AppAbility>,
     currentUser: UserEntity,
   ) {
     if (currentUser.role !== Role.Admin) {
@@ -115,7 +112,7 @@ export class CaslAbilityFactory {
 
     // Users
     // -------------------------------------------------------------------------
-    can([Action.Read], UserEntity, ANY_ADMIN_USER_READ_FIELDS, {
+    can([Action.Read], UserEntity, ADMIN_USER_READ_FIELDS, {
       role: { $ne: Role.SuperAdmin },
     });
     can([Action.Update], UserEntity, { id: currentUser.id });
@@ -136,7 +133,7 @@ export class CaslAbilityFactory {
     // Orders
     // -------------------------------------------------------------------------
     can([Action.Create, Action.Update, Action.SuperUpdate], OrderEntity);
-    can(Action.Read, OrderEntity, ANY_ADMIN_ORDER_READ_FIELDS);
+    can(Action.Read, OrderEntity, ADMIN_ORDER_READ_FIELDS);
     // -------------------------------------------------------------------------
 
     // FAQ
@@ -152,6 +149,11 @@ export class CaslAbilityFactory {
     // Notifications
     // -------------------------------------------------------------------------
     can([Action.Read, Action.Create, Action.Update], NotificationEntity);
+    // -------------------------------------------------------------------------
+
+    // Cart
+    // -------------------------------------------------------------------------
+    cannot([Action.AddTo, Action.RemoveFrom], CartEntity);
     // -------------------------------------------------------------------------
   }
 

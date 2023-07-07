@@ -100,7 +100,8 @@ export class DeliveryTasksService {
       const statuses = await deliveryService?.getDeliveryStatuses({
         trackingInfo,
       });
-      if (statuses) {
+
+      if (statuses && statuses.statuses && statuses.statuses.length > 0) {
         deliveryStatusesRes.statuses.push(...statuses.statuses);
       }
     }

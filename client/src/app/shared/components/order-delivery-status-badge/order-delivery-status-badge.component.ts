@@ -39,7 +39,7 @@ export class OrderDeliveryStatusBadgeComponent {
   get text() {
     switch (this.status) {
       case OrderDeliveryStatus.Unspecified:
-        return 'Потребує уточнення';
+        return 'Уточнюється';
       case OrderDeliveryStatus.Pending:
         return 'В очікуванні';
       case OrderDeliveryStatus.Accepted:
@@ -55,7 +55,7 @@ export class OrderDeliveryStatusBadgeComponent {
       case OrderDeliveryStatus.Returned:
         return 'Повернуто';
       default:
-        return 'Потребує уточнення';
+        return 'Уточнюється';
     }
   }
 }
