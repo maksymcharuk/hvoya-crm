@@ -36,19 +36,40 @@
           Статус
           <p-sortIcon field="status"></p-sortIcon>
         </th>
+        <th *ngIf="currentUser?.isAnyAdmin">
+          <div
+            class="flex align-items-center"
+            pTooltip="Статус синхронізації з 1С"
+          >
+            <i class="pi pi-sync mr-1"></i>1С
+          </div>
+        </th>
         <th class="w-4" pSortableColumn="createdAt">
           <div class="flex justify-content-between align-items-center">
             Дата
             <p-sortIcon field="createdAt"></p-sortIcon>
-            <p-columnFilter
-              type="date"
-              field="createdAt"
-              display="menu"
-              class="ml-auto"
-            ></p-columnFilter>
           </div>
         </th>
         <th class="w-1">Замовлення</th>
+      </tr>
+      <tr>
+        <th></th>
+        <th></th>
+        <th *ngIf="currentUser?.isAnyAdmin"></th>
+        <th>
+          <p-columnFilter type="date" field="createdAt" [showMenu]="false">
+            <ng-template pTemplate="filter" let-filter="filterCallback">
+              <p-calendar
+                (onSelect)="filter($event)"
+                (onClear)="filter($event)"
+                appendTo="body"
+                placeholder="Дата"
+                [showClear]="true"
+              ></p-calendar>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-transaction>
@@ -64,6 +85,18 @@
           {{ transaction.amount | currency }}
         </td>
         <td>{{ transaction.status | transactionStatus }}</td>
+        <td *ngIf="currentUser?.isAnyAdmin">
+          <span
+            class="white-space-nowrap"
+            [pTooltip]="
+              transaction.syncOneCStatus === transactionSyncOneCStatus.Failed
+                ? 'У разі невдалої синхронізації система буде робити ще спроби. Зачекайте до години і також перевірте чи працює сервер 1С.'
+                : 'Статус синхронізації з 1С'
+            "
+          >
+            {{ transaction.syncOneCStatus | transactionSyncOneCStatus }}
+          </span>
+        </td>
         <td>{{ transaction.createdAt | date : 'short' }}</td>
         <td *ngIf="transaction.order.total; else noOrder" class="text-center">
           <button

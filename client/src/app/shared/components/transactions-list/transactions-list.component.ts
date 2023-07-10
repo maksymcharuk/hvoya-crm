@@ -6,6 +6,7 @@ import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { TransactionStatus } from '@shared/enums/transaction-status.enum';
+import { TransactionSyncOneCStatus } from '@shared/enums/transaction-sync-one-c-status.enum';
 import { Balance } from '@shared/interfaces/entities/balance.entity';
 import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
 import { UserService } from '@shared/services/user.service';
@@ -31,7 +32,9 @@ export class TransactionsListComponent implements OnDestroy {
     search: [''],
   });
   transactionStatus = TransactionStatus;
+  transactionSyncOneCStatus = TransactionSyncOneCStatus;
   loading = true;
+  currentUser = this.userService.getUser();
 
   get balance(): Balance {
     return this.balanceInternal;
@@ -63,9 +66,7 @@ export class TransactionsListComponent implements OnDestroy {
 
   navigateToOrder(orderNumber: number) {
     // TODO: create URL builder service and move this logic there
-    const path = this.userService.getUser()?.isAnyAdmin
-      ? '/admin'
-      : '/dashboard';
+    const path = this.currentUser?.isAnyAdmin ? '/admin' : '/dashboard';
     this.router.navigate([`${path}/orders/${orderNumber}`]);
   }
 }

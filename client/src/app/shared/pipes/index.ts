@@ -4,3 +4,4 @@ export { RoleNamePipe } from './role-name.pipe';
 export { PhoneNumberPipe } from './phone-number.pipe';
 export { TransactionStatusPipe } from './transaction-status.pipe';
 export { DateAgoPipe } from './date-ago.pipe';
+export { TransactionSyncOneCStatusPipe } from './transaction-sync-once-c-status.pipe';

@@ -3,9 +3,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { TransactionStatus } from '@shared/enums/transaction-status.enum';
 
 @Pipe({
-  name: 'transactionStatus',
+  name: 'transactionSyncOneCStatus',
 })
-export class TransactionStatusPipe implements PipeTransform {
+export class TransactionSyncOneCStatusPipe implements PipeTransform {
   transform(value: TransactionStatus | undefined): string {
     switch (value) {
       case TransactionStatus.Pending:
@@ -14,8 +14,6 @@ export class TransactionStatusPipe implements PipeTransform {
         return 'Успішно';
       case TransactionStatus.Failed:
         return 'Помилка';
-      case TransactionStatus.Cancelled:
-        return 'Скасовано';
       default:
         return 'Невідомо';
     }

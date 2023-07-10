@@ -35,7 +35,7 @@
     "db:drop": "npm run typeorm-extension db:drop -- --initialDatabase $(grep INITIAL_DATABASE ./env/.env | cut -d '=' -f2) -d ./typeorm.config.ts",
     "db:seed": "npm run typeorm-extension seed -- -d ./typeorm.config.ts",
     "db:reset": "npm run schema:drop && npm run migrations:run",
-    "db:setup": "npm run db:drop && npm run db:create && npm run migrations:run",
+    "db:setup": "npm run db:drop && npm run db:create",
     "db:setup-test": "NODE_ENV=test npm run db:setup && NODE_ENV=test npm run db:seed"
   },
   "pre-push": [

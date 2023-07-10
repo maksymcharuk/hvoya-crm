@@ -8,7 +8,7 @@ export class OneCTasksService {
   constructor(private readonly oneCSyncService: OneCSyncService) {}
 
   @Cron(CronExpression.EVERY_HOUR)
-  async updateOrderDeliveryStatuses() {
+  async syncProducts() {
     return this.oneCSyncService.syncProducts();
   }
 }
