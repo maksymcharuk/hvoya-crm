@@ -30,6 +30,7 @@ import { IntegrationsModule } from './modules/integrations/integrations.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
+import { RequestsModule } from './modules/requests/requests.module';
 import { SetupModule } from './modules/setup/setup.module';
 import { TransferModule } from './modules/transfer/transfer.module';
 import { UsersModule } from './modules/users/users.module';
@@ -70,6 +71,7 @@ import { UsersModule } from './modules/users/users.module';
       ttl: 20 * 1000, // milliseconds
       max: 20, // maximum number of items in cache
     }),
+    RequestsModule,
   ],
   controllers: [AppController],
   providers: [

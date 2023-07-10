@@ -54,6 +54,13 @@ const routes: Routes = [
             (m) => m.BalanceModule,
           ),
       },
+      {
+        path: 'requests',
+        loadChildren: () =>
+          import('./modules/requests/requests.module').then(
+            (m) => m.RequestsModule,
+          ),
+      }
     ],
   },
 ];
@@ -62,4 +69,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class DashboardRoutingModule {}
+export class DashboardRoutingModule { }

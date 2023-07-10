@@ -15,6 +15,7 @@ import {
   Subjects,
 } from '@shared/interfaces/casl.interface';
 import { Faq } from '@shared/interfaces/entities/faq.entity';
+import { OrderReturnRequest } from '@shared/interfaces/entities/order-return-request.entity';
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { User } from '@shared/interfaces/entities/user.entity';
 import { AdminPage } from '@shared/interfaces/pages/admin-page.entity';
@@ -28,7 +29,7 @@ const lambdaMatcher = (matchConditions: MatchConditions) => matchConditions;
   providedIn: 'root',
 })
 export class PoliciesService {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   update(appAbility: AppAbility) {
     const rules = this.build()?.rules;
@@ -76,6 +77,7 @@ export class PoliciesService {
           Order,
           (order: Order) => order.currentStatus.status === OrderStatus.Pending,
         );
+        can('create', OrderReturnRequest);
         break;
     }
 

@@ -1,0 +1,10 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card p-0">
+      <app-request-list
+        [requests]="requests$ | async"
+        [adminView]="false"
+      ></app-request-list>
+    </div>
+  </div>
+</div>

@@ -9,4 +9,7 @@ export enum NotificationType {
   OrderCreated = 'order.created',
   OrderCancelled = 'order.cancelled',
   OrderStatusUpdated = 'order.status.updated',
+
+  RequestCreated = 'request.created',
+  RequestApproved = 'request.approved',
 }

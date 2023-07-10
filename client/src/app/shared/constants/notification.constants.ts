@@ -11,3 +11,8 @@ export const USER_NOTIFICATION = [
   NotificationType.UserConfirmed,
   NotificationType.AdminCreated,
 ];
+
+export const REQUEST_NOTIFICATION = [
+  NotificationType.RequestCreated,
+  NotificationType.RequestApproved,
+];

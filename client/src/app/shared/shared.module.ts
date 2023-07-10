@@ -45,6 +45,8 @@ import { ProductColorBadgeComponent } from './components/product-color-badge/pro
 import { ProductItemComponent } from './components/product-item/product-item.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductViewComponent } from './components/product-view/product-view.component';
+import { RequestListComponent } from './components/request-list/request-list.component';
+import { RequestStatusBadgeComponent } from './components/request-status-badge/request-status-badge.component';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { StockBadgeComponent } from './components/stock-badge/stock-badge.component';
 import { TransactionsListComponent } from './components/transactions-list/transactions-list.component';
@@ -98,6 +100,7 @@ const COMPONENTS = [
   OrderListItemComponent,
   ImageComponentComponent,
   OrdersChartComponent,
+  RequestListComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -125,7 +128,7 @@ const PRIMENG_MODULES = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS, ...PIPES],
+  declarations: [...COMPONENTS, ...PIPES, RequestStatusBadgeComponent],
   imports: [
     CommonModule,
     HttpClientModule,

@@ -11,6 +11,7 @@ import { BalanceEntity } from '@entities/balance.entity';
 import { CartEntity } from '@entities/cart.entity';
 import { FaqEntity } from '@entities/faq.entity';
 import { NotificationEntity } from '@entities/notification.entity';
+import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
@@ -48,6 +49,7 @@ type Subjects =
       | typeof FaqEntity
       | typeof BalanceEntity
       | typeof NotificationEntity
+      | typeof OrderReturnRequestEntity
     >
   | 'AdminAalytics'
   | 'PersonalAnalytics'
@@ -164,6 +166,10 @@ export class CaslAbilityFactory {
     // Analytics
     // -------------------------------------------------------------------------
     can(Action.Read, 'AdminAalytics');
+
+    // Return requests
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.Create, Action.Update], OrderReturnRequestEntity);
     // -------------------------------------------------------------------------
   }
 
@@ -241,6 +247,10 @@ export class CaslAbilityFactory {
     // Analytics
     // -------------------------------------------------------------------------
     can(Action.Read, 'PersonalAnalytics');
+
+    // Return requests
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.Create, Action.Update], OrderReturnRequestEntity);
     // -------------------------------------------------------------------------
   }
 }
