@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { BalanceEntity } from '@entities/balance.entity';
@@ -9,6 +9,7 @@ import { OneCClientModule } from '@modules/integrations/one-c/one-c-client/one-c
 import { CaslModule } from '../casl/casl.module';
 import { UsersModule } from '../users/users.module';
 import { BalanceController } from './balance.controller';
+import { BalanceTasksService } from './services/balance-tasks.service';
 import { BalanceService } from './services/balance.service';
 
 @Module({
@@ -19,7 +20,7 @@ import { BalanceService } from './services/balance.service';
     OneCClientModule,
   ],
   controllers: [BalanceController],
-  providers: [BalanceService],
+  providers: [BalanceService, BalanceTasksService, Logger],
   exports: [BalanceService],
 })
 export class BalanceModule {}

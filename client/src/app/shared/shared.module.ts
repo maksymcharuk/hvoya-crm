@@ -56,6 +56,7 @@ import {
   ProductSizePipe,
   RoleNamePipe,
   TransactionStatusPipe,
+  TransactionSyncOneCStatusPipe,
 } from './pipes';
 
 registerLocaleData(localeUk);
@@ -67,6 +68,7 @@ const PIPES = [
   PhoneNumberPipe,
   TransactionStatusPipe,
   DateAgoPipe,
+  TransactionSyncOneCStatusPipe,
 ];
 
 const COMPONENTS = [

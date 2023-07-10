@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
-import { OrderEntity } from '@entities/order.entity';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationCreatedEvent } from '@interfaces/notifications/notification-created.interface';
 import { sanitizeEntity } from '@utils/serialize-entity.util';
@@ -64,12 +63,6 @@ export class NotificationListenerService {
     }
 
     const ability = this.caslAbilityFactory.createForUser(user);
-
-    console.log('typeof: ', typeof payload.data);
-    console.log(
-      'instanceof OrderEntity: ',
-      payload.data instanceof OrderEntity,
-    );
 
     this.notificationService.create(user, {
       ...payload,

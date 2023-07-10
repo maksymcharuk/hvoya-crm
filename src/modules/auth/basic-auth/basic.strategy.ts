@@ -18,8 +18,6 @@ export class BasicStrategy extends PassportStrategy(Strategy) {
     username: string,
     password: string,
   ): Promise<boolean> => {
-    console.log('BasicStrategy.validate');
-
     if (
       BASIC_AUTH_CREDENTIALS_MAP.has(username) &&
       BASIC_AUTH_CREDENTIALS_MAP.get(username) === password

@@ -1,11 +1,12 @@
 import Decimal from 'decimal.js';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
+import { TransactionStatus } from '../enums/transaction-status.enum';
+import { TransactionSyncOneCStatus } from '../enums/transaction-sync-one-c-status.enum';
 import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BalanceEntity } from './balance.entity';
 import { BaseEntity } from './base.entity';
 import { OrderEntity } from './order.entity';
-import { TransactionStatus } from '../enums/transaction-status.enum';
 
 @Entity('payment_transaction')
 export class PaymentTransactionEntity extends BaseEntity {
@@ -30,6 +31,13 @@ export class PaymentTransactionEntity extends BaseEntity {
     nullable: true,
   })
   bankTransactionId: string | null;
+
+  @Column({
+    type: 'enum',
+    enum: TransactionSyncOneCStatus,
+    default: TransactionSyncOneCStatus.Pending,
+  })
+  syncOneCStatus: TransactionSyncOneCStatus;
 
   @ManyToOne(() => OrderEntity, (order) => order.paymentTransactions)
   order: OrderEntity;

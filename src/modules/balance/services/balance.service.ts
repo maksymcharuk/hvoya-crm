@@ -11,6 +11,7 @@ import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { UserEntity } from '@entities/user.entity';
 import { TransactionStatus } from '@enums/transaction-status.enum';
+import { TransactionSyncOneCStatus } from '@enums/transaction-sync-one-c-status.enum';
 import { sanitizeEntity } from '@utils/serialize-entity.util';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
@@ -169,19 +170,49 @@ export class BalanceService {
       ...paymentTransaction,
       bankTransactionId,
       amount: new Decimal(amount),
-      status: TransactionStatus.Success,
     });
 
     await manager.save(BalanceEntity, {
       id: balance.id,
-      amount: balance.amount.plus(amount),
-      paymentTransactions: [...balance.paymentTransactions, paymentTransaction],
+      paymentTransactions: [...balance.paymentTransactions, transaction],
     });
 
+    try {
+      await this.addFundsAndSyncOneC(
+        manager,
+        transaction.id,
+        transaction.amount,
+      );
+    } catch (error) {
+      await manager.save(PaymentTransactionEntity, {
+        id: paymentTransaction.id,
+        syncOneCStatus: TransactionSyncOneCStatus.Failed,
+      });
+    }
+  }
+
+  async addFundsAndSyncOneC(
+    manager: EntityManager,
+    transactionId: string,
+    amount: Decimal,
+  ) {
+    const transaction = await manager.findOneOrFail(PaymentTransactionEntity, {
+      where: { id: transactionId },
+      relations: ['balance', 'balance.owner'],
+    });
+    await manager.save(BalanceEntity, {
+      id: transaction.balance.id,
+      amount: transaction.balance.amount.plus(amount),
+    });
+    await manager.save(PaymentTransactionEntity, {
+      id: transaction.id,
+      status: TransactionStatus.Success,
+      syncOneCStatus: TransactionSyncOneCStatus.Success,
+    });
     await this.oneCService.depositFunds({
-      userId,
-      amount: amount,
-      createdAt: transaction.updatedAt,
+      userId: transaction.balance.owner.id,
+      amount: amount.toNumber(),
+      createdAt: transaction.createdAt,
     });
   }
 
