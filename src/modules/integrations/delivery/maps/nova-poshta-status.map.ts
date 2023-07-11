@@ -3,7 +3,7 @@ import { GetStatusFn } from '@interfaces/delivery';
 
 export const NovaPoshtaStatusMap: { [key in OrderDeliveryStatus]: string[] } = {
   [OrderDeliveryStatus.Accepted]: ['прийнято', 'передано'],
-  [OrderDeliveryStatus.InTransit]: ['відправлено', 'прямує'],
+  [OrderDeliveryStatus.InTransit]: ['відправлено', 'прямує', 'відправлення у'],
   [OrderDeliveryStatus.Arrived]: ['прибув', 'прибуло', 'у відділенні'],
   [OrderDeliveryStatus.Received]: ['отримано'],
   [OrderDeliveryStatus.Returned]: ['повернуто'],

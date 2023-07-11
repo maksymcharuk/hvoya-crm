@@ -16,23 +16,20 @@ export class OrderDeliveryStatusBadgeComponent {
   get style() {
     switch (this.status) {
       case OrderDeliveryStatus.Unspecified:
-        return 'default';
       case OrderDeliveryStatus.Pending:
-        return 'default';
+        return 'success';
       case OrderDeliveryStatus.Accepted:
-        return 'accent';
       case OrderDeliveryStatus.InTransit:
         return 'accent';
       case OrderDeliveryStatus.Arrived:
         return 'warn';
       case OrderDeliveryStatus.Received:
-        return 'success';
+        return 'default';
       case OrderDeliveryStatus.Declined:
-        return 'danger';
       case OrderDeliveryStatus.Returned:
         return 'danger';
       default:
-        return 'default';
+        return 'success';
     }
   }
 

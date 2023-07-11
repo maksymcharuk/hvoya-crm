@@ -27,6 +27,9 @@ export class OneCSyncService {
         (oneCProduct) => oneCProduct.sku === product.sku,
       );
       if (!newProduct) {
+        await this.dataSource.manager.update(ProductVariantEntity, product.id, {
+          stock: 0,
+        });
         continue;
       }
       await this.updateProperties(product, newProduct);

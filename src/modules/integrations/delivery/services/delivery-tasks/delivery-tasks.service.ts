@@ -115,12 +115,11 @@ export class DeliveryTasksService {
       if (!deliveryStatus) {
         continue;
       }
-      const status = deliveryStatus.status;
       await manager.update(OrderDeliveryEntity, order.delivery.id, {
         status: deliveryStatus.status,
         rawStatus: deliveryStatus.rawStatus,
       });
-      await this.updateOrderStatus(status, order);
+      await this.updateOrderStatus(deliveryStatus.status, order);
     }
   }
 

@@ -27,7 +27,7 @@ export class OrderStatusBadgeComponent {
       case OrderStatus.Refunded:
         return 'warn';
       default:
-        return 'default';
+        return 'success';
     }
   }
 
