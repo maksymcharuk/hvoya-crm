@@ -2,6 +2,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
+import { ChartModule } from 'primeng/chart';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DragDropModule } from 'primeng/dragdrop';
@@ -39,6 +40,7 @@ import { OrderListItemComponent } from './components/order-list/order-list-item/
 import { OrderListComponent } from './components/order-list/order-list.component';
 import { OrderStatusBadgeComponent } from './components/order-status-badge/order-status-badge.component';
 import { OrderViewItemComponent } from './components/order-view-item/order-view-item.component';
+import { OrdersChartComponent } from './components/orders-chart/orders-chart.component';
 import { ProductColorBadgeComponent } from './components/product-color-badge/product-color-badge.component';
 import { ProductItemComponent } from './components/product-item/product-item.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
@@ -91,6 +93,7 @@ const COMPONENTS = [
   TransactionsListComponent,
   OrderListItemComponent,
   ImageComponentComponent,
+  OrdersChartComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -114,6 +117,7 @@ const PRIMENG_MODULES = [
   ProgressSpinnerModule,
   CalendarModule,
   InputSwitchModule,
+  ChartModule,
 ];
 
 @NgModule({

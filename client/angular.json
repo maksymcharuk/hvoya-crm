@@ -32,16 +32,9 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/assets",
-              "src/.well-known"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": [
-              "./node_modules/quill/dist/quill.js"
-            ]
+            "assets": ["src/assets", "src/.well-known"],
+            "styles": ["src/styles.scss"],
+            "scripts": ["./node_modules/quill/dist/quill.js"]
           },
           "configurations": {
             "production": {
@@ -49,12 +42,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2.0mb",
-                  "maximumError": "3.0mb"
+                  "maximumError": "5.0mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumError": "10kb"
                 }
               ],
               "fileReplacements": [
@@ -116,16 +109,9 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": [
-              "./node_modules/quill/dist/quill.js"
-            ]
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
+            "scripts": ["./node_modules/quill/dist/quill.js"]
           }
         },
         "cypress-run": {

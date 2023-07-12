@@ -1,5 +1,6 @@
 import { join } from 'path';
 
+import { CacheModule } from '@nestjs/cache-manager';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -19,6 +20,7 @@ import { AppService } from './app.service';
 import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
 import { AppLoggerMiddleware } from './middlewares/app-logger.middleware';
 import { AccountModule } from './modules/account/account.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { BalanceModule } from './modules/balance/balance.module';
 import { CartModule } from './modules/cart/cart.module';
 import { CaslModule } from './modules/casl/casl.module';
@@ -62,6 +64,12 @@ import { UsersModule } from './modules/users/users.module';
     NotificationsModule,
     WSocketModule,
     SetupModule,
+    AnalyticsModule,
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 20 * 1000, // milliseconds
+      max: 20, // maximum number of items in cache
+    }),
   ],
   controllers: [AppController],
   providers: [

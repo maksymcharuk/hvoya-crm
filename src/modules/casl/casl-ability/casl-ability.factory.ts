@@ -47,6 +47,8 @@ type Subjects =
       | typeof BalanceEntity
       | typeof NotificationEntity
     >
+  | 'AdminAalytics'
+  | 'PersonalAnalytics'
   | 'all';
 
 export type AppAbility = MongoAbility<[Action, Subjects]>;
@@ -155,6 +157,11 @@ export class CaslAbilityFactory {
     // -------------------------------------------------------------------------
     cannot([Action.AddTo, Action.RemoveFrom], CartEntity);
     // -------------------------------------------------------------------------
+
+    // Analytics
+    // -------------------------------------------------------------------------
+    can(Action.Read, 'AdminAalytics');
+    // -------------------------------------------------------------------------
   }
 
   // User
@@ -203,7 +210,6 @@ export class CaslAbilityFactory {
     can([Action.Read], OrderEntity, USER_ORDER_READ_FIELDS, {
       ['customer.id' as keyof OrderEntity]: currentUser.id,
     });
-
     // -------------------------------------------------------------------------
 
     // FAQ
@@ -226,6 +232,11 @@ export class CaslAbilityFactory {
     can([Action.Read], NotificationEntity, {
       ['user.id' as keyof NotificationEntity]: currentUser.id,
     });
+    // -------------------------------------------------------------------------
+
+    // Analytics
+    // -------------------------------------------------------------------------
+    can(Action.Read, 'PersonalAnalytics');
     // -------------------------------------------------------------------------
   }
 }
