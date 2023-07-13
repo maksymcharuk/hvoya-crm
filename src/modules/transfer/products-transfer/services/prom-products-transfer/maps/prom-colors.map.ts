@@ -8,6 +8,8 @@ export const promColorsMap = new Map<
 >([
   ['Зеленый', productColorsMap.get(ProductColor.Green)],
   ['Зелёный', productColorsMap.get(ProductColor.Green)],
+  ['Зеленый|Темно-зеленый', productColorsMap.get(ProductColor.Green)],
+  ['Зеленый|Светло-зеленый', productColorsMap.get(ProductColor.GreenLight)],
   ['Белый', productColorsMap.get(ProductColor.White)],
   ['Голубой', productColorsMap.get(ProductColor.Blue)],
   ['Заснеженная', productColorsMap.get(ProductColor.GreenSnowy)],

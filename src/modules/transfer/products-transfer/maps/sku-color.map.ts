@@ -5,6 +5,7 @@ export const skuColorsMap = new Map<string, ProductColor>([
   ['B', ProductColor.Blue],
   ['W', ProductColor.White],
   ['GS', ProductColor.GreenSnowy],
+  ['LG', ProductColor.GreenLight],
   ['GW', ProductColor.GreenWhite],
   ['BS', ProductColor.BlueSnowy],
   ['WS', ProductColor.WhiteSnowy],
