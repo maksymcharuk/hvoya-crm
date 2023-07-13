@@ -145,30 +145,39 @@ export class PromProductsNormalizationService
   }
 
   private getColor(offer: PromOffer): NormalizedProductColor {
+    const color =
+      this.getColorBaseOnSku(offer) || this.getColorBaseOnRawColor(offer);
+    return color !== undefined
+      ? productColorsMap.get(color)!
+      : productColorsMap.get(ProductColor.Undefined)!;
+  }
+
+  private getColorBaseOnRawColor(offer: PromOffer): ProductColor | undefined {
+    const rawColor = offer.param
+      .find((param: PromOffer['param'][0]) => param.$.name.includes('Цвет'))
+      ?._.trim();
+
+    if (!rawColor) {
+      return;
+    }
+
+    return promColorsMap.get(rawColor);
+  }
+
+  private getColorBaseOnSku(offer: PromOffer): ProductColor | undefined {
     const sku = offer.vendorCode[0]?.trim();
-    // Fetch color from sku first
-    if (sku) {
-      const { color } = this.getDataBaseOnSku(sku);
-      const colorFromSku = color ? skuColorsMap.get(color) : undefined;
-      if (colorFromSku) {
-        return (
-          productColorsMap.get(colorFromSku) ||
-          productColorsMap.get(ProductColor.Undefined)!
-        );
-      }
+
+    if (!sku) {
+      return;
     }
 
-    const color = offer.param.find((param: PromOffer['param'][0]) =>
-      param.$.name.includes('Цвет'),
-    )?._;
+    const skuData = this.getDataBaseOnSku(sku);
 
-    if (!color) {
-      return productColorsMap.get(ProductColor.Undefined)!;
+    if (!skuData.color) {
+      return;
     }
 
-    return (
-      promColorsMap.get(color) || productColorsMap.get(ProductColor.Undefined)!
-    );
+    return skuColorsMap.get(skuData.color);
   }
 
   private getDataBaseOnSku(sku: string) {

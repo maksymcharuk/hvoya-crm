@@ -40,7 +40,7 @@ export class OrderDeliveryStatusBadgeComponent {
       case OrderDeliveryStatus.Pending:
         return 'В очікуванні';
       case OrderDeliveryStatus.Accepted:
-        return 'Отримано службою доставки';
+        return 'Прийнято';
       case OrderDeliveryStatus.InTransit:
         return 'В дорозі';
       case OrderDeliveryStatus.Arrived:

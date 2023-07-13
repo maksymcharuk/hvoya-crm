@@ -74,7 +74,6 @@ export class Order extends BaseEntity {
   customerNote?: string;
   managerNote?: string;
 
-
   get currentStatus(): OrderStatus {
     return this.statuses.length ? this.statuses[0]! : new OrderStatus();
   }
