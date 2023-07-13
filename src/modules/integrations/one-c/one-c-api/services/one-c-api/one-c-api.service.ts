@@ -32,7 +32,7 @@ export class OneCApiService {
   ): Promise<void> {
     const order = await this.dataSource.manager.findOne(OrderEntity, {
       where: { id: orderId },
-      relations: ['items', 'statuses', 'customer'],
+      relations: ['items', 'statuses', 'customer', 'delivery'],
       order: {
         statuses: {
           createdAt: 'DESC',
@@ -63,10 +63,11 @@ export class OneCApiService {
         order: { id: order.id },
       });
 
-      await queryRunner.manager.save(OrderEntity, {
-        id: order.id,
-        statuses: [...order.statuses, newStatus],
-      });
+      await this.ordersService.updateOrderDeliveryStatus(
+        queryRunner,
+        order,
+        updateOrderData.status,
+      );
 
       if (updateOrderData.status === OrderStatus.Cancelled) {
         await this.ordersService.updateBalanceAndStockOnCancel(

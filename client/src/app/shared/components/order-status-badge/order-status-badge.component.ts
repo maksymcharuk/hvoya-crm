@@ -36,9 +36,9 @@ export class OrderStatusBadgeComponent {
       case OrderStatus.Pending:
         return 'Нове';
       case OrderStatus.Processing:
-        return 'Опрацьовується менеджером';
+        return 'Опрацьовується';
       case OrderStatus.TransferedToDelivery:
-        return 'Передано до служби доставки';
+        return 'Відправлено';
       case OrderStatus.Fulfilled:
         return 'Виконано';
       case OrderStatus.Cancelled:

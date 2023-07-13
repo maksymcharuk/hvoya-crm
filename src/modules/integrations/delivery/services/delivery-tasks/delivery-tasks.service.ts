@@ -25,14 +25,9 @@ export class DeliveryTasksService {
     OrderDeliveryStatus[],
     OrderStatus
   >([
-    [
-      [
-        OrderDeliveryStatus.Declined,
-        OrderDeliveryStatus.Received,
-        OrderDeliveryStatus.Returned,
-      ],
-      OrderStatus.Fulfilled,
-    ],
+    [[OrderDeliveryStatus.Declined], OrderStatus.Cancelled],
+    [[OrderDeliveryStatus.Returned], OrderStatus.Refunded],
+    [[OrderDeliveryStatus.Received], OrderStatus.Fulfilled],
     [
       [
         OrderDeliveryStatus.Accepted,
@@ -135,14 +130,10 @@ export class DeliveryTasksService {
           return;
         }
 
-        const newStatus = await manager.save(OrderStatusEntity, {
+        await manager.save(OrderStatusEntity, {
           status: value,
-          comment: 'Оновлено автоматично',
+          comment: 'Оновлено автоматично системою доставки',
           order: { id: order.id },
-        });
-        await manager.save(OrderEntity, {
-          id: order.id,
-          statuses: [...order.statuses, newStatus],
         });
       }
     });

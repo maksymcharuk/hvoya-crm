@@ -142,11 +142,10 @@ export class UsersService {
     const user = await this.usersRepository.findOneOrFail({
       where: { id },
       relations: [
-        'balance',
         'balance.paymentTransactions.order',
-        'orders.items',
         'orders.items.productProperties.images',
         'orders.statuses',
+        'orders.delivery',
         'manager',
         'managedUsers',
       ],

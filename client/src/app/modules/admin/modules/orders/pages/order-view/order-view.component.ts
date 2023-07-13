@@ -1,12 +1,22 @@
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, finalize, Subject, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  debounceTime,
+  distinctUntilChanged,
+  finalize,
+  takeUntil,
+} from 'rxjs';
 
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
+import {
+  STATUS_RESTRICTED_ORDER_STATUSES,
+  WAYBILL_ACCEPTABLE_FILE_FORMATS,
+} from '@shared/constants/order.constants';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { OrderUpdateFormGroup } from '@shared/interfaces/dto/update-order.dto';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
@@ -114,14 +124,7 @@ export class OrderViewComponent implements OnDestroy {
     });
 
     this.orderStatusControl.valueChanges.subscribe((value) => {
-      const statusesWithRestrictions = [
-        OrderStatus.TransferedToDelivery,
-        OrderStatus.Fulfilled,
-        OrderStatus.Cancelled,
-        OrderStatus.Refunded,
-      ];
-
-      if (statusesWithRestrictions.includes(value)) {
+      if (STATUS_RESTRICTED_ORDER_STATUSES.includes(value)) {
         this.orderStatusCommentControl.setValidators(Validators.required);
         this.orderStatusCommentControl.updateValueAndValidity();
       } else {
@@ -217,18 +220,17 @@ export class OrderViewComponent implements OnDestroy {
       });
   }
 
-
   updateOrderNote(note: FormData) {
     this.submitting = true;
     this.ordersService
       .orderUpdate(this.route.snapshot.params['number'], note)
-      .pipe(finalize(() => this.submitting = false))
+      .pipe(finalize(() => (this.submitting = false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
         this.messageService.add({
           severity: 'success',
           detail: 'Нотатку успішно оновлено',
         });
-      })
+      });
   }
 }

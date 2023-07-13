@@ -5,10 +5,9 @@ import { ANY_ADMIN_BALANCE_READ_FIELDS } from './balance';
 
 export const ANY_ADMIN_USER_READ_FIELDS = [
   ...SHARED_USER_READ_FIELDS,
+  'id',
   'note',
-  'manager.firstName',
-  'manager.lastName',
-  'manager.middleName',
+  ...combine('manager', SHARED_USER_READ_FIELDS),
   ...combine('balance', ANY_ADMIN_BALANCE_READ_FIELDS),
   ...combine('managedUsers[]', SHARED_USER_READ_FIELDS),
   ...combine('orders[]', SHARED_ORDER_READ_FIELDS),

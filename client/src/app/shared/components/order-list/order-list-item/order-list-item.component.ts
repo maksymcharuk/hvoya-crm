@@ -15,11 +15,11 @@ import { UserService } from '@shared/services/user.service';
   },
 })
 export class OrderListItemComponent {
-  notifications$ = this.notificationsService.notifications$;
-
   @Input() adminView: boolean = false;
   @Input() order!: Order;
   @Input() orderNotification: any;
+
+  notifications$ = this.notificationsService.notifications$;
 
   constructor(
     private readonly userService: UserService,

@@ -11,6 +11,10 @@ import {
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+import {
+  COMPLETED_ORDER_STATUSES,
+  ORDER_STATUSES_TO_DELIERY_STATUSES,
+} from '@constants/order.constants';
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
@@ -27,6 +31,7 @@ import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
+import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { SyncProduct } from '@interfaces/one-c';
@@ -220,7 +225,6 @@ export class OrdersService {
         items: orderItems,
         delivery: orderDelivery,
         total: orderTotal,
-        statuses: [status],
       });
 
       await this.cartService.clearCart(userId, queryRunner.manager);
@@ -416,6 +420,22 @@ export class OrdersService {
     }
   }
 
+  async updateOrderDeliveryStatus(
+    queryRunner: QueryRunner,
+    order: OrderEntity,
+    status: OrderStatus,
+  ) {
+    if (!COMPLETED_ORDER_STATUSES.includes(status)) {
+      return;
+    }
+
+    await queryRunner.manager.update(OrderDeliveryEntity, order.delivery.id, {
+      status:
+        ORDER_STATUSES_TO_DELIERY_STATUSES.get(status) ||
+        OrderDeliveryStatus.Unspecified,
+    });
+  }
+
   async updateBalanceAndStockOnCancel(
     manager: EntityManager,
     order: OrderEntity,
@@ -557,10 +577,7 @@ export class OrdersService {
       createdBy: { id: userId },
     });
 
-    await queryRunner.manager.save(OrderEntity, {
-      id: order.id,
-      statuses: [...order.statuses, newStatus],
-    });
+    await this.updateOrderDeliveryStatus(queryRunner, order, status);
 
     if (newStatus.status === OrderStatus.Cancelled) {
       await this.updateBalanceAndStockOnCancel(queryRunner.manager, order);
