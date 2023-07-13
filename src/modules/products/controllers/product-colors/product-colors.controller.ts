@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
@@ -6,6 +7,7 @@ import {
   Post,
   Put,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { CreateProductColorDto } from '@dtos/create-product-color.dto';
@@ -19,6 +21,7 @@ import { PoliciesGuard } from '../../../casl/policies.guard';
 import { ProductColorsService } from '../../services/product-colors/product-colors.service';
 
 @Controller('product-colors')
+@UseInterceptors(CacheInterceptor)
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class ProductColorsController {
   constructor(private productColorsService: ProductColorsService) {}
@@ -27,7 +30,7 @@ export class ProductColorsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Create, ProductColorEntity),
   )
-  createProduct(@Body() body: CreateProductColorDto) {
+  createColor(@Body() body: CreateProductColorDto) {
     return this.productColorsService.createColor(body);
   }
 
@@ -35,7 +38,7 @@ export class ProductColorsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Update, ProductColorEntity),
   )
-  editProduct(
+  updateColor(
     @Param('id') id: string,
     @Body() body: Partial<CreateProductColorDto>,
   ) {
@@ -46,7 +49,7 @@ export class ProductColorsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductColorEntity),
   )
-  getProducts() {
+  getAllColors() {
     return this.productColorsService.getAllColors();
   }
 
@@ -54,7 +57,7 @@ export class ProductColorsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductColorEntity),
   )
-  getProduct(@Param('id') id: string) {
+  getColorById(@Param('id') id: string) {
     return this.productColorsService.getColorById(id);
   }
 }

@@ -7,11 +7,6 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'orders',
-  },
-  {
-    path: '',
     component: AdminComponent,
     children: [
       {

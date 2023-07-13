@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
@@ -6,6 +7,7 @@ import {
   Post,
   Put,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { CreateProductSizeDto } from '@dtos/create-product-size.dto';
@@ -19,6 +21,7 @@ import { PoliciesGuard } from '../../../casl/policies.guard';
 import { ProductSizesService } from '../../services/product-sizes/product-sizes.service';
 
 @Controller('product-sizes')
+@UseInterceptors(CacheInterceptor)
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class ProductSizesController {
   constructor(private productSizesService: ProductSizesService) {}
@@ -27,7 +30,7 @@ export class ProductSizesController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Create, ProductSizeEntity),
   )
-  createProduct(@Body() body: CreateProductSizeDto) {
+  createSize(@Body() body: CreateProductSizeDto) {
     return this.productSizesService.createSize(body);
   }
 
@@ -35,7 +38,7 @@ export class ProductSizesController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Update, ProductSizeEntity),
   )
-  editProduct(
+  updateSize(
     @Param('id') id: string,
     @Body() body: Partial<CreateProductSizeDto>,
   ) {
@@ -46,7 +49,7 @@ export class ProductSizesController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductSizeEntity),
   )
-  getProducts() {
+  getAllSizes() {
     return this.productSizesService.getAllSizes();
   }
 
@@ -54,7 +57,7 @@ export class ProductSizesController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductSizeEntity),
   )
-  getProduct(@Param('id') id: string) {
+  getSizeById(@Param('id') id: string) {
     return this.productSizesService.getSizeById(id);
   }
 }

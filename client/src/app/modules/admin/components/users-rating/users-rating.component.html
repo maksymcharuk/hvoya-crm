@@ -1,0 +1,116 @@
+<p-table
+  *ngIf="!loading; else skeleton"
+  #usersTable
+  dataKey="user.id"
+  currentPageReportTemplate="Показано {first} до {last} з {totalRecords} користувачів"
+  [value]="data"
+  [rowHover]="true"
+  [rows]="10"
+  [showCurrentPageReport]="true"
+  [paginator]="data.length > 10"
+  [filterDelay]="0"
+  rowGroupMode="subheader"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="fullName">
+        <div class="flex justify-content-between align-items-center">
+          ПІБ
+          <p-sortIcon field="fullName"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="ordersCount">
+        <div class="flex justify-content-between align-items-center">
+          К-ть замовлень
+          <p-sortIcon field="ordersCount"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="ordersTotal">
+        <div class="flex justify-content-between align-items-center">
+          Сума по замовленнях
+          <p-sortIcon field="ordersTotal"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="maxOrder.total">
+        <div class="flex justify-content-between align-items-center">
+          Найбільше замовлення
+          <p-sortIcon field="maxOrder.total"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="netWorth">
+        <div class="flex justify-content-between align-items-center">
+          Капітал
+          <p-sortIcon field="netWorth"></p-sortIcon>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-userData>
+    <tr
+      class="p-selectable-row"
+      [routerLink]="['/admin', 'users', userData.user.id]"
+    >
+      <td>
+        <span class="p-column-title">ПІБ</span>
+        {{ userData.user.fullName }}
+      </td>
+      <td>
+        <span class="p-column-title">К-ть замовлень</span>
+        {{ userData.ordersCount }}
+      </td>
+      <td>
+        <span class="p-column-title">Сума по замовленнях</span>
+        {{ userData.ordersTotal | currency }}
+      </td>
+      <td>
+        <span class="p-column-title">Найбільше замовлення</span>
+        <ng-container *ngIf="userData.maxOrder.total as total">
+          <a
+            [routerLink]="['/admin', 'orders', userData.maxOrder.number]"
+            class="p-1"
+          >
+            {{ userData.maxOrder.total | currency }}
+          </a>
+        </ng-container>
+        <ng-container *ngIf="!userData.maxOrder.total">-</ng-container>
+      </td>
+      <td>
+        <span class="p-column-title">Капітал</span>
+        {{ userData.netWorth | currency }}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="9">Даних немає</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<ng-template #skeleton>
+  <div class="p-4 border-bottom-1 border-300">
+    <div class="flex justify-content-between align-items-center">
+      <p-skeleton height="16px" width="85px"></p-skeleton>
+    </div>
+  </div>
+  <div class="p-4 border-bottom-1 border-300">
+    <div class="flex justify-content-between align-items-center">
+      <p-skeleton height="28px" width="28px"></p-skeleton>
+      <p-skeleton height="28px" width="85px"></p-skeleton>
+      <p-skeleton height="28px" width="175px"></p-skeleton>
+      <p-skeleton height="28px" width="175px"></p-skeleton>
+      <p-skeleton height="28px" width="175px"></p-skeleton>
+    </div>
+  </div>
+  <ng-container *ngFor="let _ of [].constructor(5)">
+    <div class="p-4 border-bottom-1 border-300">
+      <div class="flex justify-content-between align-items-center">
+        <p-skeleton height="28px" width="28px"></p-skeleton>
+        <p-skeleton height="28px" width="85px"></p-skeleton>
+        <p-skeleton height="16px" width="98px"></p-skeleton>
+        <p-skeleton height="19px" width="86px"></p-skeleton>
+        <p-skeleton height="16px" width="55px"></p-skeleton>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

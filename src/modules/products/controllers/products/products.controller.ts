@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   Body,
   Controller,
@@ -101,6 +102,7 @@ export class ProductsController {
   }
 
   @Get('filtered')
+  @UseInterceptors(CacheInterceptor)
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, ProductBaseEntity),
   )
