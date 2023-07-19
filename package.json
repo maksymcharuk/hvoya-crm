@@ -36,12 +36,15 @@
     "db:seed": "npm run typeorm-extension seed -- -d ./typeorm.config.ts",
     "db:reset": "npm run schema:drop && npm run migrations:run",
     "db:setup": "npm run db:drop && npm run db:create",
-    "db:setup-test": "NODE_ENV=test npm run db:setup && NODE_ENV=test npm run db:seed"
+    "db:setup-test": "NODE_ENV=test npm run db:setup && NODE_ENV=test npm run db:seed",
+    "db:backup": "ts-node ./src/modules/database/scripts/backup.ts",
+    "db:restore": "ts-node ./src/modules/database/scripts/restore.ts"
   },
   "pre-push": [
     "test:ui"
   ],
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.370.0",
     "@casl/ability": "^6.3.3",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/cache-manager": "^2.0.1",

@@ -1,7 +1,7 @@
 'use strict';
 
 require('dotenv').config({
-  path: `env/${process.env.NODE_ENV === 'test' ? 'test.env.' : '.env'}`,
+  path: `env/${process.env.NODE_ENV === 'test' ? 'test.env' : '.env'}`,
 });
 
 /**

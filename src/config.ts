@@ -1,3 +1,4 @@
+import { config } from 'dotenv';
 import * as fs from 'fs';
 import {
   WinstonModule,
@@ -5,9 +6,13 @@ import {
 } from 'nest-winston';
 import * as winston from 'winston';
 
-import { Env } from '@enums/env.enum';
+import { Env } from './enums/env.enum';
 
 const newrelicFormatter = require('@newrelic/winston-enricher')(winston);
+
+config({
+  path: `env/${process.env['NODE_ENV'] === 'test' ? 'test.env' : '.env'}`,
+});
 
 export default () => {
   // Configs
