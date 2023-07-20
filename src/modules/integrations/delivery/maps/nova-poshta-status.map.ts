@@ -9,7 +9,7 @@ export const NovaPoshtaStatusMap: { [key in OrderDeliveryStatus]: string[] } = {
   [OrderDeliveryStatus.Returned]: ['повернуто'],
   [OrderDeliveryStatus.Declined]: ['відмовлено'],
   [OrderDeliveryStatus.Unspecified]: [],
-  [OrderDeliveryStatus.Pending]: [],
+  [OrderDeliveryStatus.Pending]: ['накладну'],
 };
 
 export const getStatus: GetStatusFn = (status: string): OrderDeliveryStatus => {

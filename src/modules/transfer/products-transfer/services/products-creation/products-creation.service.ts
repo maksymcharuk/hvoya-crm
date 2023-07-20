@@ -24,6 +24,7 @@ interface UpsetionError {
   error: Error;
   entity:
     | NormalizedProductBase
+    | NormalizedProductVariant
     | NormalizedProductCategory
     | NormalizedProductColor
     | NormalizedProductSize;
@@ -207,12 +208,15 @@ export class ProductsCreationService {
         externalId: productVariant.externalId,
       })
       .orWhere('productVariant.sku = :sku', { sku: productVariant.sku })
+      .leftJoinAndSelect('productVariant.properties', 'properties')
+      .leftJoinAndSelect('properties.images', 'images')
+      .leftJoinAndSelect('properties.color', 'color')
+      .leftJoinAndSelect('properties.size', 'size')
       .getOne();
 
-    const properties = await manager.save(ProductPropertiesEntity, {
+    let properties = await manager.create(ProductPropertiesEntity, {
       name: productVariant.properties.name,
       description: productVariant.properties.description,
-      price: productVariant.properties.price,
       weight: productVariant.properties.weight,
       images: await Promise.all(
         productVariant.properties.images.map((image) =>
@@ -224,9 +228,16 @@ export class ProductsCreationService {
     });
 
     if (productVariantExists) {
-      await manager.update(ProductPropertiesEntity, properties.id, {
-        product: { id: productVariantExists.id },
-      });
+      const propertiesEqual = this.compareProperties(
+        properties,
+        productVariantExists.properties,
+      );
+
+      if (propertiesEqual) {
+        return productVariantExists;
+      }
+
+      properties = await manager.save(ProductPropertiesEntity, properties);
 
       await manager.update(ProductVariantEntity, productVariantExists.id, {
         sku: productVariant.sku,
@@ -237,17 +248,19 @@ export class ProductsCreationService {
           ]),
         ),
         baseProduct: { id: productBaseId },
-        properties,
+        properties: { id: properties.id },
       });
 
       return productVariantExists;
     }
 
+    properties = await manager.save(ProductPropertiesEntity, properties);
+
     const variant = await manager.save(ProductVariantEntity, {
       sku: productVariant.sku,
       externalIds: [productVariant.externalId],
       baseProduct: { id: productBaseId },
-      properties,
+      properties: { id: properties.id },
     });
 
     await manager.update(ProductPropertiesEntity, properties.id, {
@@ -302,5 +315,37 @@ export class ProductsCreationService {
     );
 
     return newProductBase;
+  }
+
+  private compareProperties(
+    properties: ProductPropertiesEntity,
+    propertiesExists: ProductPropertiesEntity,
+  ) {
+    const nameEqual = properties.name === propertiesExists.name;
+    const descriptionEqual =
+      properties.description === propertiesExists.description;
+    // properties.weight might be undefined since NumericTransformer doesn't work with "create" method
+    const weightEqual =
+      properties.weight === undefined
+        ? true
+        : properties.weight === propertiesExists.weight;
+    const colorEqual = properties.color.id === propertiesExists.color.id;
+    const sizeEqual = properties.size.id === propertiesExists.size.id;
+    const imagesEqual =
+      properties.images.length === propertiesExists.images.length &&
+      properties.images.every((image) =>
+        propertiesExists.images.some(
+          (imageExists) => image.id === imageExists.id,
+        ),
+      );
+
+    return (
+      nameEqual &&
+      descriptionEqual &&
+      weightEqual &&
+      colorEqual &&
+      sizeEqual &&
+      imagesEqual
+    );
   }
 }
