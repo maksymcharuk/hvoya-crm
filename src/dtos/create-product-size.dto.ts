@@ -16,16 +16,4 @@ export class CreateProductSizeDto {
   @IsNumber(undefined, { message: 'Діаметр повинен бути числом' })
   @IsOptional()
   diameter: number;
-
-  @IsNumber(undefined, { message: 'Висота в упаковці повинна бути числом' })
-  @IsNotEmpty({ message: 'Необхідно вказати висоту в упаковці' })
-  packageHeight: number;
-
-  @IsNumber(undefined, { message: 'Ширина в упаковці повинна бути числом' })
-  @IsNotEmpty({ message: 'Необхідно вказати ширину в упаковці' })
-  packageWidth: number;
-
-  @IsNumber(undefined, { message: 'Глибина в упаковці повинна бути числом' })
-  @IsNotEmpty({ message: 'Необхідно вказати глибину в упаковці' })
-  packageDepth: number;
 }

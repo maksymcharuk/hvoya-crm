@@ -19,15 +19,7 @@
   [value]="sizes"
   [rows]="5"
   [paginator]="true"
-  [globalFilterFields]="[
-    'height',
-    'width',
-    'depth',
-    'diameter',
-    'packageHeight',
-    'packageWidth',
-    'packageDepth'
-  ]"
+  [globalFilterFields]="['height', 'width', 'depth', 'diameter']"
   [rowHover]="true"
   [showCurrentPageReport]="true"
   [filterDelay]="0"
@@ -60,15 +52,6 @@
       <th pSortableColumn="diameter">
         Діаметр <p-sortIcon field="diameter"></p-sortIcon>
       </th>
-      <th pSortableColumn="packageHeight">
-        Висота в уп. <p-sortIcon field="packageHeight"></p-sortIcon>
-      </th>
-      <th pSortableColumn="packageWidth">
-        Ширина в уп. <p-sortIcon field="packageWidth"></p-sortIcon>
-      </th>
-      <th pSortableColumn="packageDepth">
-        Глибина в уп. <p-sortIcon field="packageDepth"></p-sortIcon>
-      </th>
       <th style="width: 1%"></th>
     </tr>
   </ng-template>
@@ -78,9 +61,6 @@
       <td>{{ size.width ?? '-' }}</td>
       <td>{{ size.depth ?? '-' }}</td>
       <td>{{ size.diameter ?? '-' }}</td>
-      <td>{{ size.packageHeight }}</td>
-      <td>{{ size.packageWidth }}</td>
-      <td>{{ size.packageDepth }}</td>
       <td>
         <button
           pButton
@@ -137,36 +117,6 @@
         id="diameter"
         mode="decimal"
         [(ngModel)]="size.diameter"
-      ></p-inputNumber>
-    </div>
-    <div class="field">
-      <label for="packageHeight">Висота в упаковці</label>
-      <p-inputNumber
-        autofocus
-        id="packageHeight"
-        mode="decimal"
-        [(ngModel)]="size.packageHeight"
-        [required]="true"
-      ></p-inputNumber>
-    </div>
-    <div class="field">
-      <label for="packageWidth">Ширина в упаковці</label>
-      <p-inputNumber
-        autofocus
-        id="packageWidth"
-        mode="decimal"
-        [(ngModel)]="size.packageWidth"
-        [required]="true"
-      ></p-inputNumber>
-    </div>
-    <div class="field">
-      <label for="packageDepth">Глибина в упаковці</label>
-      <p-inputNumber
-        autofocus
-        id="packageDepth"
-        mode="decimal"
-        [(ngModel)]="size.packageDepth"
-        [required]="true"
       ></p-inputNumber>
     </div>
   </ng-template>

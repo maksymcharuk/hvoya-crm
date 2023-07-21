@@ -6,7 +6,8 @@ import { OneCClientModule } from '@modules/integrations/one-c/one-c-client/one-c
 
 import { ProductsTransferController } from './products-transfer.controller';
 import { ProductsCreationService } from './services/products-creation/products-creation.service';
-import { PromProductsNormalizationService } from './services/prom-products-transfer/prom-products-normalization/prom-products-normalization.service';
+import { PromProductsNormalizationServiceXls } from './services/prom-products-transfer/prom-products-normalization-xls/prom-products-normalization-xls.service';
+import { PromProductsNormalizationServiceXml } from './services/prom-products-transfer/prom-products-normalization-xml/prom-products-normalization-xml.service';
 import { PromProductsTransferService } from './services/prom-products-transfer/prom-products-transfer.service';
 
 @Module({
@@ -14,7 +15,8 @@ import { PromProductsTransferService } from './services/prom-products-transfer/p
   controllers: [ProductsTransferController],
   providers: [
     PromProductsTransferService,
-    PromProductsNormalizationService,
+    PromProductsNormalizationServiceXml,
+    PromProductsNormalizationServiceXls,
     ProductsCreationService,
   ],
 })

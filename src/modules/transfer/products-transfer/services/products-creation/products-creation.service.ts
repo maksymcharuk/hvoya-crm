@@ -6,6 +6,7 @@ import { FileEntity } from '@entities/file.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductColorEntity } from '@entities/product-color.entity';
+import { ProductPackageSizeEntity } from '@entities/product-package-size.entity';
 import { ProductPropertiesEntity } from '@entities/product-properties.entity';
 import { ProductSizeEntity } from '@entities/product-size.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
@@ -45,7 +46,7 @@ export class ProductsCreationService {
     if (this.errors.length) {
       throw new HttpException(
         {
-          message: 'Не вдалося завантажити деякі продукти',
+          message: 'Не вдалося завантажити деякі товари',
           errors: this.errors,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -80,6 +81,18 @@ export class ProductsCreationService {
         currentEntity.width === nextEntity.width &&
         currentEntity.diameter === nextEntity.diameter,
     );
+    const productPackageSizes = uniqueObjectsArray(
+      products.reduce((acc, product) => {
+        return [
+          ...acc,
+          ...product.variants.map((variant) => variant.properties.size),
+        ];
+      }, []),
+      (currentEntity, nextEntity) =>
+        currentEntity.packageHeight === nextEntity.packageHeight &&
+        currentEntity.packageWidth === nextEntity.packageWidth &&
+        currentEntity.packageDepth === nextEntity.packageDepth,
+    );
 
     for (let productCategory of productCategories) {
       try {
@@ -102,6 +115,14 @@ export class ProductsCreationService {
         await this.upsertProductSize(productSize);
       } catch (error) {
         this.errors.push({ error, entity: productSize });
+      }
+    }
+
+    for (let productPackageSize of productPackageSizes) {
+      try {
+        await this.upsertProductPackageSize(productPackageSize);
+      } catch (error) {
+        this.errors.push({ error, entity: productPackageSize });
       }
     }
   }
@@ -178,13 +199,28 @@ export class ProductsCreationService {
   }
 
   async upsertProductSize(size: NormalizedProductSize) {
+    if (!size.height && !size.width && !size.diameter) {
+      return;
+    }
+
     const manager = this.dataSource.createEntityManager();
-    const productSizeExists = await manager
-      .createQueryBuilder(ProductSizeEntity, 'productSize')
-      .where('productSize.height = :height', { height: size.height })
-      .andWhere('productSize.width = :width', { width: size.width })
-      .andWhere('productSize.diameter = :diameter', { diameter: size.diameter })
-      .getOne();
+    const query = manager.createQueryBuilder(ProductSizeEntity, 'productSize');
+
+    if (size.height) {
+      query.andWhere('productSize.height = :height', { height: size.height });
+    }
+
+    if (size.width) {
+      query.andWhere('productSize.width = :width', { width: size.width });
+    }
+
+    if (size.diameter) {
+      query.andWhere('productSize.diameter = :diameter', {
+        diameter: size.diameter,
+      });
+    }
+
+    const productSizeExists = await query.getOne();
 
     if (productSizeExists) {
       return productSizeExists;
@@ -194,6 +230,48 @@ export class ProductsCreationService {
       height: size.height,
       width: size.width,
       diameter: size.diameter,
+    });
+  }
+
+  async upsertProductPackageSize(size: NormalizedProductSize) {
+    if (!size.packageHeight && !size.packageWidth && !size.packageDepth) {
+      return;
+    }
+
+    const manager = this.dataSource.createEntityManager();
+    const query = manager.createQueryBuilder(
+      ProductPackageSizeEntity,
+      'productPackageSize',
+    );
+
+    if (size.packageHeight) {
+      query.andWhere('productPackageSize.height = :height', {
+        height: size.packageHeight,
+      });
+    }
+
+    if (size.packageWidth) {
+      query.andWhere('productPackageSize.width = :width', {
+        width: size.packageWidth,
+      });
+    }
+
+    if (size.packageDepth) {
+      query.andWhere('productPackageSize.depth = :depth', {
+        depth: size.packageDepth,
+      });
+    }
+
+    const productSizeExists = await query.getOne();
+
+    if (productSizeExists) {
+      return productSizeExists;
+    }
+
+    return manager.save(ProductPackageSizeEntity, {
+      height: size.packageHeight,
+      width: size.packageWidth,
+      depth: size.packageDepth,
     });
   }
 
@@ -212,6 +290,7 @@ export class ProductsCreationService {
       .leftJoinAndSelect('properties.images', 'images')
       .leftJoinAndSelect('properties.color', 'color')
       .leftJoinAndSelect('properties.size', 'size')
+      .leftJoinAndSelect('properties.packageSize', 'packageSize')
       .getOne();
 
     let properties = await manager.create(ProductPropertiesEntity, {
@@ -225,6 +304,9 @@ export class ProductsCreationService {
       ),
       color: await this.upsertProductColor(productVariant.properties.color),
       size: await this.upsertProductSize(productVariant.properties.size),
+      packageSize: await this.upsertProductPackageSize(
+        productVariant.properties.size,
+      ),
     });
 
     if (productVariantExists) {
@@ -237,7 +319,10 @@ export class ProductsCreationService {
         return productVariantExists;
       }
 
-      properties = await manager.save(ProductPropertiesEntity, properties);
+      properties = await manager.save(ProductPropertiesEntity, {
+        ...productVariantExists.properties,
+        ...properties,
+      });
 
       await manager.update(ProductVariantEntity, productVariantExists.id, {
         sku: productVariant.sku,
@@ -330,7 +415,11 @@ export class ProductsCreationService {
         ? true
         : properties.weight === propertiesExists.weight;
     const colorEqual = properties.color.id === propertiesExists.color.id;
-    const sizeEqual = properties.size.id === propertiesExists.size.id;
+    const sizeEqual = this.compareSize(properties.size, propertiesExists.size);
+    const packageSizeEqual = this.compareSize(
+      properties.packageSize,
+      propertiesExists.packageSize,
+    );
     const imagesEqual =
       properties.images.length === propertiesExists.images.length &&
       properties.images.every((image) =>
@@ -345,7 +434,25 @@ export class ProductsCreationService {
       weightEqual &&
       colorEqual &&
       sizeEqual &&
+      packageSizeEqual &&
       imagesEqual
     );
+  }
+
+  private compareSize(
+    packageSize: ProductPackageSizeEntity | ProductSizeEntity,
+    packageSizeExists: ProductPackageSizeEntity | ProductSizeEntity,
+  ) {
+    // If package size is not yet set
+    if (packageSizeExists === null) {
+      return false;
+    }
+
+    // If package size is no found keep the old one
+    if (!packageSize) {
+      return true;
+    }
+
+    return packageSize.id === packageSizeExists.id;
   }
 }

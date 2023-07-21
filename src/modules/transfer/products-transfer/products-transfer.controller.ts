@@ -1,4 +1,5 @@
 import { firstValueFrom } from 'rxjs';
+import * as xlsx from 'xlsx';
 import * as xml2js from 'xml2js';
 
 import { HttpService } from '@nestjs/axios';
@@ -19,6 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { Action } from '@enums/action.enum';
+import { ImportDataType } from '@enums/import-data-type.enum';
 
 import { JwtAuthGuard } from '@modules/auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '@modules/casl/casl-ability/casl-ability.factory';
@@ -52,8 +54,19 @@ export class ProductsTransferController {
     @Body() { source, link }: ImportProductsDto,
     @UploadedFile(
       new ParseFilePipe({
-        validators: [new FileTypeValidator({ fileType: '(xml)$' })],
+        validators: [
+          new FileTypeValidator({
+            fileType:
+              '(xml|xls|xlsx|application/vnd.ms-excel|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)$',
+          }),
+        ],
         fileIsRequired: false,
+        exceptionFactory: () => {
+          throw new HttpException(
+            'Не вдалося опрацювати файл. Формат файлу має бути коректним "xml", "xls" або "xlsx"',
+            HttpStatus.UNPROCESSABLE_ENTITY,
+          );
+        },
       }),
     )
     file?: Express.Multer.File,
@@ -65,11 +78,17 @@ export class ProductsTransferController {
       );
     }
 
-    let xml: string = '';
+    let buffer: Buffer;
 
     if (link) {
       try {
-        xml = (await firstValueFrom(this.httpService.get(link))).data;
+        buffer = (
+          await firstValueFrom(
+            this.httpService.get(link, {
+              responseType: 'arraybuffer', // Set the responseType to 'arraybuffer' to get the response as a buffer
+            }),
+          )
+        ).data;
       } catch (error) {
         throw new HttpException(
           'Не вдалося отримати файл за посиланням',
@@ -77,25 +96,37 @@ export class ProductsTransferController {
         );
       }
     } else if (file) {
-      xml = file.buffer.toString();
+      buffer = file.buffer;
     }
 
-    const parser = new xml2js.Parser();
     let result: any;
+    let type: ImportDataType;
 
     try {
-      result = await parser.parseStringPromise(xml);
-    } catch (error) {
+      const workbook = xlsx.read(buffer!, { type: 'buffer' });
+      const firstSheetName = workbook.SheetNames[0]!;
+      const worksheet = workbook.Sheets[firstSheetName]!;
+      result = xlsx.utils.sheet_to_json(worksheet, { raw: true });
+      type = ImportDataType.XLS;
+    } catch (error) {}
+
+    try {
+      const parser = new xml2js.Parser();
+      result = await parser.parseStringPromise(buffer!.toString());
+      type = ImportDataType.XML;
+    } catch (error) {}
+
+    if (!result) {
       throw new HttpException(
-        'Не вдалося опрацювати XML дані',
-        HttpStatus.BAD_REQUEST,
+        'Не вдалося опрацювати файл',
+        HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
 
     let response;
     switch (source) {
       case ProductsImportSource.Prom:
-        response = await this.promProductsTransferService.import(result);
+        response = await this.promProductsTransferService.import(result, type!);
         await this.oneCSyncService.syncProducts();
         return response;
       default:

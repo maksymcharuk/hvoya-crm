@@ -53,8 +53,9 @@ export class OneCSyncService {
       const properties = await this.dataSource.manager.save(
         ProductPropertiesEntity,
         {
-          ...{ ...product.properties, id: undefined },
+          ...product.properties,
           price: new Decimal(newProduct.price),
+          id: undefined,
         },
       );
       await this.dataSource.manager.update(ProductVariantEntity, product.id, {

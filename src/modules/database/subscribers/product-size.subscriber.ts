@@ -50,10 +50,7 @@ export class ProductSizeSubscriber
       currentSize.height === upsertEntity.height &&
       currentSize.width === upsertEntity.width &&
       currentSize.depth === upsertEntity.depth &&
-      currentSize.diameter === upsertEntity.diameter &&
-      currentSize.packageHeight === upsertEntity.packageHeight &&
-      currentSize.packageWidth === upsertEntity.packageWidth &&
-      currentSize.packageDepth === upsertEntity.packageDepth
+      currentSize.diameter === upsertEntity.diameter
     );
   }
 }

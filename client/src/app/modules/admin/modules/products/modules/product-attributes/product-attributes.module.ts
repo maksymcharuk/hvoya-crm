@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
 
 import { ProductColorsComponent } from './pages/product-colors/product-colors.component';
+import { ProductPackageSizesComponent } from './pages/product-package-sizes/product-package-sizes.component';
 import { ProductSizesComponent } from './pages/product-sizes/product-sizes.component';
 import { ProductAttributesRoutingModule } from './product-attributes-routing.module';
 import { ProductAttributesComponent } from './product-attributes.component';
@@ -23,6 +24,7 @@ import { ProductAttributesComponent } from './product-attributes.component';
     ProductAttributesComponent,
     ProductColorsComponent,
     ProductSizesComponent,
+    ProductPackageSizesComponent,
   ],
   imports: [
     CommonModule,

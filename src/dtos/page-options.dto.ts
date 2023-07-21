@@ -12,7 +12,10 @@ export class PageOptionsDto {
   readonly orderBy: string = 'createdAt';
 
   @IsOptional()
-  readonly size?: string;
+  readonly height?: string;
+
+  @IsOptional()
+  readonly diameter?: string;
 
   @IsOptional()
   readonly color?: string;

@@ -27,7 +27,7 @@ export class AdminComponent {
           routerLink: ['/'],
         },
         {
-          label: 'Продукти',
+          label: 'Товари',
           icon: 'pi pi-fw pi-shopping-cart',
           items: [
             {

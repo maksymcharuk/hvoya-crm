@@ -17,9 +17,6 @@ export class ProductSize extends BaseEntity {
   width: number;
   depth: number;
   diameter: number;
-  packageHeight: number;
-  packageWidth: number;
-  packageDepth: number;
 
   constructor(data?: ProductSize) {
     super(data);
@@ -27,9 +24,19 @@ export class ProductSize extends BaseEntity {
     this.width = data?.width || 0;
     this.depth = data?.depth || 0;
     this.diameter = data?.diameter || 0;
-    this.packageHeight = data?.packageHeight || 0;
-    this.packageWidth = data?.packageWidth || 0;
-    this.packageDepth = data?.packageDepth || 0;
+  }
+}
+
+export class ProductPackageSize extends BaseEntity {
+  height: number;
+  width: number;
+  depth: number;
+
+  constructor(data?: ProductPackageSize) {
+    super(data);
+    this.height = data?.height || 0;
+    this.width = data?.width || 0;
+    this.depth = data?.depth || 0;
   }
 }
 
@@ -49,6 +56,7 @@ export class ProductProperties extends BaseEntity {
   isPublished: boolean;
   price: number;
   size: ProductSize;
+  packageSize: ProductPackageSize;
   color: ProductColor;
   images: File[];
 
@@ -61,6 +69,7 @@ export class ProductProperties extends BaseEntity {
       data?.isPublished !== undefined ? data.isPublished : true;
     this.price = data?.price || 0;
     this.size = new ProductSize(data?.size);
+    this.packageSize = new ProductPackageSize(data?.packageSize);
     this.color = new ProductColor(data?.color);
     this.images = data?.images
       ? data.images.map((image) => new File(image))

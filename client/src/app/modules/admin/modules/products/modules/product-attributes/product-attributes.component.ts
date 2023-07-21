@@ -20,6 +20,10 @@ export class ProductAttributesComponent {
         label: 'Розміри',
         routerLink: ['sizes'],
       },
+      {
+        label: 'Розміри упаковки',
+        routerLink: ['package-sizes'],
+      },
     ];
   }
 }

@@ -15,6 +15,7 @@ import { OrderEntity } from '@entities/order.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductColorEntity } from '@entities/product-color.entity';
+import { ProductPackageSizeEntity } from '@entities/product-package-size.entity';
 import { ProductSizeEntity } from '@entities/product-size.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
@@ -41,6 +42,7 @@ type Subjects =
       | typeof ProductVariantEntity
       | typeof ProductColorEntity
       | typeof ProductSizeEntity
+      | typeof ProductPackageSizeEntity
       | typeof CartEntity
       | typeof OrderEntity
       | typeof FaqEntity
@@ -130,6 +132,7 @@ export class CaslAbilityFactory {
     can([Action.Read, Action.Create, Action.Update], ProductVariantEntity);
     can([Action.Read, Action.Create, Action.Update], ProductColorEntity);
     can([Action.Read, Action.Create, Action.Update], ProductSizeEntity);
+    can([Action.Read, Action.Create, Action.Update], ProductPackageSizeEntity);
     // -------------------------------------------------------------------------
 
     // Orders
@@ -189,6 +192,7 @@ export class CaslAbilityFactory {
     });
     can([Action.Read], ProductColorEntity);
     can([Action.Read], ProductSizeEntity);
+    can([Action.Read], ProductPackageSizeEntity);
     // -------------------------------------------------------------------------
 
     // Cart

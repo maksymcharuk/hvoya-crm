@@ -73,6 +73,12 @@ async function bootstrap() {
   httpsServer.listen(process.env['PORT'] || '3000');
 }
 
-bootstrap().then(() => {
-  logger.log(`Application listening on port ${process.env['PORT'] || '3000'}`);
-});
+bootstrap()
+  .then(() => {
+    logger.log(
+      `Application listening on port ${process.env['PORT'] || '3000'}`,
+    );
+  })
+  .catch((error) => {
+    logger.error(error);
+  });
