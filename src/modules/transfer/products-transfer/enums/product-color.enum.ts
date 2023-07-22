@@ -5,6 +5,7 @@ export enum ProductColor {
   GreenSnowy,
   GreenWhite,
   GreenLight,
+  GreenOlive,
   BlueSnowy,
   WhiteSnowy,
   WhiteGreenBlue,

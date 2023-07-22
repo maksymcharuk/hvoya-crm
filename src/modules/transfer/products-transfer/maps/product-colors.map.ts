@@ -45,6 +45,13 @@ export const productColorsMap = new Map<ProductColor, NormalizedProductColor>([
     },
   ],
   [
+    ProductColor.GreenOlive,
+    {
+      name: 'Зелено-оливковий',
+      hex: '#8f9c62',
+    },
+  ],
+  [
     ProductColor.BlueSnowy,
     {
       name: 'Блакитний|Засніжений',
