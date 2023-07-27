@@ -303,9 +303,14 @@ export class ProductsService {
       });
     }
 
-    if (pageOptionsDto.size) {
-      const sizeIds = pageOptionsDto.size.split(',');
-      queryBuilder.andWhere('size.id IN (:...sizeIds)', { sizeIds });
+    if (pageOptionsDto.height) {
+      const heights = pageOptionsDto.height.split(',');
+      queryBuilder.andWhere('size.height IN (:...heights)', { heights });
+    }
+
+    if (pageOptionsDto.diameter) {
+      const diameters = pageOptionsDto.diameter.split(',');
+      queryBuilder.andWhere('size.diameter IN (:...diameters)', { diameters });
     }
 
     if (pageOptionsDto.color) {
@@ -373,6 +378,7 @@ export class ProductsService {
       .leftJoinAndSelect('variants.properties', 'properties')
       .leftJoinAndSelect('properties.images', 'images')
       .leftJoinAndSelect('properties.size', 'size')
+      .leftJoinAndSelect('properties.packageSize', 'packageSize')
       .leftJoinAndSelect('properties.color', 'color');
 
     if (skipEmpty) {

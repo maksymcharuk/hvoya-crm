@@ -3,9 +3,12 @@ export interface NormalizedImage {
 }
 
 export interface NormalizedProductSize {
-  height: number;
-  width: number;
-  diameter: number;
+  height?: number;
+  width?: number;
+  diameter?: number;
+  packageHeight?: number;
+  packageWidth?: number;
+  packageDepth?: number;
 }
 
 export interface NormalizedProductColor {

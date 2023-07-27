@@ -1,4 +1,4 @@
-export interface PromCategory {
+export interface PromCategoryXml {
   $: {
     id: string;
     parentId?: string;
@@ -6,7 +6,7 @@ export interface PromCategory {
   _: string;
 }
 
-export interface PromOfferParam {
+export interface PromOfferParamXml {
   $: {
     name: string;
     unit?: string;
@@ -14,7 +14,7 @@ export interface PromOfferParam {
   _: string;
 }
 
-export interface PromOffer {
+export interface PromOfferXml {
   $: {
     id: string;
     available: string;
@@ -34,10 +34,10 @@ export interface PromOffer {
   description: string[]; // string
   description_ua: string[]; // string
   sales_notes: string[]; // string
-  param: PromOfferParam[];
+  param: PromOfferParamXml[];
 }
 
-export interface PromProducts {
+export interface PromProductsXml {
   yml_catalog: {
     $: {
       date: string;
@@ -55,10 +55,10 @@ export interface PromProducts {
         }>;
       }>;
       categories: Array<{
-        category: PromCategory[];
+        category: PromCategoryXml[];
       }>;
       offers: Array<{
-        offer: PromOffer[];
+        offer: PromOfferXml[];
       }>;
     }>;
   };

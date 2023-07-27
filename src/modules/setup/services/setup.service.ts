@@ -28,15 +28,19 @@ export class SetupService {
       return;
     }
 
-    return this.usersService.create({
-      ...this.defaultAdminData,
-      email:
-        this.configService.get<string>('INITIAL_ADMIN_EMAIL') ||
-        this.defaultAdminData.email,
-      password:
-        this.configService.get<string>('INITIAL_ADMIN_PASSWORD') ||
-        this.defaultAdminData.password,
-    });
+    try {
+      return this.usersService.create({
+        ...this.defaultAdminData,
+        email:
+          this.configService.get<string>('INITIAL_ADMIN_EMAIL') ||
+          this.defaultAdminData.email,
+        password:
+          this.configService.get<string>('INITIAL_ADMIN_PASSWORD') ||
+          this.defaultAdminData.password,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async createTestUser() {
@@ -48,14 +52,18 @@ export class SetupService {
       return;
     }
 
-    return this.usersService.create({
-      ...this.testUserData,
-      email:
-        this.configService.get<string>('TEST_USER_EMAIL') ||
-        this.testUserData.email,
-      password:
-        this.configService.get<string>('TEST_USER_PASSWORD') ||
-        this.testUserData.password,
-    });
+    try {
+      return this.usersService.create({
+        ...this.testUserData,
+        email:
+          this.configService.get<string>('TEST_USER_EMAIL') ||
+          this.testUserData.email,
+        password:
+          this.configService.get<string>('TEST_USER_PASSWORD') ||
+          this.testUserData.password,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }

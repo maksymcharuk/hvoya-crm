@@ -55,7 +55,9 @@ import {
   DateAgoPipe,
   DeliveryServiceNamePipe,
   PhoneNumberPipe,
+  ProductPackageSize,
   ProductSizePipe,
+  ProductWeight,
   RoleNamePipe,
   TransactionStatusPipe,
   TransactionSyncOneCStatusPipe,
@@ -71,6 +73,8 @@ const PIPES = [
   TransactionStatusPipe,
   DateAgoPipe,
   TransactionSyncOneCStatusPipe,
+  ProductPackageSize,
+  ProductWeight,
 ];
 
 const COMPONENTS = [

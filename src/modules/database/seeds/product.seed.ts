@@ -1,6 +1,8 @@
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 
+import { ProductPackageSizeEntity } from '@entities/product-package-size.entity';
+
 import { FileEntity } from '../../../entities/file.entity';
 import { ProductBaseEntity } from '../../../entities/product-base.entity';
 import { ProductCategoryEntity } from '../../../entities/product-category.entity';
@@ -19,6 +21,9 @@ export default class ProductSeeder implements Seeder {
       dataSource.getRepository(ProductVariantEntity);
     const productColorRepository = dataSource.getRepository(ProductColorEntity);
     const productSizeRepository = dataSource.getRepository(ProductSizeEntity);
+    const productPackageSizeRepository = dataSource.getRepository(
+      ProductPackageSizeEntity,
+    );
     const productPropertiesRepository = dataSource.getRepository(
       ProductPropertiesEntity,
     );
@@ -42,47 +47,61 @@ export default class ProductSeeder implements Seeder {
         height: 220,
         width: 125,
         depth: 125,
-        packageHeight: 110,
-        packageWidth: 70,
-        packageDepth: 70,
       },
       {
         height: 180,
         width: 110,
         depth: 110,
-        packageHeight: 90,
-        packageWidth: 60,
-        packageDepth: 60,
       },
       {
         height: 90,
         width: 50,
         depth: 50,
-        packageHeight: 90,
-        packageWidth: 30,
-        packageDepth: 30,
       },
       {
         height: 70,
         width: 40,
         depth: 40,
-        packageHeight: 70,
-        packageWidth: 20,
-        packageDepth: 20,
       },
       {
         height: 30,
         diameter: 60,
-        packageHeight: 30,
-        packageWidth: 60,
-        packageDepth: 60,
       },
       {
         height: 30,
         diameter: 55,
-        packageHeight: 30,
-        packageWidth: 55,
-        packageDepth: 55,
+      },
+    ]);
+    const productPackageSizes = await productPackageSizeRepository.save([
+      {
+        height: 110,
+        width: 70,
+        depth: 70,
+      },
+      {
+        height: 90,
+        width: 60,
+        depth: 60,
+      },
+      {
+        height: 70,
+        width: 30,
+        depth: 30,
+      },
+      {
+        height: 70,
+        width: 20,
+        depth: 20,
+      },
+      {
+        height: 30,
+        width: 60,
+        depth: 60,
+      },
+      {
+        height: 30,
+        width: 55,
+        depth: 55,
       },
     ]);
     const productCategory = await productCategoryRepository.save([
@@ -119,6 +138,7 @@ export default class ProductSeeder implements Seeder {
         Святковий вінок може стати чудовим новорічним подарунком.
       `,
         size: productSizes[5],
+        packageSize: productPackageSizes[5],
         color: productColors[0],
         price: 455,
         availableItemCount: 10,
@@ -136,6 +156,7 @@ export default class ProductSeeder implements Seeder {
         Святковий вінок може стати чудовим новорічним подарунком.
       `,
         size: productSizes[5],
+        packageSize: productPackageSizes[5],
         color: productColors[1],
         price: 455,
         availableItemCount: 10,
@@ -151,6 +172,7 @@ export default class ProductSeeder implements Seeder {
         description:
           'Традиційна гілка ялинки. Композиція з хвойних гілок може замінити новорічне дерево.',
         size: productSizes[4],
+        packageSize: productPackageSizes[4],
         color: productColors[0],
         price: 197,
         availableItemCount: 10,
@@ -166,6 +188,7 @@ export default class ProductSeeder implements Seeder {
         description:
           'Традиційна гілка ялинки. Композиція з хвойних гілок може замінити новорічне дерево.',
         size: productSizes[4],
+        packageSize: productPackageSizes[4],
         color: productColors[1],
         price: 197,
         availableItemCount: 10,
@@ -183,6 +206,7 @@ export default class ProductSeeder implements Seeder {
         напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
         Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
         size: productSizes[0],
+        packageSize: productPackageSizes[0],
         color: productColors[0],
         price: 2843,
         availableItemCount: 10,
@@ -200,6 +224,7 @@ export default class ProductSeeder implements Seeder {
         напівплоских голок. Створіть надзвичайні святкові моменти з литою ялинкою Premium Mix. 
         Комбінована з плівкою для заповнення внутрішнього простору. Міцна складна металева підставка.`,
         size: productSizes[1],
+        packageSize: productPackageSizes[1],
         color: productColors[2],
         price: 2843,
         availableItemCount: 10,
@@ -216,6 +241,7 @@ export default class ProductSeeder implements Seeder {
         Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
         Така ялинка підійде як в офіс так і в дім.`,
         size: productSizes[2],
+        packageSize: productPackageSizes[2],
         color: productColors[1],
         price: 614,
         availableItemCount: 10,
@@ -232,6 +258,7 @@ export default class ProductSeeder implements Seeder {
         Горщик оздоблений мішковиною, з обтяжувачем, який захистить від перекидання.
         Така ялинка підійде як в офіс так і в дім.`,
         size: productSizes[3],
+        packageSize: productPackageSizes[3],
         color: productColors[1],
         price: 864,
         availableItemCount: 10,

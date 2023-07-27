@@ -288,46 +288,43 @@ export class ProductListComponent implements OnDestroy {
 
   private getSizesList() {
     return this.productSizesService.getAllSizes().pipe(
-      map((sizes) => ({
-        label: 'Розмір',
-        value: 'size',
-        items: sizes
-          .map((size) => {
-            return {
-              label:
-                size.diameter != 0
-                  ? `Діаметр: ${size.diameter}`
-                  : `Висота: ${size.height}`,
-              value: { size: size.id },
-              uuid: `size-${size.id}`,
-            };
-          })
-          .sort((a: any, b: any) => {
-            const typeA = this.getSizeType(a.label);
-            const typeB = this.getSizeType(b.label);
-            const valueA = this.getSizeValue(a.label);
-            const valueB = this.getSizeValue(b.label);
+      map((sizes) => {
+        const uHeights = new Set(
+          sizes
+            .map((size) => size.height)
+            .filter((value) => !!value)
+            .sort((a, b) => a - b),
+        );
+        const uDiameters = new Set(
+          sizes
+            .map((size) => size.diameter)
+            .filter((value) => !!value)
+            .sort((a, b) => a - b),
+        );
 
-            if (typeA === typeB) {
-              return valueA - valueB;
-            } else {
-              return typeA!.localeCompare(typeB!);
-            }
-          }),
-      })),
+        const heights = Array.from(uHeights).map((height) => {
+          return {
+            label: `Висота: ${height} см`,
+            value: { height },
+            uuid: `height-${height}`,
+          };
+        });
+        const diameters = Array.from(uDiameters).map((diameter) => {
+          return {
+            label: `Діаметр: ${diameter} см`,
+            value: { diameter },
+            uuid: `diameter-${diameter}`,
+          };
+        });
+
+        return {
+          label: 'Розмір',
+          value: 'size',
+          items: [...heights, ...diameters],
+        };
+      }),
     );
   }
-
-  private getSizeValue(str: string) {
-    return parseInt(str.split(': ')[1]!);
-  }
-  private getSizeType(str: string) {
-    return str.split(': ')[0];
-  }
-
-  // private bySizeLabel(a: any, b: any) {
-  //   return
-  // }
 
   private getCategoryList() {
     return this.productsService.getProductsCategories().pipe(
@@ -363,7 +360,12 @@ export class ProductListComponent implements OnDestroy {
   // }
 
   private setFilterValue(params: any) {
-    if (!params.category && !params.color && !params.size) {
+    if (
+      !params.category &&
+      !params.color &&
+      !params.height &&
+      !params.diameter
+    ) {
       return;
     }
 

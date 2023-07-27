@@ -8,24 +8,27 @@ import {
   NormalizedProductsData,
 } from '../../../interfaces/normalized-products-data.interface';
 import {
-  PromCategory,
-  PromOffer,
-  PromProducts,
-} from '../../../interfaces/prom-products.interface';
+  PromCategoryXml,
+  PromOfferXml,
+  PromProductsXml,
+} from '../../../interfaces/prom-products-xml.interface';
 import { productColorsMap } from '../../../maps/product-colors.map';
-import { skuColorsMap } from '../../../maps/sku-color.map';
 import { BaseNormalizationService } from '../../base-normalization/base-normalization.service';
 import { promColorsMap } from '../maps/prom-colors.map';
+import {
+  getColorBaseOnSku,
+  getDataBaseOnSku,
+} from '../utils/products-normalization.util';
 
 @Injectable()
-export class PromProductsNormalizationService
-  implements BaseNormalizationService<PromProducts>
+export class PromProductsNormalizationServiceXml
+  implements BaseNormalizationService<PromProductsXml>
 {
-  normalize(data: PromProducts): NormalizedProductsData {
+  normalize(data: PromProductsXml): NormalizedProductsData {
     let products: NormalizedProductBase[] | undefined = [];
     try {
       const categories = data.yml_catalog.shop[0]?.categories[0]?.category.map(
-        (category: PromCategory) => {
+        (category: PromCategoryXml) => {
           return {
             name: category._.trim(),
             externalId: category.$.id,
@@ -34,18 +37,18 @@ export class PromProductsNormalizationService
       );
       const productBaseList =
         data.yml_catalog.shop[0]?.categories[0]?.category.filter(
-          (category: PromCategory) => category.$.parentId !== undefined,
+          (category: PromCategoryXml) => category.$.parentId !== undefined,
         );
       products = productBaseList
-        ?.map((productBase: PromCategory) => ({
+        ?.map((productBase: PromCategoryXml) => ({
           name: productBase._.trim(),
           externalId: productBase.$.id,
           category: categories?.find(
             (category) => category.externalId === productBase.$.parentId,
           ),
           variants: data.yml_catalog.shop[0]!.offers[0]!.offer.filter(
-            (offer: PromOffer) => offer.categoryId[0] === productBase.$.id,
-          ).map((offer: PromOffer) => {
+            (offer: PromOfferXml) => offer.categoryId[0] === productBase.$.id,
+          ).map((offer: PromOfferXml) => {
             return {
               sku: offer.vendorCode[0]!.trim(),
               externalId: offer.$.id,
@@ -81,8 +84,8 @@ export class PromProductsNormalizationService
     return { products };
   }
 
-  private getWeight(params: PromOffer['param']): number | undefined {
-    const weightParam = params.find((param: PromOffer['param'][0]) =>
+  private getWeight(params: PromOfferXml['param']): number | undefined {
+    const weightParam = params.find((param: PromOfferXml['param'][0]) =>
       param.$.name.includes('Вес'),
     );
 
@@ -93,30 +96,25 @@ export class PromProductsNormalizationService
     return Number(weightParam._);
   }
 
-  private getSize(offer: PromOffer): NormalizedProductSize {
+  private getSize(offer: PromOfferXml): NormalizedProductSize {
     const sku = offer.vendorCode[0]?.trim();
+    let height;
     // Fetch size from sku first
     if (sku) {
-      const { size } = this.getDataBaseOnSku(sku);
+      const { size } = getDataBaseOnSku(sku);
+      height = Number(size);
       const name = offer.name_ua?.[0] || offer.name[0];
       if (name!.includes('вінок') || name!.includes('Вінок')) {
+        const diameter = Number(size);
         return {
-          height: 0,
-          width: 0,
-          diameter: Number(size),
+          diameter: diameter || this.getDimension(offer.param, 'Диаметр', true),
         };
       }
-      return {
-        height: Number(size),
-        width: Number(size),
-        diameter: 0,
-      };
     }
 
     return {
-      height: this.getDimension(offer.param, 'Высота'),
+      height: height || this.getDimension(offer.param, 'Высота'),
       width: this.getDimension(offer.param, 'Диаметр нижнего яруса', true),
-      diameter: this.getDimension(offer.param, 'Диаметр', true),
     };
   }
 
@@ -125,16 +123,16 @@ export class PromProductsNormalizationService
   // 2. Some products use height instead of diameter
   // 3. None of the products have package dimensions
   private getDimension(
-    param: PromOffer['param'],
+    param: PromOfferXml['param'],
     key: string,
     matchFull: boolean = false,
-  ): number {
-    const dimensionParam = param.find((param: PromOffer['param'][0]) =>
+  ): number | undefined {
+    const dimensionParam = param.find((param: PromOfferXml['param'][0]) =>
       matchFull ? param.$.name === key : param.$.name.includes(key),
     );
 
     if (!dimensionParam) {
-      return 0;
+      return;
     }
 
     if (dimensionParam.$.unit === 'м' || dimensionParam._.includes('.')) {
@@ -144,7 +142,7 @@ export class PromProductsNormalizationService
     return Number(dimensionParam._);
   }
 
-  private getColor(offer: PromOffer): NormalizedProductColor {
+  private getColor(offer: PromOfferXml): NormalizedProductColor {
     const color =
       this.getColorBaseOnSku(offer) || this.getColorBaseOnRawColor(offer);
     return color !== undefined
@@ -152,9 +150,11 @@ export class PromProductsNormalizationService
       : productColorsMap.get(ProductColor.Undefined)!;
   }
 
-  private getColorBaseOnRawColor(offer: PromOffer): ProductColor | undefined {
+  private getColorBaseOnRawColor(
+    offer: PromOfferXml,
+  ): ProductColor | undefined {
     const rawColor = offer.param
-      .find((param: PromOffer['param'][0]) => param.$.name.includes('Цвет'))
+      .find((param: PromOfferXml['param'][0]) => param.$.name.includes('Цвет'))
       ?._.trim();
 
     if (!rawColor) {
@@ -164,32 +164,13 @@ export class PromProductsNormalizationService
     return promColorsMap.get(rawColor);
   }
 
-  private getColorBaseOnSku(offer: PromOffer): ProductColor | undefined {
+  private getColorBaseOnSku(offer: PromOfferXml): ProductColor | undefined {
     const sku = offer.vendorCode[0]?.trim();
 
     if (!sku) {
       return;
     }
 
-    const skuData = this.getDataBaseOnSku(sku);
-
-    if (!skuData.color) {
-      return;
-    }
-
-    return skuColorsMap.get(skuData.color);
-  }
-
-  private getDataBaseOnSku(sku: string) {
-    const skuParts = sku.split('/');
-    const color = skuParts[skuParts.length - 1];
-    const size = skuParts[skuParts.length - 2];
-    const skuWithoutColorAndSize = skuParts.slice(0, -2).join('-');
-
-    return {
-      color,
-      size,
-      skuWithoutColorAndSize,
-    };
+    return getColorBaseOnSku(sku);
   }
 }

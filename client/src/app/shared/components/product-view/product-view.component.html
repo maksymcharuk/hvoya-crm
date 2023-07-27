@@ -30,7 +30,7 @@
       class="flex list-none m-0 pt-0 px-0 pb-3 align-items-center text-sm text-600 mb-3 overflow-x-auto"
     >
       <li class="mr-2 inline-flex align-items-center">
-        <a [routerLink]="['../../../products']">Всі продукти</a>
+        <a [routerLink]="['../../../products']">Всі товари</a>
       </li>
       <li class="mr-2"><i class="pi pi-angle-right text-sm"></i></li>
       <li>{{ product.category?.name }}</li>
@@ -86,6 +86,27 @@
         </ng-template>
       </p-selectButton>
     </div>
+    <!-- Габарити -->
+    <div class="flex">
+      <div *ngIf="selectedVariant?.properties?.packageSize as packageSize">
+        <div class="mb-3 flex align-items-center justify-content-between">
+          <span class="font-bold text-900">Габарити</span>
+        </div>
+        <div class="flex align-items-center mb-5">
+          {{ packageSize | productPackageSize }}
+        </div>
+      </div>
+      <!-- Вага -->
+      <div *ngIf="selectedVariant?.properties?.weight as weight" class="ml-6">
+        <div class="mb-3 flex align-items-center justify-content-between">
+          <span class="font-bold text-900">Вага</span>
+        </div>
+        <div class="flex align-items-center mb-5">
+          {{ weight | productWeight }}
+        </div>
+      </div>
+    </div>
+    <!-- Наявність -->
     <div class="mb-3 flex align-items-center justify-content-between">
       <span class="font-bold text-900">Наявність</span>
     </div>

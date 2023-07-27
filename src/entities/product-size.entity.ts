@@ -17,15 +17,6 @@ export class ProductSizeEntity extends BaseEntity {
   @Column({ default: 0 })
   diameter: number;
 
-  @Column({ default: 0 })
-  packageHeight: number;
-
-  @Column({ default: 0 })
-  packageWidth: number;
-
-  @Column({ default: 0 })
-  packageDepth: number;
-
   @OneToMany(() => ProductPropertiesEntity, (product) => product.size)
   products: ProductPropertiesEntity[];
 }

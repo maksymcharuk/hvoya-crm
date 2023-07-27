@@ -6,6 +6,7 @@ import { NumericTransformer } from '../transformers/numeric.transformer';
 import { BaseEntity } from './base.entity';
 import { FileEntity } from './file.entity';
 import { ProductColorEntity } from './product-color.entity';
+import { ProductPackageSizeEntity } from './product-package-size.entity';
 import { ProductSizeEntity } from './product-size.entity';
 import { ProductVariantEntity } from './product-variant.entity';
 
@@ -53,6 +54,11 @@ export class ProductPropertiesEntity extends BaseEntity {
     eager: true,
   })
   size: ProductSizeEntity;
+
+  @ManyToOne(() => ProductPackageSizeEntity, {
+    eager: true,
+  })
+  packageSize: ProductPackageSizeEntity;
 
   @ManyToOne(
     () => ProductVariantEntity,

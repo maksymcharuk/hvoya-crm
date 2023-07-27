@@ -5,3 +5,5 @@ export { PhoneNumberPipe } from './phone-number.pipe';
 export { TransactionStatusPipe } from './transaction-status.pipe';
 export { DateAgoPipe } from './date-ago.pipe';
 export { TransactionSyncOneCStatusPipe } from './transaction-sync-once-c-status.pipe';
+export { ProductPackageSize } from './product-package-size.pipe';
+export { ProductWeight } from './product-weight.pipe';
