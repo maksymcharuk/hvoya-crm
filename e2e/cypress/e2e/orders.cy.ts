@@ -1,3 +1,5 @@
+import { UsersService } from '../services/users.service';
+
 describe('Orders', () => {
   let newOrderId: string;
 
@@ -6,7 +8,8 @@ describe('Orders', () => {
     const testUserPassword = 'Test12345';
 
     before(() => {
-      cy.registerNewUser(testUserEmail, testUserPassword, { confirm: true });
+      const service = new UsersService();
+      service.createUser({ email: testUserEmail, password: testUserPassword });
     });
 
     beforeEach(() => {
@@ -49,7 +52,7 @@ describe('Orders', () => {
           newOrderId = text;
 
           // Check order details
-          cy.getCyEl('order-list-item').click({force: true});
+          cy.getCyEl('order-list-item').click({ force: true });
           cy.getCyEl('order-view-page').should('exist');
           cy.should('contain', `№${newOrderId}`);
         });

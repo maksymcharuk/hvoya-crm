@@ -1,3 +1,5 @@
+import { UsersService } from '../services/users.service';
+
 describe('Cart', () => {
   const productListPageUrl = '/dashboard/products';
   const cartPageUrl = '/dashboard/cart';
@@ -21,7 +23,8 @@ describe('Cart', () => {
     const testUserPassword = 'Test12345';
 
     before(() => {
-      cy.registerNewUser(testUserEmail, testUserPassword, { confirm: true });
+      const service = new UsersService();
+      service.createUser({ email: testUserEmail, password: testUserPassword });
     });
 
     beforeEach(() => {

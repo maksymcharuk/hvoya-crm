@@ -1,6 +1,7 @@
-import * as dotenv from 'dotenv';
 import { defineConfig } from 'cypress';
-import { connectDB } from 'cypress/support/tasks';
+import * as dotenv from 'dotenv';
+
+import { connectDB } from './cypress/support/tasks';
 
 dotenv.config({ path: '../env/test.env' });
 
@@ -25,6 +26,7 @@ export default defineConfig({
   },
 
   env: {
+    API_BASE_URL: 'https://localhost:3001/api',
     JWT_SECRET: 'secret',
   },
 });

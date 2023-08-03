@@ -1,0 +1,24 @@
+{
+  "name": "cypress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "./run_cypress",
+    "start:dev": "cypress open",
+    "start:headless": "cypress run --spec cypress/e2e/index.cy.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cypress/schematic": "^2.5.0",
+    "cypress": "^12.17.3",
+    "dotenv": "^16.3.1",
+    "jwt-encode": "^1.0.1",
+    "pg": "^8.11.2"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.10.2",
+    "@types/jwt-encode": "^1.0.0"
+  }
+}

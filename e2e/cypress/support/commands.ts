@@ -3,8 +3,10 @@
 // with Intellisense and code completion in your
 // IDE or Text Editor.
 // ***********************************************
-import { signToken } from 'cypress/support/helpers';
 import { QueryResult } from 'pg';
+
+import { UsersService } from '../services/users.service';
+import { signToken } from '../support/helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 interface SignInOptions {
@@ -49,7 +51,6 @@ declare global {
       openUserMenu(): typeof openUserMenu;
       openProductsMenu(): typeof openProductsMenu;
       openAccountPage(): typeof openAccountPage;
-      openProfilePage(): typeof openProfilePage;
       openSettingsPage(): typeof openSettingsPage;
       openProductCreatePage(): typeof openProductCreatePage;
       openProductEditPage(): typeof openProductEditPage;
@@ -178,17 +179,12 @@ function openProductsMenu(): void {
 
 function logout(): void {
   cy.openUserMenu();
-  cy.get('.p-button-label').contains('Вийти').click();
+  cy.get('.p-button-label').contains('Вийти').click({ force: true });
 }
 
 function openAccountPage(): void {
   cy.openUserMenu();
-  cy.get('.p-button-label').contains('Акаунт').click();
-}
-
-function openProfilePage(): void {
-  cy.openUserMenu();
-  cy.get('li').contains('Профіль').click();
+  cy.get('.p-button-label').contains('Акаунт').click({ force: true });
 }
 
 function openSettingsPage(): void {
@@ -207,34 +203,28 @@ function openProductEditPage(): void {
 }
 
 function registerNewUser(email: string, password: string, options: any): void {
+  const userService = new UsersService();
+
   cy.signUp(email, password);
   cy.contains(email);
   cy.contains('Дякуємо за реєстрацію');
 
-  cy.task<QueryResult>(
-    'connectDB',
-    `
-      SELECT * 
-      FROM public."user"
-      WHERE id IN (SELECT id FROM public."user" WHERE "createdAt" = (SELECT MAX("createdAt") FROM public."user"))
-      ORDER BY id ASC
-      LIMIT 1
-    `,
-  ).then((res) => {
-    const token = signToken(res.rows[0].id);
+  userService.getUserByEmail(email).then((res) => {
+    const userId = res.rows[0].id;
+    const token = signToken({ userId });
     cy.visit(`/auth/confirm-email?token=${token}`);
-  });
+    cy.wait(1000);
 
-  if (options.confirm) {
-    cy.task<QueryResult>(
-      'connectDB',
-      `
-        UPDATE public."user"
-        SET "userConfirmed" = true
-        WHERE id IN (SELECT id FROM public."user" WHERE "createdAt" = (SELECT MAX("createdAt") FROM public."user"))
-      `,
-    );
-  }
+    if (options.confirm) {
+      userService.getLatestSuperAdmin().then((res) => {
+        const superAdminId = res.rows[0].id;
+        userService.confirmUser({
+          userId,
+          managerId: superAdminId,
+        });
+      });
+    }
+  });
 }
 
 function registerNewAdmin(email: string, password: string): void {
@@ -520,7 +510,6 @@ Cypress.Commands.add('logout', logout);
 Cypress.Commands.add('openUserMenu', openUserMenu);
 Cypress.Commands.add('openProductsMenu', openProductsMenu);
 Cypress.Commands.add('openAccountPage', openAccountPage);
-Cypress.Commands.add('openProfilePage', openProfilePage);
 Cypress.Commands.add('openSettingsPage', openSettingsPage);
 Cypress.Commands.add('openProductCreatePage', openProductCreatePage);
 Cypress.Commands.add('openProductEditPage', openProductEditPage);
