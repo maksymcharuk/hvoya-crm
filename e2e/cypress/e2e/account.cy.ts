@@ -1,3 +1,5 @@
+import { UsersService } from '../services/users.service';
+
 describe('Account', () => {
   describe('Users', () => {
     describe('Profile', () => {
@@ -5,8 +7,12 @@ describe('Account', () => {
       let testUserEmail: string;
 
       before(() => {
+        const service = new UsersService();
         testUserEmail = `user+${Date.now()}@email.com`;
-        cy.registerNewUser(testUserEmail, testUserPassword, { confirm: true });
+        service.createUser({
+          email: testUserEmail,
+          password: testUserPassword,
+        });
       });
 
       beforeEach(() => {
@@ -58,7 +64,6 @@ describe('Account', () => {
 
       it('Sign in as user and try to update profile with invalid phone number', () => {
         const phoneNumber = '3473347200';
-
         cy.getCyEl('phone-number', 'input').clear().type(phoneNumber);
         cy.getCyEl('submit').click();
         cy.checkToastMessage('Номер телефону невірний');
@@ -72,9 +77,11 @@ describe('Account', () => {
         let testUserEmail: string;
 
         before(() => {
+          const service = new UsersService();
           testUserEmail = `user+${Date.now()}@email.com`;
-          cy.registerNewUser(testUserEmail, testUserPassword, {
-            confirm: true,
+          service.createUser({
+            email: testUserEmail,
+            password: testUserPassword,
           });
         });
 
@@ -107,8 +114,14 @@ describe('Account', () => {
       let testAdminEmail: string;
 
       before(() => {
+        const service = new UsersService();
         testAdminEmail = `admin+${Date.now()}@email.com`;
-        cy.registerNewAdmin(testAdminEmail, testAdminPassword);
+        service.createAdmin(
+          {
+            password: testAdminPassword,
+          },
+          testAdminEmail,
+        );
       });
 
       beforeEach(() => {
@@ -165,8 +178,14 @@ describe('Account', () => {
         let testAdminEmail: string;
 
         before(() => {
+          const service = new UsersService();
           testAdminEmail = `admin+${Date.now()}@email.com`;
-          cy.registerNewAdmin(testAdminEmail, testAdminPassword);
+          service.createAdmin(
+            {
+              password: testAdminPassword,
+            },
+            testAdminEmail,
+          );
         });
 
         it('Sign up as admin and change password', () => {

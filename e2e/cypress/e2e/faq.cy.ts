@@ -90,6 +90,7 @@ describe('FAQ', () => {
           cy.getCyEl('faq-answer-input').type(`New FAQ answer ${Date.now()}`);
 
           cy.getCyEl('save-faq-button').click();
+          cy.checkToastMessage('Новe запитання створено');
 
           getFaqList().then((faqList) => {
             cy.getCyEl('faq-item').should('have.length', faqList.length);
@@ -110,6 +111,7 @@ describe('FAQ', () => {
           cy.getCyEl('faq-answer-input').clear().type(updatedFaqData.answer);
 
           cy.getCyEl('save-faq-button').click();
+          cy.checkToastMessage('Запитання оновлено');
 
           cy.getCyEl('faq-item').first().contains(updatedFaqData.question);
           cy.getCyEl('faq-item').first().contains(updatedFaqData.answer);
@@ -122,6 +124,7 @@ describe('FAQ', () => {
 
               openFaqItemMenuAndSelect(faqItemsCount - 1, 'Опублікувати');
               cy.get('.p-confirm-dialog-accept').click();
+              cy.checkToastMessage('Запитання/відповідь успішно опубліковано');
             });
 
             getFaqListPublished().then((faqList) => {
@@ -139,6 +142,9 @@ describe('FAQ', () => {
 
               openFaqItemMenuAndSelect(faqItemsCount - 1, 'Приховати');
               cy.get('.p-confirm-dialog-accept').click();
+              cy.checkToastMessage(
+                'Запитання/відповідь успішно знято з публікації',
+              );
             });
 
             getFaqListPublished().then((faqList) => {

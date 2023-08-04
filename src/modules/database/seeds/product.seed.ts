@@ -1,12 +1,11 @@
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 
-import { ProductPackageSizeEntity } from '@entities/product-package-size.entity';
-
 import { FileEntity } from '../../../entities/file.entity';
 import { ProductBaseEntity } from '../../../entities/product-base.entity';
 import { ProductCategoryEntity } from '../../../entities/product-category.entity';
 import { ProductColorEntity } from '../../../entities/product-color.entity';
+import { ProductPackageSizeEntity } from '../../../entities/product-package-size.entity';
 import { ProductPropertiesEntity } from '../../../entities/product-properties.entity';
 import { ProductSizeEntity } from '../../../entities/product-size.entity';
 import { ProductVariantEntity } from '../../../entities/product-variant.entity';

@@ -1,7 +1,9 @@
-import { signToken } from 'cypress/support/helpers';
-import { QueryResult } from 'pg';
+import { UsersService } from '../services/users.service';
+import { signToken } from '../support/helpers';
 
 describe('Auth', () => {
+  const userService = new UsersService();
+
   describe('Sign in', () => {
     it('Visits Sign In page', () => {
       cy.visit('/');
@@ -145,17 +147,8 @@ describe('Auth', () => {
     });
 
     it('Visits Reset password page with token and resets password', () => {
-      cy.task<QueryResult>(
-        'connectDB',
-        `
-          SELECT * 
-          FROM public."user"
-          WHERE id IN (SELECT id FROM public."user" WHERE "createdAt" = (SELECT MAX("createdAt") FROM public."user"))
-          ORDER BY id ASC
-          LIMIT 1
-        `,
-      ).then((res) => {
-        const token = signToken(res.rows[0].id);
+      userService.getLatestUser().then((res) => {
+        const token = signToken({ userId: res.rows[0].id });
         const password = `Test${Date.now()}`;
 
         cy.resetPassword(password, token);
@@ -164,18 +157,9 @@ describe('Auth', () => {
     });
 
     it('Reset password and login with new one', () => {
-      cy.task<QueryResult>(
-        'connectDB',
-        `
-          SELECT * 
-          FROM public."user"
-          WHERE id IN (SELECT id FROM public."user" WHERE "createdAt" = (SELECT MAX("createdAt") FROM public."user"))
-          ORDER BY id ASC
-          LIMIT 1
-        `,
-      ).then((res) => {
+      userService.getLatestUser().then((res) => {
         const user = res.rows[0];
-        const token = signToken(user.id);
+        const token = signToken({ userId: user.id });
         const password = `Test${Date.now()}`;
 
         cy.resetPassword(password, token);
