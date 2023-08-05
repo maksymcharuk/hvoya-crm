@@ -182,7 +182,7 @@ export class OrdersService {
 
       if (!transaction) {
         throw new HttpException(
-          'Не вдалось опрацювати замолення. Спробуйте очистити кошик і вибрати товари знову.',
+          'Не вдалось опрацювати замовлення. Спробуйте очистити кошик і вибрати товари знову.',
           HttpStatus.BAD_REQUEST,
         );
       }
@@ -206,7 +206,7 @@ export class OrdersService {
         )?.quantity;
         if (orderItemQuantity === undefined) {
           throw new HttpException(
-            'Не вдалось опрацювати замолення. Спробуйте очистити кошик і вибрати товари знову.',
+            'Не вдалось опрацювати замовлення. Спробуйте очистити кошик і вибрати товари знову.',
             HttpStatus.BAD_REQUEST,
           );
         }
@@ -579,7 +579,10 @@ export class OrdersService {
 
     await this.updateOrderDeliveryStatus(queryRunner, order, status);
 
-    if (newStatus.status === OrderStatus.Cancelled) {
+    if (
+      newStatus.status === OrderStatus.Cancelled ||
+      newStatus.status === OrderStatus.Refunded
+    ) {
       await this.updateBalanceAndStockOnCancel(queryRunner.manager, order);
       await this.oneCApiClientService.cancel(order.id);
     }
