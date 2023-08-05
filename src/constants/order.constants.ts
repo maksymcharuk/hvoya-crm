@@ -11,6 +11,7 @@ export const REVERTABLE_ORDER_STATUSES = [
 export const CANCELABLE_ORDER_STATUSES = [
   OrderStatus.Pending,
   OrderStatus.Processing,
+  OrderStatus.TransferedToDelivery,
   OrderStatus.Fulfilled,
 ];
 
@@ -18,6 +19,7 @@ export const CANCELABLE_ORDER_STATUSES = [
 export const REFUNDABLE_ORDER_STATUSES = [
   OrderStatus.Pending,
   OrderStatus.Processing,
+  OrderStatus.TransferedToDelivery,
   OrderStatus.Fulfilled,
 ];
 
@@ -30,7 +32,6 @@ export const COMPLETED_ORDER_STATUSES = [
 
 // Order statuses that can't be changed manually
 export const UNCHANGEABLE_ORDER_STATUSES = [
-  OrderStatus.TransferedToDelivery,
   OrderStatus.Cancelled,
   OrderStatus.Refunded,
 ];
