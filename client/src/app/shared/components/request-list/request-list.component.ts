@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 
 import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
-import { OrderReturnRequest } from '@shared/interfaces/entities/order-return-request.entity';
+import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 
 @Component({
   selector: 'app-request-list',
@@ -12,7 +12,7 @@ import { OrderReturnRequest } from '@shared/interfaces/entities/order-return-req
 })
 export class RequestListComponent {
 
-  private requestsInternal: OrderReturnRequest[] = [];
+  private requestsInternal: RequestEntity[] = [];
 
   loading = true;
   searchForm = this.fb.group({
@@ -35,7 +35,7 @@ export class RequestListComponent {
     };
   });
 
-  @Input() set requests(requests: OrderReturnRequest[] | null) {
+  @Input() set requests(requests: RequestEntity[] | null) {
     if (!requests) {
       return;
     }
@@ -60,7 +60,5 @@ export class RequestListComponent {
       : defaultFilterFields;
   }
 
-
   constructor(private fb: FormBuilder) { }
-
 }

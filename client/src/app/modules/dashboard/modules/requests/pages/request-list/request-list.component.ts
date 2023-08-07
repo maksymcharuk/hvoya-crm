@@ -11,7 +11,7 @@ export class RequestListComponent {
 
   readonly returnRequestEntity = OrderReturnRequest;
 
-  requests$ = this.requestsService.getOrderReturnRequests();
+  requests$ = this.requestsService.getRequests();
 
   constructor(private requestsService: RequestsService) { }
 

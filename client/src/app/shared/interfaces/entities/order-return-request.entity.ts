@@ -1,5 +1,6 @@
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
+import { ReturnRequestDeliveryStatus } from '@shared/enums/return-request-delivery-status.enum';
 
 import { BaseEntity } from './base.entity';
 import { File } from './file.entity';
@@ -8,8 +9,6 @@ import { User } from './user.entity';
 
 export class OrderReturnRequest extends BaseEntity {
 
-  customerComment?: string;
-  managerComment?: string;
   deduction?: number;
   total?: number;
   status?: OrderReturnRequestStatus;
@@ -19,12 +18,8 @@ export class OrderReturnRequest extends BaseEntity {
   approvedItems?: OrderReturnRequestItemEntity[];
   customer?: User;
 
-
-
   constructor(data?: OrderReturnRequest) {
     super(data);
-    this.customerComment = data?.customerComment || '';
-    this.managerComment = data?.managerComment || '';
     this.deduction = data?.deduction || 0;
     this.total = data?.total || 0;
     this.delivery = data?.delivery || new OrderReturnDeliveryEntity();
@@ -60,6 +55,7 @@ export class OrderReturnDeliveryEntity extends BaseEntity {
   waybill?: File | null;
   deliveryService?: DeliveryService;
   rawStatus?: string;
+  status?: ReturnRequestDeliveryStatus;
 
   constructor(data?: OrderReturnDeliveryEntity) {
     super(data);
@@ -67,5 +63,6 @@ export class OrderReturnDeliveryEntity extends BaseEntity {
     this.waybill = data?.waybill ? new File(data?.waybill) : null;
     this.deliveryService = data?.deliveryService;
     this.rawStatus = data?.rawStatus || '';
+    this.status = data?.status || ReturnRequestDeliveryStatus.Pending;
   }
 }

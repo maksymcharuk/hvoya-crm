@@ -7,7 +7,7 @@ import { RequestsService } from '@shared/services/requests.service';
   styleUrls: ['./request-list.component.scss']
 })
 export class RequestListComponent {
-  requests$ = this.requestsService.getOrderReturnRequests();
+  requests$ = this.requestsService.getRequests();
 
   constructor(private requestsService: RequestsService) { }
 }

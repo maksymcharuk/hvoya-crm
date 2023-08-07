@@ -54,7 +54,7 @@ export class OrdersService {
     private oneCApiClientService: OneCApiClientService,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -85,6 +85,29 @@ export class OrdersService {
     const ability = this.caslAbilityFactory.createForUser(user);
 
     let orders = await this.getOrdersWhere();
+
+    return orders
+      .filter((order) => ability.can(Action.Read, order))
+      .map((order) => sanitizeEntity(ability, order));
+  }
+
+  async getOrdersForReturnRequest(userId: string): Promise<OrderEntity[]> {
+    const manager = this.dataSource.createEntityManager();
+    const user = await manager.findOneOrFail(UserEntity, {
+      where: { id: userId },
+    });
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    let statuses = await manager.find(OrderStatusEntity, {
+      where: { status: OrderStatus.Fulfilled },
+      relations: ['order'],
+    });
+
+    let orders = await this.dataSource.manager.find(OrderEntity, {
+      where: statuses.map((status) => ({ id: status.order.id })),
+      relations: ['items', 'items.product', 'items.product.properties', 'customer'],
+    });
 
     return orders
       .filter((order) => ability.can(Action.Read, order))

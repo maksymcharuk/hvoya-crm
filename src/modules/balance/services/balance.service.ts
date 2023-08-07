@@ -27,7 +27,7 @@ export class BalanceService {
     private readonly dataSource: DataSource,
     private readonly oneCService: OneCApiClientService,
     private readonly caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+  ) { }
 
   async getByUserId(currentUserId: string): Promise<BalanceEntity> {
     const user = await this.dataSource.manager.findOne(UserEntity, {

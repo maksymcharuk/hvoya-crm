@@ -4,13 +4,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
+
 import { Order } from '@shared/interfaces/entities/order.entity';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrdersService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   orderCreate(orderCreateFormData: FormData): Observable<Order> {
     return this.http
@@ -42,6 +43,12 @@ export class OrdersService {
   getOrders(): Observable<Order[]> {
     return this.http
       .get<Order[]>(`${environment.apiUrl}/orders`)
+      .pipe(map((orders) => orders.map((order) => new Order(order))));
+  }
+
+  getOrdersForReturnRequest(): Observable<Order[]> {
+    return this.http
+      .get<Order[]>(`${environment.apiUrl}/orders/return-requests`)
       .pipe(map((orders) => orders.map((order) => new Order(order))));
   }
 

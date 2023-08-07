@@ -1,0 +1,223 @@
+<div class="request-view grid" data-cy="request-view-page">
+  <div class="col-12">
+    <div class="card request-view__content">
+      <div *ngIf="request$ | async as request">
+        <h4 class="flex align-items-center">
+          <span>Повернення №{{ request.number }}</span>
+        </h4>
+        <div class="my-5">
+          <h5>Товари</h5>
+          <app-return-request-view-item
+            *ngFor="let requestItem of request.returnRequest!.requestedItems"
+            [requestItem]="requestItem"
+          ></app-return-request-view-item>
+          <div class="flex">
+            <div class="w-12rem hidden md:block"></div>
+            <div class="md:pl-5 mt-2 flex-auto">
+              <div class="flex justify-content-end mb-4 pt-4">
+                <span class="text-xl text-900 font-bold text-3xl">Сума:</span>
+                <span class="text-xl text-900 font-bold text-3xl ml-5">
+                  {{ request.returnRequest!.total | currency }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="my-5">
+          <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Статус</div>
+              <div class="striped-list__item-value request-view__status-column">
+                <div class="py-2 mr-5">
+                  <div class="flex align-items-center mb-1">
+                    <app-request-status-badge
+                      [status]="request.returnRequest!.status!"
+                    ></app-request-status-badge>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Замовлення</div>
+              <div class="striped-list__item-value request-view__status-column">
+                <div class="py-2 mr-5">
+                  <a
+                    [routerLink]="[
+                      '/dasboard',
+                      'orders',
+                      request.returnRequest?.order?.number
+                    ]"
+                    class="flex align-items-center mb-1"
+                    >{{ request.returnRequest?.order?.number }}
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Коментар до запиту</div>
+              <div class="striped-list__item-value">
+                {{ request.customerComment }}
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Дата</div>
+              <div class="striped-list__item-value">
+                {{ request.createdAt | date : 'short' }}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="my-5">
+          <h5>Дані дропшипера</h5>
+          <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">ПІБ</div>
+              <div class="striped-list__item-value">
+                {{ request.customer!.fullName }}
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Номер телефону</div>
+              <div class="striped-list__item-value">
+                <ng-container
+                  *ngIf="
+                    request.customer!.phoneNumber as phoneNumber;
+                    else emptyPhoneNumber
+                  "
+                  >{{ phoneNumber | phoneNumber }}</ng-container
+                >
+                <ng-template #emptyPhoneNumber>-</ng-template>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="my-5">
+          <h5>Дані доставки</h5>
+          <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Служба доставки</div>
+              <div class="striped-list__item-value">
+                <app-delivery-service-badge
+                  *ngIf="
+                    request.returnRequest!.delivery
+                      .deliveryService as deliveryService
+                  "
+                  [deliveryService]="deliveryService"
+                ></app-delivery-service-badge>
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Статус доставки</div>
+              <div class="striped-list__item-value">
+                <div class="py-2 mr-5">
+                  <div class="flex align-items-center mb-1">
+                    <app-return-request-delivery-status-badge
+                      [status]="request.returnRequest!.delivery.status!"
+                    ></app-return-request-delivery-status-badge>
+                  </div>
+                  <div *ngIf="request.returnRequest!.delivery.rawStatus">
+                    <b>Повний статус:</b>
+                    {{ request.returnRequest!.delivery.rawStatus }}
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Маркування (PDF)</div>
+              <div class="striped-list__item-value">
+                <ng-container
+                  *ngIf="
+                    request.returnRequest!.delivery.waybill?.url as url;
+                    else noWaybill
+                  "
+                >
+                  <p-button
+                    icon="pi pi-eye"
+                    label="Переглянути ТТН"
+                    data-cy="order-waybill-view-button"
+                    (click)="showWaybillViewDialogHandler()"
+                  ></p-button>
+                  <p-dialog
+                    [header]="
+                      'Товарно-транспортна накладна (замовлення №' +
+                      request.number +
+                      ')'
+                    "
+                    [(visible)]="showWaybillViewDialog"
+                    [modal]="true"
+                    [style]="{ width: '80vw' }"
+                    [draggable]="false"
+                    [resizable]="false"
+                  >
+                    <ngx-doc-viewer
+                      [url]="url"
+                      viewer="pdf"
+                      style="width: 100%; height: 70vh"
+                    ></ngx-doc-viewer>
+                  </p-dialog>
+                </ng-container>
+                <ng-template #noWaybill>
+                  <span>—</span>
+                </ng-template>
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key"></div>
+              <form
+                [formGroup]="updateWaybillForm"
+                class="striped-list__item-value"
+              >
+                <div class="p-fluid">
+                  <div class="p-formgrid grid">
+                    <div class="field col-6">
+                      <label for="tracking-id">Номер ТТН:</label>
+                      <input
+                        id="tracking-id"
+                        pInputText
+                        formControlName="trackingId"
+                      />
+                      <app-form-control-error-message
+                        [formGroup]="updateWaybillForm"
+                        controlName="trackingId"
+                        errorType="required"
+                        errorMessage="Потрібно ввести номер ТТН"
+                      ></app-form-control-error-message>
+                      <app-form-control-error-message
+                        [formGroup]="updateWaybillForm"
+                        controlName="trackingId"
+                        errorType="alphanumeric"
+                        errorMessage="Номер ТТН повинен містити тільки літери та цифри"
+                      ></app-form-control-error-message>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-formgrid grid">
+                  <div class="field col-12 md:col-6">
+                    <label for="tracking-id">Файл маркування:</label>
+                    <p-fileUpload
+                      #waybillUpload
+                      data-cy="order-waybill-upload"
+                      [accept]="fileFormats"
+                      [customUpload]="true"
+                      [auto]="true"
+                      [maxFileSize]="1000000"
+                      [disabled]="(waybillSubmitting$ | async)!"
+                      (uploadHandler)="onFileUpload($event)"
+                    >
+                    </p-fileUpload>
+                  </div>
+                </div>
+                <button
+                  (click)="updateWaybill()"
+                  pButton
+                  label="Оновини дані ТТН"
+                  [disabled]="waybillSubmitting$ | async"
+                ></button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

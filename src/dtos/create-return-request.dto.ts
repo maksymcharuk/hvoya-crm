@@ -1,13 +1,20 @@
-import { OrderReturnRequestItemEntity } from "@entities/order-return-request-item.entity";
 import { DeliveryService } from "@enums/delivery-service.enum";
 
 import { Transform } from "class-transformer";
-import { IsAlphanumeric, IsEnum, IsNotEmpty } from "class-validator";
+import { IsAlphanumeric, IsEnum, IsNotEmpty, IsOptional } from "class-validator";
+
+export class OrderReturnRequestItemDto {
+  @IsNotEmpty({ message: 'Необхідно вказати кількість' })
+  quantity: number;
+
+  @IsNotEmpty({ message: 'Необхідно вказати замовлення' })
+  orderItemId: string;
+
+  @IsOptional()
+  approved: boolean;
+}
 
 export class CreateReturnRequestDto {
-
-  @IsNotEmpty({ message: 'Необхідно вказати причину повернення' })
-  customerComment: string;
 
   @IsNotEmpty({ message: 'Необхідно вказати номер ТТН' })
   @Transform(({ value }) => value?.replaceAll(' ', ''))
@@ -21,5 +28,11 @@ export class CreateReturnRequestDto {
   deliveryService: DeliveryService;
 
   @IsNotEmpty({ message: 'Необхідно вказати товари' })
-  requestedItems: OrderReturnRequestItemEntity[]
+  requestedItems: OrderReturnRequestItemDto[]
+
+  @IsNotEmpty({ message: 'Необхідно вказати номер замовлення' })
+  orderNumber: string;
+
+  @IsOptional()
+  deduction: number;
 }

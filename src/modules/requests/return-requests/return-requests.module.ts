@@ -23,5 +23,6 @@ import { CaslModule } from '@modules/casl/casl.module';
   ],
   controllers: [ReturnRequestController],
   providers: [ReturnRequestService],
+  exports: [ReturnRequestService],
 })
 export class ReturnRequestsModule { }

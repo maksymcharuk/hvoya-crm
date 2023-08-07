@@ -1,23 +1,17 @@
 import Decimal from 'decimal.js';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { DecimalTransformer } from '../transformers/decimal.transformer';
 
 import { BaseEntity } from './base.entity';
 import { OrderReturnRequestItemEntity } from './order-return-request-item.entity';
 import { OrderEntity } from './order.entity';
+import { RequestEntity } from './request.entity';
 import { OrderReturnDeliveryEntity } from './order-return-delivery.entity';
-import { UserEntity } from './user.entity';
 
 import { OrderReturnRequestStatus } from '../enums/order-return-request-status.enum';
 
 @Entity('order_return_request')
 export class OrderReturnRequestEntity extends BaseEntity {
-
-  @Column()
-  customerComment: string;
-
-  @Column()
-  managerComment: string;
 
   @Column({
     type: 'decimal',
@@ -45,6 +39,7 @@ export class OrderReturnRequestEntity extends BaseEntity {
   status: OrderReturnRequestStatus;
 
   @OneToOne(() => OrderReturnDeliveryEntity)
+  @JoinColumn()
   delivery: OrderReturnDeliveryEntity;
 
   @OneToOne(() => OrderEntity)
@@ -57,6 +52,6 @@ export class OrderReturnRequestEntity extends BaseEntity {
   @OneToMany(() => OrderReturnRequestItemEntity, (item) => item.orderReturnApproved)
   approvedItems: OrderReturnRequestItemEntity[];
 
-  @ManyToOne(() => UserEntity, (user) => user.returnRequests)
-  customer: UserEntity;
+  @OneToOne(() => RequestEntity, (request) => request.returnRequest)
+  request: RequestEntity;
 }

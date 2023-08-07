@@ -45,8 +45,11 @@ import { ProductColorBadgeComponent } from './components/product-color-badge/pro
 import { ProductItemComponent } from './components/product-item/product-item.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductViewComponent } from './components/product-view/product-view.component';
+import { RequestListItemComponent } from './components/request-list/request-list-item/request-list-item.component';
 import { RequestListComponent } from './components/request-list/request-list.component';
 import { RequestStatusBadgeComponent } from './components/request-status-badge/request-status-badge.component';
+import { ReturnRequestDeliveryStatusBadgeComponent } from './components/return-request-delivery-status-badge/return-request-delivery-status-badge.component';
+import { ReturnRequestViewItemComponent } from './components/return-request-view-item/return-request-view-item.component';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { StockBadgeComponent } from './components/stock-badge/stock-badge.component';
 import { TransactionsListComponent } from './components/transactions-list/transactions-list.component';
@@ -60,6 +63,7 @@ import {
   ProductPackageSize,
   ProductSizePipe,
   ProductWeight,
+  RequestTypePipe,
   RoleNamePipe,
   TransactionStatusPipe,
   TransactionSyncOneCStatusPipe,
@@ -77,6 +81,7 @@ const PIPES = [
   TransactionSyncOneCStatusPipe,
   ProductPackageSize,
   ProductWeight,
+  RequestTypePipe,
 ];
 
 const COMPONENTS = [
@@ -101,6 +106,10 @@ const COMPONENTS = [
   ImageComponentComponent,
   OrdersChartComponent,
   RequestListComponent,
+  RequestStatusBadgeComponent,
+  RequestListItemComponent,
+  ReturnRequestDeliveryStatusBadgeComponent,
+  ReturnRequestViewItemComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -128,7 +137,7 @@ const PRIMENG_MODULES = [
 ];
 
 @NgModule({
-  declarations: [...COMPONENTS, ...PIPES, RequestStatusBadgeComponent],
+  declarations: [...COMPONENTS, ...PIPES],
   imports: [
     CommonModule,
     HttpClientModule,

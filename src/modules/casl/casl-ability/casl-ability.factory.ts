@@ -19,6 +19,7 @@ import { ProductColorEntity } from '@entities/product-color.entity';
 import { ProductPackageSizeEntity } from '@entities/product-package-size.entity';
 import { ProductSizeEntity } from '@entities/product-size.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
+import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { OrderStatus } from '@enums/order-status.enum';
@@ -26,6 +27,7 @@ import { Role } from '@enums/role.enum';
 
 import { ADMIN_ORDER_READ_FIELDS } from './permitted-fields/admin/order';
 import { ADMIN_USER_READ_FIELDS } from './permitted-fields/admin/user';
+import { ANY_ADMIN_REQUEST_READ_FIELDS } from './permitted-fields/any-admin/request';
 import { SUPER_ADMIN_ORDER_READ_FIELDS } from './permitted-fields/super-admin/order';
 import {
   SUPER_ADMIN_USER_READ_FIELDS,
@@ -33,6 +35,7 @@ import {
 } from './permitted-fields/super-admin/user';
 import { USER_BALANCE_READ_FIELDS } from './permitted-fields/user/balance';
 import { USER_ORDER_READ_FIELDS } from './permitted-fields/user/order';
+import { USER_REQUEST_READ_FIELDS } from './permitted-fields/user/request';
 import { USER_USER_READ_FIELDS } from './permitted-fields/user/user';
 
 type Subjects =
@@ -50,6 +53,7 @@ type Subjects =
       | typeof BalanceEntity
       | typeof NotificationEntity
       | typeof OrderReturnRequestEntity
+      | typeof RequestEntity
     >
   | 'AdminAalytics'
   | 'PersonalAnalytics'
@@ -105,6 +109,15 @@ export class CaslAbilityFactory {
     // -------------------------------------------------------------------------
     cannot([Action.AddTo, Action.RemoveFrom], CartEntity);
     // -------------------------------------------------------------------------
+
+    // Return requests
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.Update], OrderReturnRequestEntity);
+    can(
+      [Action.Read, Action.Update],
+      RequestEntity,
+      ANY_ADMIN_REQUEST_READ_FIELDS,
+    );
   }
 
   // Admin
@@ -156,6 +169,16 @@ export class CaslAbilityFactory {
     // Notifications
     // -------------------------------------------------------------------------
     can([Action.Read, Action.Create, Action.Update], NotificationEntity);
+    // -------------------------------------------------------------------------
+
+    // Return requests
+    // -------------------------------------------------------------------------
+    can([Action.Read, Action.Update], OrderReturnRequestEntity);
+    can(
+      [Action.Read, Action.Update],
+      RequestEntity,
+      ANY_ADMIN_REQUEST_READ_FIELDS,
+    );
     // -------------------------------------------------------------------------
 
     // Cart
@@ -251,6 +274,14 @@ export class CaslAbilityFactory {
     // Return requests
     // -------------------------------------------------------------------------
     can([Action.Read, Action.Create, Action.Update], OrderReturnRequestEntity);
+    can(
+      [Action.Read, Action.Create, Action.Update],
+      RequestEntity,
+      USER_REQUEST_READ_FIELDS,
+      {
+        ['customer.id' as keyof RequestEntity]: currentUser.id,
+      },
+    );
     // -------------------------------------------------------------------------
   }
 }

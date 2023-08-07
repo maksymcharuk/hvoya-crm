@@ -8,12 +8,13 @@ import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
   styleUrls: ['./order-delivery-status-badge.component.scss'],
   host: {
     class: 'inline-flex',
-  },
+  }
 })
 export class OrderDeliveryStatusBadgeComponent {
   @Input() status!: OrderDeliveryStatus;
 
   get style() {
+    console.log(this.status);
     switch (this.status) {
       case OrderDeliveryStatus.Unspecified:
       case OrderDeliveryStatus.Pending:

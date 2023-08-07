@@ -4,6 +4,7 @@ import { BaseEntity } from './base.entity';
 import { FileEntity } from './file.entity';
 
 import { DeliveryService } from '../enums/delivery-service.enum';
+import { ReturnRequestDeliveryStatus } from '../enums/return-request-delivery-status.enum';
 
 @Entity('order_return_delivery')
 export class OrderReturnDeliveryEntity extends BaseEntity {
@@ -24,6 +25,13 @@ export class OrderReturnDeliveryEntity extends BaseEntity {
   })
   deliveryService: DeliveryService | null;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: ReturnRequestDeliveryStatus,
+    default: ReturnRequestDeliveryStatus.Pending,
+  })
+  status: ReturnRequestDeliveryStatus;
+
+  @Column({ default: '' })
   rawStatus: string;
 }

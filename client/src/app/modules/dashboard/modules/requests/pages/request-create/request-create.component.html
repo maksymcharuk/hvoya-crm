@@ -1,0 +1,20 @@
+<div class="card">
+  <div class="grid">
+    <div class="col-12">
+      <p-dropdown [options]="requestTypes" [(ngModel)]="selectedType">
+        <ng-template pTemplate="selectedItem">
+          {{ selectedType | requestType }}
+        </ng-template>
+        <ng-template let-item pTemplate="item">
+          {{ item.label | requestType }}
+        </ng-template>
+      </p-dropdown>
+    </div>
+    <div class="col-12">
+      <div [ngSwitch]="selectedType">
+        <app-return-request-create *ngSwitchCase="requestType.Return">
+        </app-return-request-create>
+      </div>
+    </div>
+  </div>
+</div>
