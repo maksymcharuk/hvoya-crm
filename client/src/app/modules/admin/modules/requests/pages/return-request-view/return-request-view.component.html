@@ -7,22 +7,44 @@
         </h4>
         <form class="my-5" [formGroup]="returnRequestForm">
           <h5>Товари</h5>
-          <ng-container formArrayName="requestedItems">
+          <ng-container formArrayName="approvedItems">
             <app-return-request-order-item
-              *ngFor="let requestedItemForm of requestedItems.controls"
+              *ngFor="let requestedItemForm of approvedItems.controls"
               [formControl]="requestedItemForm"
             ></app-return-request-order-item>
           </ng-container>
-          <div class="flex">
-            <div class="w-12rem hidden md:block"></div>
-            <div class="md:pl-5 mt-2 flex-auto">
-              <div class="flex justify-content-end mb-4 pt-4">
+          <div class="p-fluid my-4">
+            <div class="p-formgrid grid">
+              <div class="field col-6">
+                <label for="deduction">Відрахування:</label>
+                <p-inputNumber
+                  mode="decimal"
+                  formControlName="deduction"
+                  [max]="request.returnRequest.total"
+                  [min]="0"
+                ></p-inputNumber>
+              </div>
+              <div class="field col-6 align-self-end text-right">
                 <span class="text-xl text-900 font-bold text-3xl">Сума:</span>
                 <span class="text-xl text-900 font-bold text-3xl ml-5">
-                  {{ request.returnRequest!.total | currency }}
+                  {{ request.returnRequest.total | currency }}
                 </span>
               </div>
             </div>
+          </div>
+          <div class="flex justify-content-end">
+            <p-button
+              icon="pi pi-check"
+              label="Підтвердити"
+              (click)="approveReturnRequest()"
+            ></p-button>
+            <p-button
+              icon="pi pi-times"
+              label="Відхилити"
+              styleClass="p-button-danger"
+              class="ml-3"
+              (click)="rejectReturnRequest()"
+            ></p-button>
           </div>
         </form>
         <div class="my-5">
@@ -77,10 +99,10 @@
                       [routerLink]="[
                         '/admin',
                         'orders',
-                        request.returnRequest?.order?.number
+                        request.returnRequest.order.number
                       ]"
                       class="flex align-items-center mb-1"
-                      >{{ request.returnRequest?.order?.number }}
+                      >{{ request.returnRequest.order.number }}
                     </a>
                   </div>
                 </div>
@@ -107,7 +129,7 @@
                 <div class="striped-list__item-value">
                   <app-delivery-service-badge
                     *ngIf="
-                      request.returnRequest!.delivery
+                      request.returnRequest.delivery
                         .deliveryService as deliveryService
                     "
                     [deliveryService]="deliveryService"
@@ -120,12 +142,12 @@
                   <div class="py-2 mr-5">
                     <div class="flex align-items-center mb-1">
                       <app-return-request-delivery-status-badge
-                        [status]="request.returnRequest!.delivery.status!"
+                        [status]="request.returnRequest.delivery.status!"
                       ></app-return-request-delivery-status-badge>
                     </div>
-                    <div *ngIf="request.returnRequest!.delivery.rawStatus">
+                    <div *ngIf="request.returnRequest.delivery.rawStatus">
                       <b>Повний статус:</b>
-                      {{ request.returnRequest!.delivery.rawStatus }}
+                      {{ request.returnRequest.delivery.rawStatus }}
                     </div>
                   </div>
                 </div>
@@ -135,7 +157,7 @@
                 <div class="striped-list__item-value">
                   <ng-container
                     *ngIf="
-                      request.returnRequest!.delivery.waybill?.url as url;
+                      request.returnRequest.delivery.waybill?.url as url;
                       else noWaybill
                     "
                   >

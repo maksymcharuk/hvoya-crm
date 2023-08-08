@@ -19,13 +19,14 @@ export class ReturnRequestViewComponent {
   showWaybillViewDialog = false;
 
   returnRequestForm = this.formBuilder.group({
-    requestedItems: this.formBuilder.array([]),
+    approvedItems: this.formBuilder.array([]),
+    deduction: this.formBuilder.control(0),
   });
 
-  get requestedItems() {
-    return this.returnRequestForm.controls[
-      'requestedItems'
-    ] as FormArray<FormControl>;
+  get approvedItems(): FormArray<FormControl> {
+    return this.returnRequestForm.get(
+      'approvedItems',
+    ) as FormArray<FormControl>;
   }
 
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
@@ -40,12 +41,21 @@ export class ReturnRequestViewComponent {
       .subscribe((request: RequestEntity) => {
         this.request$.next(request);
         request.returnRequest!.requestedItems!.forEach((item) => {
-          this.requestedItems.push(this.formBuilder.control(item));
+          this.approvedItems.push(this.formBuilder.control(item));
         });
       });
   }
 
   showWaybillViewDialogHandler() {
     this.showWaybillViewDialog = true;
+  }
+
+  approveReturnRequest() {
+    console.log(this.returnRequestForm.value);
+    console.log('approveReturnRequest');
+  }
+
+  rejectReturnRequest() {
+    console.log('rejectReturnRequest');
   }
 }

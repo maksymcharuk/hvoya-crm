@@ -51,10 +51,10 @@
                       [routerLink]="[
                         '/dasboard',
                         'orders',
-                        request.returnRequest?.order?.number
+                        request.returnRequest.order.number
                       ]"
                       class="flex align-items-center mb-1"
-                      >{{ request.returnRequest?.order?.number }}
+                      >{{ request.returnRequest.order.number }}
                     </a>
                   </div>
                 </div>
@@ -151,7 +151,7 @@
                 >
                   <div class="p-fluid">
                     <div class="p-formgrid grid">
-                      <div class="field col-6">
+                      <div class="field col-12">
                         <label for="tracking-id">Номер ТТН:</label>
                         <input
                           id="tracking-id"
@@ -172,21 +172,21 @@
                         ></app-form-control-error-message>
                       </div>
                     </div>
-                  </div>
-                  <div class="p-formgrid grid">
-                    <div class="field col-12 md:col-6">
-                      <label for="tracking-id">Файл маркування:</label>
-                      <p-fileUpload
-                        #waybillUpload
-                        data-cy="order-waybill-upload"
-                        [accept]="fileFormats"
-                        [customUpload]="true"
-                        [auto]="true"
-                        [maxFileSize]="1000000"
-                        [disabled]="(waybillSubmitting$ | async)!"
-                        (uploadHandler)="onFileUpload($event)"
-                      >
-                      </p-fileUpload>
+                    <div class="p-formgrid grid">
+                      <div class="field col-12">
+                        <label for="tracking-id">Файл маркування:</label>
+                        <p-fileUpload
+                          #waybillUpload
+                          data-cy="order-waybill-upload"
+                          [accept]="fileFormats"
+                          [customUpload]="true"
+                          [auto]="true"
+                          [maxFileSize]="1000000"
+                          [disabled]="(waybillSubmitting$ | async)!"
+                          (uploadHandler)="onFileUpload($event)"
+                        >
+                        </p-fileUpload>
+                      </div>
                     </div>
                   </div>
                   <button

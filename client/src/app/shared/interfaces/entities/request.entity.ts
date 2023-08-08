@@ -5,14 +5,13 @@ import { OrderReturnRequest } from './order-return-request.entity';
 import { User } from './user.entity';
 
 export class RequestEntity extends BaseEntity {
-
-  number?: string;
-  customerComment?: string;
-  managerComment?: string;
-  requestType?: RequestType;
-  requestId?: number;
-  returnRequest?: OrderReturnRequest;
-  customer?: User;
+  number: string;
+  customerComment: string;
+  managerComment: string;
+  requestType: RequestType;
+  requestId: number;
+  returnRequest: OrderReturnRequest;
+  customer: User;
 
   constructor(data?: RequestEntity) {
     super(data);
