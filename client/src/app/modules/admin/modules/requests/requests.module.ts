@@ -1,11 +1,12 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
-
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { SkeletonModule } from 'primeng/skeleton';
+
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -14,10 +15,7 @@ import { ReturnRequestViewComponent } from './pages/return-request-view/return-r
 import { RequestsRoutingModule } from './requests-routing.module';
 
 @NgModule({
-  declarations: [
-    RequestListComponent,
-    ReturnRequestViewComponent,
-  ],
+  declarations: [RequestListComponent, ReturnRequestViewComponent],
   imports: [
     CommonModule,
     SharedModule,
@@ -27,6 +25,8 @@ import { RequestsRoutingModule } from './requests-routing.module';
     NgxDocViewerModule,
     DialogModule,
     ButtonModule,
-  ]
+    InputNumberModule,
+    SkeletonModule,
+  ],
 })
-export class RequestsModule { }
+export class RequestsModule {}

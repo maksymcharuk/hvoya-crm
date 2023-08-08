@@ -12,7 +12,7 @@
         [showClear]="true"
         filterBy="number"
         placeholder="Виберіть замовлення для повернення"
-        (onChange)="onOrderSelected($event)"
+        (onChange)="onOrderSelected($event.value)"
       ></p-dropdown>
     </div>
     <ng-container formArrayName="requestedItems">

@@ -8,15 +8,14 @@ import { Order, OrderItem } from './order.entity';
 import { User } from './user.entity';
 
 export class OrderReturnRequest extends BaseEntity {
-
-  deduction?: number;
-  total?: number;
-  status?: OrderReturnRequestStatus;
+  deduction: number;
+  total: number;
+  status: OrderReturnRequestStatus;
   delivery: OrderReturnDeliveryEntity;
-  order?: Order;
-  requestedItems?: OrderReturnRequestItemEntity[];
-  approvedItems?: OrderReturnRequestItemEntity[];
-  customer?: User;
+  order: Order;
+  requestedItems: OrderReturnRequestItemEntity[];
+  approvedItems: OrderReturnRequestItemEntity[];
+  customer: User;
 
   constructor(data?: OrderReturnRequest) {
     super(data);
@@ -32,36 +31,34 @@ export class OrderReturnRequest extends BaseEntity {
 }
 
 export class OrderReturnRequestItemEntity extends BaseEntity {
-
-  quantity?: number;
-  approved?: boolean;
-  orderItem?: OrderItem;
-  orderReturnRequested?: OrderReturnRequest;
-  orderReturnApproved?: OrderReturnRequest;
+  quantity: number;
+  orderItem: OrderItem;
+  orderReturnRequested: OrderReturnRequest;
+  orderReturnApproved: OrderReturnRequest;
 
   constructor(data?: OrderReturnRequestItemEntity) {
     super(data);
     this.quantity = data?.quantity || 0;
-    this.approved = data?.approved || false;
     this.orderItem = data?.orderItem || new OrderItem();
-    this.orderReturnRequested = data?.orderReturnRequested || new OrderReturnRequest();
-    this.orderReturnApproved = data?.orderReturnApproved || new OrderReturnRequest();
+    this.orderReturnRequested =
+      data?.orderReturnRequested || new OrderReturnRequest();
+    this.orderReturnApproved =
+      data?.orderReturnApproved || new OrderReturnRequest();
   }
 }
 
 export class OrderReturnDeliveryEntity extends BaseEntity {
-
-  trackingId?: string;
-  waybill?: File | null;
-  deliveryService?: DeliveryService;
-  rawStatus?: string;
-  status?: ReturnRequestDeliveryStatus;
+  trackingId: string;
+  waybill: File | null;
+  deliveryService: DeliveryService;
+  rawStatus: string;
+  status: ReturnRequestDeliveryStatus;
 
   constructor(data?: OrderReturnDeliveryEntity) {
     super(data);
     this.trackingId = data?.trackingId || '';
     this.waybill = data?.waybill ? new File(data?.waybill) : null;
-    this.deliveryService = data?.deliveryService;
+    this.deliveryService = data?.deliveryService || DeliveryService.NovaPoshta;
     this.rawStatus = data?.rawStatus || '';
     this.status = data?.status || ReturnRequestDeliveryStatus.Pending;
   }

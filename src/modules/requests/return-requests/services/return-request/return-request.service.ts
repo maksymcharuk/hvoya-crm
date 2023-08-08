@@ -1,41 +1,46 @@
 import Decimal from 'decimal.js';
-import { Injectable } from '@nestjs/common';
-
 import { QueryRunner } from 'typeorm/query-runner/QueryRunner';
 
-import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
-import { OrderReturnRequestItemEntity } from '@entities/order-return-request-item.entity';
-import { OrderReturnDeliveryEntity } from '@entities/order-return-delivery.entity';
-import { FileEntity } from '@entities/file.entity';
-import { OrderEntity } from '@entities/order.entity';
+import { Injectable } from '@nestjs/common';
 
 import { CreateRequestDto } from '@dtos/create-request.dto';
+import { FileEntity } from '@entities/file.entity';
+import { OrderReturnDeliveryEntity } from '@entities/order-return-delivery.entity';
+import { OrderReturnRequestItemEntity } from '@entities/order-return-request-item.entity';
+import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
+import { OrderEntity } from '@entities/order.entity';
 
 @Injectable()
 export class ReturnRequestService {
+  constructor() {}
 
-  constructor() { }
-
-  async createRequest(queryRunner: QueryRunner, createRequestDto: CreateRequestDto, waybillScan?: FileEntity): Promise<OrderReturnRequestEntity> {
+  async createRequest(
+    queryRunner: QueryRunner,
+    createRequestDto: CreateRequestDto,
+    waybillScan?: FileEntity,
+  ): Promise<OrderReturnRequestEntity> {
     const requestDelivery = await queryRunner.manager.save(
       OrderReturnDeliveryEntity,
       {
         trackingId: createRequestDto.returnRequest.trackingId,
         deliveryService: createRequestDto.returnRequest.deliveryService,
         waybill: waybillScan,
-      });
-
+      },
+    );
 
     const order = await queryRunner.manager.findOneOrFail(OrderEntity, {
       where: { number: createRequestDto.returnRequest.orderNumber },
       relations: ['items'],
     });
 
-    const returnRequest = await queryRunner.manager.save(OrderReturnRequestEntity, {
-      deduction: createRequestDto.returnRequest.deduction,
-      order: order,
-      delivery: requestDelivery,
-    })
+    const returnRequest = await queryRunner.manager.save(
+      OrderReturnRequestEntity,
+      {
+        deduction: createRequestDto.returnRequest.deduction,
+        order: order,
+        delivery: requestDelivery,
+      },
+    );
 
     await queryRunner.manager.save(
       OrderReturnRequestItemEntity,
@@ -65,7 +70,7 @@ export class ReturnRequestService {
   }
 
   private calculateTotal(orderItems: OrderReturnRequestItemEntity[]): Decimal {
-    console.log(orderItems)
+    console.log(orderItems);
     return orderItems.reduce(
       (total, item: OrderReturnRequestItemEntity) =>
         total.add(item.orderItem.productProperties.price.times(item.quantity)),

@@ -9,6 +9,7 @@ import { DragDropModule } from 'primeng/dragdrop';
 import { DropdownModule } from 'primeng/dropdown';
 import { EditorModule } from 'primeng/editor';
 import { GalleriaModule } from 'primeng/galleria';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
@@ -49,6 +50,7 @@ import { RequestListItemComponent } from './components/request-list/request-list
 import { RequestListComponent } from './components/request-list/request-list.component';
 import { RequestStatusBadgeComponent } from './components/request-status-badge/request-status-badge.component';
 import { ReturnRequestDeliveryStatusBadgeComponent } from './components/return-request-delivery-status-badge/return-request-delivery-status-badge.component';
+import { ReturnRequestOrderItemComponent } from './components/return-request-order-item/return-request-order-item.component';
 import { ReturnRequestViewItemComponent } from './components/return-request-view-item/return-request-view-item.component';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { StockBadgeComponent } from './components/stock-badge/stock-badge.component';
@@ -110,6 +112,7 @@ const COMPONENTS = [
   RequestListItemComponent,
   ReturnRequestDeliveryStatusBadgeComponent,
   ReturnRequestViewItemComponent,
+  ReturnRequestOrderItemComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -134,6 +137,7 @@ const PRIMENG_MODULES = [
   CalendarModule,
   InputSwitchModule,
   ChartModule,
+  InputNumberModule,
 ];
 
 @NgModule({

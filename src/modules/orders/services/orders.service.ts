@@ -54,7 +54,7 @@ export class OrdersService {
     private oneCApiClientService: OneCApiClientService,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -106,7 +106,12 @@ export class OrdersService {
 
     let orders = await this.dataSource.manager.find(OrderEntity, {
       where: statuses.map((status) => ({ id: status.order.id })),
-      relations: ['items', 'items.product', 'items.product.properties', 'customer'],
+      relations: [
+        'items',
+        'items.product.properties',
+        'items.productProperties.images',
+        'customer',
+      ],
     });
 
     return orders
