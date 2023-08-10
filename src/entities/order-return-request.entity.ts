@@ -7,6 +7,7 @@ import { OrderReturnRequestItemEntity } from './order-return-request-item.entity
 import { OrderEntity } from './order.entity';
 import { RequestEntity } from './request.entity';
 import { OrderReturnDeliveryEntity } from './order-return-delivery.entity';
+import { PaymentTransactionEntity } from './payment-transaction.entity';
 
 import { OrderReturnRequestStatus } from '../enums/order-return-request-status.enum';
 
@@ -38,6 +39,9 @@ export class OrderReturnRequestEntity extends BaseEntity {
   })
   status: OrderReturnRequestStatus;
 
+  @Column({ default: false })
+  approved: boolean;
+
   @OneToOne(() => OrderReturnDeliveryEntity)
   @JoinColumn()
   delivery: OrderReturnDeliveryEntity;
@@ -51,6 +55,9 @@ export class OrderReturnRequestEntity extends BaseEntity {
 
   @OneToMany(() => OrderReturnRequestItemEntity, (item) => item.orderReturnApproved)
   approvedItems: OrderReturnRequestItemEntity[];
+
+  @OneToMany(() => PaymentTransactionEntity, (transaction) => transaction.orderReturnRequest)
+  paymentTransactions: PaymentTransactionEntity[];
 
   @OneToOne(() => RequestEntity, (request) => request.returnRequest)
   request: RequestEntity;

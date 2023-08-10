@@ -6,6 +6,7 @@ import { TransactionSyncOneCStatus } from '../enums/transaction-sync-one-c-statu
 import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BalanceEntity } from './balance.entity';
 import { BaseEntity } from './base.entity';
+import { OrderReturnRequestEntity } from './order-return-request.entity';
 import { OrderEntity } from './order.entity';
 
 @Entity('payment_transaction')
@@ -41,6 +42,9 @@ export class PaymentTransactionEntity extends BaseEntity {
 
   @ManyToOne(() => OrderEntity, (order) => order.paymentTransactions)
   order: OrderEntity;
+
+  @ManyToOne(() => OrderReturnRequestEntity, (request) => request.paymentTransactions)
+  orderReturnRequest: OrderReturnRequestEntity;
 
   @ManyToOne(() => BalanceEntity, (balance) => balance.paymentTransactions)
   balance: BalanceEntity;

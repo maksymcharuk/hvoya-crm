@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestsService } from '@shared/services/requests.service';
+import { RequestItemUIEntity } from '@shared/interfaces/ui-entities/request-item.ui-entity';
 
 @Component({
   selector: 'app-return-request-view',
@@ -41,7 +42,7 @@ export class ReturnRequestViewComponent {
       .subscribe((request: RequestEntity) => {
         this.request$.next(request);
         request.returnRequest!.requestedItems!.forEach((item) => {
-          this.approvedItems.push(this.formBuilder.control(item));
+          this.approvedItems.push(this.formBuilder.control(new RequestItemUIEntity(item)));
         });
       });
   }
@@ -51,17 +52,13 @@ export class ReturnRequestViewComponent {
   }
 
   approveReturnRequest() {
-
-    const formData = new FormData();
-
-    formData.append('deduction', this.returnRequestForm.value.deduction!.toString());
-    formData.append('approvedItems', JSON.stringify(this.returnRequestForm.value.approvedItems));
-
-    this.requestsService.approveRequest(formData, this.requestNumber).subscribe((request) => {
-      console.log(request);
-    });
-    console.log(this.returnRequestForm.value);
-    console.log('approveReturnRequest');
+    this.requestsService.approveRequest({
+      approvedItems: this.returnRequestForm.value.approvedItems as RequestItemUIEntity[],
+      deduction: this.returnRequestForm.value.deduction!,
+    },
+      this.requestNumber).subscribe((request) => {
+        console.log(request);
+      });
   }
 
   rejectReturnRequest() {

@@ -24,8 +24,8 @@ export class ReturnRequestController {
   )
   async approveRequest(
     @User('id') userId: string,
-    @Body() approveRequestDto: ApproveReturnRequestDto,
     @Param('number') number: string,
+    @Body() approveRequestDto: ApproveReturnRequestDto,
   ): Promise<RequestEntity> {
     return this.requestService.approveRequest(userId, number, approveRequestDto);
   }

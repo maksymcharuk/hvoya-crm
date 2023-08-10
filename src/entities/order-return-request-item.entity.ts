@@ -10,9 +10,6 @@ export class OrderReturnRequestItemEntity extends BaseEntity {
   @Column()
   quantity: number;
 
-  @Column({ default: false })
-  approved: boolean;
-
   @OneToOne(() => OrderItemEntity)
   @JoinColumn()
   orderItem: OrderItemEntity;

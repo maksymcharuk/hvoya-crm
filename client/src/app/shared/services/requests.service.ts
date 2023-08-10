@@ -5,6 +5,7 @@ import { map, Observable } from 'rxjs';
 import { environment } from '@environment/environment';
 
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
+import { ApproveReturnRequestDTO } from '@shared/interfaces/dto/approve-request.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class RequestsService {
 
   getRequest(number: string): Observable<RequestEntity> {
     return this.http
-      .get<RequestEntity>(`${environment.apiUrl}/return-request/${number}`)
+      .get<RequestEntity>(`${environment.apiUrl}/request/${number}`)
       .pipe(map((request) => new RequestEntity(request)));
   }
 
@@ -36,9 +37,9 @@ export class RequestsService {
       .pipe(map((request) => new RequestEntity(request)));
   }
 
-  approveRequest(requestApproveFormData: FormData, requestNumber: number): Observable<RequestEntity> {
+  approveRequest(requestApproveFormData: ApproveReturnRequestDTO, requestNumber: number): Observable<RequestEntity> {
     return this.http
-      .post<RequestEntity>(`${environment.apiUrl}/request/approve/${requestNumber}`, requestApproveFormData)
+      .post<RequestEntity>(`${environment.apiUrl}/return-request/approve/${requestNumber}`, requestApproveFormData)
       .pipe(map((request) => new RequestEntity(request)));
   }
 }

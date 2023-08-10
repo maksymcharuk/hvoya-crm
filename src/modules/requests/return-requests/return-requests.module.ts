@@ -6,6 +6,7 @@ import { OrderReturnRequestItemEntity } from '@entities/order-return-request-ite
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { ReturnRequestController } from './controllers/return-request/return-request.controller';
 import { ReturnRequestService } from './services/return-request/return-request.service';
+import { RequestService } from '../services/request/request.service';
 
 import { FilesModule } from '@modules/files/files.module';
 import { CaslModule } from '@modules/casl/casl.module';
@@ -22,7 +23,7 @@ import { CaslModule } from '@modules/casl/casl.module';
     CaslModule,
   ],
   controllers: [ReturnRequestController],
-  providers: [ReturnRequestService],
+  providers: [ReturnRequestService, RequestService],
   exports: [ReturnRequestService],
 })
 export class ReturnRequestsModule { }

@@ -1,19 +1,24 @@
+import Decimal from 'decimal.js';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 
 import { CreateRequestDto } from '@dtos/create-request.dto';
 import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
+import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
 
 import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
 import { FileEntity } from '@entities/file.entity';
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { OrderReturnDeliveryEntity } from '@entities/order-return-delivery.entity';
+import { BalanceEntity } from '@entities/balance.entity';
+import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 
 import { RequestType } from '@enums/request-type.enum';
 import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
+import { TransactionStatus } from '@enums/transaction-status.enum';
 
 import { ReturnRequestService } from '@modules/requests/return-requests/services/return-request/return-request.service';
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
@@ -206,5 +211,109 @@ export class RequestService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async approveRequest(
+    userId: string,
+    requestNumber: string,
+    approveRequestDto: ApproveReturnRequestDto,
+  ): Promise<RequestEntity> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    let request: RequestEntity;
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const user = await queryRunner.manager.findOneOrFail(UserEntity, {
+        where: { id: userId },
+      });
+
+      const ability = this.caslAbilityFactory.createForUser(user);
+
+      request = await queryRunner.manager.findOneOrFail(RequestEntity, {
+        relations: ['returnRequest', 'customer', 'returnRequest.delivery'],
+        where: { number: requestNumber },
+      });
+
+      if (ability.cannot(Action.Update, request)) {
+        throw new HttpException(
+          'У вас немає прав для оновлення цього замовлення',
+          HttpStatus.FORBIDDEN,
+        );
+      }
+
+      await queryRunner.manager.save(
+        OrderReturnRequestEntity,
+        {
+          id: request.returnRequest!.id,
+          approved: true,
+          approvedItems: approveRequestDto.approvedItems,
+        }
+      );
+
+      await this.updateBalanceOnReturn(queryRunner.manager, userId, request.id);
+
+      return this.getRequest(userId, request.number!);
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(
+        {
+          message: err.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async updateBalanceOnReturn(
+    manager: EntityManager,
+    userId: string,
+    requestId: string,
+  ) {
+
+    const request = await manager.findOneOrFail(RequestEntity, {
+      relations: [
+        'returnRequest',
+        'customer',
+        'returnRequest.approvedItems',
+        'returnRequest.approvedItems.orderItem',
+      ],
+      where: { id: requestId },
+    });
+
+    if (!request.returnRequest!.approvedItems[0]) {
+      throw new HttpException(
+        'Не вказано жодного товару для повернення',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const total = request.returnRequest!.approvedItems.reduce((acc: Decimal, item) => {
+      return acc.add(new Decimal(item.orderItem.productProperties.price).mul(item.quantity))
+    }, new Decimal(0)).minus(request.returnRequest!.deduction);
+
+
+    const balance = await manager.findOneOrFail(BalanceEntity, {
+      where: { owner: { id: userId } },
+    });
+
+    const orderReturnRequest = await manager.findOneOrFail(OrderReturnRequestEntity, {
+      where: { order: { id: request.returnRequest?.id } },
+    });
+
+    const transaction = await manager.save(PaymentTransactionEntity, {
+      amount: total,
+      status: TransactionStatus.Success,
+      balance,
+      orderReturnRequest,
+    });
+
+    await manager.save(BalanceEntity, {
+      id: balance.id,
+      amount: balance.amount.plus(total),
+      paymentTransactions: [...balance.paymentTransactions, transaction],
+    });
   }
 }
