@@ -35,33 +35,47 @@ export class UkrPoshtaApiService extends DeliveryApiService {
   getDeliveryStatuses(
     getDeliveryStatusesDto: GetDeliveryStatusesDto,
   ): Promise<GetDeliveryStatusesResponse> {
+    const ids = new UkrPoshtaGetDeliveryStatusesRequest({
+      trackingIds: getDeliveryStatusesDto.trackingInfo.map(
+        ({ trackingId }) => trackingId,
+      ),
+    }).trackingIds;
+
+    return Promise.allSettled(
+      ids.map((trackingId) => this.getDeliveryStatus(trackingId)),
+    ).then(
+      (
+        responses: PromiseSettledResult<UkrPoshtaGetDeliveryStatusesResponse>[],
+      ) => {
+        const results = responses
+          .filter((response) => response.status === 'fulfilled')
+          .map(
+            (
+              response: PromiseFulfilledResult<UkrPoshtaGetDeliveryStatusesResponse>,
+            ) => response.value,
+          );
+        return new GetDeliveryStatusesResponse({
+          statuses: results.map((result) => ({
+            trackingId: result.barcode,
+            date: new Date(result.date).toString(),
+            status: getStatus(result.eventName),
+            rawStatus: result.eventName,
+          })),
+        });
+      },
+    );
+  }
+
+  private getDeliveryStatus(
+    trackingId: string,
+  ): Promise<UkrPoshtaGetDeliveryStatusesResponse> {
     return this.makeApiCall(
       this.httpService
-        .post<UkrPoshtaGetDeliveryStatusesResponse[]>(
-          `${this.apiUrl}statuses/last`,
-          new UkrPoshtaGetDeliveryStatusesRequest({
-            trackingIds: getDeliveryStatusesDto.trackingInfo.map(
-              ({ trackingId }) => trackingId,
-            ),
-          }).trackingIds,
+        .get<UkrPoshtaGetDeliveryStatusesResponse>(
+          `${this.apiUrl}/statuses/last?barcode=${trackingId}`,
           { headers: { Authorization: `Bearer ${this.authToken}` } },
         )
-        .pipe(
-          map(
-            (
-              response: AxiosResponse<UkrPoshtaGetDeliveryStatusesResponse[]>,
-            ) => {
-              return new GetDeliveryStatusesResponse({
-                statuses: response.data.map((status) => ({
-                  trackingId: status.barcode,
-                  date: new Date(status.date).toString(),
-                  status: getStatus(status.eventName),
-                  rawStatus: status.eventName,
-                })),
-              });
-            },
-          ),
-        ),
+        .pipe(map((response: AxiosResponse) => response.data)),
     );
   }
 }
