@@ -40,21 +40,21 @@ import { USER_USER_READ_FIELDS } from './permitted-fields/user/user';
 
 type Subjects =
   | InferSubjects<
-      | typeof UserEntity
-      | typeof ProductCategoryEntity
-      | typeof ProductBaseEntity
-      | typeof ProductVariantEntity
-      | typeof ProductColorEntity
-      | typeof ProductSizeEntity
-      | typeof ProductPackageSizeEntity
-      | typeof CartEntity
-      | typeof OrderEntity
-      | typeof FaqEntity
-      | typeof BalanceEntity
-      | typeof NotificationEntity
-      | typeof OrderReturnRequestEntity
-      | typeof RequestEntity
-    >
+    | typeof UserEntity
+    | typeof ProductCategoryEntity
+    | typeof ProductBaseEntity
+    | typeof ProductVariantEntity
+    | typeof ProductColorEntity
+    | typeof ProductSizeEntity
+    | typeof ProductPackageSizeEntity
+    | typeof CartEntity
+    | typeof OrderEntity
+    | typeof FaqEntity
+    | typeof BalanceEntity
+    | typeof NotificationEntity
+    | typeof OrderReturnRequestEntity
+    | typeof RequestEntity
+  >
   | 'AdminAalytics'
   | 'PersonalAnalytics'
   | 'all';
@@ -112,9 +112,9 @@ export class CaslAbilityFactory {
 
     // Return requests
     // -------------------------------------------------------------------------
-    can([Action.Read, Action.Update], OrderReturnRequestEntity);
+    can([Action.Read, Action.Update, Action.Confirm], OrderReturnRequestEntity);
     can(
-      [Action.Read, Action.Update],
+      [Action.Read, Action.Update, Action.Confirm],
       RequestEntity,
       ANY_ADMIN_REQUEST_READ_FIELDS,
     );
@@ -173,9 +173,9 @@ export class CaslAbilityFactory {
 
     // Return requests
     // -------------------------------------------------------------------------
-    can([Action.Read, Action.Update], OrderReturnRequestEntity);
+    can([Action.Read, Action.Update, Action.Confirm], OrderReturnRequestEntity);
     can(
-      [Action.Read, Action.Update],
+      [Action.Read, Action.Update, Action.Confirm],
       RequestEntity,
       ANY_ADMIN_REQUEST_READ_FIELDS,
     );

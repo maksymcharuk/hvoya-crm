@@ -20,7 +20,7 @@ export class RequestsService {
 
   getRequest(number: string): Observable<RequestEntity> {
     return this.http
-      .get<RequestEntity>(`${environment.apiUrl}/request/${number}`)
+      .get<RequestEntity>(`${environment.apiUrl}/return-request/${number}`)
       .pipe(map((request) => new RequestEntity(request)));
   }
 
@@ -33,6 +33,12 @@ export class RequestsService {
   requestUpdateByCustomer(requestNumber: string, requestUpdateFormData: FormData): Observable<RequestEntity> {
     return this.http
       .put<RequestEntity>(`${environment.apiUrl}/request/${requestNumber}/update-by-customer`, requestUpdateFormData)
+      .pipe(map((request) => new RequestEntity(request)));
+  }
+
+  approveRequest(requestApproveFormData: FormData, requestNumber: number): Observable<RequestEntity> {
+    return this.http
+      .post<RequestEntity>(`${environment.apiUrl}/request/approve/${requestNumber}`, requestApproveFormData)
       .pipe(map((request) => new RequestEntity(request)));
   }
 }

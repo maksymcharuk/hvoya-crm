@@ -51,6 +51,15 @@ export class ReturnRequestViewComponent {
   }
 
   approveReturnRequest() {
+
+    const formData = new FormData();
+
+    formData.append('deduction', this.returnRequestForm.value.deduction!.toString());
+    formData.append('approvedItems', JSON.stringify(this.returnRequestForm.value.approvedItems));
+
+    this.requestsService.approveRequest(formData, this.requestNumber).subscribe((request) => {
+      console.log(request);
+    });
     console.log(this.returnRequestForm.value);
     console.log('approveReturnRequest');
   }
