@@ -1,17 +1,16 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
-import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
+import { DeliveryStatus } from '@shared/enums/delivery-status.enum';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 
 @Component({
   selector: 'app-request-list',
   templateUrl: './request-list.component.html',
-  styleUrls: ['./request-list.component.scss']
+  styleUrls: ['./request-list.component.scss'],
 })
 export class RequestListComponent {
-
   private requestsInternal: RequestEntity[] = [];
 
   loading = true;
@@ -26,7 +25,7 @@ export class RequestListComponent {
       label,
     };
   });
-  deliveryStatuses = Object.entries(OrderDeliveryStatus).map((key) => {
+  deliveryStatuses = Object.entries(DeliveryStatus).map((key) => {
     const [label, value] = key;
 
     return {
@@ -52,13 +51,13 @@ export class RequestListComponent {
     const defaultFilterFields = ['total'];
     return this.adminView
       ? [
-        ...defaultFilterFields,
-        'customer.firstName',
-        'customer.lastName',
-        'customer.middleName',
-      ]
+          ...defaultFilterFields,
+          'customer.firstName',
+          'customer.lastName',
+          'customer.middleName',
+        ]
       : defaultFilterFields;
   }
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 }

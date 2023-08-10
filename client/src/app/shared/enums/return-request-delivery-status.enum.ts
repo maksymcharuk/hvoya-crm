@@ -1,4 +1,4 @@
-export enum ReturnRequestDeliveryStatus {
+export enum DeliveryStatus {
   Unspecified = 'Unspecified',
   Pending = 'Pending',
   Accepted = 'Accepted',

@@ -1,8 +1,8 @@
 import { IsString } from 'class-validator';
 
-import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
+import { DeliveryStatus } from '@enums/delivery-status.enum';
 
-class Status {
+export class DeliveryServiceRawStatus {
   @IsString()
   trackingId: string;
 
@@ -10,14 +10,14 @@ class Status {
   date: string;
 
   @IsString()
-  status: OrderDeliveryStatus;
+  status: DeliveryStatus;
 
   @IsString()
   rawStatus: string;
 }
 
 export class GetDeliveryStatusesResponse {
-  statuses: Status[];
+  statuses: DeliveryServiceRawStatus[];
 
   constructor(data?: GetDeliveryStatusesResponse) {
     this.statuses = data?.statuses ?? [];

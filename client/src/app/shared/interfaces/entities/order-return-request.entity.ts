@@ -1,6 +1,6 @@
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
-import { ReturnRequestDeliveryStatus } from '@shared/enums/return-request-delivery-status.enum';
+import { DeliveryStatus } from '@shared/enums/return-request-delivery-status.enum';
 
 import { BaseEntity } from './base.entity';
 import { File } from './file.entity';
@@ -52,7 +52,7 @@ export class OrderReturnDeliveryEntity extends BaseEntity {
   waybill: File | null;
   deliveryService: DeliveryService;
   rawStatus: string;
-  status: ReturnRequestDeliveryStatus;
+  status: DeliveryStatus;
 
   constructor(data?: OrderReturnDeliveryEntity) {
     super(data);
@@ -60,6 +60,6 @@ export class OrderReturnDeliveryEntity extends BaseEntity {
     this.waybill = data?.waybill ? new File(data?.waybill) : null;
     this.deliveryService = data?.deliveryService || DeliveryService.NovaPoshta;
     this.rawStatus = data?.rawStatus || '';
-    this.status = data?.status || ReturnRequestDeliveryStatus.Pending;
+    this.status = data?.status || DeliveryStatus.Pending;
   }
 }

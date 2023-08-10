@@ -28,10 +28,10 @@ import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
+import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
-import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { SyncProduct } from '@interfaces/one-c';
@@ -460,7 +460,7 @@ export class OrdersService {
     await queryRunner.manager.update(OrderDeliveryEntity, order.delivery.id, {
       status:
         ORDER_STATUSES_TO_DELIERY_STATUSES.get(status) ||
-        OrderDeliveryStatus.Unspecified,
+        DeliveryStatus.Unspecified,
     });
   }
 

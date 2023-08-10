@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
-import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
+import { DeliveryStatus } from '@shared/enums/delivery-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { User } from '@shared/interfaces/entities/user.entity';
@@ -47,7 +47,7 @@ export class OrderListComponent implements OnDestroy {
       label,
     };
   });
-  orderDeliveryStatuses = Object.entries(OrderDeliveryStatus).map((key) => {
+  orderDeliveryStatuses = Object.entries(DeliveryStatus).map((key) => {
     const [label, value] = key;
 
     return {

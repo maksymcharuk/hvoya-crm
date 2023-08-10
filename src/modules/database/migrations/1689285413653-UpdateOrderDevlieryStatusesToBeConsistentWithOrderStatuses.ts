@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { OrderDeliveryEntity } from '../../../entities/order-delivery.entity';
 import { OrderEntity } from '../../../entities/order.entity';
-import { OrderDeliveryStatus } from '../../../enums/order-delivery-status.enum';
+import { DeliveryStatus } from '../../../enums/delivery-status.enum';
 import { OrderStatus } from '../../../enums/order-status.enum';
 
 export class UpdateOrderDevlieryStatusesToBeConsistentWithOrderStatuses1689285413653
@@ -31,19 +31,19 @@ export class UpdateOrderDevlieryStatusesToBeConsistentWithOrderStatuses168928541
     for (let order of fulfilledOrders) {
       await queryRunner.manager.save(OrderDeliveryEntity, {
         id: order.delivery.id,
-        status: OrderDeliveryStatus.Received,
+        status: DeliveryStatus.Received,
       });
     }
     for (let order of cancelledOrders) {
       await queryRunner.manager.save(OrderDeliveryEntity, {
         id: order.delivery.id,
-        status: OrderDeliveryStatus.Declined,
+        status: DeliveryStatus.Declined,
       });
     }
     for (let order of refundedOrders) {
       await queryRunner.manager.save(OrderDeliveryEntity, {
         id: order.delivery.id,
-        status: OrderDeliveryStatus.Returned,
+        status: DeliveryStatus.Returned,
       });
     }
   }

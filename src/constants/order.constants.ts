@@ -1,4 +1,4 @@
-import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
+import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 
 // Fulfilled order can only be changed to Cancelled or Refunded
@@ -46,9 +46,9 @@ export const COMMENT_REQUIRED_ORDER_STATUSES = [
 
 export const ORDER_STATUSES_TO_DELIERY_STATUSES = new Map<
   OrderStatus,
-  OrderDeliveryStatus
+  DeliveryStatus
 >([
-  [OrderStatus.Cancelled, OrderDeliveryStatus.Declined],
-  [OrderStatus.Fulfilled, OrderDeliveryStatus.Received],
-  [OrderStatus.Refunded, OrderDeliveryStatus.Returned],
+  [OrderStatus.Cancelled, DeliveryStatus.Declined],
+  [OrderStatus.Fulfilled, DeliveryStatus.Received],
+  [OrderStatus.Refunded, DeliveryStatus.Returned],
 ]);
