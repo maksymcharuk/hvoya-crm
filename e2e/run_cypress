@@ -21,7 +21,7 @@ npx pm2 start npm --name "client" -- run start:test-headless --prefix client
 # Wait for server and client to start
 sleep 15
 # Run Cypress tests
-npm run cypress:headless --prefix e2e
+npm run start:headless --prefix e2e
 # Stop server and client
 pm2 delete server
 pm2 delete client
