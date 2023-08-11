@@ -9,10 +9,7 @@ import {
   GetDeliveryStatusesDto,
   GetDeliveryStatusesResponse,
 } from '@interfaces/delivery';
-import {
-  UkrPoshtaGetDeliveryStatusesRequest,
-  UkrPoshtaGetDeliveryStatusesResponse,
-} from '@interfaces/delivery/ukr-poshta';
+import { UkrPoshtaGetDeliveryStatusesResponse } from '@interfaces/delivery/ukr-poshta';
 
 import { getStatus } from '../../maps/ukr-poshta-status.map';
 import { DeliveryApiService } from '../delivery-api/delivery-api.service';
@@ -35,14 +32,12 @@ export class UkrPoshtaApiService extends DeliveryApiService {
   getDeliveryStatuses(
     getDeliveryStatusesDto: GetDeliveryStatusesDto,
   ): Promise<GetDeliveryStatusesResponse> {
-    const ids = new UkrPoshtaGetDeliveryStatusesRequest({
-      trackingIds: getDeliveryStatusesDto.trackingInfo.map(
-        ({ trackingId }) => trackingId,
-      ),
-    }).trackingIds;
+    const trackingIds = getDeliveryStatusesDto.trackingInfo.map(
+      ({ trackingId }) => trackingId,
+    );
 
     return Promise.allSettled(
-      ids.map((trackingId) => this.getDeliveryStatus(trackingId)),
+      trackingIds.map((trackingId) => this.getDeliveryStatus(trackingId)),
     ).then(
       (
         responses: PromiseSettledResult<UkrPoshtaGetDeliveryStatusesResponse>[],
