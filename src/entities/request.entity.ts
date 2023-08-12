@@ -1,14 +1,12 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
+import { RequestType } from '../enums/request-type.enum';
 import { BaseEntity } from './base.entity';
 import { OrderReturnRequestEntity } from './order-return-request.entity';
 import { UserEntity } from './user.entity';
 
-import { RequestType } from '../enums/request-type.enum';
-
 @Entity('request')
 export class RequestEntity extends BaseEntity {
-
   @Column({
     type: 'varchar',
     update: false,

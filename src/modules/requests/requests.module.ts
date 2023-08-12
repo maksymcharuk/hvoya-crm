@@ -7,9 +7,11 @@ import { UserEntity } from '@entities/user.entity';
 import { CaslModule } from '@modules/casl/casl.module';
 import { FilesModule } from '@modules/files/files.module';
 
-import { RequestController } from './controllers/request/request.controller';
-import { ReturnRequestsModule } from './return-requests/return-requests.module';
-import { RequestService } from './services/request/request.service';
+import { RequestContext } from './core/request-context';
+import { RequestController } from './request.controller';
+import { RequestService } from './request.service';
+import { ReturnRequestStrategy } from './strategies/return-requests/return-request.strategy';
+import { ReturnRequestsModule } from './strategies/return-requests/return-requests.module';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { RequestService } from './services/request/request.service';
     FilesModule,
     CaslModule,
   ],
-  providers: [RequestService],
+  providers: [RequestContext, RequestService, ReturnRequestStrategy],
   controllers: [RequestController],
 })
 export class RequestsModule {}

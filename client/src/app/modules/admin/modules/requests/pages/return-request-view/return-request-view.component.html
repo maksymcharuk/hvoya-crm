@@ -5,48 +5,72 @@
         <h4 class="flex align-items-center">
           <span>Повернення №{{ request.number }}</span>
         </h4>
-        <form class="my-5" [formGroup]="returnRequestForm">
-          <h5>Товари</h5>
-          <ng-container formArrayName="approvedItems">
-            <app-return-request-order-item
-              *ngFor="let requestedItemForm of approvedItems.controls"
-              [formControl]="requestedItemForm"
-            ></app-return-request-order-item>
-          </ng-container>
-          <div class="p-fluid my-4">
-            <div class="p-formgrid grid">
-              <div class="field col-6">
-                <label for="deduction">Відрахування:</label>
-                <p-inputNumber
-                  mode="decimal"
-                  formControlName="deduction"
-                  [max]="request.returnRequest.total"
-                  [min]="0"
-                ></p-inputNumber>
+        <div class="my-5">
+          <ng-container
+            *ngIf="'approve' | able : request.returnRequest; else productsView"
+          >
+            <form [formGroup]="returnRequestForm">
+              <h5>Товари</h5>
+              <ng-container formArrayName="approvedItems">
+                <app-return-request-order-item
+                  *ngFor="let requestedItemForm of approvedItems.controls"
+                  [formControl]="requestedItemForm"
+                ></app-return-request-order-item>
+              </ng-container>
+              <div class="p-fluid my-4">
+                <div class="p-formgrid grid">
+                  <div class="field col-6">
+                    <label for="deduction">Відрахування:</label>
+                    <p-inputNumber
+                      mode="decimal"
+                      formControlName="deduction"
+                      [max]="request.returnRequest.total"
+                      [min]="0"
+                    ></p-inputNumber>
+                  </div>
+                  <div class="field col-6 align-self-end text-right">
+                    <span class="text-xl text-900 font-bold text-3xl"
+                      >Сума:</span
+                    >
+                    <span class="text-xl text-900 font-bold text-3xl ml-5">
+                      {{ request.returnRequest.total | currency }}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div class="field col-6 align-self-end text-right">
-                <span class="text-xl text-900 font-bold text-3xl">Сума:</span>
-                <span class="text-xl text-900 font-bold text-3xl ml-5">
-                  {{ request.returnRequest.total | currency }}
-                </span>
+              <div class="flex justify-content-end">
+                <p-button
+                  icon="pi pi-check"
+                  label="Підтвердити"
+                  (click)="approveReturnRequest()"
+                ></p-button>
+                <p-button
+                  icon="pi pi-times"
+                  label="Відхилити"
+                  styleClass="p-button-danger"
+                  class="ml-3"
+                  (click)="rejectReturnRequest()"
+                ></p-button>
+              </div>
+            </form>
+          </ng-container>
+          <ng-template #productsView>
+            <app-return-request-view-item
+              *ngFor="let requestItem of request.returnRequest!.approvedItems"
+              [requestItem]="requestItem"
+            ></app-return-request-view-item>
+            <div class="p-fluid my-4">
+              <div class="p-formgrid grid">
+                <div class="field col-12 align-self-end text-right">
+                  <span class="text-xl text-900 font-bold text-3xl">Сума:</span>
+                  <span class="text-xl text-900 font-bold text-3xl ml-5">
+                    {{ request.returnRequest.total | currency }}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="flex justify-content-end">
-            <p-button
-              icon="pi pi-check"
-              label="Підтвердити"
-              (click)="approveReturnRequest()"
-            ></p-button>
-            <p-button
-              icon="pi pi-times"
-              label="Відхилити"
-              styleClass="p-button-danger"
-              class="ml-3"
-              (click)="rejectReturnRequest()"
-            ></p-button>
-          </div>
-        </form>
+          </ng-template>
+        </div>
         <div class="my-5">
           <h5>Дані дропшипера</h5>
           <ul class="striped-list">

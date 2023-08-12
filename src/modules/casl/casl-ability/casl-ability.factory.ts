@@ -40,21 +40,21 @@ import { USER_USER_READ_FIELDS } from './permitted-fields/user/user';
 
 type Subjects =
   | InferSubjects<
-    | typeof UserEntity
-    | typeof ProductCategoryEntity
-    | typeof ProductBaseEntity
-    | typeof ProductVariantEntity
-    | typeof ProductColorEntity
-    | typeof ProductSizeEntity
-    | typeof ProductPackageSizeEntity
-    | typeof CartEntity
-    | typeof OrderEntity
-    | typeof FaqEntity
-    | typeof BalanceEntity
-    | typeof NotificationEntity
-    | typeof OrderReturnRequestEntity
-    | typeof RequestEntity
-  >
+      | typeof UserEntity
+      | typeof ProductCategoryEntity
+      | typeof ProductBaseEntity
+      | typeof ProductVariantEntity
+      | typeof ProductColorEntity
+      | typeof ProductSizeEntity
+      | typeof ProductPackageSizeEntity
+      | typeof CartEntity
+      | typeof OrderEntity
+      | typeof FaqEntity
+      | typeof BalanceEntity
+      | typeof NotificationEntity
+      | typeof OrderReturnRequestEntity
+      | typeof RequestEntity
+    >
   | 'AdminAalytics'
   | 'PersonalAnalytics'
   | 'all';
@@ -113,11 +113,8 @@ export class CaslAbilityFactory {
     // Return requests
     // -------------------------------------------------------------------------
     can([Action.Read, Action.Update, Action.Confirm], OrderReturnRequestEntity);
-    can(
-      [Action.Read, Action.Update, Action.Confirm],
-      RequestEntity,
-      ANY_ADMIN_REQUEST_READ_FIELDS,
-    );
+    can(Action.Read, RequestEntity, ANY_ADMIN_REQUEST_READ_FIELDS);
+    can([Action.Update, Action.Confirm], RequestEntity);
   }
 
   // Admin
@@ -174,11 +171,8 @@ export class CaslAbilityFactory {
     // Return requests
     // -------------------------------------------------------------------------
     can([Action.Read, Action.Update, Action.Confirm], OrderReturnRequestEntity);
-    can(
-      [Action.Read, Action.Update, Action.Confirm],
-      RequestEntity,
-      ANY_ADMIN_REQUEST_READ_FIELDS,
-    );
+    can(Action.Read, RequestEntity, ANY_ADMIN_REQUEST_READ_FIELDS);
+    can([Action.Update, Action.Confirm], RequestEntity);
     // -------------------------------------------------------------------------
 
     // Cart
@@ -274,14 +268,12 @@ export class CaslAbilityFactory {
     // Return requests
     // -------------------------------------------------------------------------
     can([Action.Read, Action.Create, Action.Update], OrderReturnRequestEntity);
-    can(
-      [Action.Read, Action.Create, Action.Update],
-      RequestEntity,
-      USER_REQUEST_READ_FIELDS,
-      {
-        ['customer.id' as keyof RequestEntity]: currentUser.id,
-      },
-    );
+    can(Action.Read, RequestEntity, USER_REQUEST_READ_FIELDS, {
+      ['customer.id' as keyof RequestEntity]: currentUser.id,
+    });
+    can([Action.Create, Action.Update], RequestEntity, {
+      ['customer.id' as keyof RequestEntity]: currentUser.id,
+    });
     // -------------------------------------------------------------------------
   }
 }

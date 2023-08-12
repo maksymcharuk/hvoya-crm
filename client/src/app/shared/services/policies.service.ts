@@ -7,6 +7,8 @@ import {
   PureAbility,
 } from '@casl/ability';
 
+import { COMPLETED_ORDER_STATUSES } from '@shared/constants/order.constants';
+import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Role } from '@shared/enums/role.enum';
 import {
@@ -29,7 +31,7 @@ const lambdaMatcher = (matchConditions: MatchConditions) => matchConditions;
   providedIn: 'root',
 })
 export class PoliciesService {
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
   update(appAbility: AppAbility) {
     const rules = this.build()?.rules;
@@ -62,12 +64,36 @@ export class PoliciesService {
         can('create', User);
         can('update', User, (user: User) => user.role !== Role.SuperAdmin);
         can(['create', 'update'], Faq);
+        can(
+          'update',
+          Order,
+          (order: Order) =>
+            !COMPLETED_ORDER_STATUSES.includes(order.currentStatus.status),
+        );
+        can(
+          ['approve', 'update'],
+          OrderReturnRequest,
+          (orderReturnRequest: OrderReturnRequest) =>
+            orderReturnRequest.status === OrderReturnRequestStatus.Pending,
+        );
         break;
       case Role.Admin:
         can('visit', AdminPage);
         can('read', User);
         can('update', User, (user: User) => user.role === Role.User);
         can(['create', 'update'], Faq);
+        can(
+          'update',
+          Order,
+          (order: Order) =>
+            !COMPLETED_ORDER_STATUSES.includes(order.currentStatus.status),
+        );
+        can(
+          ['approve', 'update'],
+          OrderReturnRequest,
+          (orderReturnRequest: OrderReturnRequest) =>
+            orderReturnRequest.status === OrderReturnRequestStatus.Pending,
+        );
         break;
       case Role.User:
         can('visit', DashboardPage);
@@ -78,6 +104,12 @@ export class PoliciesService {
           (order: Order) => order.currentStatus.status === OrderStatus.Pending,
         );
         can('create', OrderReturnRequest);
+        can(
+          ['update'],
+          OrderReturnRequest,
+          (orderReturnRequest: OrderReturnRequest) =>
+            orderReturnRequest.status === OrderReturnRequestStatus.Pending,
+        );
         break;
     }
 

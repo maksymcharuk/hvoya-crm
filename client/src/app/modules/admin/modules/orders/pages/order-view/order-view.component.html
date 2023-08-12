@@ -169,7 +169,7 @@
                 </ng-template>
               </div>
             </li>
-            <li class="striped-list__item">
+            <li *ngIf="'update' | able : order" class="striped-list__item">
               <div class="striped-list__item-key"></div>
               <form
                 [formGroup]="updateWaybillForm"

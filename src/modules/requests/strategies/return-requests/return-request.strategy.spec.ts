@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ReturnRequestService } from './return-request.service';
+
+import { ReturnRequestService } from './return-request.strategy';
 
 describe('ReturnRequestService', () => {
   let service: ReturnRequestService;

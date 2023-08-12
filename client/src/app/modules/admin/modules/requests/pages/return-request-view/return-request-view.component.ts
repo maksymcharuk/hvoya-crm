@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { BehaviorSubject } from 'rxjs';
 
@@ -6,8 +7,8 @@ import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
-import { RequestsService } from '@shared/services/requests.service';
 import { RequestItemUIEntity } from '@shared/interfaces/ui-entities/request-item.ui-entity';
+import { RequestsService } from '@shared/services/requests.service';
 
 @Component({
   selector: 'app-return-request-view',
@@ -34,15 +35,18 @@ export class ReturnRequestViewComponent {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private requestsService: RequestsService,
-    private formBuilder: FormBuilder,
+    private readonly requestsService: RequestsService,
+    private readonly formBuilder: FormBuilder,
+    private readonly messageService: MessageService,
   ) {
     this.requestsService
       .getRequest(this.requestNumber)
       .subscribe((request: RequestEntity) => {
         this.request$.next(request);
         request.returnRequest!.requestedItems!.forEach((item) => {
-          this.approvedItems.push(this.formBuilder.control(new RequestItemUIEntity(item)));
+          this.approvedItems.push(
+            this.formBuilder.control(new RequestItemUIEntity(item)),
+          );
         });
       });
   }
@@ -52,12 +56,22 @@ export class ReturnRequestViewComponent {
   }
 
   approveReturnRequest() {
-    this.requestsService.approveRequest({
-      approvedItems: this.returnRequestForm.value.approvedItems as RequestItemUIEntity[],
-      deduction: this.returnRequestForm.value.deduction!,
-    },
-      this.requestNumber).subscribe((request) => {
-        console.log(request);
+    this.requestsService
+      .approveRequest(
+        {
+          approvedItems: this.returnRequestForm.value
+            .approvedItems as RequestItemUIEntity[],
+          deduction: this.returnRequestForm.value.deduction!,
+        },
+        this.requestNumber,
+      )
+      .subscribe((request) => {
+        this.request$.next(request);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Запит підтверджено',
+          detail: 'Запит успішно підтверджено',
+        });
       });
   }
 

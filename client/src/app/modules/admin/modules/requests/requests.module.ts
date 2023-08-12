@@ -7,6 +7,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbilityModule } from '@casl/angular';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -27,6 +28,7 @@ import { RequestsRoutingModule } from './requests-routing.module';
     ButtonModule,
     InputNumberModule,
     SkeletonModule,
+    AbilityModule,
   ],
 })
 export class RequestsModule {}

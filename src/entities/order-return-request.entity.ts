@@ -1,19 +1,17 @@
 import Decimal from 'decimal.js';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
-import { DecimalTransformer } from '../transformers/decimal.transformer';
-
-import { BaseEntity } from './base.entity';
-import { OrderReturnRequestItemEntity } from './order-return-request-item.entity';
-import { OrderEntity } from './order.entity';
-import { RequestEntity } from './request.entity';
-import { OrderReturnDeliveryEntity } from './order-return-delivery.entity';
-import { PaymentTransactionEntity } from './payment-transaction.entity';
 
 import { OrderReturnRequestStatus } from '../enums/order-return-request-status.enum';
+import { DecimalTransformer } from '../transformers/decimal.transformer';
+import { BaseEntity } from './base.entity';
+import { OrderReturnDeliveryEntity } from './order-return-delivery.entity';
+import { OrderReturnRequestItemEntity } from './order-return-request-item.entity';
+import { OrderEntity } from './order.entity';
+import { PaymentTransactionEntity } from './payment-transaction.entity';
+import { RequestEntity } from './request.entity';
 
 @Entity('order_return_request')
 export class OrderReturnRequestEntity extends BaseEntity {
-
   @Column({
     type: 'decimal',
     precision: 10,
@@ -50,15 +48,24 @@ export class OrderReturnRequestEntity extends BaseEntity {
   @JoinColumn()
   order: OrderEntity;
 
-  @OneToMany(() => OrderReturnRequestItemEntity, (item) => item.orderReturnRequested)
-  requestedItems: OrderReturnRequestItemEntity[];
-
-  @OneToMany(() => OrderReturnRequestItemEntity, (item) => item.orderReturnApproved)
-  approvedItems: OrderReturnRequestItemEntity[];
-
-  @OneToMany(() => PaymentTransactionEntity, (transaction) => transaction.orderReturnRequest)
-  paymentTransactions: PaymentTransactionEntity[];
-
   @OneToOne(() => RequestEntity, (request) => request.returnRequest)
   request: RequestEntity;
+
+  @OneToMany(
+    () => OrderReturnRequestItemEntity,
+    (item) => item.orderReturnRequested,
+  )
+  requestedItems: OrderReturnRequestItemEntity[];
+
+  @OneToMany(
+    () => OrderReturnRequestItemEntity,
+    (item) => item.orderReturnApproved,
+  )
+  approvedItems: OrderReturnRequestItemEntity[];
+
+  @OneToMany(
+    () => PaymentTransactionEntity,
+    (transaction) => transaction.orderReturnRequest,
+  )
+  paymentTransactions: PaymentTransactionEntity[];
 }

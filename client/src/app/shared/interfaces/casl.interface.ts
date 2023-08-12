@@ -1,7 +1,9 @@
 import { AbilityClass, InferSubjects, PureAbility } from '@casl/ability';
 
 import { Faq } from './entities/faq.entity';
+import { OrderReturnRequest } from './entities/order-return-request.entity';
 import { Order } from './entities/order.entity';
+import { RequestEntity } from './entities/request.entity';
 import { User } from './entities/user.entity';
 import { AdminPage } from './pages/admin-page.entity';
 import { DashboardPage } from './pages/dashboard-page.entity';
@@ -15,6 +17,8 @@ export type Actions =
   | 'delete'
   // Orders
   | 'cancel'
+  // Requests
+  | 'approve'
   // Pages
   | 'visit';
 
@@ -27,6 +31,8 @@ export type Subjects =
       | typeof Order
       | typeof Faq
       | typeof User
+      | typeof OrderReturnRequest
+      | typeof RequestEntity
     >
   | 'all';
 

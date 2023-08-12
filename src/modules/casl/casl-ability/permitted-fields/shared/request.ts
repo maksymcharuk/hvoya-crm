@@ -4,4 +4,5 @@ export const SHARED_REQUEST_READ_FIELDS = [
   'requestType',
   'returnRequest',
   'customer',
+  'createdAt',
 ];

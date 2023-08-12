@@ -4,26 +4,25 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderReturnDeliveryEntity } from '@entities/order-return-delivery.entity';
 import { OrderReturnRequestItemEntity } from '@entities/order-return-request-item.entity';
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
-import { ReturnRequestController } from './controllers/return-request/return-request.controller';
-import { ReturnRequestService } from './services/return-request/return-request.service';
-import { RequestService } from '../services/request/request.service';
+import { UserEntity } from '@entities/user.entity';
 
-import { FilesModule } from '@modules/files/files.module';
 import { CaslModule } from '@modules/casl/casl.module';
+import { FilesModule } from '@modules/files/files.module';
+
+import { ReturnRequestStrategy } from './return-request.strategy';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      UserEntity,
       OrderReturnRequestEntity,
       OrderReturnRequestItemEntity,
       OrderReturnDeliveryEntity,
     ]),
-    ReturnRequestsModule,
     FilesModule,
     CaslModule,
   ],
-  controllers: [ReturnRequestController],
-  providers: [ReturnRequestService, RequestService],
-  exports: [ReturnRequestService],
+  providers: [ReturnRequestStrategy],
+  exports: [ReturnRequestStrategy],
 })
-export class ReturnRequestsModule { }
+export class ReturnRequestsModule {}
