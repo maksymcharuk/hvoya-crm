@@ -4,6 +4,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
 import { CreateRequestDto } from '@dtos/create-request.dto';
+import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
 import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
 
@@ -91,6 +92,36 @@ export class RequestContext {
         userId,
         requestNumber,
         approveRequestDto,
+      );
+      await queryRunner.commitTransaction();
+      return request;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new BadRequestException(err.message);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  public async rejectRequest(
+    userId: string,
+    requestNumber: string,
+    rejectRequestDto: RejectReturnRequestDto,
+  ): Promise<RequestEntity> {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    console.log(
+      `Context: Delegating request creation to the strategy: ${this.strategy.constructor.name}}`,
+    );
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const request = await this.strategy.rejectRequest(
+        queryRunner,
+        userId,
+        requestNumber,
+        rejectRequestDto,
       );
       await queryRunner.commitTransaction();
       return request;

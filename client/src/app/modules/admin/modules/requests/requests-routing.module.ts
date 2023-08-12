@@ -10,7 +10,7 @@ const routes: Routes = [
     component: RequestListComponent,
   },
   {
-    path: 'return-request/:number',
+    path: 'return-requests/:number',
     component: ReturnRequestViewComponent,
   },
 ];
@@ -19,4 +19,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class RequestsRoutingModule { }
+export class RequestsRoutingModule {}

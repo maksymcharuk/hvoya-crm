@@ -22,6 +22,7 @@ import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
+import { OrderReturnRequestStatus } from '@enums/order-return-request-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { Role } from '@enums/role.enum';
 
@@ -112,9 +113,14 @@ export class CaslAbilityFactory {
 
     // Return requests
     // -------------------------------------------------------------------------
-    can([Action.Read, Action.Update, Action.Confirm], OrderReturnRequestEntity);
+    cannot(
+      [Action.Update, Action.Approve, Action.Decline],
+      OrderReturnRequestEntity,
+      {
+        status: { $ne: OrderReturnRequestStatus.Pending },
+      },
+    );
     can(Action.Read, RequestEntity, ANY_ADMIN_REQUEST_READ_FIELDS);
-    can([Action.Update, Action.Confirm], RequestEntity);
   }
 
   // Admin
@@ -132,7 +138,7 @@ export class CaslAbilityFactory {
       role: { $ne: Role.SuperAdmin },
     });
     can([Action.Update], UserEntity, { id: currentUser.id });
-    can([Action.Update, Action.Confirm], UserEntity, {
+    can([Action.Update, Action.Approve], UserEntity, {
       role: { $eq: Role.User },
     });
     // -------------------------------------------------------------------------
@@ -170,9 +176,16 @@ export class CaslAbilityFactory {
 
     // Return requests
     // -------------------------------------------------------------------------
-    can([Action.Read, Action.Update, Action.Confirm], OrderReturnRequestEntity);
+    can(Action.Read, OrderReturnRequestEntity);
+    can(
+      [Action.Update, Action.Approve, Action.Decline],
+      OrderReturnRequestEntity,
+      {
+        status: OrderReturnRequestStatus.Pending,
+      },
+    );
     can(Action.Read, RequestEntity, ANY_ADMIN_REQUEST_READ_FIELDS);
-    can([Action.Update, Action.Confirm], RequestEntity);
+    can([Action.Update, Action.Approve, Action.Decline], RequestEntity);
     // -------------------------------------------------------------------------
 
     // Cart
@@ -183,11 +196,6 @@ export class CaslAbilityFactory {
     // Analytics
     // -------------------------------------------------------------------------
     can(Action.Read, 'AdminAalytics');
-
-    // Return requests
-    // -------------------------------------------------------------------------
-    can([Action.Read, Action.Create, Action.Update], OrderReturnRequestEntity);
-    // -------------------------------------------------------------------------
   }
 
   // User
@@ -267,7 +275,10 @@ export class CaslAbilityFactory {
 
     // Return requests
     // -------------------------------------------------------------------------
-    can([Action.Read, Action.Create, Action.Update], OrderReturnRequestEntity);
+    can([Action.Read, Action.Create], OrderReturnRequestEntity);
+    can([Action.Update], OrderReturnRequestEntity, {
+      status: OrderReturnRequestStatus.Pending,
+    });
     can(Action.Read, RequestEntity, USER_REQUEST_READ_FIELDS, {
       ['customer.id' as keyof RequestEntity]: currentUser.id,
     });

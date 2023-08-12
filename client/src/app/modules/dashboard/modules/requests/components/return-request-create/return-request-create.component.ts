@@ -114,7 +114,7 @@ export class ReturnRequestCreateComponent {
           ? '/admin'
           : '/dashboard';
         this.router.navigate([
-          `${path}/requests/return-request/${request.number}`,
+          `${path}/requests/return-requests/${request.number}`,
         ]);
       });
   }

@@ -11,10 +11,7 @@
       ></p-button>
     </div>
     <div class="card p-0">
-      <app-request-list
-        [requests]="requests$ | async"
-        [adminView]="false"
-      ></app-request-list>
+      <app-request-list [requests]="requests$ | async"></app-request-list>
     </div>
   </div>
 </div>

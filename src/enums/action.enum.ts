@@ -10,6 +10,9 @@ export enum Action {
   // Cart
   AddTo = 'addTo',
   RemoveFrom = 'removeFrom',
+  // Requests
+  Approve = 'approve',
+  Decline = 'decline',
   // Super
   SuperUpdate = 'superUpdate',
 }

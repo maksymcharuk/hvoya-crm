@@ -1,30 +1,30 @@
+import { MessageService } from 'primeng/api';
+import { FileUpload } from 'primeng/fileupload';
+import { BehaviorSubject, finalize } from 'rxjs';
+
 import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { RequestEntity } from '@shared/interfaces/entities/request.entity'
+import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
+import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
+import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
+import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestsService } from '@shared/services/requests.service';
 import { alphanumeric } from '@shared/validators/alphanumeric.validator';
-import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
-import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
-
-import { FileUpload } from 'primeng/fileupload';
-import { MessageService } from 'primeng/api';
-
-import { BehaviorSubject, finalize } from 'rxjs';
 
 @Component({
   selector: 'app-return-request-view',
   templateUrl: './return-request-view.component.html',
-  styleUrls: ['./return-request-view.component.scss']
+  styleUrls: ['./return-request-view.component.scss'],
 })
 export class ReturnRequestViewComponent {
-
   requestNumber = this.route.snapshot.params['number'];
   request$ = new BehaviorSubject<RequestEntity | null>(null);
   showWaybillViewDialog = false;
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
+  returnRequestStatus = OrderReturnRequestStatus;
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: [
@@ -46,12 +46,12 @@ export class ReturnRequestViewComponent {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
   ) {
-    this.requestsService.getRequest(this.requestNumber).subscribe(request => {
+    this.requestsService.getRequest(this.requestNumber).subscribe((request) => {
       this.request$.next(request);
       this.updateWaybillForm.patchValue({
         trackingId: request.returnRequest!.delivery.trackingId,
       });
-    })
+    });
 
     this.waybillSubmitting$.subscribe((submitting) => {
       submitting
@@ -95,5 +95,4 @@ export class ReturnRequestViewComponent {
         });
       });
   }
-
 }

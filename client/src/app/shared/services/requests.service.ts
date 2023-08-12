@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
 import { ApproveReturnRequestDTO } from '@shared/interfaces/dto/approve-request.dto';
+import { RejectReturnRequestDTO } from '@shared/interfaces/dto/reject-request.dto';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 
 @Injectable({
@@ -15,7 +16,7 @@ export class RequestsService {
 
   getRequests(): Observable<RequestEntity[]> {
     return this.http
-      .get<RequestEntity[]>(`${environment.apiUrl}/request`)
+      .get<RequestEntity[]>(`${environment.apiUrl}/requests`)
       .pipe(
         map((requests) =>
           requests.map((request) => new RequestEntity(request)),
@@ -25,14 +26,14 @@ export class RequestsService {
 
   getRequest(number: string): Observable<RequestEntity> {
     return this.http
-      .get<RequestEntity>(`${environment.apiUrl}/request/${number}`)
+      .get<RequestEntity>(`${environment.apiUrl}/requests/${number}`)
       .pipe(map((request) => new RequestEntity(request)));
   }
 
   createRequest(requestCreateFormData: FormData): Observable<RequestEntity> {
     return this.http
       .post<RequestEntity>(
-        `${environment.apiUrl}/request`,
+        `${environment.apiUrl}/requests`,
         requestCreateFormData,
       )
       .pipe(map((request) => new RequestEntity(request)));
@@ -44,7 +45,7 @@ export class RequestsService {
   ): Observable<RequestEntity> {
     return this.http
       .put<RequestEntity>(
-        `${environment.apiUrl}/request/${requestNumber}/update-by-customer`,
+        `${environment.apiUrl}/requests/${requestNumber}/update-by-customer`,
         requestUpdateFormData,
       )
       .pipe(map((request) => new RequestEntity(request)));
@@ -56,8 +57,20 @@ export class RequestsService {
   ): Observable<RequestEntity> {
     return this.http
       .put<RequestEntity>(
-        `${environment.apiUrl}/request/${requestNumber}/approve`,
+        `${environment.apiUrl}/requests/${requestNumber}/approve`,
         requestApproveFormData,
+      )
+      .pipe(map((request) => new RequestEntity(request)));
+  }
+
+  rejectRequest(
+    requestRejectFormData: RejectReturnRequestDTO,
+    requestNumber: number,
+  ): Observable<RequestEntity> {
+    return this.http
+      .put<RequestEntity>(
+        `${environment.apiUrl}/requests/${requestNumber}/reject`,
+        requestRejectFormData,
       )
       .pipe(map((request) => new RequestEntity(request)));
   }

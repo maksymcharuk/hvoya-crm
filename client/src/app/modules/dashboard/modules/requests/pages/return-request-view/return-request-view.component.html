@@ -7,10 +7,25 @@
         </h4>
         <div class="my-5">
           <h5>Товари</h5>
-          <app-return-request-view-item
-            *ngFor="let requestItem of request.returnRequest!.requestedItems"
-            [requestItem]="requestItem"
-          ></app-return-request-view-item>
+          <!-- TODO: display diff between requested and approved items -->
+          <ng-container
+            *ngIf="
+              request.returnRequest.status === returnRequestStatus.Pending;
+              else approvedItemsList
+            "
+          >
+            <app-return-request-view-item
+              *ngFor="let requestItem of request.returnRequest!.requestedItems"
+              [requestItem]="requestItem"
+            ></app-return-request-view-item>
+          </ng-container>
+          <ng-template #approvedItemsList>
+            <app-return-request-view-item
+              *ngFor="let approvedItem of request.returnRequest!.approvedItems"
+              [requestItem]="approvedItem"
+            ></app-return-request-view-item>
+          </ng-template>
+          <!-- END -->
           <div class="flex">
             <div class="w-12rem hidden md:block"></div>
             <div class="md:pl-5 mt-2 flex-auto">
@@ -49,7 +64,7 @@
                   <div class="py-2 mr-5">
                     <a
                       [routerLink]="[
-                        '/dasboard',
+                        '/dashboard',
                         'orders',
                         request.returnRequest.order.number
                       ]"

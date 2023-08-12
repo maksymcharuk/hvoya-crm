@@ -9,7 +9,7 @@ import { UserEntity } from '@entities/user.entity';
 import { CaslModule } from '@modules/casl/casl.module';
 import { FilesModule } from '@modules/files/files.module';
 
-import { ReturnRequestStrategy } from './return-request.strategy';
+import { ReturnRequestsStrategy } from './return-requests.strategy';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { ReturnRequestStrategy } from './return-request.strategy';
     FilesModule,
     CaslModule,
   ],
-  providers: [ReturnRequestStrategy],
-  exports: [ReturnRequestStrategy],
+  providers: [ReturnRequestsStrategy],
+  exports: [ReturnRequestsStrategy],
 })
 export class ReturnRequestsModule {}

@@ -3,6 +3,7 @@ import { FormBuilder } from '@angular/forms';
 
 import { DeliveryStatus } from '@shared/enums/delivery-status.enum';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
+import { RequestType } from '@shared/enums/request-type.enum';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 
 @Component({
@@ -33,6 +34,14 @@ export class RequestListComponent {
       label,
     };
   });
+  requestTypes = Object.entries(RequestType).map((key) => {
+    const [label, value] = key;
+
+    return {
+      value,
+      label,
+    };
+  });
 
   @Input() set requests(requests: RequestEntity[] | null) {
     if (!requests) {
@@ -41,22 +50,14 @@ export class RequestListComponent {
     this.requestsInternal = requests;
     this.loading = false;
   }
-  @Input() adminView!: boolean;
+  @Input() adminView: boolean = false;
 
   get requests(): any[] {
     return this.requestsInternal;
   }
 
   get globalFilterFields() {
-    const defaultFilterFields = ['total'];
-    return this.adminView
-      ? [
-          ...defaultFilterFields,
-          'customer.firstName',
-          'customer.lastName',
-          'customer.middleName',
-        ]
-      : defaultFilterFields;
+    return ['number'];
   }
 
   constructor(private fb: FormBuilder) {}

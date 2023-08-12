@@ -13,14 +13,13 @@ import { UserService } from '@shared/services/user.service';
   },
 })
 export class RequestListItemComponent {
-
   @Input() adminView: boolean = false;
   @Input() request!: RequestEntity;
 
   constructor(
     private readonly userService: UserService,
     private readonly router: Router,
-  ) { }
+  ) {}
 
   navigateToRequest() {
     // TODO: create URL builder service and move this logic there
@@ -30,7 +29,9 @@ export class RequestListItemComponent {
 
     switch (this.request.requestType) {
       case 'Return':
-        this.router.navigate([`${path}/requests/return-request/${this.request.number}`]);
+        this.router.navigate([
+          `${path}/requests/return-requests/${this.request.number}`,
+        ]);
         break;
 
       default:

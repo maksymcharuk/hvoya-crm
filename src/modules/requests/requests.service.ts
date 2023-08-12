@@ -9,6 +9,7 @@ import {
 
 import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
 import { CreateRequestDto } from '@dtos/create-request.dto';
+import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
 import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
@@ -19,14 +20,14 @@ import { sanitizeEntity } from '@utils/serialize-entity.util';
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 
 import { RequestContext } from './core/request-context';
-import { ReturnRequestStrategy } from './strategies/return-requests/return-request.strategy';
+import { ReturnRequestsStrategy } from './strategies/return-requests/return-requests.strategy';
 
 @Injectable()
-export class RequestService {
+export class RequestsService {
   constructor(
     private dataSource: DataSource,
     private requestContext: RequestContext,
-    private returnRequestStrategy: ReturnRequestStrategy,
+    private returnRequestsStrategy: ReturnRequestsStrategy,
     private caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
@@ -40,6 +41,9 @@ export class RequestService {
 
     const requests = await this.dataSource.manager.find(RequestEntity, {
       relations: ['returnRequest', 'customer', 'returnRequest.delivery'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
 
     return requests
@@ -85,7 +89,7 @@ export class RequestService {
   ): Promise<RequestEntity> {
     switch (createRequestDto.requestType) {
       case RequestType.Return:
-        this.requestContext.setStrategy(this.returnRequestStrategy);
+        this.requestContext.setStrategy(this.returnRequestsStrategy);
         break;
       default:
         throw new BadRequestException('Невідомий тип запиту');
@@ -111,7 +115,7 @@ export class RequestService {
 
     switch (request.requestType) {
       case RequestType.Return:
-        this.requestContext.setStrategy(this.returnRequestStrategy);
+        this.requestContext.setStrategy(this.returnRequestsStrategy);
         break;
       default:
         throw new BadRequestException('Невідомий тип запиту');
@@ -121,6 +125,32 @@ export class RequestService {
       userId,
       requestNumber,
       approveRequestDto,
+    );
+
+    return this.getRequest(userId, request.number!);
+  }
+
+  async rejectRequest(
+    userId: string,
+    requestNumber: string,
+    rejectRequestDto: RejectReturnRequestDto,
+  ): Promise<RequestEntity> {
+    const request = await this.dataSource.manager.findOneOrFail(RequestEntity, {
+      where: { number: requestNumber },
+    });
+
+    switch (request.requestType) {
+      case RequestType.Return:
+        this.requestContext.setStrategy(this.returnRequestsStrategy);
+        break;
+      default:
+        throw new BadRequestException('Невідомий тип запиту');
+    }
+
+    await this.requestContext.rejectRequest(
+      userId,
+      requestNumber,
+      rejectRequestDto,
     );
 
     return this.getRequest(userId, request.number!);
@@ -138,7 +168,7 @@ export class RequestService {
 
     switch (request.requestType) {
       case RequestType.Return:
-        this.requestContext.setStrategy(this.returnRequestStrategy);
+        this.requestContext.setStrategy(this.returnRequestsStrategy);
         break;
       default:
         throw new BadRequestException('Невідомий тип запиту');

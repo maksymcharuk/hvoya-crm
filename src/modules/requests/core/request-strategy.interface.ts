@@ -2,6 +2,7 @@ import { QueryRunner } from 'typeorm';
 
 import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
 import { CreateRequestDto } from '@dtos/create-request.dto';
+import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
 import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
 
@@ -25,6 +26,13 @@ export interface RequestStrategy {
     userId: string,
     requestNumber: string,
     approveRequestDto: ApproveReturnRequestDto,
+  ): Promise<RequestEntity>;
+
+  rejectRequest(
+    queryRunner: QueryRunner,
+    userId: string,
+    requestNumber: string,
+    approveRequestDto: RejectReturnRequestDto,
   ): Promise<RequestEntity>;
 
   updateRequestByCustomer(

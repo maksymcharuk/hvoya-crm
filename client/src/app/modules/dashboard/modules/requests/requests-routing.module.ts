@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { RequestListComponent } from './pages/request-list/request-list.component';
 import { RequestCreateComponent } from './pages/request-create/request-create.component';
+import { RequestListComponent } from './pages/request-list/request-list.component';
 import { ReturnRequestViewComponent } from './pages/return-request-view/return-request-view.component';
 
 const routes: Routes = [
@@ -15,7 +15,7 @@ const routes: Routes = [
     component: RequestCreateComponent,
   },
   {
-    path: 'return-request/:number',
+    path: 'return-requests/:number',
     component: ReturnRequestViewComponent,
   },
 ];
@@ -24,4 +24,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class RequestsRoutingModule { }
+export class RequestsRoutingModule {}

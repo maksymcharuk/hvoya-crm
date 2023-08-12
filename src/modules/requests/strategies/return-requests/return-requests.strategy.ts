@@ -9,6 +9,7 @@ import {
 
 import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
 import { CreateRequestDto } from '@dtos/create-request.dto';
+import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
 import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
@@ -30,7 +31,7 @@ import { FilesService } from '@modules/files/services/files.service';
 import { RequestStrategy } from '@modules/requests/core/request-strategy.interface';
 
 @Injectable()
-export class ReturnRequestStrategy implements RequestStrategy {
+export class ReturnRequestsStrategy implements RequestStrategy {
   constructor(
     private readonly caslAbilityFactory: CaslAbilityFactory,
     private readonly filesService: FilesService,
@@ -44,6 +45,21 @@ export class ReturnRequestStrategy implements RequestStrategy {
   ): Promise<RequestEntity> {
     let waybillFile!: FileEntity;
     try {
+      const isRequestExists = await queryRunner.manager.findOne(
+        OrderReturnRequestEntity,
+        {
+          where: {
+            order: { number: createRequestDto.returnRequest.orderNumber },
+          },
+        },
+      );
+
+      if (isRequestExists) {
+        throw new BadRequestException(
+          'Замовлення з таким номером вже має заявку на повернення',
+        );
+      }
+
       if (!waybillScan) {
         throw new BadRequestException('Waybill scan is required');
       }
@@ -144,9 +160,12 @@ export class ReturnRequestStrategy implements RequestStrategy {
       where: { number: requestNumber },
     });
 
-    if (ability.cannot(Action.Update, request)) {
+    if (
+      ability.cannot(Action.Approve, request) ||
+      ability.cannot(Action.Approve, request.returnRequest!)
+    ) {
       throw new ForbiddenException(
-        'У вас немає прав для оновлення цього замовлення',
+        'У вас немає прав для оновлення цієї заявки або заявка вже була закрита',
       );
     }
 
@@ -162,7 +181,6 @@ export class ReturnRequestStrategy implements RequestStrategy {
       OrderReturnRequestEntity,
       {
         id: request.returnRequest!.id,
-        approved: true,
         status: OrderReturnRequestStatus.Approved,
       },
     );
@@ -205,6 +223,55 @@ export class ReturnRequestStrategy implements RequestStrategy {
     return request;
   }
 
+  async rejectRequest(
+    queryRunner: QueryRunner,
+    userId: string,
+    requestNumber: string,
+    rejectRequestDto: RejectReturnRequestDto,
+  ): Promise<RequestEntity> {
+    let request: RequestEntity;
+    const user = await queryRunner.manager.findOneOrFail(UserEntity, {
+      where: { id: userId },
+    });
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    request = await queryRunner.manager.findOneOrFail(RequestEntity, {
+      relations: [
+        'returnRequest.approvedItems.orderItem',
+        'returnRequest.delivery',
+        'customer',
+      ],
+      where: { number: requestNumber },
+    });
+
+    if (
+      ability.cannot(Action.Decline, request) ||
+      ability.cannot(Action.Decline, request.returnRequest!)
+    ) {
+      throw new ForbiddenException(
+        'У вас немає прав для оновлення цієї заявки або заявка вже була закрита',
+      );
+    }
+
+    await queryRunner.manager.save(RequestEntity, {
+      id: request.id,
+      managerComment: rejectRequestDto.managerComment,
+    });
+
+    await queryRunner.manager.save(OrderReturnRequestEntity, {
+      id: request.returnRequest!.id,
+      status: OrderReturnRequestStatus.Declined,
+    });
+
+    await queryRunner.manager.save(OrderReturnDeliveryEntity, {
+      id: request.returnRequest!.delivery.id,
+      status: DeliveryStatus.Declined,
+    });
+
+    return request;
+  }
+
   async updateRequestByCustomer(
     queryRunner: QueryRunner,
     userId: string,
@@ -226,9 +293,12 @@ export class ReturnRequestStrategy implements RequestStrategy {
         where: { number: requestNumber },
       });
 
-      if (ability.cannot(Action.Update, request)) {
+      if (
+        ability.cannot(Action.Update, request) ||
+        ability.cannot(Action.Update, request.returnRequest!)
+      ) {
         throw new ForbiddenException(
-          'У вас немає прав для оновлення цього замовлення',
+          'У вас немає прав для оновлення цієї заявки або заявка вже закрита',
         );
       }
 

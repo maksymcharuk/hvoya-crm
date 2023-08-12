@@ -37,9 +37,6 @@ export class OrderReturnRequestEntity extends BaseEntity {
   })
   status: OrderReturnRequestStatus;
 
-  @Column({ default: false })
-  approved: boolean;
-
   @OneToOne(() => OrderReturnDeliveryEntity)
   @JoinColumn()
   delivery: OrderReturnDeliveryEntity;

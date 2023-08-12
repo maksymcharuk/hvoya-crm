@@ -3,7 +3,13 @@ import { FileUpload } from 'primeng/fileupload';
 import { BehaviorSubject } from 'rxjs';
 
 import { Component, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
@@ -21,9 +27,14 @@ export class ReturnRequestViewComponent {
   showWaybillViewDialog = false;
 
   returnRequestForm = this.formBuilder.group({
-    approvedItems: this.formBuilder.array([]),
-    deduction: this.formBuilder.control(0),
+    approvedItems: this.formBuilder.array<RequestItemUIEntity>([]),
+    managerComment: '',
+    deduction: 0,
   });
+
+  get managerComment(): AbstractControl {
+    return this.returnRequestForm.get('managerComment')!;
+  }
 
   get approvedItems(): FormArray<FormControl> {
     return this.returnRequestForm.get(
@@ -56,11 +67,20 @@ export class ReturnRequestViewComponent {
   }
 
   approveReturnRequest() {
+    this.managerComment.clearValidators();
+    this.managerComment.updateValueAndValidity();
+
+    if (this.returnRequestForm.invalid) {
+      this.returnRequestForm.markAllAsTouched();
+      return;
+    }
+
     this.requestsService
       .approveRequest(
         {
           approvedItems: this.returnRequestForm.value
             .approvedItems as RequestItemUIEntity[],
+          managerComment: this.returnRequestForm.value.managerComment!,
           deduction: this.returnRequestForm.value.deduction!,
         },
         this.requestNumber,
@@ -76,6 +96,28 @@ export class ReturnRequestViewComponent {
   }
 
   rejectReturnRequest() {
-    console.log('rejectReturnRequest');
+    this.managerComment.setValidators([Validators.required]);
+    this.managerComment.updateValueAndValidity();
+
+    if (this.returnRequestForm.invalid) {
+      this.returnRequestForm.markAllAsTouched();
+      return;
+    }
+
+    this.requestsService
+      .rejectRequest(
+        {
+          managerComment: this.returnRequestForm.value.managerComment!,
+        },
+        this.requestNumber,
+      )
+      .subscribe((request) => {
+        this.request$.next(request);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Запит відхилено',
+          detail: 'Запит успішно відхилено',
+        });
+      });
   }
 }

@@ -2,6 +2,7 @@ import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { CommonModule } from '@angular/common';
@@ -29,6 +30,7 @@ import { RequestsRoutingModule } from './requests-routing.module';
     InputNumberModule,
     SkeletonModule,
     AbilityModule,
+    InputTextareaModule,
   ],
 })
 export class RequestsModule {}

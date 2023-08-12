@@ -40,6 +40,12 @@
             <p-sortIcon field="createdAt"></p-sortIcon>
           </div>
         </th>
+        <th pSortableColumn="requestType">
+          <div class="flex justify-content-between align-items-center">
+            Тип заявки
+            <p-sortIcon field="requestType"></p-sortIcon>
+          </div>
+        </th>
         <th pSortableColumn="returnRequest.status">
           <div class="flex justify-content-between align-items-center">
             Статус
@@ -78,6 +84,36 @@
                 placeholder="Дата"
                 [showClear]="true"
               ></p-calendar>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter
+            field="returnRequest.requestType"
+            matchMode="equals"
+            [showMenu]="false"
+            class="ml-auto"
+          >
+            <ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <p-dropdown
+                [ngModel]="value"
+                [options]="requestTypes"
+                (onChange)="filter($event.value)"
+                [showClear]="true"
+                placeholder="Тип"
+                appendTo="body"
+              >
+                <ng-template let-option pTemplate="item">
+                  {{ option.label | requestType }}
+                </ng-template>
+                <ng-template let-item pTemplate="selectedItem">
+                  {{ item.label | requestType }}
+                </ng-template>
+              </p-dropdown>
             </ng-template>
           </p-columnFilter>
         </th>
@@ -150,6 +186,9 @@
           </p-columnFilter>
         </th>
         <th></th>
+        <ng-container *ngIf="adminView">
+          <th></th>
+        </ng-container>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-request>

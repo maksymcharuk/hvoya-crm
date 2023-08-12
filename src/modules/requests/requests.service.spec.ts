@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { ReturnRequestService } from './return-request.strategy';
+import { RequestService } from './requests.service';
 
-describe('ReturnRequestService', () => {
-  let service: ReturnRequestService;
+describe('RequestService', () => {
+  let service: RequestService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ReturnRequestService],
+      providers: [RequestService],
     }).compile();
 
-    service = module.get<ReturnRequestService>(ReturnRequestService);
+    service = module.get<RequestService>(RequestService);
   });
 
   it('should be defined', () => {

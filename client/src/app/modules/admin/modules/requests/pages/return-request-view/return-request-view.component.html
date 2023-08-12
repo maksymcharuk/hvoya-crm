@@ -36,6 +36,24 @@
                       {{ request.returnRequest.total | currency }}
                     </span>
                   </div>
+                  <div class="field col-12">
+                    <label for="managerComment">Коментар:</label>
+                    <textarea
+                      rows="5"
+                      cols="30"
+                      id="managerComment"
+                      pInputTextarea
+                      [autoResize]="true"
+                      formControlName="managerComment"
+                    ></textarea>
+                    <app-form-control-error-message
+                      [formGroup]="returnRequestForm"
+                      controlName="managerComment"
+                      errorType="required"
+                      errorMessage="Потрібно ввести причину відхилення"
+                    >
+                    </app-form-control-error-message>
+                  </div>
                 </div>
               </div>
               <div class="flex justify-content-end">

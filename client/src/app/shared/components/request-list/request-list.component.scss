@@ -1,0 +1,17 @@
+:host ::ng-deep {
+  .p-datatable .p-datatable-header {
+    border-top: 0;
+  }
+
+  .p-datatable .p-paginator-bottom {
+    border-bottom: 0;
+  }
+
+  .p-multiselect-label {
+    width: 10rem;
+  }
+
+  .p-fluid .p-calendar .p-inputtext {
+    width: 10rem;
+  }
+}

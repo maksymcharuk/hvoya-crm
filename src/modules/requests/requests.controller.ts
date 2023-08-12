@@ -17,6 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@decorators/user.decorator';
 import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
 import { CreateRequestDto } from '@dtos/create-request.dto';
+import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
 import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
 import { Action } from '@enums/action.enum';
@@ -26,12 +27,12 @@ import { AppAbility } from '@modules/casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '@modules/casl/check-policies.decorator';
 import { PoliciesGuard } from '@modules/casl/policies.guard';
 
-import { RequestService } from './request.service';
+import { RequestsService } from './requests.service';
 
-@Controller('request')
+@Controller('requests')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
-export class RequestController {
-  constructor(private requestService: RequestService) {}
+export class RequestsController {
+  constructor(private requestService: RequestsService) {}
 
   @Get()
   @CheckPolicies((ability: AppAbility) =>
@@ -76,7 +77,7 @@ export class RequestController {
 
   @Put(':number/approve')
   @CheckPolicies((ability: AppAbility) =>
-    ability.can(Action.Confirm, RequestEntity),
+    ability.can(Action.Approve, RequestEntity),
   )
   async approveRequest(
     @User('id') userId: string,
@@ -88,6 +89,18 @@ export class RequestController {
       number,
       approveRequestDto,
     );
+  }
+
+  @Put(':number/reject')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Approve, RequestEntity),
+  )
+  async rejectRequest(
+    @User('id') userId: string,
+    @Param('number') number: string,
+    @Body() rejectRequestDto: RejectReturnRequestDto,
+  ): Promise<RequestEntity> {
+    return this.requestService.rejectRequest(userId, number, rejectRequestDto);
   }
 
   @Put(':number/update-by-customer')

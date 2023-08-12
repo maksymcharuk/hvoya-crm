@@ -8,10 +8,10 @@ import { CaslModule } from '@modules/casl/casl.module';
 import { FilesModule } from '@modules/files/files.module';
 
 import { RequestContext } from './core/request-context';
-import { RequestController } from './request.controller';
-import { RequestService } from './request.service';
-import { ReturnRequestStrategy } from './strategies/return-requests/return-request.strategy';
+import { RequestsController } from './requests.controller';
+import { RequestsService } from './requests.service';
 import { ReturnRequestsModule } from './strategies/return-requests/return-requests.module';
+import { ReturnRequestsStrategy } from './strategies/return-requests/return-requests.strategy';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { ReturnRequestsModule } from './strategies/return-requests/return-reques
     FilesModule,
     CaslModule,
   ],
-  providers: [RequestContext, RequestService, ReturnRequestStrategy],
-  controllers: [RequestController],
+  providers: [RequestContext, RequestsService, ReturnRequestsStrategy],
+  controllers: [RequestsController],
 })
 export class RequestsModule {}

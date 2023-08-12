@@ -1,10 +1,12 @@
 import Decimal from 'decimal.js';
 import { FilesService } from 'src/modules/files/services/files.service';
 import {
+  And,
   DataSource,
   EntityManager,
   FindOptionsWhere,
   In,
+  Not,
   QueryRunner,
 } from 'typeorm';
 
@@ -22,6 +24,7 @@ import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
+import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { OrderStatusEntity } from '@entities/order-status.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
@@ -104,14 +107,26 @@ export class OrdersService {
       relations: ['order'],
     });
 
+    let requests = await manager.find(OrderReturnRequestEntity, {
+      relations: ['order'],
+    });
+
     let orders = await this.dataSource.manager.find(OrderEntity, {
-      where: statuses.map((status) => ({ id: status.order.id })),
+      where: {
+        id: And(
+          In(statuses.map((status) => status.order.id)),
+          Not(In(requests.map((request) => request.order.id))),
+        ),
+      },
       relations: [
         'items',
         'items.product.properties',
         'items.productProperties.images',
         'customer',
       ],
+      order: {
+        createdAt: 'DESC',
+      },
     });
 
     return orders

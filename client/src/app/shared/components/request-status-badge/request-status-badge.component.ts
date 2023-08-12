@@ -5,7 +5,7 @@ import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-sta
 @Component({
   selector: 'app-request-status-badge',
   templateUrl: './request-status-badge.component.html',
-  styleUrls: ['./request-status-badge.component.scss']
+  styleUrls: ['./request-status-badge.component.scss'],
 })
 export class RequestStatusBadgeComponent {
   @Input() status!: OrderReturnRequestStatus;
@@ -13,9 +13,9 @@ export class RequestStatusBadgeComponent {
   get style() {
     switch (this.status) {
       case OrderReturnRequestStatus.Pending:
-        return 'default';
-      case OrderReturnRequestStatus.Approved:
         return 'success';
+      case OrderReturnRequestStatus.Approved:
+        return 'default';
       case OrderReturnRequestStatus.Declined:
         return 'danger';
       default:

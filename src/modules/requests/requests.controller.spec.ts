@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RequestController } from './request.controller';
+
+import { RequestController } from './requests.controller';
 
 describe('RequestController', () => {
   let controller: RequestController;
