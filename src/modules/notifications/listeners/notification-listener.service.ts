@@ -16,7 +16,7 @@ export class NotificationListenerService {
     private usersService: UsersService,
     private notificationService: NotificationService,
     private caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+  ) { }
 
   @OnEvent(NotificationEvent.UserCreated)
   async handleUserCreatedEvent(payload: NotificationCreatedEvent) {
@@ -43,6 +43,21 @@ export class NotificationListenerService {
     this.sendNotificationToAdmins(payload);
   }
 
+  @OnEvent(NotificationEvent.RequestCreated)
+  async handleRequestCreatedEvent(payload: NotificationCreatedEvent) {
+    this.sendNotificationToAdmins(payload);
+  }
+
+  @OnEvent(NotificationEvent.RequestRejected)
+  async handleRequestRejectedEvent(payload: NotificationCreatedEvent) {
+    this.sendNotificationToUser(payload);
+  }
+
+  @OnEvent(NotificationEvent.RequestApproved)
+  async handleRequestApprovedEvent(payload: NotificationCreatedEvent) {
+    this.sendNotificationToUser(payload);
+  }
+
   private async sendNotificationToAdmins(payload: NotificationCreatedEvent) {
     let adminUsers = await this.usersService.getAllAdmins();
 
@@ -52,6 +67,9 @@ export class NotificationListenerService {
         ...payload,
         data: payload.data && sanitizeEntity(ability, payload.data),
       });
+
+      console.log(payload.data, 'payload.data');
+      console.log(sanitizeEntity(ability, payload.data!), 'sanitizeEntity(ability, payload.data)');
     });
   }
 

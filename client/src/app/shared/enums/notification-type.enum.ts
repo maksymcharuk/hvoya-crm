@@ -12,4 +12,5 @@ export enum NotificationType {
 
   RequestCreated = 'request.created',
   RequestApproved = 'request.approved',
+  RequestRejected = 'request.rejected',
 }

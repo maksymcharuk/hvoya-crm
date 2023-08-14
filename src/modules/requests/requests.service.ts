@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
 import { CreateRequestDto } from '@dtos/create-request.dto';
@@ -15,6 +16,8 @@ import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { RequestType } from '@enums/request-type.enum';
+import { NotificationEvent } from '@enums/notification-event.enum';
+import { NotificationType } from '@enums/notification-type.enum';
 import { sanitizeEntity } from '@utils/serialize-entity.util';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
@@ -29,7 +32,8 @@ export class RequestsService {
     private requestContext: RequestContext,
     private returnRequestsStrategy: ReturnRequestsStrategy,
     private caslAbilityFactory: CaslAbilityFactory,
-  ) {}
+    private eventEmitter: EventEmitter2,
+  ) { }
 
   async getRequests(userId: string): Promise<RequestEntity[]> {
     const manager = this.dataSource.createEntityManager();
@@ -101,6 +105,11 @@ export class RequestsService {
       waybill,
     );
 
+    this.eventEmitter.emit(NotificationEvent.RequestCreated, {
+      data: this.dataSource.manager.create(RequestEntity, request),
+      type: NotificationType.RequestCreated,
+    });
+
     return this.getRequest(userId, request.number!);
   }
 
@@ -111,6 +120,7 @@ export class RequestsService {
   ): Promise<RequestEntity> {
     const request = await this.dataSource.manager.findOneOrFail(RequestEntity, {
       where: { number: requestNumber },
+      relations: ['customer'],
     });
 
     switch (request.requestType) {
@@ -127,6 +137,12 @@ export class RequestsService {
       approveRequestDto,
     );
 
+    this.eventEmitter.emit(NotificationEvent.RequestApproved, {
+      data: this.dataSource.manager.create(RequestEntity, request),
+      type: NotificationType.RequestApproved,
+      userId: request.customer.id,
+    });
+
     return this.getRequest(userId, request.number!);
   }
 
@@ -137,6 +153,7 @@ export class RequestsService {
   ): Promise<RequestEntity> {
     const request = await this.dataSource.manager.findOneOrFail(RequestEntity, {
       where: { number: requestNumber },
+      relations: ['customer'],
     });
 
     switch (request.requestType) {
@@ -152,6 +169,12 @@ export class RequestsService {
       requestNumber,
       rejectRequestDto,
     );
+
+    this.eventEmitter.emit(NotificationEvent.RequestRejected, {
+      data: this.dataSource.manager.create(RequestEntity, request),
+      type: NotificationType.RequestRejected,
+      userId: request.customer.id,
+    });
 
     return this.getRequest(userId, request.number!);
   }

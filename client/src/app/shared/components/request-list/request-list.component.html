@@ -191,12 +191,13 @@
         </ng-container>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-request>
+    <ng-template pTemplate="body" let-request let-notification>
       <tr
         class="p-selectable-row"
         app-request-list-item
         [request]="request"
         [adminView]="adminView"
+        [requestNotification]="notification"
       ></tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">

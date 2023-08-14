@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
+import { NotificationsService } from '@shared/services/notifications.service';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
@@ -15,11 +17,31 @@ import { UserService } from '@shared/services/user.service';
 export class RequestListItemComponent {
   @Input() adminView: boolean = false;
   @Input() request!: RequestEntity;
+  @Input() requestNotification: any;
+
+  notifications$ = this.notificationsService.notifications$;
 
   constructor(
     private readonly userService: UserService,
     private readonly router: Router,
-  ) {}
+    private readonly notificationsService: NotificationsService,
+  ) { }
+
+  showRequestNotification(
+    request: RequestEntity,
+    notificationList: NotificationEntity[] | null,
+  ) {
+    if (!notificationList) {
+      return;
+    }
+    const notification = notificationList.find((notification) => {
+      return notification.dataIsRequest(notification.data)
+        ? notification.data.number === request.number
+        : false;
+    });
+    this.requestNotification = notification;
+    return notification ? !notification.checked : false;
+  }
 
   navigateToRequest() {
     // TODO: create URL builder service and move this logic there
@@ -32,6 +54,9 @@ export class RequestListItemComponent {
         this.router.navigate([
           `${path}/requests/return-requests/${this.request.number}`,
         ]);
+        if (this.requestNotification) {
+          this.notificationsService.checkNotification(this.requestNotification.id);
+        }
         break;
 
       default:

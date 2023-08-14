@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '@environment/environment';
 import {
   ORDER_NOTIFICATIONS,
+  REQUEST_NOTIFICATION,
   USER_NOTIFICATION,
 } from '@shared/constants/notification.constants';
 import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
@@ -37,6 +38,16 @@ export class NotificationsService {
           (notification) =>
             !notification.checked &&
             USER_NOTIFICATION.includes(notification.type),
+        ).length,
+    ),
+  );
+  requestsNotificationsNumber$ = this.notifications$.pipe(
+    map(
+      (notifications) =>
+        notifications.filter(
+          (notification) =>
+            !notification.checked &&
+            REQUEST_NOTIFICATION.includes(notification.type),
         ).length,
     ),
   );

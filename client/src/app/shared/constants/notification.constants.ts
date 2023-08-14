@@ -15,4 +15,5 @@ export const USER_NOTIFICATION = [
 export const REQUEST_NOTIFICATION = [
   NotificationType.RequestCreated,
   NotificationType.RequestApproved,
+  NotificationType.RequestRejected,
 ];
