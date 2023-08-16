@@ -1,14 +1,12 @@
-import { Injectable } from "@nestjs/common";
 import { ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 
-@ValidatorConstraint({ name: 'UserExists', async: true })
-@Injectable()
+@ValidatorConstraint({ name: 'Cyrillic' })
 export class CyrillicRule implements ValidatorConstraintInterface {
-  async validate(value: string) {
+  validate(value: string) {
     return /^[а-щА-ЩЬьЮюЯяЄєІіЇїҐґ]+$/.test(value);
   }
 
   defaultMessage() {
-    return `ПІБ повинен містити лише літери українського алфавіту`;
+    return `Cyrillic validator error`;
   }
 }

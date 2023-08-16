@@ -3,15 +3,15 @@ import { IsOptional, IsPhoneNumber, ValidateIf } from 'class-validator';
 
 export class UpdateProfileDto {
   @IsOptional()
-  @Cyrillic()
+  @Cyrillic({ message: "Ім'я повинен містити лише літери українського алфавіту" })
   firstName?: string;
 
   @IsOptional()
-  @Cyrillic()
+  @Cyrillic({ message: "Прізвище повинен містити лише літери українського алфавіту" })
   lastName?: string;
 
   @IsOptional()
-  @Cyrillic()
+  @Cyrillic({ message: "По батькові повинен містити лише літери українського алфавіту" })
   middleName?: string;
 
   @ValidateIf((e) => e.phoneNumber)

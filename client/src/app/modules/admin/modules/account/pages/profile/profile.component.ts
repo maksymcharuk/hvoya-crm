@@ -10,6 +10,7 @@ import {
   UpdateAdminProfileFormGroup,
 } from '@shared/interfaces/dto/update-admin-profile.dto';
 import { AccountService } from '@shared/services/account.service';
+import { cyrillic } from '@shared/validators/cyrillic.validator';
 
 @Component({
   selector: 'app-profile',
@@ -21,9 +22,9 @@ export class ProfileComponent implements OnInit {
 
   updateProfileForm = this.formBuilder.group({
     phoneNumber: ['', Validators.required],
-    lastName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
-    firstName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
-    middleName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
+    lastName: ['', [Validators.required, cyrillic()]],
+    firstName: ['', [Validators.required, cyrillic()]],
+    middleName: ['', [Validators.required, cyrillic()]],
   }) as UpdateAdminProfileFormGroup;
 
   constructor(

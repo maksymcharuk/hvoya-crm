@@ -13,17 +13,17 @@ export class AuthSignUpDto {
   email: string;
 
   @IsString()
-  @Cyrillic()
+  @Cyrillic({ message: "Ім'я повинен містити лише літери українського алфавіту" })
   @IsNotEmpty({ message: "Потрібно вказати ім'я" })
   firstName: string;
 
   @IsString()
-  @Cyrillic()
+  @Cyrillic({ message: "Прізвище повинен містити лише літери українського алфавіту" })
   @IsNotEmpty({ message: 'Потрібно вказати прізвище' })
   lastName: string;
 
   @IsString()
-  @Cyrillic()
+  @Cyrillic({ message: "По батькові повинен містити лише літери українського алфавіту" })
   @IsNotEmpty({ message: 'Потрібно вказати по-батькові' })
   middleName: string;
 
