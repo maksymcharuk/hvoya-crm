@@ -11,6 +11,7 @@ import {
   UpdateUserProfileFormGroup,
 } from '@shared/interfaces/dto/update-user-profile.dto';
 import { AccountService } from '@shared/services/account.service';
+import { cyrillic } from '@shared/validators/cyrillic.validator';
 
 @Component({
   selector: 'app-profile',
@@ -24,9 +25,9 @@ export class ProfileComponent implements OnInit {
 
   updateProfileForm = this.formBuilder.group({
     phoneNumber: ['', Validators.required],
-    lastName: ['', Validators.required],
-    firstName: ['', Validators.required],
-    middleName: ['', Validators.required],
+    lastName: ['', [Validators.required, cyrillic()]],
+    firstName: ['', [Validators.required, cyrillic()]],
+    middleName: ['', [Validators.required, cyrillic()]],
     storeName: ['', Validators.required],
     website: ['', Validators.required],
     bio: ['', Validators.required],
@@ -37,7 +38,7 @@ export class ProfileComponent implements OnInit {
     private accountService: AccountService,
     private messageService: MessageService,
     private clipboard: Clipboard,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.accountService.profile$.subscribe((profile) => {

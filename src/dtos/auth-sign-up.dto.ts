@@ -1,3 +1,4 @@
+import { Cyrillic } from '@root/validators/сyrillic.validator';
 import {
   IsEmail,
   IsNotEmpty,
@@ -12,14 +13,17 @@ export class AuthSignUpDto {
   email: string;
 
   @IsString()
+  @Cyrillic({ message: "Ім'я повинен містити лише літери українського алфавіту" })
   @IsNotEmpty({ message: "Потрібно вказати ім'я" })
   firstName: string;
 
   @IsString()
+  @Cyrillic({ message: "Прізвище повинен містити лише літери українського алфавіту" })
   @IsNotEmpty({ message: 'Потрібно вказати прізвище' })
   lastName: string;
 
   @IsString()
+  @Cyrillic({ message: "По батькові повинен містити лише літери українського алфавіту" })
   @IsNotEmpty({ message: 'Потрібно вказати по-батькові' })
   middleName: string;
 
