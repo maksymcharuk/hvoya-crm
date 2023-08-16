@@ -1,13 +1,17 @@
+import { Cyrillic } from '@root/validators/сyrillic.validator';
 import { IsOptional, IsPhoneNumber, ValidateIf } from 'class-validator';
 
 export class UpdateProfileDto {
   @IsOptional()
+  @Cyrillic()
   firstName?: string;
 
   @IsOptional()
+  @Cyrillic()
   lastName?: string;
 
   @IsOptional()
+  @Cyrillic()
   middleName?: string;
 
   @ValidateIf((e) => e.phoneNumber)

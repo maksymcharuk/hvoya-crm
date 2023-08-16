@@ -24,9 +24,9 @@ export class ProfileComponent implements OnInit {
 
   updateProfileForm = this.formBuilder.group({
     phoneNumber: ['', Validators.required],
-    lastName: ['', Validators.required],
-    firstName: ['', Validators.required],
-    middleName: ['', Validators.required],
+    lastName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
+    firstName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
+    middleName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
     storeName: ['', Validators.required],
     website: ['', Validators.required],
     bio: ['', Validators.required],
@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit {
     private accountService: AccountService,
     private messageService: MessageService,
     private clipboard: Clipboard,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.accountService.profile$.subscribe((profile) => {

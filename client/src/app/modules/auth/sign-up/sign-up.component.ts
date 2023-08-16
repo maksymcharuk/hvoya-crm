@@ -38,9 +38,9 @@ export class SignUpComponent implements OnInit {
         ],
       ],
       confirmPassword: ['', Validators.required],
-      firstName: ['', Validators.required],
-      middleName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      firstName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
+      middleName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
+      lastName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
       phoneNumber: ['', Validators.required],
       storeName: ['', Validators.required],
       website: ['', Validators.required],
@@ -55,7 +55,7 @@ export class SignUpComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.signUpForm.valueChanges.subscribe(() => {

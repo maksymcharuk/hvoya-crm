@@ -21,16 +21,16 @@ export class ProfileComponent implements OnInit {
 
   updateProfileForm = this.formBuilder.group({
     phoneNumber: ['', Validators.required],
-    lastName: ['', Validators.required],
-    firstName: ['', Validators.required],
-    middleName: ['', Validators.required],
+    lastName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
+    firstName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
+    middleName: ['', [Validators.required, Validators.pattern(/^[А-Яа-яІіЇїЄєҐґ]+$/)]],
   }) as UpdateAdminProfileFormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
     private accountService: AccountService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.accountService.profile$.subscribe((profile) => {
