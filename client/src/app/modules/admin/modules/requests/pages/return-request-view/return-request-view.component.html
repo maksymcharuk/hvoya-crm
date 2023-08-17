@@ -81,7 +81,7 @@
                 <tr *ngIf="request.returnRequest.deduction > 0">
                   <td>Відрахування:</td>
                   <td class="pl-5">
-                    {{ request.returnRequest.deduction | currency }}
+                    -{{ request.returnRequest.deduction | currency }}
                   </td>
                 </tr>
                 <tr>

@@ -28,6 +28,7 @@ import { TransactionStatus } from '@enums/transaction-status.enum';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 import { FilesService } from '@modules/files/services/files.service';
+import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
 import { RequestStrategy } from '@modules/requests/core/request-strategy.interface';
 
 @Injectable()
@@ -35,6 +36,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
   constructor(
     private readonly caslAbilityFactory: CaslAbilityFactory,
     private readonly filesService: FilesService,
+    private readonly oneCApiClientService: OneCApiClientService,
   ) {}
 
   async createRequest(
@@ -154,6 +156,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       relations: [
         'returnRequest.approvedItems.orderItem',
         'returnRequest.delivery',
+        'returnRequest.order',
         'customer',
       ],
       where: { number: requestNumber },
@@ -207,7 +210,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         where: {
           orderReturnApproved: { id: request.returnRequest!.id },
         },
-        relations: ['orderItem'],
+        relations: ['orderItem.productProperties', 'orderItem.product'],
       },
     );
     const approvedItemsTotal = this.calculateTotal(approvedItems);
@@ -221,6 +224,23 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       request.customer.id,
       request.id,
     );
+
+    await this.oneCApiClientService.return({
+      userId,
+      orderId: request.returnRequest!.order.id,
+      items: approvedItems.map((item) => ({
+        sku: item.orderItem.product.sku,
+        quantity: item.quantity,
+        price: item.orderItem.productProperties.price,
+      })),
+      createdAt: request.updatedAt,
+    });
+
+    await this.oneCApiClientService.refunds({
+      userId,
+      amount: approvedItemsTotal.toNumber(),
+      date: request.updatedAt,
+    });
 
     return request;
   }

@@ -11,7 +11,6 @@ import { RequestContext } from './core/request-context';
 import { RequestsController } from './requests.controller';
 import { RequestsService } from './requests.service';
 import { ReturnRequestsModule } from './strategies/return-requests/return-requests.module';
-import { ReturnRequestsStrategy } from './strategies/return-requests/return-requests.strategy';
 
 @Module({
   imports: [
@@ -20,7 +19,7 @@ import { ReturnRequestsStrategy } from './strategies/return-requests/return-requ
     FilesModule,
     CaslModule,
   ],
-  providers: [RequestContext, RequestsService, ReturnRequestsStrategy],
+  providers: [RequestContext, RequestsService],
   controllers: [RequestsController],
 })
 export class RequestsModule {}
