@@ -10,5 +10,5 @@ export class ApproveReturnRequestDto {
   deduction: number;
 
   @IsOptional()
-  managerComment: number;
+  managerComment: string;
 }

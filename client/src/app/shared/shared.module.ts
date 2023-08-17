@@ -50,6 +50,7 @@ import { RequestListItemComponent } from './components/request-list/request-list
 import { RequestListComponent } from './components/request-list/request-list.component';
 import { RequestStatusBadgeComponent } from './components/request-status-badge/request-status-badge.component';
 import { ReturnRequestDeliveryStatusBadgeComponent } from './components/return-request-delivery-status-badge/return-request-delivery-status-badge.component';
+import { ReturnRequestItemListComponent } from './components/return-request-item-list/return-request-item-list.component';
 import { ReturnRequestOrderItemComponent } from './components/return-request-order-item/return-request-order-item.component';
 import { ReturnRequestViewItemComponent } from './components/return-request-view-item/return-request-view-item.component';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
@@ -113,6 +114,7 @@ const COMPONENTS = [
   ReturnRequestDeliveryStatusBadgeComponent,
   ReturnRequestViewItemComponent,
   ReturnRequestOrderItemComponent,
+  ReturnRequestItemListComponent,
 ];
 
 const PRIMENG_MODULES = [

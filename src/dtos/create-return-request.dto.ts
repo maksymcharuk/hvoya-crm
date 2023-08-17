@@ -1,10 +1,5 @@
 import { Transform } from 'class-transformer';
-import {
-  IsAlphanumeric,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-} from 'class-validator';
+import { IsAlphanumeric, IsEnum, IsNotEmpty } from 'class-validator';
 
 import { DeliveryService } from '@enums/delivery-service.enum';
 
@@ -33,7 +28,4 @@ export class CreateReturnRequestDto {
 
   @IsNotEmpty({ message: 'Необхідно вказати номер замовлення' })
   orderNumber: string;
-
-  @IsOptional()
-  deduction: number;
 }

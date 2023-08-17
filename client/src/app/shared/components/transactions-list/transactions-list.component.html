@@ -50,7 +50,7 @@
             <p-sortIcon field="createdAt"></p-sortIcon>
           </div>
         </th>
-        <th class="w-1">Замовлення</th>
+        <th class="w-1">Замовлення/Повернення</th>
       </tr>
       <tr>
         <th></th>
@@ -98,16 +98,22 @@
           </span>
         </td>
         <td>{{ transaction.createdAt | date : 'short' }}</td>
-        <td *ngIf="transaction.order.total; else noOrder" class="text-center">
+        <td
+          *ngIf="
+            transaction.order || transaction.orderReturnRequest;
+            else noEntity
+          "
+          class="text-center"
+        >
           <button
             pButton
-            pTooltip="Натистіть для перегляду замовлення"
+            pTooltip="Натистіть для перегляду замовлення/повернення"
             tooltipPosition="left"
             icon="pi pi-arrow-up-right"
-            (click)="navigateToOrder(transaction.order.number)"
+            (click)="navigateToEntity(transaction)"
           ></button>
         </td>
-        <ng-template #noOrder><td></td></ng-template>
+        <ng-template #noEntity><td></td></ng-template>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">

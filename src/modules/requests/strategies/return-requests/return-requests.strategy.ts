@@ -89,7 +89,6 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       const returnRequest = await queryRunner.manager.save(
         OrderReturnRequestEntity,
         {
-          deduction: createRequestDto.returnRequest.deduction,
           order: order,
           delivery: requestDelivery,
         },
@@ -177,13 +176,16 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       throw new BadRequestException('Не вказано жодного товару для повернення');
     }
 
-    let returnRequest = await queryRunner.manager.save(
-      OrderReturnRequestEntity,
-      {
-        id: request.returnRequest!.id,
-        status: OrderReturnRequestStatus.Approved,
-      },
-    );
+    await queryRunner.manager.save(RequestEntity, {
+      id: request.id,
+      managerComment: approveRequestDto.managerComment,
+    });
+
+    await queryRunner.manager.save(OrderReturnRequestEntity, {
+      id: request.returnRequest!.id,
+      status: OrderReturnRequestStatus.Approved,
+      deduction: approveRequestDto.deduction,
+    });
 
     await queryRunner.manager.save(OrderReturnDeliveryEntity, {
       id: request.returnRequest!.delivery.id,
@@ -195,7 +197,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       approveRequestDto.approvedItems.map((item) => ({
         quantity: item.quantity,
         orderItem: { id: item.orderItemId },
-        orderReturnApproved: { id: returnRequest.id },
+        orderReturnApproved: { id: request.returnRequest!.id },
       })),
     );
 
@@ -203,14 +205,14 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       OrderReturnRequestItemEntity,
       {
         where: {
-          orderReturnApproved: { id: returnRequest.id },
+          orderReturnApproved: { id: request.returnRequest!.id },
         },
         relations: ['orderItem'],
       },
     );
     const approvedItemsTotal = this.calculateTotal(approvedItems);
-    returnRequest = await queryRunner.manager.save(OrderReturnRequestEntity, {
-      id: returnRequest.id,
+    await queryRunner.manager.save(OrderReturnRequestEntity, {
+      id: request!.returnRequest!.id,
       total: approvedItemsTotal,
     });
 
@@ -349,15 +351,9 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       where: { id: requestId },
     });
 
-    const total = request
-      .returnRequest!.approvedItems.reduce((acc: Decimal, item) => {
-        return acc.add(
-          new Decimal(item.orderItem.productProperties.price).mul(
-            item.quantity,
-          ),
-        );
-      }, new Decimal(0))
-      .minus(request.returnRequest!.deduction);
+    const total = this.calculateTotal(
+      request.returnRequest!.approvedItems,
+    ).minus(request.returnRequest!.deduction);
 
     const balance = await queryRunner.manager.findOneOrFail(BalanceEntity, {
       where: { owner: { id: userId } },
@@ -369,6 +365,11 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         where: { id: request.returnRequest!.id },
       },
     );
+
+    await queryRunner.manager.save(OrderReturnRequestEntity, {
+      id: orderReturnRequest.id,
+      total,
+    });
 
     const transaction = await queryRunner.manager.save(
       PaymentTransactionEntity,

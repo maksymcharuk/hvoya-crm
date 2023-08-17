@@ -12,6 +12,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { OrderReturnRequestItemEntity } from '@shared/interfaces/entities/order-return-request.entity';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestItemUIEntity } from '@shared/interfaces/ui-entities/request-item.ui-entity';
 import { RequestsService } from '@shared/services/requests.service';
@@ -25,6 +26,7 @@ export class ReturnRequestViewComponent {
   requestNumber = this.route.snapshot.params['number'];
   request$ = new BehaviorSubject<RequestEntity | null>(null);
   showWaybillViewDialog = false;
+  requestedItems: OrderReturnRequestItemEntity[] = [];
 
   returnRequestForm = this.formBuilder.group({
     approvedItems: this.formBuilder.array<RequestItemUIEntity>([]),
@@ -54,6 +56,7 @@ export class ReturnRequestViewComponent {
       .getRequest(this.requestNumber)
       .subscribe((request: RequestEntity) => {
         this.request$.next(request);
+        this.requestedItems = request.returnRequest!.requestedItems;
         request.returnRequest!.requestedItems!.forEach((item) => {
           this.approvedItems.push(
             this.formBuilder.control(new RequestItemUIEntity(item)),
@@ -69,6 +72,23 @@ export class ReturnRequestViewComponent {
   approveReturnRequest() {
     this.managerComment.clearValidators();
     this.managerComment.updateValueAndValidity();
+
+    const requestedItemsQuantity = this.requestedItems.reduce(
+      (acc, item) => acc + item.quantity,
+      0,
+    );
+    const approvedItemsQuantity = this.approvedItems.value.reduce(
+      (acc, item) => acc + item.quantity,
+      0,
+    );
+
+    if (
+      this.returnRequestForm.value.deduction! > 0 ||
+      requestedItemsQuantity > approvedItemsQuantity
+    ) {
+      this.managerComment.setValidators([Validators.required]);
+      this.managerComment.updateValueAndValidity();
+    }
 
     if (this.returnRequestForm.invalid) {
       this.returnRequestForm.markAllAsTouched();

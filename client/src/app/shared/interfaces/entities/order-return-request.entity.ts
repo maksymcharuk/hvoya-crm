@@ -5,6 +5,7 @@ import { DeliveryStatus } from '@shared/enums/return-request-delivery-status.enu
 import { BaseEntity } from './base.entity';
 import { File } from './file.entity';
 import { Order, OrderItem } from './order.entity';
+import { RequestEntity } from './request.entity';
 import { User } from './user.entity';
 
 export class OrderReturnRequest extends BaseEntity {
@@ -16,6 +17,7 @@ export class OrderReturnRequest extends BaseEntity {
   requestedItems: OrderReturnRequestItemEntity[];
   approvedItems: OrderReturnRequestItemEntity[];
   customer: User;
+  request: RequestEntity | null;
 
   constructor(data?: OrderReturnRequest) {
     super(data);
@@ -27,6 +29,7 @@ export class OrderReturnRequest extends BaseEntity {
     this.approvedItems = data?.approvedItems || [];
     this.customer = data?.customer || new User();
     this.status = data?.status || OrderReturnRequestStatus.Pending;
+    this.request = data?.request ? new RequestEntity(data.request) : null;
   }
 }
 

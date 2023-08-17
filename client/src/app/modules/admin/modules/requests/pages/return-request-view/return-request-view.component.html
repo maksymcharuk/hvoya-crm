@@ -50,7 +50,7 @@
                       [formGroup]="returnRequestForm"
                       controlName="managerComment"
                       errorType="required"
-                      errorMessage="Потрібно ввести причину відхилення"
+                      errorMessage="Потрібно надати коментар у разі відхилення або зміни суми повернення"
                     >
                     </app-form-control-error-message>
                   </div>
@@ -73,21 +73,36 @@
             </form>
           </ng-container>
           <ng-template #productsView>
-            <app-return-request-view-item
-              *ngFor="let requestItem of request.returnRequest!.approvedItems"
-              [requestItem]="requestItem"
-            ></app-return-request-view-item>
-            <div class="p-fluid my-4">
-              <div class="p-formgrid grid">
-                <div class="field col-12 align-self-end text-right">
-                  <span class="text-xl text-900 font-bold text-3xl">Сума:</span>
-                  <span class="text-xl text-900 font-bold text-3xl ml-5">
+            <app-return-request-item-list
+              [orderReturnRequest]="request.returnRequest"
+            ></app-return-request-item-list>
+            <div class="flex justify-content-end my-4">
+              <table>
+                <tr *ngIf="request.returnRequest.deduction > 0">
+                  <td>Відрахування:</td>
+                  <td class="pl-5">
+                    {{ request.returnRequest.deduction | currency }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-xl text-900 font-bold text-3xl">Сума:</td>
+                  <td class="text-xl text-900 font-bold text-3xl pl-5">
                     {{ request.returnRequest.total | currency }}
-                  </span>
-                </div>
-              </div>
+                  </td>
+                </tr>
+              </table>
             </div>
           </ng-template>
+        </div>
+        <div *ngIf="request.managerComment" class="my-5">
+          <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Коментар менеджера</div>
+              <div class="striped-list__item-value">
+                {{ request.managerComment }}
+              </div>
+            </li>
+          </ul>
         </div>
         <div class="my-5">
           <h5>Дані дропшипера</h5>

@@ -3,16 +3,16 @@
 >
   <a
     [routerLink]="[
-      '../..',
+      '../../..',
       'products',
-      requestItem.orderItem!.product.baseProduct.id,
-      requestItem.orderItem!.product.id
+      requestedItem.orderItem.product.baseProduct.id,
+      requestedItem.orderItem.product.id
     ]"
   >
     <img
       [src]="
-        requestItem.orderItem!.productProperties.images
-          ? requestItem.orderItem!.productProperties.images[0]?.url
+        requestedItem.orderItem.productProperties.images
+          ? requestedItem.orderItem.productProperties.images[0]?.url
           : ''
       "
       class="w-4rem h-4rem flex-shrink-0 mx-auto md:mx-0"
@@ -25,27 +25,45 @@
       <div class="w-full sm:w-6 flex flex-column">
         <a
           [routerLink]="[
-            '../..',
+            '../../..',
             'products',
-            requestItem.orderItem!.product.baseProduct.id,
-            requestItem.orderItem!.product.id
+            requestedItem.orderItem.product.baseProduct.id,
+            requestedItem.orderItem.product.id
           ]"
           class="text-900 text-l font-medium mb-2"
         >
-          {{ requestItem.orderItem!.productProperties.name }}
+          {{ requestedItem.orderItem.productProperties.name }}
         </a>
-        <span class="text-600">{{ requestItem.orderItem!.product.sku }}</span>
+        <span class="text-600">{{ requestedItem.orderItem.product.sku }}</span>
       </div>
       <div
-        class="w-full sm:w-4 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
+        class="w-full sm:w-6 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
       >
-        <div class="p-fluid sm:w-6rem">К-ть: {{ requestItem.quantity }}</div>
+        <div class="p-fluid sm:w-10rem">
+          <div>Запит на: {{ requestedItem.quantity }} шт.</div>
+          <div
+            *ngIf="approvedItem"
+            [class.text-red-600]="
+              requestedItem.quantity > approvedItem.quantity
+            "
+          >
+            Підтверджено: {{ approvedItem.quantity }} шт.
+          </div>
+        </div>
         <div class="flex flex-column sm:align-items-end">
           <span class="text-900 text-xl font-medium mb-1 sm:mb-2">
-            {{
-              requestItem.orderItem!.productProperties.price *
-                requestItem.quantity! | currency
-            }}
+            <ng-container *ngIf="approvedItem; else requestedItemPrice">
+              {{
+                approvedItem.orderItem!.productProperties.price *
+                  approvedItem.quantity! | currency
+              }}
+            </ng-container>
+            <ng-template #requestedItemPrice>
+              {{
+                requestedItem.orderItem!.productProperties.price *
+                  requestedItem.quantity! | currency
+              }}
+            </ng-template>
           </span>
         </div>
       </div>
