@@ -2,7 +2,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export function cyrillic(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    let regex = /^[А-Яа-яІіЇїЄєҐґ]*$/;
+    let regex = /^[А-Яа-яІіЇїЄєҐґ\s-]*$/
     const valid = regex.test(control.value);
     return valid ? null : { cyrillic: true };
   };
