@@ -3,7 +3,7 @@ import { ValidatorConstraint, ValidatorConstraintInterface } from "class-validat
 @ValidatorConstraint({ name: 'Cyrillic' })
 export class CyrillicRule implements ValidatorConstraintInterface {
   validate(value: string) {
-    return /^[а-щА-ЩЬьЮюЯяЄєІіЇїҐґ]+$/.test(value);
+    return /^[А-Яа-яІіЇїЄєҐґ\s-]*$/.test(value);
   }
 
   defaultMessage() {
