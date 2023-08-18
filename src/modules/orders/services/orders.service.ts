@@ -103,7 +103,10 @@ export class OrdersService {
     const ability = this.caslAbilityFactory.createForUser(user);
 
     let statuses = await manager.find(OrderStatusEntity, {
-      where: { status: OrderStatus.Fulfilled },
+      where: {
+        // TODO: figure out if TransferedToDelivery is ok for refunds, or we should add new status
+        status: In([OrderStatus.Fulfilled, OrderStatus.TransferedToDelivery]),
+      },
       relations: ['order'],
     });
 
@@ -622,12 +625,14 @@ export class OrdersService {
 
     await this.updateOrderDeliveryStatus(queryRunner, order, status);
 
-    if (
-      newStatus.status === OrderStatus.Cancelled ||
-      newStatus.status === OrderStatus.Refunded
-    ) {
+    if (newStatus.status === OrderStatus.Cancelled) {
       await this.updateBalanceAndStockOnCancel(queryRunner.manager, order);
       await this.oneCApiClientService.cancel(order.id);
+      await this.oneCApiClientService.refunds({
+        userId,
+        amount: order.total.toNumber(),
+        date: new Date(),
+      });
     }
 
     return newStatus;
@@ -642,12 +647,14 @@ export class OrdersService {
       userId: userId,
       id: order.id,
       total: this.calculateTotal(order.items),
+      number: order.number!,
       status: newStatus,
       items: order.items.map((item) => ({
         sku: item.product.sku,
         quantity: item.quantity,
         price: item.productProperties.price,
       })),
+      description: order.customerNote,
       createdAt: order.createdAt,
     });
   }

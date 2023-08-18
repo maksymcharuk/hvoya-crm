@@ -241,15 +241,11 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       })),
       createdAt: request.updatedAt,
     });
-
-    // TODO: figure out if we need to send refund request to 1C in this case or return
-    // request is handling refund
-
-    // await this.oneCApiClientService.refunds({
-    //   userId,
-    //   amount: approvedItemsTotal.toNumber(),
-    //   date: request.updatedAt,
-    // });
+    await this.oneCApiClientService.refunds({
+      userId,
+      amount: approvedItemsTotal.minus(approveRequestDto.deduction).toNumber(),
+      date: request.updatedAt,
+    });
 
     return request;
   }

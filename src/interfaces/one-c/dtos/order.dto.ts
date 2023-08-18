@@ -9,7 +9,7 @@ export interface OrderDtoData {
   companyId?: string;
   userId: string;
   id: string;
-  number?: number;
+  number?: string;
   total?: Decimal;
   status?: OrderStatus;
   items: ProductData[];
@@ -32,7 +32,7 @@ export class Order {
     this.id_company = data.companyId;
     this.id_counterparty = data.userId;
     this.id_order = data.id;
-    this.order_number = data.number?.toString();
+    this.order_number = data.number;
     this.order_amount = data.total?.toNumber();
     this.order_status = getOrderStatusName(data.status);
     this.list_products = data.items.map((item) => new Product(item));

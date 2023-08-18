@@ -1,29 +1,15 @@
 import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 
-// Fulfilled order can only be changed to Cancelled or Refunded
-export const REVERTABLE_ORDER_STATUSES = [
-  OrderStatus.Cancelled,
-  OrderStatus.Refunded,
-];
+// List of rules for manual order status change
 
-// Pending, Processing, Fulfilled orders can be canceled
+// Only Pending and Processing orders can be canceled
 export const CANCELABLE_ORDER_STATUSES = [
   OrderStatus.Pending,
   OrderStatus.Processing,
-  OrderStatus.TransferedToDelivery,
-  OrderStatus.Fulfilled,
 ];
 
-// Pending, Processing, Fulfilled orders can be refunded
-export const REFUNDABLE_ORDER_STATUSES = [
-  OrderStatus.Pending,
-  OrderStatus.Processing,
-  OrderStatus.TransferedToDelivery,
-  OrderStatus.Fulfilled,
-];
-
-// Final order statuses (except Fulfilling that can't be canceled or refunded)
+// Final order statuses (except Fulfilling that can be refunded)
 export const COMPLETED_ORDER_STATUSES = [
   OrderStatus.Cancelled,
   OrderStatus.Fulfilled,
@@ -33,8 +19,12 @@ export const COMPLETED_ORDER_STATUSES = [
 // Order statuses that can't be changed manually
 export const UNCHANGEABLE_ORDER_STATUSES = [
   OrderStatus.Cancelled,
+  OrderStatus.Fulfilled,
   OrderStatus.Refunded,
 ];
+
+// Order statuses that can't be set manually
+export const UNSETTABLE_ORDER_STATUSES = [OrderStatus.Refunded];
 
 // Order statuses that require comment
 export const COMMENT_REQUIRED_ORDER_STATUSES = [
