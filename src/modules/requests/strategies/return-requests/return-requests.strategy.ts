@@ -180,6 +180,27 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       throw new BadRequestException('Не вказано жодного товару для повернення');
     }
 
+    const approvedItems = await queryRunner.manager.find(
+      OrderReturnRequestItemEntity,
+      {
+        where: {
+          orderReturnApproved: { id: request.returnRequest!.id },
+        },
+        relations: ['orderItem.productProperties', 'orderItem.product'],
+      },
+    );
+    const approvedItemsTotal = this.calculateTotal(approvedItems);
+
+    const isDecutionGreatedThanTotal = new Decimal(
+      approveRequestDto.deduction,
+    ).greaterThan(approvedItemsTotal);
+
+    if (isDecutionGreatedThanTotal) {
+      throw new BadRequestException(
+        'Сума відрахування не може бути більшою ніж загальна сума товарів для повернення',
+      );
+    }
+
     await queryRunner.manager.save(RequestEntity, {
       id: request.id,
       managerComment: approveRequestDto.managerComment,
@@ -205,16 +226,6 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       })),
     );
 
-    const approvedItems = await queryRunner.manager.find(
-      OrderReturnRequestItemEntity,
-      {
-        where: {
-          orderReturnApproved: { id: request.returnRequest!.id },
-        },
-        relations: ['orderItem.productProperties', 'orderItem.product'],
-      },
-    );
-    const approvedItemsTotal = this.calculateTotal(approvedItems);
     await queryRunner.manager.save(OrderReturnRequestEntity, {
       id: request!.returnRequest!.id,
       total: approvedItemsTotal,
