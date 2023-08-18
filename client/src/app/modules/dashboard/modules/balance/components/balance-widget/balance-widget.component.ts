@@ -40,12 +40,17 @@ export class BalanceWidgetComponent {
   navigateToEntity(transaction: PaymentTransaction) {
     // TODO: create URL builder service and move this logic there
     const path = this.currentUser?.isAnyAdmin ? '/admin' : '/dashboard';
-    let entityPath = '';
+    let entityPath: any[] = [];
     if (transaction.order) {
-      entityPath = `orders/${transaction.order.number}`;
+      entityPath = ['orders', transaction.order.number];
     } else if (transaction.orderReturnRequest) {
-      entityPath = `requests/return-requests/${transaction.orderReturnRequest.request?.number}`;
+      entityPath = [
+        'requests',
+        'return-requests',
+        transaction.orderReturnRequest.request?.number,
+      ];
     }
-    this.router.navigate([path, entityPath]);
+
+    this.router.navigate([path, ...entityPath]);
   }
 }

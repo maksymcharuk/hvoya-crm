@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js';
-import { QueryRunner } from 'typeorm';
+import { In, QueryRunner } from 'typeorm';
 
 import {
   BadRequestException,
@@ -18,6 +18,7 @@ import { OrderReturnRequestItemEntity } from '@entities/order-return-request-ite
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
+import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
@@ -225,22 +226,30 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       request.id,
     );
 
+    await this.updateProductsStockOnReturn(queryRunner, request.id);
+
+    const perItemDeduction = new Decimal(approveRequestDto.deduction).div(
+      approvedItems.length,
+    );
     await this.oneCApiClientService.return({
       userId,
       orderId: request.returnRequest!.order.id,
       items: approvedItems.map((item) => ({
         sku: item.orderItem.product.sku,
         quantity: item.quantity,
-        price: item.orderItem.productProperties.price,
+        price: item.orderItem.productProperties.price.minus(perItemDeduction),
       })),
       createdAt: request.updatedAt,
     });
 
-    await this.oneCApiClientService.refunds({
-      userId,
-      amount: approvedItemsTotal.toNumber(),
-      date: request.updatedAt,
-    });
+    // TODO: figure out if we need to send refund request to 1C in this case or return
+    // request is handling refund
+
+    // await this.oneCApiClientService.refunds({
+    //   userId,
+    //   amount: approvedItemsTotal.toNumber(),
+    //   date: request.updatedAt,
+    // });
 
     return request;
   }
@@ -406,5 +415,38 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       amount: balance.amount.plus(total),
       paymentTransactions: [...balance.paymentTransactions, transaction],
     });
+  }
+
+  private async updateProductsStockOnReturn(
+    queryRunner: QueryRunner,
+    requestId: string,
+  ) {
+    const request = await queryRunner.manager.findOneOrFail(RequestEntity, {
+      relations: ['customer', 'returnRequest.approvedItems.orderItem'],
+      where: { id: requestId },
+    });
+
+    const approvedItemsIds = request.returnRequest!.approvedItems.map(
+      (item) => item.orderItem.product.id,
+    );
+
+    const productsToUpdate = await queryRunner.manager.find(
+      ProductVariantEntity,
+      {
+        where: { id: In(approvedItemsIds) },
+      },
+    );
+
+    productsToUpdate.forEach((product) => {
+      const approvedItem = request.returnRequest!.approvedItems.find(
+        (item) => item.orderItem.product.id === product.id,
+      );
+
+      if (approvedItem) {
+        product.stock += approvedItem.quantity;
+      }
+    });
+
+    await queryRunner.manager.save(ProductVariantEntity, productsToUpdate);
   }
 }

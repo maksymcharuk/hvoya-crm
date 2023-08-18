@@ -16,7 +16,7 @@ export class NotificationListenerService {
     private usersService: UsersService,
     private notificationService: NotificationService,
     private caslAbilityFactory: CaslAbilityFactory,
-  ) { }
+  ) {}
 
   @OnEvent(NotificationEvent.UserCreated)
   async handleUserCreatedEvent(payload: NotificationCreatedEvent) {
@@ -67,9 +67,6 @@ export class NotificationListenerService {
         ...payload,
         data: payload.data && sanitizeEntity(ability, payload.data),
       });
-
-      console.log(payload.data, 'payload.data');
-      console.log(sanitizeEntity(ability, payload.data!), 'sanitizeEntity(ability, payload.data)');
     });
   }
 

@@ -50,10 +50,6 @@ export class RequestContext {
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
-    console.log(
-      `Context: Delegating request creation to the strategy: ${this.strategy.constructor.name}}`,
-    );
-
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
@@ -79,10 +75,6 @@ export class RequestContext {
     approveRequestDto: ApproveReturnRequestDto,
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
-
-    console.log(
-      `Context: Delegating request creation to the strategy: ${this.strategy.constructor.name}}`,
-    );
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -110,10 +102,6 @@ export class RequestContext {
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
-    console.log(
-      `Context: Delegating request creation to the strategy: ${this.strategy.constructor.name}}`,
-    );
-
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
@@ -140,10 +128,6 @@ export class RequestContext {
     waybill?: Express.Multer.File,
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
-
-    console.log(
-      `Context: Delegating request creation to the strategy: ${this.strategy.constructor.name}}`,
-    );
 
     await queryRunner.connect();
     await queryRunner.startTransaction();

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { DeliveryStatus } from '@shared/enums/return-request-delivery-status.enum';
 
@@ -9,6 +9,7 @@ import { DeliveryStatus } from '@shared/enums/return-request-delivery-status.enu
   host: {
     class: 'inline-flex',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReturnRequestDeliveryStatusBadgeComponent {
   @Input() status!: DeliveryStatus;

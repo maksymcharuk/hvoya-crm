@@ -77,7 +77,6 @@ export class TransactionsListComponent implements OnDestroy {
         transaction.orderReturnRequest.request?.number,
       ];
     }
-    console.log(transaction);
 
     this.router.navigate([path, ...entityPath]);
   }

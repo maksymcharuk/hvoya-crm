@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 
@@ -6,6 +6,7 @@ import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-sta
   selector: 'app-request-status-badge',
   templateUrl: './request-status-badge.component.html',
   styleUrls: ['./request-status-badge.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestStatusBadgeComponent {
   @Input() status!: OrderReturnRequestStatus;

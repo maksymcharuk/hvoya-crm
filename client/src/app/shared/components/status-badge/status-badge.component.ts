@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 type StatusBadgeStyle = 'default' | 'accent' | 'success' | 'danger' | 'warn';
 
@@ -9,6 +9,7 @@ type StatusBadgeStyle = 'default' | 'accent' | 'success' | 'danger' | 'warn';
   host: {
     class: 'inline-flex',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusBadgeComponent {
   @Input() text!: string;

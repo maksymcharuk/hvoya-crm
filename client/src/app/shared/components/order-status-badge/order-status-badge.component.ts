@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { OrderStatus } from '@shared/enums/order-status.enum';
 
@@ -9,6 +9,7 @@ import { OrderStatus } from '@shared/enums/order-status.enum';
   host: {
     class: 'inline-flex',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderStatusBadgeComponent {
   @Input() status!: OrderStatus;

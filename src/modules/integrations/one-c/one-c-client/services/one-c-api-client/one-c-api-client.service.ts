@@ -46,7 +46,7 @@ export class OneCApiClientService {
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
 
   counterparty(data: CounterpartyDtoData): Promise<void> {
     const requestData: CounterpartyDto = [new Counterparty(data)];

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { DeliveryStatus } from '@shared/enums/delivery-status.enum';
 
@@ -9,12 +9,12 @@ import { DeliveryStatus } from '@shared/enums/delivery-status.enum';
   host: {
     class: 'inline-flex',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderDeliveryStatusBadgeComponent {
   @Input() status!: DeliveryStatus;
 
   get style() {
-    console.log(this.status);
     switch (this.status) {
       case DeliveryStatus.Unspecified:
       case DeliveryStatus.Pending:

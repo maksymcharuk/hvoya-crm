@@ -1,7 +1,8 @@
 <div class="card">
-  <div class="grid">
-    <div class="col-12">
-      <p-dropdown [options]="requestTypes" [(ngModel)]="selectedType">
+  <div class="p-fluid p-formgrid grid">
+    <div class="field col-12">
+      <label for="type">Тип запиту:</label>
+      <p-dropdown id="type" [options]="requestTypes" [(ngModel)]="selectedType">
         <ng-template pTemplate="selectedItem">
           {{ selectedType | requestType }}
         </ng-template>
@@ -10,6 +11,8 @@
         </ng-template>
       </p-dropdown>
     </div>
+  </div>
+  <div class="grid">
     <div class="col-12">
       <div [ngSwitch]="selectedType">
         <app-return-request-create *ngSwitchCase="requestType.Return">
