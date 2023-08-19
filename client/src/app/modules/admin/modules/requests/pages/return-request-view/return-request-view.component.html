@@ -24,9 +24,19 @@
                     <p-inputNumber
                       mode="decimal"
                       formControlName="deduction"
-                      [max]="request.returnRequest.total"
+                      currency="UAH"
+                      mode="currency"
+                      locale="uk-UA"
                       [min]="0"
+                      [allowEmpty]="false"
                     ></p-inputNumber>
+                    <app-form-control-error-message
+                      [formGroup]="returnRequestForm"
+                      controlName="deduction"
+                      errorType="deductionMax"
+                      errorMessage="Сума відрахування не може перевищувати суму повернення"
+                    >
+                    </app-form-control-error-message>
                   </div>
                   <div
                     class="field col-6 align-self-end flex justify-content-end"

@@ -8,6 +8,7 @@ import {
   FormArray,
   FormBuilder,
   FormControl,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -29,11 +30,14 @@ export class ReturnRequestViewComponent implements OnInit {
   showWaybillViewDialog = false;
   requestedItems: OrderReturnRequestItemEntity[] = [];
 
-  returnRequestForm = this.formBuilder.group({
-    approvedItems: this.formBuilder.array<RequestItemUIEntity>([]),
-    managerComment: '',
-    deduction: 0,
-  });
+  returnRequestForm = this.formBuilder.group(
+    {
+      approvedItems: this.formBuilder.array<RequestItemUIEntity>([]),
+      managerComment: '',
+      deduction: 0,
+    },
+    { validators: this.deductionMax },
+  );
 
   get managerComment(): AbstractControl {
     return this.returnRequestForm.get('managerComment')!;
@@ -73,15 +77,11 @@ export class ReturnRequestViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.returnRequestForm.valueChanges.subscribe((value) => {
-      console.log(value);
-
       const approvedItemsTotal = value.approvedItems!.reduce(
         (acc, item) =>
           acc + item!.quantity * item!.orderItem.productProperties.price,
         0,
       );
-      console.log(approvedItemsTotal);
-      console.log(value.deduction!);
 
       this.total$.next(approvedItemsTotal - value.deduction!);
     });
@@ -161,5 +161,27 @@ export class ReturnRequestViewComponent implements OnInit {
           detail: 'Запит успішно відхилено',
         });
       });
+  }
+
+  deductionMax(control: AbstractControl): ValidationErrors | null {
+    const deduction: number = control.get('deduction')?.value;
+    const approvedItems: OrderReturnRequestItemEntity[] =
+      control.get('approvedItems')?.value;
+
+    if (!deduction) {
+      return null;
+    }
+
+    const approvedItemsTotal = approvedItems.reduce(
+      (acc: number, item: OrderReturnRequestItemEntity) =>
+        acc + item!.quantity * item!.orderItem.productProperties.price,
+      0,
+    );
+
+    if (deduction > approvedItemsTotal) {
+      control.get('deduction')?.setErrors({ deductionMax: true });
+    }
+
+    return null;
   }
 }
