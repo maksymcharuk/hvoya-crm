@@ -7,6 +7,7 @@ export const orderStatusToNameMap = new Map<OrderStatus, string>([
   [OrderStatus.Fulfilled, 'Виконано'],
   [OrderStatus.Cancelled, 'Скасовано'],
   [OrderStatus.Refunded, 'Повернуто'],
+  [OrderStatus.Refused, 'Відмова'],
 ]);
 
 export const getOrderStatusName = (status: OrderStatus | undefined) => {

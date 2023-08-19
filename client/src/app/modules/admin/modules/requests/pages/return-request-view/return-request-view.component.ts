@@ -2,7 +2,7 @@ import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { BehaviorSubject } from 'rxjs';
 
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -22,9 +22,10 @@ import { RequestsService } from '@shared/services/requests.service';
   templateUrl: './return-request-view.component.html',
   styleUrls: ['./return-request-view.component.scss'],
 })
-export class ReturnRequestViewComponent {
+export class ReturnRequestViewComponent implements OnInit {
   requestNumber = this.route.snapshot.params['number'];
   request$ = new BehaviorSubject<RequestEntity | null>(null);
+  total$ = new BehaviorSubject<number>(0);
   showWaybillViewDialog = false;
   requestedItems: OrderReturnRequestItemEntity[] = [];
 
@@ -36,6 +37,10 @@ export class ReturnRequestViewComponent {
 
   get managerComment(): AbstractControl {
     return this.returnRequestForm.get('managerComment')!;
+  }
+
+  get deduction(): AbstractControl {
+    return this.returnRequestForm.get('deduction')!;
   }
 
   get approvedItems(): FormArray<FormControl> {
@@ -56,6 +61,7 @@ export class ReturnRequestViewComponent {
       .getRequest(this.requestNumber)
       .subscribe((request: RequestEntity) => {
         this.request$.next(request);
+        this.total$.next(request.returnRequest!.total);
         this.requestedItems = request.returnRequest!.requestedItems;
         request.returnRequest!.requestedItems!.forEach((item) => {
           this.approvedItems.push(
@@ -63,6 +69,22 @@ export class ReturnRequestViewComponent {
           );
         });
       });
+  }
+
+  ngOnInit(): void {
+    this.returnRequestForm.valueChanges.subscribe((value) => {
+      console.log(value);
+
+      const approvedItemsTotal = value.approvedItems!.reduce(
+        (acc, item) =>
+          acc + item!.quantity * item!.orderItem.productProperties.price,
+        0,
+      );
+      console.log(approvedItemsTotal);
+      console.log(value.deduction!);
+
+      this.total$.next(approvedItemsTotal - value.deduction!);
+    });
   }
 
   showWaybillViewDialogHandler() {

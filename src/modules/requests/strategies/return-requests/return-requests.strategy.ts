@@ -13,6 +13,7 @@ import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
 import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
+import { OrderItemEntity } from '@entities/order-item.entity';
 import { OrderReturnDeliveryEntity } from '@entities/order-return-delivery.entity';
 import { OrderReturnRequestItemEntity } from '@entities/order-return-request-item.entity';
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
@@ -180,15 +181,22 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       throw new BadRequestException('Не вказано жодного товару для повернення');
     }
 
-    const approvedItems = await queryRunner.manager.find(
-      OrderReturnRequestItemEntity,
-      {
-        where: {
-          orderReturnApproved: { id: request.returnRequest!.id },
-        },
-        relations: ['orderItem.productProperties', 'orderItem.product'],
+    const approvedOrderItems = await queryRunner.manager.find(OrderItemEntity, {
+      where: {
+        id: In(approveRequestDto.approvedItems.map((item) => item.orderItemId)),
       },
-    );
+    });
+    const approvedItems =
+      await queryRunner.manager.create<OrderReturnRequestItemEntity>(
+        OrderReturnRequestItemEntity,
+        approvedOrderItems.map((item) => ({
+          orderItem: item,
+          quantity: approveRequestDto.approvedItems.find(
+            (i) => i.orderItemId === item.id,
+          )!.quantity,
+        })),
+      );
+
     const approvedItemsTotal = this.calculateTotal(approvedItems);
 
     const isDecutionGreatedThanTotal = new Decimal(

@@ -28,13 +28,23 @@
                       [min]="0"
                     ></p-inputNumber>
                   </div>
-                  <div class="field col-6 align-self-end text-right">
-                    <span class="text-xl text-900 font-bold text-3xl"
-                      >Сума:</span
-                    >
-                    <span class="text-xl text-900 font-bold text-3xl ml-5">
-                      {{ request.returnRequest.total | currency }}
-                    </span>
+                  <div
+                    class="field col-6 align-self-end flex justify-content-end"
+                  >
+                    <table>
+                      <tr *ngIf="deduction.value > 0">
+                        <td>Відрахування:</td>
+                        <td class="pl-5">-{{ deduction.value | currency }}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-xl text-900 font-bold text-3xl">
+                          Сума:
+                        </td>
+                        <td class="text-xl text-900 font-bold text-3xl pl-5">
+                          {{ total$ | async | currency }}
+                        </td>
+                      </tr>
+                    </table>
                   </div>
                   <div class="field col-12">
                     <label for="managerComment">Коментар:</label>

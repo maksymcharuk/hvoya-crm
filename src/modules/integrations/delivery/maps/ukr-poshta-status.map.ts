@@ -22,7 +22,7 @@ export const UkrPoshtaStatusMap: { [key in DeliveryStatus]: string[] } = {
   ],
   [DeliveryStatus.Received]: ['вручено'],
   [DeliveryStatus.Returned]: ['поверн'],
-  [DeliveryStatus.Declined]: ['відмовлено', 'скасовано'],
+  [DeliveryStatus.Declined]: ['відмовлено', 'скасовано', 'відмова'],
   [DeliveryStatus.Unspecified]: [],
   [DeliveryStatus.Pending]: [],
 };

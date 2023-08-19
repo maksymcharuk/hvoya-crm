@@ -13,10 +13,7 @@ import {
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import {
-  COMPLETED_ORDER_STATUSES,
-  ORDER_STATUSES_TO_DELIERY_STATUSES,
-} from '@constants/order.constants';
+import { ORDER_STATUSES_TO_DELIERY_STATUSES } from '@constants/order.constants';
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
@@ -31,7 +28,6 @@ import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
-import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
@@ -105,7 +101,7 @@ export class OrdersService {
     let statuses = await manager.find(OrderStatusEntity, {
       where: {
         // TODO: figure out if TransferedToDelivery is ok for refunds, or we should add new status
-        status: In([OrderStatus.Fulfilled, OrderStatus.TransferedToDelivery]),
+        status: In([OrderStatus.Fulfilled, OrderStatus.Refused]),
       },
       relations: ['order'],
     });
@@ -471,14 +467,14 @@ export class OrdersService {
     order: OrderEntity,
     status: OrderStatus,
   ) {
-    if (!COMPLETED_ORDER_STATUSES.includes(status)) {
+    const deliveryStatus = ORDER_STATUSES_TO_DELIERY_STATUSES.get(status);
+
+    if (!deliveryStatus) {
       return;
     }
 
     await queryRunner.manager.update(OrderDeliveryEntity, order.delivery.id, {
-      status:
-        ORDER_STATUSES_TO_DELIERY_STATUSES.get(status) ||
-        DeliveryStatus.Unspecified,
+      status: deliveryStatus,
     });
   }
 

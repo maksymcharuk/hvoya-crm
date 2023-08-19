@@ -7,7 +7,7 @@ import {
   PureAbility,
 } from '@casl/ability';
 
-import { COMPLETED_ORDER_STATUSES } from '@shared/constants/order.constants';
+import { UNUPDATABLE_ORDER_STATUSES } from '@shared/constants/order.constants';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Role } from '@shared/enums/role.enum';
@@ -68,7 +68,7 @@ export class PoliciesService {
           'update',
           Order,
           (order: Order) =>
-            !COMPLETED_ORDER_STATUSES.includes(order.currentStatus.status),
+            !UNUPDATABLE_ORDER_STATUSES.includes(order.currentStatus.status),
         );
         can(
           ['approve', 'update'],
@@ -86,7 +86,7 @@ export class PoliciesService {
           'update',
           Order,
           (order: Order) =>
-            !COMPLETED_ORDER_STATUSES.includes(order.currentStatus.status),
+            !UNUPDATABLE_ORDER_STATUSES.includes(order.currentStatus.status),
         );
         can(
           ['approve', 'update'],

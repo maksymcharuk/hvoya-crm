@@ -9,18 +9,12 @@ export const CANCELABLE_ORDER_STATUSES = [
   OrderStatus.Processing,
 ];
 
-// Final order statuses (except Fulfilling that can be refunded)
-export const COMPLETED_ORDER_STATUSES = [
-  OrderStatus.Cancelled,
-  OrderStatus.Fulfilled,
-  OrderStatus.Refunded,
-];
-
 // Order statuses that can't be changed manually
 export const UNCHANGEABLE_ORDER_STATUSES = [
-  OrderStatus.Cancelled,
   OrderStatus.Fulfilled,
+  OrderStatus.Cancelled,
   OrderStatus.Refunded,
+  OrderStatus.Refused,
 ];
 
 // Order statuses that can't be set manually
@@ -28,16 +22,18 @@ export const UNSETTABLE_ORDER_STATUSES = [OrderStatus.Refunded];
 
 // Order statuses that require comment
 export const COMMENT_REQUIRED_ORDER_STATUSES = [
-  OrderStatus.Cancelled,
-  OrderStatus.Fulfilled,
-  OrderStatus.Refunded,
   OrderStatus.TransferedToDelivery,
+  OrderStatus.Fulfilled,
+  OrderStatus.Cancelled,
+  OrderStatus.Refunded,
+  OrderStatus.Refused,
 ];
 
 export const ORDER_STATUSES_TO_DELIERY_STATUSES = new Map<
   OrderStatus,
   DeliveryStatus
 >([
+  [OrderStatus.Refused, DeliveryStatus.Declined],
   [OrderStatus.Cancelled, DeliveryStatus.Declined],
   [OrderStatus.Fulfilled, DeliveryStatus.Received],
   [OrderStatus.Refunded, DeliveryStatus.Returned],

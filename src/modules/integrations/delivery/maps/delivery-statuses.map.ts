@@ -6,9 +6,8 @@ export const DeliveryStatusesToOrderStatuses = new Map<
   DeliveryStatus[],
   OrderStatus
 >([
-  // TODO: Figure out what order status to set for these delivery statuses, add new "rejected" status?
-  // [[DeliveryStatus.Declined], OrderStatus.Cancelled],
-  // [[DeliveryStatus.Returned], OrderStatus.Refunded],
+  [[DeliveryStatus.Returned], OrderStatus.Refused],
+  [[DeliveryStatus.Declined], OrderStatus.Refused],
   [[DeliveryStatus.Received], OrderStatus.Fulfilled],
   [
     [DeliveryStatus.Accepted, DeliveryStatus.InTransit, DeliveryStatus.Arrived],

@@ -14,7 +14,7 @@ import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import {
-  STATUS_RESTRICTED_ORDER_STATUSES,
+  COMMENT_REQUIRED_ORDER_STATUSES,
   WAYBILL_ACCEPTABLE_FILE_FORMATS,
 } from '@shared/constants/order.constants';
 import { OrderStatus } from '@shared/enums/order-status.enum';
@@ -124,7 +124,7 @@ export class OrderViewComponent implements OnDestroy {
     });
 
     this.orderStatusControl.valueChanges.subscribe((value) => {
-      if (STATUS_RESTRICTED_ORDER_STATUSES.includes(value)) {
+      if (COMMENT_REQUIRED_ORDER_STATUSES.includes(value)) {
         this.orderStatusCommentControl.setValidators(Validators.required);
         this.orderStatusCommentControl.updateValueAndValidity();
       } else {
