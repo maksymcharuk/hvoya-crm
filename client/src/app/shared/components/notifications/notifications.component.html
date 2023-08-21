@@ -211,8 +211,10 @@
               </ng-container> </ng-container
             ><ng-container
               *ngSwitchCase="
-                notificationType.RequestApproved ||
-                notificationType.RequestRejected
+                notification.type === notificationType.RequestApproved ||
+                notification.type === notificationType.RequestRejected
+                  ? notification.type
+                  : ''
               "
             >
               <ng-container
