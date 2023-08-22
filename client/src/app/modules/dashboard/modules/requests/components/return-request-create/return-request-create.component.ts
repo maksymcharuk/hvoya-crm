@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { BehaviorSubject, finalize } from 'rxjs';
+import { finalize } from 'rxjs';
 
 import { Component } from '@angular/core';
 import {
@@ -11,10 +11,12 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
+import {
+  IMAGE_ACCEPTABLE_FILE_FORMATS,
+  WAYBILL_ACCEPTABLE_FILE_FORMATS,
+} from '@shared/constants/order.constants';
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { RequestType } from '@shared/enums/request-type.enum';
-import { CreateReturnRequestFormGroup } from '@shared/interfaces/dto/create-return-request.dto';
 import { Order, OrderItem } from '@shared/interfaces/entities/order.entity';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestItemUIEntity } from '@shared/interfaces/ui-entities/request-item.ui-entity';
@@ -29,34 +31,38 @@ import { alphanumeric } from '@shared/validators/alphanumeric.validator';
   styleUrls: ['./return-request-create.component.scss'],
 })
 export class ReturnRequestCreateComponent {
-  waybillSubmitting$ = new BehaviorSubject<boolean>(false);
-
   deliveryServices = Object.keys(DeliveryService);
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
+  imageFormats = IMAGE_ACCEPTABLE_FILE_FORMATS;
   orderSelected = false;
   submitting = false;
   selectedOrder!: Order;
 
-  returnRequestForm = this.formBuilder.group({
+  returnRequestForm = this.formBuilder.nonNullable.group({
     trackingId: [
       '',
       [Validators.required, alphanumeric({ allowSpaces: true })],
     ],
-    waybill: ['', Validators.required],
+    waybill: [null, Validators.required],
+    customerImages: this.formBuilder.nonNullable.array<File>([]),
     deliveryService: [this.deliveryServices[0], Validators.required],
-    requestedItems: this.formBuilder.array([]),
+    requestedItems: this.formBuilder.nonNullable.array([]),
     customerComment: ['', Validators.required],
     requestType: [RequestType.Return],
-  }) as CreateReturnRequestFormGroup;
+  });
 
   get requestedItems() {
-    return this.returnRequestForm.controls[
-      'requestedItems'
-    ] as FormArray<FormControl>;
+    return this.returnRequestForm.get(
+      'requestedItems',
+    ) as FormArray<FormControl>;
   }
 
   get waybillControl(): AbstractControl {
-    return this.returnRequestForm.controls.waybill;
+    return this.returnRequestForm.get('waybill')!;
+  }
+
+  get customerImagesControl(): FormArray<FormControl<File>> {
+    return this.returnRequestForm.controls.customerImages;
   }
 
   orders: Order[] = [];
@@ -93,12 +99,16 @@ export class ReturnRequestCreateComponent {
         orderNumber: this.selectedOrder.number,
       },
       waybill: value.waybill,
+      customerImages: value.customerImages,
     };
 
     formData.append('customerComment', value.customerComment);
     formData.append('requestType', value.requestType);
     formData.append('returnRequest', JSON.stringify(value.returnRequest));
     formData.append('waybill', value.waybill);
+    value.customerImages.forEach((image: File) => {
+      formData.append('images', image);
+    });
 
     this.requestsService
       .createRequest(formData)
@@ -139,7 +149,22 @@ export class ReturnRequestCreateComponent {
     }
   }
 
-  onFileUpload(event: any) {
+  onWaybillUpload(event: any) {
     this.waybillControl.patchValue(event.files[0]);
+  }
+
+  onCustomerImagesUpload(files: File[]) {
+    this.customerImagesControl.controls = files.map((file) =>
+      this.formBuilder.nonNullable.control(file),
+    );
+    this.customerImagesControl.updateValueAndValidity();
+  }
+
+  onCustomerImageRemove(file: File) {
+    this.customerImagesControl.controls =
+      this.customerImagesControl.controls.filter(
+        (control) => control.value !== file,
+      );
+    this.customerImagesControl.updateValueAndValidity();
   }
 }

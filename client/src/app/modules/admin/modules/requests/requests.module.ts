@@ -1,6 +1,8 @@
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ImageModule } from 'primeng/image';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -31,6 +33,8 @@ import { RequestsRoutingModule } from './requests-routing.module';
     SkeletonModule,
     AbilityModule,
     InputTextareaModule,
+    ImageModule,
+    FileUploadModule,
   ],
 })
 export class RequestsModule {}

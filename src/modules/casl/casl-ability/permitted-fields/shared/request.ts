@@ -7,4 +7,6 @@ export const SHARED_REQUEST_READ_FIELDS = [
   'returnRequest',
   'customer',
   'createdAt',
+  'customerImages',
+  'managerImages',
 ];

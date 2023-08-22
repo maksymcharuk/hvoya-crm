@@ -71,6 +71,7 @@ export class RequestsService {
         'returnRequest.approvedItems.orderItem.product.baseProduct',
         'returnRequest.order',
         'returnRequest.delivery',
+        'customerImages',
         'customer',
       ],
       where: { number: number },
@@ -78,7 +79,7 @@ export class RequestsService {
 
     if (ability.cannot(Action.Read, request)) {
       throw new HttpException(
-        'У вас немає прав для перегляду цього замовлення',
+        'У вас немає прав для перегляду цього запиту',
         HttpStatus.FORBIDDEN,
       );
     }
@@ -90,6 +91,7 @@ export class RequestsService {
     userId: string,
     createRequestDto: CreateRequestDto,
     waybill?: Express.Multer.File,
+    customerImages?: Express.Multer.File[],
   ): Promise<RequestEntity> {
     switch (createRequestDto.requestType) {
       case RequestType.Return:
@@ -103,6 +105,7 @@ export class RequestsService {
       userId,
       createRequestDto,
       waybill,
+      customerImages,
     );
 
     const request = await this.getRequest(userId, r.number!);
@@ -119,6 +122,7 @@ export class RequestsService {
     userId: string,
     requestNumber: string,
     approveRequestDto: ApproveReturnRequestDto,
+    managerImages?: Express.Multer.File[],
   ): Promise<RequestEntity> {
     let r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
       where: { number: requestNumber },
@@ -136,6 +140,7 @@ export class RequestsService {
       userId,
       requestNumber,
       approveRequestDto,
+      managerImages,
     );
 
     const request = await this.getRequest(userId, r.number!);
@@ -153,6 +158,7 @@ export class RequestsService {
     userId: string,
     requestNumber: string,
     rejectRequestDto: RejectReturnRequestDto,
+    managerImages?: Express.Multer.File[],
   ): Promise<RequestEntity> {
     let r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
       where: { number: requestNumber },
@@ -170,6 +176,7 @@ export class RequestsService {
       userId,
       requestNumber,
       rejectRequestDto,
+      managerImages,
     );
 
     const request = await this.getRequest(userId, r.number!);

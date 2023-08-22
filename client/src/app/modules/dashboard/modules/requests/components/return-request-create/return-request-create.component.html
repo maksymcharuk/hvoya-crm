@@ -27,7 +27,7 @@
       </ng-container>
     </ng-container>
     <ng-container *ngIf="orderSelected">
-      <div class="field col-12">
+      <div class="field col-6">
         <label for="customerComment">Причина повернення:</label>
         <textarea
           rows="5"
@@ -42,6 +42,20 @@
           errorType="required"
           errorMessage="Це є обов'язковим полем"
         ></app-form-control-error-message>
+      </div>
+      <div class="field col-6">
+        <label for="customerImages">Зображення:</label>
+        <p-fileUpload
+          [accept]="imageFormats"
+          [customUpload]="true"
+          [auto]="true"
+          [maxFileSize]="1000000"
+          [disabled]="submitting"
+          [multiple]="true"
+          (uploadHandler)="onCustomerImagesUpload($event.files)"
+          (onRemove)="onCustomerImageRemove($event.file)"
+        >
+        </p-fileUpload>
       </div>
       <div class="field col-12">
         <label for="delivery-service">Служба доставки:</label>
@@ -93,14 +107,12 @@
       <div class="field col-12 md:col-6">
         <label for="tracking-id">Файл маркування:</label>
         <p-fileUpload
-          #waybillUpload
-          data-cy="order-waybill-upload"
           [accept]="fileFormats"
           [customUpload]="true"
           [auto]="true"
           [maxFileSize]="1000000"
-          [disabled]="(waybillSubmitting$ | async)!"
-          (uploadHandler)="onFileUpload($event)"
+          [disabled]="submitting"
+          (uploadHandler)="onWaybillUpload($event)"
         >
         </p-fileUpload>
         <app-form-control-error-message

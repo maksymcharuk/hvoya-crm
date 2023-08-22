@@ -3,6 +3,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
+import { ImageModule } from 'primeng/image';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -44,6 +45,7 @@ import { RequestsRoutingModule } from './requests-routing.module';
     InputTextareaModule,
     NgxDocViewerModule,
     DialogModule,
+    ImageModule,
   ],
 })
 export class RequestsModule {}

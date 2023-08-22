@@ -1,7 +1,16 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 
 import { RequestType } from '../enums/request-type.enum';
 import { BaseEntity } from './base.entity';
+import { FileEntity } from './file.entity';
 import { OrderReturnRequestEntity } from './order-return-request.entity';
 import { UserEntity } from './user.entity';
 
@@ -36,4 +45,16 @@ export class RequestEntity extends BaseEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.requests)
   customer: UserEntity;
+
+  @ManyToMany(() => FileEntity, {
+    eager: true,
+  })
+  @JoinTable()
+  customerImages: FileEntity[];
+
+  @ManyToMany(() => FileEntity, {
+    eager: true,
+  })
+  @JoinTable()
+  managerImages: FileEntity[];
 }

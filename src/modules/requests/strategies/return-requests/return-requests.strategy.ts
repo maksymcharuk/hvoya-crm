@@ -46,6 +46,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     userId: string,
     createRequestDto: CreateRequestDto,
     waybillScan?: Express.Multer.File,
+    customerImages?: Express.Multer.File[],
   ): Promise<RequestEntity> {
     let waybillFile!: FileEntity;
     try {
@@ -60,7 +61,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
 
       if (isRequestExists) {
         throw new BadRequestException(
-          'Замовлення з таким номером вже має заявку на повернення',
+          'Замовлення з таким номером вже має запит на повернення',
         );
       }
 
@@ -74,6 +75,15 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         {
           folder: Folder.ReturnRequestFiles,
         },
+      );
+
+      customerImages = customerImages || [];
+      const customerImagesFiles = await Promise.all(
+        customerImages.map((image) =>
+          this.filesService.uploadFile(queryRunner, image, {
+            folder: Folder.ReturnRequestImages,
+          }),
+        ),
       );
 
       const requestDelivery = await queryRunner.manager.save(
@@ -132,6 +142,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         customerComment: createRequestDto.customerComment,
         requestType: createRequestDto.requestType,
         requestId: resultRequest.id,
+        customerImages: customerImagesFiles,
       });
     } catch (error) {
       if (waybillFile) {
@@ -146,6 +157,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     userId: string,
     requestNumber: string,
     approveRequestDto: ApproveReturnRequestDto,
+    managerImages: Express.Multer.File[],
   ): Promise<RequestEntity> {
     let request: RequestEntity;
     const user = await queryRunner.manager.findOneOrFail(UserEntity, {
@@ -169,7 +181,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       ability.cannot(Action.Approve, request.returnRequest!)
     ) {
       throw new ForbiddenException(
-        'У вас немає прав для оновлення цієї заявки або заявка вже була закрита',
+        'У вас немає прав для оновлення цього запиту або запит вже був закритий',
       );
     }
 
@@ -209,9 +221,19 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       );
     }
 
+    managerImages = managerImages || [];
+    const managerImagesFiles = await Promise.all(
+      managerImages.map((image) =>
+        this.filesService.uploadFile(queryRunner, image, {
+          folder: Folder.ReturnRequestImages,
+        }),
+      ),
+    );
+
     await queryRunner.manager.save(RequestEntity, {
       id: request.id,
       managerComment: approveRequestDto.managerComment,
+      managerImages: managerImagesFiles,
     });
 
     await queryRunner.manager.save(OrderReturnRequestEntity, {
@@ -274,6 +296,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     userId: string,
     requestNumber: string,
     rejectRequestDto: RejectReturnRequestDto,
+    managerImages: Express.Multer.File[],
   ): Promise<RequestEntity> {
     let request: RequestEntity;
     const user = await queryRunner.manager.findOneOrFail(UserEntity, {
@@ -296,13 +319,23 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       ability.cannot(Action.Decline, request.returnRequest!)
     ) {
       throw new ForbiddenException(
-        'У вас немає прав для оновлення цієї заявки або заявка вже була закрита',
+        'У вас немає прав для оновлення цього запиту або запит вже був закритий',
       );
     }
+
+    managerImages = managerImages || [];
+    const managerImagesFiles = await Promise.all(
+      managerImages.map((image) =>
+        this.filesService.uploadFile(queryRunner, image, {
+          folder: Folder.ReturnRequestImages,
+        }),
+      ),
+    );
 
     await queryRunner.manager.save(RequestEntity, {
       id: request.id,
       managerComment: rejectRequestDto.managerComment,
+      managerImages: managerImagesFiles,
     });
 
     await queryRunner.manager.save(OrderReturnRequestEntity, {
@@ -344,7 +377,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         ability.cannot(Action.Update, request.returnRequest!)
       ) {
         throw new ForbiddenException(
-          'У вас немає прав для оновлення цієї заявки або заявка вже закрита',
+          'У вас немає прав для оновлення цього запиту або запит вже був закритий',
         );
       }
 

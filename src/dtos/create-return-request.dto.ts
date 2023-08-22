@@ -9,6 +9,11 @@ export class OrderReturnRequestItemDto {
 
   @IsNotEmpty({ message: 'Необхідно вказати замовлення' })
   orderItemId: string;
+
+  constructor(data: OrderReturnRequestItemDto) {
+    this.quantity = data.quantity;
+    this.orderItemId = data.orderItemId;
+  }
 }
 
 export class CreateReturnRequestDto {

@@ -27,7 +27,7 @@ export class RequestStatusBadgeComponent {
   get text() {
     switch (this.status) {
       case OrderReturnRequestStatus.Pending:
-        return 'Нове';
+        return 'Новий';
       case OrderReturnRequestStatus.Approved:
         return 'Підтверджено';
       case OrderReturnRequestStatus.Declined:

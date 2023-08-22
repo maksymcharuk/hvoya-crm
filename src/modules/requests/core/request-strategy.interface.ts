@@ -19,6 +19,7 @@ export interface RequestStrategy {
     userId: string,
     createRequestDto: CreateRequestDto,
     waybillScan?: Express.Multer.File,
+    customerImages?: Express.Multer.File[],
   ): Promise<RequestEntity>;
 
   approveRequest(
@@ -26,6 +27,7 @@ export interface RequestStrategy {
     userId: string,
     requestNumber: string,
     approveRequestDto: ApproveReturnRequestDto,
+    managerImages?: Express.Multer.File[],
   ): Promise<RequestEntity>;
 
   rejectRequest(
@@ -33,6 +35,7 @@ export interface RequestStrategy {
     userId: string,
     requestNumber: string,
     approveRequestDto: RejectReturnRequestDto,
+    managerImages?: Express.Multer.File[],
   ): Promise<RequestEntity>;
 
   updateRequestByCustomer(

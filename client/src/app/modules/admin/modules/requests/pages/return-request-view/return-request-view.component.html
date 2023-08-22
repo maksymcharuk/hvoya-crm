@@ -56,7 +56,7 @@
                       </tr>
                     </table>
                   </div>
-                  <div class="field col-12">
+                  <div class="field col-6">
                     <label for="managerComment">Коментар:</label>
                     <textarea
                       rows="5"
@@ -73,6 +73,20 @@
                       errorMessage="Потрібно надати коментар у разі відхилення або зміни суми повернення"
                     >
                     </app-form-control-error-message>
+                  </div>
+                  <div class="field col-6">
+                    <label for="customerImages">Зображення:</label>
+                    <p-fileUpload
+                      [accept]="imageFormats"
+                      [customUpload]="true"
+                      [auto]="true"
+                      [maxFileSize]="1000000"
+                      [disabled]="submitting"
+                      [multiple]="true"
+                      (uploadHandler)="onManagerImagesUpload($event.files)"
+                      (onRemove)="onManagerImageRemove($event.file)"
+                    >
+                    </p-fileUpload>
                   </div>
                 </div>
               </div>
@@ -117,9 +131,20 @@
         <div *ngIf="request.managerComment" class="my-5">
           <ul class="striped-list">
             <li class="striped-list__item">
-              <div class="striped-list__item-key">Коментар менеджера</div>
+              <div class="striped-list__item-key align-self-baseline">
+                Коментар менеджера
+              </div>
               <div class="striped-list__item-value">
-                {{ request.managerComment }}
+                <div class="mb-2">{{ request.managerComment }}</div>
+                <div class="flex">
+                  <p-image
+                    *ngFor="let image of request.managerImages"
+                    class="mr-2"
+                    [src]="image.url"
+                    [preview]="true"
+                    width="80"
+                  ></p-image>
+                </div>
               </div>
             </li>
           </ul>
@@ -154,23 +179,15 @@
             <ul class="striped-list">
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Статус</div>
-                <div
-                  class="striped-list__item-value request-view__status-column"
-                >
-                  <div class="py-2 mr-5">
-                    <div class="flex align-items-center mb-1">
-                      <app-request-status-badge
-                        [status]="request.returnRequest!.status!"
-                      ></app-request-status-badge>
-                    </div>
-                  </div>
+                <div class="striped-list__item-value">
+                  <app-request-status-badge
+                    [status]="request.returnRequest!.status!"
+                  ></app-request-status-badge>
                 </div>
               </li>
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Замовлення</div>
-                <div
-                  class="striped-list__item-value request-view__status-column"
-                >
+                <div class="striped-list__item-value">
                   <div class="py-2 mr-5">
                     <a
                       [routerLink]="[
@@ -185,9 +202,20 @@
                 </div>
               </li>
               <li class="striped-list__item">
-                <div class="striped-list__item-key">Коментар до запиту</div>
+                <div class="striped-list__item-key align-self-baseline">
+                  Коментар до запиту
+                </div>
                 <div class="striped-list__item-value">
-                  {{ request.customerComment }}
+                  <div class="mb-2">{{ request.customerComment }}</div>
+                  <div class="flex">
+                    <p-image
+                      *ngFor="let image of request.customerImages"
+                      class="mr-2"
+                      [src]="image.url"
+                      [preview]="true"
+                      width="80"
+                    ></p-image>
+                  </div>
                 </div>
               </li>
               <li class="striped-list__item">

@@ -213,6 +213,8 @@ export class OneCApiClientService {
     return firstValueFrom(
       apiCall.pipe(
         catchError((error: AxiosError) => {
+          console.log(error);
+
           throw new HttpException(
             {
               message: error.message,

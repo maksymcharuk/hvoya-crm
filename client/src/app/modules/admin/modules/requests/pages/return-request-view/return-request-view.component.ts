@@ -1,6 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, finalize } from 'rxjs';
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
@@ -13,6 +13,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { IMAGE_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
 import { OrderReturnRequestItemEntity } from '@shared/interfaces/entities/order-return-request.entity';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestItemUIEntity } from '@shared/interfaces/ui-entities/request-item.ui-entity';
@@ -29,11 +30,14 @@ export class ReturnRequestViewComponent implements OnInit {
   total$ = new BehaviorSubject<number>(0);
   showWaybillViewDialog = false;
   requestedItems: OrderReturnRequestItemEntity[] = [];
+  submitting = false;
+  imageFormats = IMAGE_ACCEPTABLE_FILE_FORMATS;
 
-  returnRequestForm = this.formBuilder.group(
+  returnRequestForm = this.formBuilder.nonNullable.group(
     {
       approvedItems: this.formBuilder.array<RequestItemUIEntity>([]),
       managerComment: '',
+      managerImages: this.formBuilder.nonNullable.array<File>([]),
       deduction: 0,
     },
     { validators: this.deductionMax },
@@ -51,6 +55,10 @@ export class ReturnRequestViewComponent implements OnInit {
     return this.returnRequestForm.get(
       'approvedItems',
     ) as FormArray<FormControl>;
+  }
+
+  get managerImagesControl(): FormArray<FormControl<File>> {
+    return this.returnRequestForm.controls.managerImages;
   }
 
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
@@ -117,16 +125,19 @@ export class ReturnRequestViewComponent implements OnInit {
       return;
     }
 
+    const formValue = this.returnRequestForm.value;
+    const formData = new FormData();
+
+    formData.append('approvedItems', JSON.stringify(formValue.approvedItems));
+    formData.append('managerComment', formValue.managerComment!);
+    formData.append('deduction', formValue.deduction?.toString()!);
+    formValue.managerImages!.forEach((image: any) => {
+      formData.append('images', image);
+    });
+
     this.requestsService
-      .approveRequest(
-        {
-          approvedItems: this.returnRequestForm.value
-            .approvedItems as RequestItemUIEntity[],
-          managerComment: this.returnRequestForm.value.managerComment!,
-          deduction: this.returnRequestForm.value.deduction!,
-        },
-        this.requestNumber,
-      )
+      .approveRequest(formData, this.requestNumber)
+      .pipe(finalize(() => (this.submitting = false)))
       .subscribe((request) => {
         this.request$.next(request);
         this.messageService.add({
@@ -146,13 +157,17 @@ export class ReturnRequestViewComponent implements OnInit {
       return;
     }
 
+    const formValue = this.returnRequestForm.value;
+    const formData = new FormData();
+
+    formData.append('managerComment', formValue.managerComment!);
+    formValue.managerImages!.forEach((image: any) => {
+      formData.append('images', image);
+    });
+
     this.requestsService
-      .rejectRequest(
-        {
-          managerComment: this.returnRequestForm.value.managerComment!,
-        },
-        this.requestNumber,
-      )
+      .rejectRequest(formData, this.requestNumber)
+      .pipe(finalize(() => (this.submitting = false)))
       .subscribe((request) => {
         this.request$.next(request);
         this.messageService.add({
@@ -183,5 +198,20 @@ export class ReturnRequestViewComponent implements OnInit {
     }
 
     return null;
+  }
+
+  onManagerImagesUpload(files: File[]) {
+    this.managerImagesControl.controls = files.map((file) =>
+      this.formBuilder.nonNullable.control(file),
+    );
+    this.managerImagesControl.updateValueAndValidity();
+  }
+
+  onManagerImageRemove(file: File) {
+    this.managerImagesControl.controls =
+      this.managerImagesControl.controls.filter(
+        (control) => control.value !== file,
+      );
+    this.managerImagesControl.updateValueAndValidity();
   }
 }

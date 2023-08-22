@@ -4,8 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
-import { ApproveReturnRequestDTO } from '@shared/interfaces/dto/approve-request.dto';
-import { RejectReturnRequestDTO } from '@shared/interfaces/dto/reject-request.dto';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 
 @Injectable({
@@ -52,7 +50,7 @@ export class RequestsService {
   }
 
   approveRequest(
-    requestApproveFormData: ApproveReturnRequestDTO,
+    requestApproveFormData: FormData,
     requestNumber: number,
   ): Observable<RequestEntity> {
     return this.http
@@ -64,7 +62,7 @@ export class RequestsService {
   }
 
   rejectRequest(
-    requestRejectFormData: RejectReturnRequestDTO,
+    requestRejectFormData: FormData,
     requestNumber: number,
   ): Observable<RequestEntity> {
     return this.http

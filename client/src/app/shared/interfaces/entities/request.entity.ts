@@ -1,6 +1,7 @@
 import { RequestType } from '@shared/enums/request-type.enum';
 
 import { BaseEntity } from './base.entity';
+import { File } from './file.entity';
 import { OrderReturnRequest } from './order-return-request.entity';
 import { User } from './user.entity';
 
@@ -12,6 +13,8 @@ export class RequestEntity extends BaseEntity {
   requestId: number;
   returnRequest: OrderReturnRequest;
   customer: User;
+  customerImages: File[];
+  managerImages: File[];
 
   constructor(data?: RequestEntity) {
     super(data);
@@ -22,5 +25,7 @@ export class RequestEntity extends BaseEntity {
     this.requestId = data?.requestId || 0;
     this.returnRequest = new OrderReturnRequest(data?.returnRequest);
     this.number = data?.number || '';
+    this.customerImages = data?.customerImages?.map((i) => new File(i)) || [];
+    this.managerImages = data?.managerImages?.map((i) => new File(i)) || [];
   }
 }

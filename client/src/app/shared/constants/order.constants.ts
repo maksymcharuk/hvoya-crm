@@ -1,6 +1,7 @@
 import { OrderStatus } from '@shared/enums/order-status.enum';
 
 export const WAYBILL_ACCEPTABLE_FILE_FORMATS = '.pdf';
+export const IMAGE_ACCEPTABLE_FILE_FORMATS = '.jpg, .jpeg, .png';
 
 // Order statuses that require comment
 export const COMMENT_REQUIRED_ORDER_STATUSES = [

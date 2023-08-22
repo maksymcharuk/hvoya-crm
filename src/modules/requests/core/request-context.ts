@@ -47,6 +47,7 @@ export class RequestContext {
     userId: string,
     createRequestDto: CreateRequestDto,
     waybillScan?: Express.Multer.File,
+    customerImages?: Express.Multer.File[],
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -58,6 +59,7 @@ export class RequestContext {
         userId,
         createRequestDto,
         waybillScan,
+        customerImages,
       );
       await queryRunner.commitTransaction();
       return request;
@@ -73,6 +75,7 @@ export class RequestContext {
     userId: string,
     requestNumber: string,
     approveRequestDto: ApproveReturnRequestDto,
+    managerImages?: Express.Multer.File[],
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -84,6 +87,7 @@ export class RequestContext {
         userId,
         requestNumber,
         approveRequestDto,
+        managerImages,
       );
       await queryRunner.commitTransaction();
       return request;
@@ -99,6 +103,7 @@ export class RequestContext {
     userId: string,
     requestNumber: string,
     rejectRequestDto: RejectReturnRequestDto,
+    managerImages?: Express.Multer.File[],
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
@@ -110,6 +115,7 @@ export class RequestContext {
         userId,
         requestNumber,
         rejectRequestDto,
+        managerImages,
       );
       await queryRunner.commitTransaction();
       return request;
