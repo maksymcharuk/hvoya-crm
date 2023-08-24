@@ -23,9 +23,9 @@ describe('Account', () => {
       it('Sign up as user and update profile with valid data', () => {
         const phoneNumber = '0673347200';
         const phoneNumberFormated = '+38 (067) 334-7200';
-        const lastName = 'TestLname';
-        const firstName = 'TestFname';
-        const middleName = 'TestMname';
+        const lastName = 'ТестПрізвище';
+        const firstName = 'ТестІмя';
+        const middleName = 'ТестПобатькові';
         const storeName = 'TestStoreName';
         const website = 'https://hvoya.com';
         const bio = 'TestBio';
@@ -132,9 +132,9 @@ describe('Account', () => {
       it('Sign up as admin and try to update profile with valid data', () => {
         const phoneNumber = '0673347200';
         const phoneNumberFormated = '+38 (067) 334-7200';
-        const firstName = 'TestFname';
-        const lastName = 'TestLname';
-        const middleName = 'TestMname';
+        const lastName = 'ТестПрізвище';
+        const firstName = 'ТестІмя';
+        const middleName = 'ТестПобатькові';
 
         cy.getCyEl('phone-number', 'input').clear().type(phoneNumber);
         cy.getCyEl('first-name').clear().type(firstName);

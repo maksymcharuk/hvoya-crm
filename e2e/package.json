@@ -8,6 +8,9 @@
     "start:dev": "cypress open",
     "start:headless": "cypress run --spec cypress/e2e/index.cy.ts"
   },
+  "pre-push": [
+    "start"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -18,7 +21,8 @@
     "pg": "^8.11.2"
   },
   "devDependencies": {
+    "@types/jwt-encode": "^1.0.0",
     "@types/pg": "^8.10.2",
-    "@types/jwt-encode": "^1.0.0"
+    "pre-push": "^0.1.4"
   }
 }

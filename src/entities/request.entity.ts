@@ -34,7 +34,7 @@ export class RequestEntity extends BaseEntity {
     type: 'enum',
     enum: RequestType,
   })
-  requestType: string;
+  requestType: RequestType;
 
   @Column()
   requestId: string;

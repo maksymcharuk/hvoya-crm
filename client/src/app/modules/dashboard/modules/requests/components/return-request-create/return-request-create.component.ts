@@ -200,6 +200,12 @@ export class ReturnRequestCreateComponent {
     const order = orders.find((o) => o.number === orderNumber);
 
     if (!order) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Помилка',
+        detail:
+          'Замовлення не знайдено або для даного замовлення не можна оформити повернення',
+      });
       return;
     }
 

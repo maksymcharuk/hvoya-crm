@@ -12,12 +12,19 @@
         [showClear]="true"
         [filter]="true"
       ></p-dropdown>
+      <app-form-control-error-message
+        [formGroup]="returnRequestForm"
+        controlName="order"
+        errorType="required"
+        errorMessage="Необхідно вибрати замовлення"
+      ></app-form-control-error-message>
     </div>
     <ng-container formArrayName="requestedItems">
       <ng-container
         *ngFor="let requestedItemForm of requestedItems.controls; let i = index"
       >
         <div class="field col-12">
+          <label>Виберіть товари які хочете повернути:</label>
           <app-return-request-order-item
             [formControl]="requestedItemForm"
           ></app-return-request-order-item>
@@ -28,6 +35,7 @@
       <div class="field col-6">
         <label for="customerComment">Причина повернення:</label>
         <textarea
+          id="customerComment"
           rows="5"
           cols="30"
           pInputTextarea

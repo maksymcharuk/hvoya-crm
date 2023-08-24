@@ -31,3 +31,9 @@
     }
   }
 }
+
+:host ::ng-deep {
+  .p-message {
+    margin: 0 0 1rem 0;
+  }
+}

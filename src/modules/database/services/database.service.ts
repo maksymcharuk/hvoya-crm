@@ -16,7 +16,7 @@ import { options } from '../configs/db.configs';
 export class DatabaseService {
   static localFileName = 'backup.dump';
   static s3Client = new S3Client({
-    region: process.env['AWS_BUCKET_REGION'] || '',
+    region: process.env['AWS_BUCKET_REGION'] || 'blank',
   });
 
   static async backup() {
