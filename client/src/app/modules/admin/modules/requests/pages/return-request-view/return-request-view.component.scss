@@ -1,0 +1,11 @@
+.request-view {
+  &__status-column {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__content {
+    position: relative;
+  }
+}

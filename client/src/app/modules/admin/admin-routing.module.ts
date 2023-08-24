@@ -42,6 +42,13 @@ const routes: Routes = [
         loadChildren: () =>
           import('./modules/faq/faq.module').then((m) => m.FaqModule),
       },
+      {
+        path: 'requests',
+        loadChildren: () =>
+          import('./modules/requests/requests.module').then(
+            (m) => m.RequestsModule,
+          ),
+      }
     ],
   },
 ];
@@ -50,4 +57,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AdminRoutingModule {}
+export class AdminRoutingModule { }

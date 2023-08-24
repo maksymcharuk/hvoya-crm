@@ -12,6 +12,7 @@ import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BaseEntity } from './base.entity';
 import { OrderDeliveryEntity } from './order-delivery.entity';
 import { OrderItemEntity } from './order-item.entity';
+import { OrderReturnRequestEntity } from './order-return-request.entity';
 import { OrderStatusEntity } from './order-status.entity';
 import { PaymentTransactionEntity } from './payment-transaction.entity';
 import { UserEntity } from './user.entity';
@@ -56,4 +57,10 @@ export class OrderEntity extends BaseEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.orders)
   customer: UserEntity;
+
+  @OneToOne(
+    () => OrderReturnRequestEntity,
+    (returnRequest) => returnRequest.order,
+  )
+  returnRequest: OrderReturnRequestEntity;
 }

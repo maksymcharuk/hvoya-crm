@@ -26,7 +26,10 @@
             <ng-container *ngSwitchCase="notificationType.OrderCreated">
               <ng-container *ngIf="notification.dataIsOrder(notification.data)">
                 <ng-template #title>
-                  Нове замовлення №{{ notification.data.number }}
+                  <div class="flex align-items-center">
+                    <i class="pi pi-shopping-bag mr-2"></i>
+                    Нове замовлення №{{ notification.data.number }}
+                  </div>
                 </ng-template>
                 <ng-template #body>
                   Замовник: {{ notification.data.customer.fullName }}
@@ -46,7 +49,10 @@
             <ng-container *ngSwitchCase="notificationType.OrderStatusUpdated">
               <ng-container *ngIf="notification.dataIsOrder(notification.data)">
                 <ng-template #title>
-                  Замовлення №{{ notification.data.number }} (статус змінено)
+                  <div class="flex align-items-center">
+                    <i class="pi pi-shopping-bag mr-2"></i>
+                    Замовлення №{{ notification.data.number }} (статус змінено)
+                  </div>
                 </ng-template>
                 <ng-template #body>
                   <div
@@ -80,10 +86,13 @@
             <ng-container *ngSwitchCase="notificationType.OrderCancelled">
               <ng-container *ngIf="notification.dataIsOrder(notification.data)">
                 <ng-template #title>
-                  Замовлення №{{ notification.data.number }}
+                  <div class="flex align-items-center">
+                    <i class="pi pi-shopping-bag mr-2"></i>
+                    Замовлення №{{ notification.data.number }}
+                  </div>
                 </ng-template>
                 <ng-template #body>
-                  <div class="flex align-items-center">
+                  <div class="flex align-items-center mb-1">
                     Замовлення
                     <app-order-status-badge
                       class="ml-2"
@@ -106,7 +115,12 @@
             </ng-container>
             <ng-container *ngSwitchCase="notificationType.UserCreated">
               <ng-container *ngIf="notification.dataIsUser(notification.data)">
-                <ng-template #title>Користувач створив акаунт</ng-template>
+                <ng-template #title>
+                  <div class="flex align-items-center">
+                    <i class="pi pi-user mr-2"></i>
+                    Користувач створив акаунт
+                  </div>
+                </ng-template>
                 <ng-template #body>
                   {{ notification.data.fullName }}
                 </ng-template>
@@ -124,7 +138,12 @@
             </ng-container>
             <ng-container *ngSwitchCase="notificationType.UserConfirmed">
               <ng-container *ngIf="notification.dataIsUser(notification.data)">
-                <ng-template #title>Акаунт підтвердженно</ng-template>
+                <ng-template #title>
+                  <div class="flex align-items-center">
+                    <i class="pi pi-user mr-2"></i>
+                    Акаунт підтвердженно
+                  </div>
+                </ng-template>
                 <ng-template #body>
                   {{ notification.data.fullName }}
                 </ng-template>
@@ -142,9 +161,81 @@
             </ng-container>
             <ng-container *ngSwitchCase="notificationType.AdminCreated">
               <ng-container *ngIf="notification.dataIsUser(notification.data)">
-                <ng-template #title>Новий адміністратор</ng-template>
+                <ng-template #title>
+                  <div class="flex align-items-center">
+                    <i class="pi pi-user mr-2"></i>
+                    Новий адміністратор
+                  </div>
+                </ng-template>
                 <ng-template #body>
                   {{ notification.data.fullName }}
+                </ng-template>
+                <ng-container
+                  *ngTemplateOutlet="
+                    notificationTmpl;
+                    context: {
+                      title: title,
+                      body: body,
+                      notification: notification
+                    }
+                  "
+                ></ng-container>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="notificationType.RequestCreated">
+              <ng-container
+                *ngIf="notification.dataIsRequest(notification.data)"
+              >
+                <ng-template #title>
+                  <div class="flex align-items-center">
+                    <i class="pi pi-flag mr-2"></i>
+                    Новий запит №{{ notification.data.number }}
+                  </div>
+                </ng-template>
+                <ng-template #body>
+                  <div class="mb-2">
+                    Тип: {{ notification.data.requestType | requestType }}
+                  </div>
+                  Запит від: {{ notification.data.customer.fullName }}
+                </ng-template>
+                <ng-container
+                  *ngTemplateOutlet="
+                    notificationTmpl;
+                    context: {
+                      title: title,
+                      body: body,
+                      notification: notification
+                    }
+                  "
+                ></ng-container>
+              </ng-container> </ng-container
+            ><ng-container
+              *ngSwitchCase="
+                notification.type === notificationType.RequestApproved ||
+                notification.type === notificationType.RequestRejected
+                  ? notification.type
+                  : ''
+              "
+            >
+              <ng-container
+                *ngIf="notification.dataIsRequest(notification.data)"
+              >
+                <ng-template #title>
+                  <div class="flex align-items-center">
+                    <i class="pi pi-flag mr-2"></i>
+                    Запит №{{ notification.data.number }} (статус змінено)
+                  </div>
+                </ng-template>
+                <ng-template #body>
+                  <div class="mb-1">
+                    Тип: {{ notification.data.requestType | requestType }}
+                  </div>
+                  <div class="flex">
+                    <span class="mr-2">Статус:</span>
+                    <app-request-status-badge
+                      [status]="notification.data.returnRequest.status"
+                    ></app-request-status-badge>
+                  </div>
                 </ng-template>
                 <ng-container
                   *ngTemplateOutlet="

@@ -40,7 +40,11 @@ export class BalanceService {
 
     const balance = await this.balanceRepository.findOneOrFail({
       where: { owner: { id: currentUserId } },
-      relations: ['paymentTransactions.order', 'owner'],
+      relations: [
+        'paymentTransactions.order',
+        'paymentTransactions.orderReturnRequest.request',
+        'owner',
+      ],
       order: {
         paymentTransactions: {
           createdAt: 'DESC',

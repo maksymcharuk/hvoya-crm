@@ -1,54 +1,46 @@
-import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
+import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 
-// Fulfilled order can only be changed to Cancelled or Refunded
-export const REVERTABLE_ORDER_STATUSES = [
-  OrderStatus.Cancelled,
-  OrderStatus.Refunded,
-];
+// List of rules for manual order status change
 
-// Pending, Processing, Fulfilled orders can be canceled
+// Only Pending and Processing orders can be canceled
 export const CANCELABLE_ORDER_STATUSES = [
   OrderStatus.Pending,
   OrderStatus.Processing,
-  OrderStatus.TransferedToDelivery,
-  OrderStatus.Fulfilled,
 ];
 
-// Pending, Processing, Fulfilled orders can be refunded
-export const REFUNDABLE_ORDER_STATUSES = [
-  OrderStatus.Pending,
-  OrderStatus.Processing,
-  OrderStatus.TransferedToDelivery,
+// Only Fulfilled and Refused orders can be returned
+export const RETURNABLE_ORDER_STATUSES = [
   OrderStatus.Fulfilled,
-];
-
-// Final order statuses (except Fulfilling that can't be canceled or refunded)
-export const COMPLETED_ORDER_STATUSES = [
-  OrderStatus.Cancelled,
-  OrderStatus.Fulfilled,
-  OrderStatus.Refunded,
+  OrderStatus.Refused,
 ];
 
 // Order statuses that can't be changed manually
 export const UNCHANGEABLE_ORDER_STATUSES = [
+  OrderStatus.Fulfilled,
   OrderStatus.Cancelled,
   OrderStatus.Refunded,
+  OrderStatus.Refused,
 ];
+
+// Order statuses that can't be set manually
+export const UNSETTABLE_ORDER_STATUSES = [OrderStatus.Refunded];
 
 // Order statuses that require comment
 export const COMMENT_REQUIRED_ORDER_STATUSES = [
-  OrderStatus.Cancelled,
-  OrderStatus.Fulfilled,
-  OrderStatus.Refunded,
   OrderStatus.TransferedToDelivery,
+  OrderStatus.Fulfilled,
+  OrderStatus.Cancelled,
+  OrderStatus.Refunded,
+  OrderStatus.Refused,
 ];
 
 export const ORDER_STATUSES_TO_DELIERY_STATUSES = new Map<
   OrderStatus,
-  OrderDeliveryStatus
+  DeliveryStatus
 >([
-  [OrderStatus.Cancelled, OrderDeliveryStatus.Declined],
-  [OrderStatus.Fulfilled, OrderDeliveryStatus.Received],
-  [OrderStatus.Refunded, OrderDeliveryStatus.Returned],
+  [OrderStatus.Refused, DeliveryStatus.Declined],
+  [OrderStatus.Cancelled, DeliveryStatus.Declined],
+  [OrderStatus.Fulfilled, DeliveryStatus.Received],
+  [OrderStatus.Refunded, DeliveryStatus.Returned],
 ]);

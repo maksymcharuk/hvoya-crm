@@ -19,7 +19,8 @@ pm2 delete client
 npx pm2 start npm --name "server" -- run start:test-headless
 npx pm2 start npm --name "client" -- run start:test-headless --prefix client
 # Wait for server and client to start
-sleep 15
+echo "Waiting for server and client to start..."
+sleep 20
 # Run Cypress tests
 npm run start:headless --prefix e2e
 # Stop server and client

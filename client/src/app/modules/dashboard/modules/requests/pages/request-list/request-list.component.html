@@ -1,0 +1,17 @@
+<div class="grid">
+  <div class="col-12">
+    <div
+      *ngIf="'create' | able : returnRequestEntity"
+      class="flex justify-content-end mb-3"
+    >
+      <p-button
+        label="Створити запит"
+        icon="pi pi-plus"
+        [routerLink]="'create'"
+      ></p-button>
+    </div>
+    <div class="card p-0">
+      <app-request-list [requests]="requests$ | async"></app-request-list>
+    </div>
+  </div>
+</div>

@@ -43,6 +43,21 @@ export class NotificationListenerService {
     this.sendNotificationToAdmins(payload);
   }
 
+  @OnEvent(NotificationEvent.RequestCreated)
+  async handleRequestCreatedEvent(payload: NotificationCreatedEvent) {
+    this.sendNotificationToAdmins(payload);
+  }
+
+  @OnEvent(NotificationEvent.RequestRejected)
+  async handleRequestRejectedEvent(payload: NotificationCreatedEvent) {
+    this.sendNotificationToUser(payload);
+  }
+
+  @OnEvent(NotificationEvent.RequestApproved)
+  async handleRequestApprovedEvent(payload: NotificationCreatedEvent) {
+    this.sendNotificationToUser(payload);
+  }
+
   private async sendNotificationToAdmins(payload: NotificationCreatedEvent) {
     let adminUsers = await this.usersService.getAllAdmins();
 

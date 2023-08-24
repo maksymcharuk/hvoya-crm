@@ -9,6 +9,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { MessagesModule } from 'primeng/messages';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 
@@ -52,6 +53,7 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     AbilityModule,
     NgxDocViewerModule,
     ConfirmDialogModule,
+    MessagesModule,
   ],
   providers: [ConfirmationService],
 })

@@ -1,0 +1,305 @@
+<div class="request-view grid" data-cy="request-view-page">
+  <div class="col-12">
+    <div class="card request-view__content">
+      <div *ngIf="request$ | async as request">
+        <h4 class="flex align-items-center">
+          <span>Повернення №{{ request.number }}</span>
+        </h4>
+        <div class="my-5">
+          <ng-container
+            *ngIf="'approve' | able : request.returnRequest; else productsView"
+          >
+            <form [formGroup]="returnRequestForm">
+              <h5>Товари</h5>
+              <ng-container formArrayName="approvedItems">
+                <app-return-request-order-item
+                  *ngFor="let requestedItemForm of approvedItems.controls"
+                  [formControl]="requestedItemForm"
+                ></app-return-request-order-item>
+              </ng-container>
+              <div class="p-fluid my-4">
+                <div class="p-formgrid grid">
+                  <div class="field col-6">
+                    <label for="deduction">Відрахування:</label>
+                    <p-inputNumber
+                      mode="decimal"
+                      formControlName="deduction"
+                      currency="UAH"
+                      mode="currency"
+                      locale="uk-UA"
+                      [min]="0"
+                      [allowEmpty]="false"
+                    ></p-inputNumber>
+                    <app-form-control-error-message
+                      [formGroup]="returnRequestForm"
+                      controlName="deduction"
+                      errorType="deductionMax"
+                      errorMessage="Сума відрахування не може перевищувати суму повернення"
+                    >
+                    </app-form-control-error-message>
+                  </div>
+                  <div
+                    class="field col-6 align-self-end flex justify-content-end"
+                  >
+                    <table>
+                      <tr *ngIf="deduction.value > 0">
+                        <td>Відрахування:</td>
+                        <td class="pl-5">-{{ deduction.value | currency }}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-xl text-900 font-bold text-3xl">
+                          Сума:
+                        </td>
+                        <td class="text-xl text-900 font-bold text-3xl pl-5">
+                          {{ total$ | async | currency }}
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="field col-6">
+                    <label for="managerComment">Коментар:</label>
+                    <textarea
+                      rows="5"
+                      cols="30"
+                      id="managerComment"
+                      pInputTextarea
+                      [autoResize]="true"
+                      formControlName="managerComment"
+                    ></textarea>
+                    <app-form-control-error-message
+                      [formGroup]="returnRequestForm"
+                      controlName="managerComment"
+                      errorType="required"
+                      errorMessage="Потрібно надати коментар у разі відхилення або зміни суми повернення"
+                    >
+                    </app-form-control-error-message>
+                  </div>
+                  <div class="field col-6">
+                    <label for="customerImages">Зображення:</label>
+                    <p-fileUpload
+                      [accept]="imageFormats"
+                      [customUpload]="true"
+                      [auto]="true"
+                      [maxFileSize]="1000000"
+                      [disabled]="submitting"
+                      [multiple]="true"
+                      (uploadHandler)="onManagerImagesUpload($event.files)"
+                      (onRemove)="onManagerImageRemove($event.file)"
+                    >
+                    </p-fileUpload>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-content-end">
+                <p-button
+                  icon="pi pi-check"
+                  label="Підтвердити"
+                  (click)="approveReturnRequest()"
+                ></p-button>
+                <p-button
+                  icon="pi pi-times"
+                  label="Відхилити"
+                  styleClass="p-button-danger"
+                  class="ml-3"
+                  (click)="rejectReturnRequest()"
+                ></p-button>
+              </div>
+            </form>
+          </ng-container>
+          <ng-template #productsView>
+            <app-return-request-item-list
+              [orderReturnRequest]="request.returnRequest"
+            ></app-return-request-item-list>
+            <div class="flex justify-content-end my-4">
+              <table>
+                <tr *ngIf="request.returnRequest.deduction > 0">
+                  <td>Відрахування:</td>
+                  <td class="pl-5">
+                    -{{ request.returnRequest.deduction | currency }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-xl text-900 font-bold text-3xl">Сума:</td>
+                  <td class="text-xl text-900 font-bold text-3xl pl-5">
+                    {{ request.returnRequest.total | currency }}
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </ng-template>
+        </div>
+        <div *ngIf="request.managerComment" class="my-5">
+          <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key align-self-baseline">
+                Коментар менеджера
+              </div>
+              <div class="striped-list__item-value">
+                <div class="mb-2">{{ request.managerComment }}</div>
+                <div class="flex">
+                  <p-image
+                    *ngFor="let image of request.managerImages"
+                    class="mr-2"
+                    [src]="image.url"
+                    [preview]="true"
+                    width="80"
+                  ></p-image>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="my-5">
+          <h5>Дані дропшипера</h5>
+          <ul class="striped-list">
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">ПІБ</div>
+              <div class="striped-list__item-value">
+                {{ request.customer!.fullName }}
+              </div>
+            </li>
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Номер телефону</div>
+              <div class="striped-list__item-value">
+                <ng-container
+                  *ngIf="
+                    request.customer!.phoneNumber as phoneNumber;
+                    else emptyPhoneNumber
+                  "
+                  >{{ phoneNumber | phoneNumber }}</ng-container
+                >
+                <ng-template #emptyPhoneNumber>-</ng-template>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="grid">
+          <div class="col-12 xl:col-6">
+            <h5>Дані запиту</h5>
+            <ul class="striped-list">
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Статус</div>
+                <div class="striped-list__item-value">
+                  <app-request-status-badge
+                    [status]="request.returnRequest!.status!"
+                  ></app-request-status-badge>
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Замовлення</div>
+                <div class="striped-list__item-value">
+                  <div class="py-2 mr-5">
+                    <a
+                      [routerLink]="[
+                        '/admin',
+                        'orders',
+                        request.returnRequest.order.number
+                      ]"
+                      class="flex align-items-center mb-1"
+                      >{{ request.returnRequest.order.number }}
+                    </a>
+                  </div>
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key align-self-baseline">
+                  Коментар до запиту
+                </div>
+                <div class="striped-list__item-value">
+                  <div class="mb-2">{{ request.customerComment }}</div>
+                  <div class="flex">
+                    <p-image
+                      *ngFor="let image of request.customerImages"
+                      class="mr-2"
+                      [src]="image.url"
+                      [preview]="true"
+                      width="80"
+                    ></p-image>
+                  </div>
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Дата</div>
+                <div class="striped-list__item-value">
+                  {{ request.createdAt | date : 'short' }}
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="col-12 xl:col-6">
+            <h5>Дані доставки</h5>
+            <ul class="striped-list">
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Служба доставки</div>
+                <div class="striped-list__item-value">
+                  <app-delivery-service-badge
+                    *ngIf="
+                      request.returnRequest.delivery
+                        .deliveryService as deliveryService
+                    "
+                    [deliveryService]="deliveryService"
+                  ></app-delivery-service-badge>
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Статус доставки</div>
+                <div class="striped-list__item-value">
+                  <div class="py-2 mr-5">
+                    <div class="flex align-items-center mb-1">
+                      <app-return-request-delivery-status-badge
+                        [status]="request.returnRequest.delivery.status!"
+                      ></app-return-request-delivery-status-badge>
+                    </div>
+                    <div *ngIf="request.returnRequest.delivery.rawStatus">
+                      <b>Повний статус:</b>
+                      {{ request.returnRequest.delivery.rawStatus }}
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Маркування (PDF)</div>
+                <div class="striped-list__item-value">
+                  <ng-container
+                    *ngIf="
+                      request.returnRequest.delivery.waybill?.url as url;
+                      else noWaybill
+                    "
+                  >
+                    <p-button
+                      icon="pi pi-eye"
+                      label="Переглянути ТТН"
+                      data-cy="order-waybill-view-button"
+                      (click)="showWaybillViewDialogHandler()"
+                    ></p-button>
+                    <p-dialog
+                      [header]="
+                        'Товарно-транспортна накладна (замовлення №' +
+                        request.number +
+                        ')'
+                      "
+                      [(visible)]="showWaybillViewDialog"
+                      [modal]="true"
+                      [style]="{ width: '80vw' }"
+                      [draggable]="false"
+                      [resizable]="false"
+                    >
+                      <ngx-doc-viewer
+                        [url]="url"
+                        viewer="pdf"
+                        style="width: 100%; height: 70vh"
+                      ></ngx-doc-viewer>
+                    </p-dialog>
+                  </ng-container>
+                  <ng-template #noWaybill>
+                    <span>—</span>
+                  </ng-template>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

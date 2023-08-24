@@ -2,12 +2,12 @@
   <div
     class="text-900 text-xl pb-3 border-bottom-1 surface-border flex justify-content-between"
   >
-    <span
-      >Баланс
-      <span *ngIf="profile$ | async as profile" class="text-600 text-base"
-        >(Номер договору: {{ profile.accountNumber }})</span
-      ></span
-    >
+    <span>
+      Баланс
+      <span *ngIf="profile$ | async as profile" class="text-600 text-base">
+        (Номер договору: {{ profile.accountNumber }})
+      </span>
+    </span>
     <p-button
       *ngIf="!environment.production"
       styleClass="p-button-raised p-button-text p-button-secondary p-button-sm"
@@ -52,7 +52,7 @@
               <th>Сума</th>
               <th>Статус</th>
               <th>Дата</th>
-              <th class="w-1">Замовлення</th>
+              <th class="w-1">Замовлення/Повернення</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-transaction>
@@ -68,23 +68,21 @@
               <td>{{ transaction.status | transactionStatus }}</td>
               <td>{{ transaction.createdAt | date : 'short' }}</td>
               <td
-                *ngIf="transaction.order.total; else noOrder"
+                *ngIf="
+                  transaction.order || transaction.orderReturnRequest;
+                  else noEntity
+                "
                 class="text-center"
               >
                 <button
                   pButton
-                  pTooltip="Натистіть для перегляду замовлення"
+                  pTooltip="Натистіть для перегляду замовлення або повернення"
                   tooltipPosition="left"
                   icon="pi pi-arrow-up-right"
-                  [routerLink]="[
-                    '/',
-                    'dashboard',
-                    'orders',
-                    transaction.order.number
-                  ]"
+                  (click)="navigateToEntity(transaction)"
                 ></button>
               </td>
-              <ng-template #noOrder><td></td></ng-template>
+              <ng-template #noEntity><td></td></ng-template>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage" let-columns>

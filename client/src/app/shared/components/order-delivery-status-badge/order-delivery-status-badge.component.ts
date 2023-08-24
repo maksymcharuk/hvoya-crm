@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
+import { DeliveryStatus } from '@shared/enums/delivery-status.enum';
 
 @Component({
   selector: 'app-order-delivery-status-badge',
@@ -9,24 +9,25 @@ import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
   host: {
     class: 'inline-flex',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderDeliveryStatusBadgeComponent {
-  @Input() status!: OrderDeliveryStatus;
+  @Input() status!: DeliveryStatus;
 
   get style() {
     switch (this.status) {
-      case OrderDeliveryStatus.Unspecified:
-      case OrderDeliveryStatus.Pending:
+      case DeliveryStatus.Unspecified:
+      case DeliveryStatus.Pending:
         return 'success';
-      case OrderDeliveryStatus.Accepted:
-      case OrderDeliveryStatus.InTransit:
+      case DeliveryStatus.Accepted:
+      case DeliveryStatus.InTransit:
         return 'accent';
-      case OrderDeliveryStatus.Arrived:
+      case DeliveryStatus.Arrived:
         return 'warn';
-      case OrderDeliveryStatus.Received:
+      case DeliveryStatus.Received:
         return 'default';
-      case OrderDeliveryStatus.Declined:
-      case OrderDeliveryStatus.Returned:
+      case DeliveryStatus.Declined:
+      case DeliveryStatus.Returned:
         return 'danger';
       default:
         return 'success';
@@ -35,21 +36,21 @@ export class OrderDeliveryStatusBadgeComponent {
 
   get text() {
     switch (this.status) {
-      case OrderDeliveryStatus.Unspecified:
+      case DeliveryStatus.Unspecified:
         return 'Уточнюється';
-      case OrderDeliveryStatus.Pending:
+      case DeliveryStatus.Pending:
         return 'В очікуванні';
-      case OrderDeliveryStatus.Accepted:
+      case DeliveryStatus.Accepted:
         return 'Прийнято';
-      case OrderDeliveryStatus.InTransit:
+      case DeliveryStatus.InTransit:
         return 'В дорозі';
-      case OrderDeliveryStatus.Arrived:
+      case DeliveryStatus.Arrived:
         return 'Прибув у відділення';
-      case OrderDeliveryStatus.Received:
+      case DeliveryStatus.Received:
         return 'Отримано';
-      case OrderDeliveryStatus.Declined:
+      case DeliveryStatus.Declined:
         return 'Скасовано';
-      case OrderDeliveryStatus.Returned:
+      case DeliveryStatus.Returned:
         return 'Повернуто';
       default:
         return 'Уточнюється';

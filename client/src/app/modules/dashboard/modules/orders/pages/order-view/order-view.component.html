@@ -1,13 +1,35 @@
-<div class="grid order-view" data-cy="order-view-page">
-  <div class="col-12">
-    <div class="card order-view__content">
-      <p-progressBar
-        *ngIf="submitting"
-        class="order-view__progress"
-        mode="indeterminate"
-        [style]="{ height: '4px' }"
-      ></p-progressBar>
-      <div *ngIf="order$ | async as order">
+<div *ngIf="order$ | async as order" data-cy="order-view-page">
+  <p-messages *ngIf="order.returnRequest as returnRequest" severity="warn">
+    <ng-template pTemplate>
+      <div class="flex align-items-center">
+        <i class="pi pi-arrow-right-arrow-left mr-2"></i>
+        <span class="vertical-align-middle">
+          Запит на повернення
+          <a
+            [routerLink]="[
+              '/dashboard/requests/return-requests',
+              returnRequest.request!.number
+            ]"
+          >
+            №{{ returnRequest.request!.number }}
+          </a>
+        </span>
+        <app-request-status-badge
+          class="ml-5"
+          [status]="returnRequest.status"
+        ></app-request-status-badge>
+      </div>
+    </ng-template>
+  </p-messages>
+  <div class="grid order-view">
+    <div class="col-12">
+      <div class="card order-view__content">
+        <p-progressBar
+          *ngIf="submitting"
+          class="order-view__progress"
+          mode="indeterminate"
+          [style]="{ height: '4px' }"
+        ></p-progressBar>
         <div class="flex align-items-center justify-content-between mb-3">
           <h4 class="flex align-items-center m-0">
             <span>Замовлення №{{ order.number }}</span>
@@ -22,6 +44,17 @@
             styleClass="p-button-danger"
             label="Скасувати замовлення"
             (click)="confirmOrderCancelation()"
+          ></p-button>
+          <p-button
+            *ngIf="'return' | able : order"
+            icon="pi pi-times"
+            styleClass="p-button-warning"
+            label="Оформити повернення"
+            [routerLink]="['/dashboard/requests/create']"
+            [queryParams]="{
+              orderNumber: order.number,
+              requestType: RequestType.Return
+            }"
           ></p-button>
         </div>
         <div class="my-5">
@@ -50,7 +83,7 @@
                 </form>
 
                 <ng-template #noUpdateNote>
-                  {{ order.customerNote }}
+                  {{ order.customerNote || '-' }}
                 </ng-template>
               </div>
             </li>

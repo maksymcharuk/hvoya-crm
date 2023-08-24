@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { OrderStatus } from '@shared/enums/order-status.enum';
 
@@ -9,6 +9,7 @@ import { OrderStatus } from '@shared/enums/order-status.enum';
   host: {
     class: 'inline-flex',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderStatusBadgeComponent {
   @Input() status!: OrderStatus;
@@ -23,6 +24,7 @@ export class OrderStatusBadgeComponent {
       case OrderStatus.Fulfilled:
         return 'default';
       case OrderStatus.Cancelled:
+      case OrderStatus.Refused:
         return 'danger';
       case OrderStatus.Refunded:
         return 'warn';
@@ -45,6 +47,8 @@ export class OrderStatusBadgeComponent {
         return 'Скасовано';
       case OrderStatus.Refunded:
         return 'Повернуто';
+      case OrderStatus.Refused:
+        return 'Відмова';
       default:
         return 'Уточнюється';
     }

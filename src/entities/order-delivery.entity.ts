@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 import { DeliveryService } from '../enums/delivery-service.enum';
+import { DeliveryStatus } from '../enums/delivery-status.enum';
 import { DeliveryType } from '../enums/delivery-type.enum';
-import { OrderDeliveryStatus } from '../enums/order-delivery-status.enum';
 import { BaseEntity } from './base.entity';
 import { FileEntity } from './file.entity';
 
@@ -22,10 +22,10 @@ export class OrderDeliveryEntity extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: OrderDeliveryStatus,
-    default: OrderDeliveryStatus.Pending,
+    enum: DeliveryStatus,
+    default: DeliveryStatus.Pending,
   })
-  status: OrderDeliveryStatus;
+  status: DeliveryStatus;
 
   @Column({
     default: '',

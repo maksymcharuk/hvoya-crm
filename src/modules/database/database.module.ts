@@ -7,6 +7,7 @@ import { DatabaseService } from './services/database.service';
 import { OrderSubscriber } from './subscribers/order.subscriber';
 import { ProductPackageSizeSubscriber } from './subscribers/product-package-size.subscriber';
 import { ProductSizeSubscriber } from './subscribers/product-size.subscriber';
+import { RequestSubscriber } from './subscribers/request.subscriber';
 import { UserSubscriber } from './subscribers/user.subscriber';
 
 @Module({
@@ -18,6 +19,7 @@ import { UserSubscriber } from './subscribers/user.subscriber';
         ProductSizeSubscriber,
         ProductPackageSizeSubscriber,
         OrderSubscriber,
+        RequestSubscriber,
       ],
       autoLoadEntities: true,
     }),

@@ -14,6 +14,7 @@ import { BaseEntity } from './base.entity';
 import { CartEntity } from './cart.entity';
 import { NotificationEntity } from './notification.entity';
 import { OrderEntity } from './order.entity';
+import { RequestEntity } from './request.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -105,6 +106,9 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => UserEntity, (user) => user.manager)
   managedUsers: UserEntity[];
+
+  @OneToMany(() => RequestEntity, (requests) => requests.customer)
+  requests: RequestEntity[];
 
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);

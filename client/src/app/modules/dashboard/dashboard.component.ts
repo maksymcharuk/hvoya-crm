@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { ORDER_NOTIFICATIONS } from '@shared/constants/notification.constants';
+import { ORDER_NOTIFICATIONS, REQUEST_NOTIFICATION } from '@shared/constants/notification.constants';
 import { AccountService } from '@shared/services/account.service';
 import { AuthService } from '@shared/services/auth.service';
 import { NotificationsService } from '@shared/services/notifications.service';
@@ -46,10 +46,13 @@ export class DashboardComponent {
           badge: '',
           title: ORDER_NOTIFICATIONS as any,
         },
-        // {
-        //   label: 'Запити',
-        //   icon: 'pi pi-fw pi-envelope',
-        // },
+        {
+          label: 'Запити',
+          icon: 'pi pi-fw pi-flag',
+          routerLink: ['requests'],
+          badge: '',
+          title: REQUEST_NOTIFICATION as any,
+        },
         // {
         //   label: 'Улюблені',
         //   icon: 'pi pi-fw pi-heart',

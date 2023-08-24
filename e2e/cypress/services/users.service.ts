@@ -35,17 +35,17 @@ interface ConfirmUserDto {
 export class UsersService {
   private apiBaseUrl = Cypress.env('API_BASE_URL');
   private defaultAdminData: CreateAdminDto = {
-    firstName: 'Admin',
-    lastName: 'Admin',
-    middleName: 'Admin',
+    firstName: 'АдмінІмя',
+    lastName: 'АдмінПрізвище',
+    middleName: 'АдмінПобатькові',
     password: 'Test12345',
     phoneNumber: '0679876542',
     token: '',
   };
   private defaultUserData: CreateUserDto = {
-    firstName: 'Test',
-    lastName: 'Test',
-    middleName: 'Test',
+    firstName: 'ТестІмя',
+    lastName: 'ТестПрізвище',
+    middleName: 'ТестПобатькові',
     email: 'test-user@email.com',
     password: 'Test12345',
     phoneNumber: '0679876542',

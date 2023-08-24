@@ -1,0 +1,45 @@
+<td>
+  <div class="flex align-items-center">
+    <span data-cy="order-list-item-id">{{ request.number }}</span>
+    <i
+      *ngIf="showRequestNotification(request, notifications$ | async)"
+      class="pi pi-circle-fill text-green-600 ml-2"
+    ></i>
+  </div>
+</td>
+<td>
+  <span class="p-column-title">Дата</span>
+  {{ request.createdAt | date : 'short' }}
+</td>
+<td>
+  <div class="flex align-items-center">
+    <span>{{ request.requestType | requestType }}</span>
+  </div>
+</td>
+<ng-container *ngIf="request.returnRequest">
+  <td>
+    <span class="p-column-title">Статус</span>
+    <app-request-status-badge
+      [status]="request.returnRequest.status!"
+    ></app-request-status-badge>
+  </td>
+  <td>
+    <span class="p-column-title">Статус доставки</span>
+    <app-return-request-delivery-status-badge
+      [status]="request.returnRequest.delivery.status!"
+    ></app-return-request-delivery-status-badge>
+  </td>
+  <td>
+    <span class="p-column-title" data-cy="order-list-item-amount">
+      Номер ТТН
+    </span>
+    {{ request.returnRequest.delivery.trackingId }}
+  </td>
+</ng-container>
+
+<ng-container *ngIf="adminView">
+  <td>
+    <span class="p-column-title">ПІБ</span>
+    <span class="white-space-nowrap">{{ request.customer!.fullName }}</span>
+  </td>
+</ng-container>

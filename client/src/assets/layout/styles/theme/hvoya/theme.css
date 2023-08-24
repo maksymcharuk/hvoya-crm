@@ -371,8 +371,8 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
   font-weight: 600;
   margin: 0;
   border-bottom: 1px solid #dee2e6;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-datepicker .p-datepicker-header .p-datepicker-prev,
 .p-datepicker .p-datepicker-header .p-datepicker-next {
@@ -628,8 +628,8 @@ p-calendar.p-calendar-clearable.p-calendar-w-btn .p-calendar-clear-icon {
   background: transparent;
   color: var(--text-color);
   width: 3rem;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .p-cascadeselect-panel {
@@ -865,8 +865,8 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
   background: transparent;
   color: var(--text-color);
   width: 3rem;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 .p-dropdown .p-dropdown-clear-icon {
   color: var(--text-color);
@@ -886,8 +886,8 @@ p-chips.p-chips-clearable .p-chips-clear-icon {
   color: #343a40;
   background: #f8f9fa;
   margin: 0;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
   padding-right: 1.75rem;
@@ -951,8 +951,8 @@ p-dropdown.ng-dirty.ng-invalid > .p-dropdown {
 
 .p-editor-container .p-editor-toolbar {
   background: #f8f9fa;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-editor-container .p-editor-toolbar.ql-snow {
   border: 1px solid #dee2e6;
@@ -1039,8 +1039,8 @@ p-dropdown.ng-dirty.ng-invalid > .p-dropdown {
   padding: 0.75rem 1.25rem;
 }
 .p-editor-container .p-editor-content {
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 .p-editor-container .p-editor-content.ql-snow {
   border: 1px solid #dee2e6;
@@ -1048,8 +1048,8 @@ p-dropdown.ng-dirty.ng-invalid > .p-dropdown {
 .p-editor-container .p-editor-content .ql-editor {
   background: #ffffff;
   color: var(--text-color);
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 .p-editor-container .ql-snow.ql-toolbar button:hover,
 .p-editor-container .ql-snow.ql-toolbar button:focus {
@@ -1138,13 +1138,13 @@ p-dropdown.ng-dirty.ng-invalid > .p-dropdown {
 .p-inputgroup input:first-child,
 .p-inputgroup > .p-inputwrapper:first-child > .p-component,
 .p-inputgroup > .p-inputwrapper:first-child > .p-component > .p-inputtext {
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 
 .p-inputgroup .p-float-label:first-child input {
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 
 .p-inputgroup-addon:last-child,
@@ -1152,13 +1152,13 @@ p-dropdown.ng-dirty.ng-invalid > .p-dropdown {
 .p-inputgroup input:last-child,
 .p-inputgroup > .p-inputwrapper:last-child > .p-component,
 .p-inputgroup > .p-inputwrapper:last-child > .p-component > .p-inputtext {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .p-inputgroup .p-float-label:last-child input {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .p-fluid .p-inputgroup .p-button {
@@ -1364,8 +1364,8 @@ p-inputswitch.ng-dirty.ng-invalid > .p-inputswitch {
   color: #343a40;
   background: #f8f9fa;
   margin: 0;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-listbox .p-listbox-header .p-listbox-filter {
   padding-right: 1.75rem;
@@ -1462,8 +1462,8 @@ p-listbox.ng-dirty.ng-invalid > .p-listbox {
   background: transparent;
   color: var(--text-color);
   width: 3rem;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .p-inputwrapper-filled .p-multiselect.p-multiselect-chip .p-multiselect-label {
@@ -1483,8 +1483,8 @@ p-listbox.ng-dirty.ng-invalid > .p-listbox {
   color: #343a40;
   background: #f8f9fa;
   margin: 0;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-multiselect-panel
   .p-multiselect-header
@@ -1901,8 +1901,8 @@ p-togglebutton.ng-dirty.ng-invalid > .p-togglebutton.p-button {
   background: transparent;
   color: var(--text-color);
   width: 3rem;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 p-treeselect.ng-invalid.ng-dirty > .p-treeselect {
@@ -1926,8 +1926,8 @@ p-treeselect.ng-invalid.ng-dirty > .p-treeselect {
   color: #343a40;
   background: #f8f9fa;
   margin: 0;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-treeselect-panel .p-treeselect-header .p-treeselect-filter-container {
   margin-right: 0.5rem;
@@ -3302,8 +3302,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border-width: 0 0 1px 0;
   padding: 1rem 1rem;
   font-weight: 700;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 .p-dataview .p-dataview-loading-icon {
   font-size: 2rem;
@@ -3417,8 +3417,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   color: #343a40;
   background: #f8f9fa;
   margin: 0;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-column-filter-overlay-menu .p-column-filter-constraint {
   padding: 1.25rem;
@@ -3568,12 +3568,12 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border-radius: 0;
 }
 .fc.fc-unthemed .fc-toolbar .fc-button-group .fc-button:first-child {
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 .fc.fc-unthemed .fc-toolbar .fc-button-group .fc-button:last-child {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 .fc.fc-theme-standard .fc-view-harness .fc-scrollgrid {
   border-color: #dee2e6;
@@ -3788,12 +3788,12 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border-radius: 0;
 }
 .fc.fc-theme-standard .fc-toolbar .fc-button-group .fc-button:first-child {
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 .fc.fc-theme-standard .fc-toolbar .fc-button-group .fc-button:last-child {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 .fc.fc-theme-standard a {
   color: var(--text-color);
@@ -3815,8 +3815,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border: 1px solid #dee2e6;
   padding: 1.25rem;
   border-bottom: 0 none;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-orderlist .p-orderlist-header .p-orderlist-title {
   font-weight: 700;
@@ -3839,8 +3839,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   background: #ffffff;
   color: var(--text-color);
   padding: 0.75rem 0;
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 .p-orderlist .p-orderlist-list .p-orderlist-item {
   padding: 0.75rem 1.25rem;
@@ -4028,8 +4028,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border: 1px solid #dee2e6;
   padding: 1.25rem;
   border-bottom: 0 none;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-picklist .p-picklist-header .p-picklist-title {
   font-weight: 700;
@@ -4052,8 +4052,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   background: #ffffff;
   color: var(--text-color);
   padding: 0.75rem 0;
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 .p-picklist .p-picklist-list .p-picklist-item {
   padding: 0.75rem 1.25rem;
@@ -4525,8 +4525,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border-width: 0 0 1px 0;
   padding: 1rem 1rem;
   font-weight: 700;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .p-accordion .p-accordion-header .p-accordion-header-link {
@@ -4582,8 +4582,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border-top: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 .p-accordion p-accordiontab .p-accordion-tab {
   margin-bottom: 4px;
@@ -4782,8 +4782,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   color: var(--text-color);
   padding: 1.25rem;
   font-weight: 700;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
   transition: box-shadow 0.2s;
   margin: 0 0 -2px 0;
 }
@@ -4832,8 +4832,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   padding: 1.25rem;
   border: 0 none;
   color: var(--text-color);
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 
 .p-toolbar {
@@ -4900,8 +4900,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   background: #ffffff;
   color: #343a40;
   padding: 1.5rem;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-dialog .p-dialog-header .p-dialog-title {
   font-weight: 700;
@@ -4936,8 +4936,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   padding: 0 1.5rem 2rem 1.5rem;
 }
 .p-dialog .p-dialog-content:last-of-type {
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 .p-dialog .p-dialog-footer {
   border-top: 0 none;
@@ -4945,8 +4945,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   color: var(--text-color);
   padding: 0 1.5rem 1.5rem 1.5rem;
   text-align: right;
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 .p-dialog .p-dialog-footer button {
   margin: 0 0.5rem 0 0;
@@ -5065,8 +5065,6 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border: 1px solid #dee2e6;
   color: #343a40;
   border-bottom: 0 none;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
 }
 .p-fileupload .p-fileupload-buttonbar .p-button {
   margin-right: 0.5rem;
@@ -5081,8 +5079,6 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   padding: 2rem 1rem;
   border: 1px solid #dee2e6;
   color: var(--text-color);
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
 }
 .p-fileupload .p-progressbar {
   height: 0.25rem;
@@ -5103,6 +5099,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   background: var(--primary-600);
   color: #ffffff;
   border-color: var(--primary-600);
+}
+
+.p-fileupload-choose .p-icon-wrapper {
+  margin-right: 0.5rem;
 }
 
 .p-breadcrumb {
@@ -5464,8 +5464,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   color: #343a40;
   background: #ffffff;
   font-weight: 700;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
 }
 .p-megamenu .p-megamenu-submenu {
   padding: 0.25rem 0;
@@ -5999,8 +5999,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border-top: 0;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link {
   padding: 0.75rem 1.25rem;
@@ -6246,8 +6246,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   color: var(--text-color);
   padding: 1.25rem;
   font-weight: 700;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
+  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
   transition: box-shadow 0.2s;
   margin: 0 0 -2px 0;
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import {
   ORDER_NOTIFICATIONS,
+  REQUEST_NOTIFICATION,
   USER_NOTIFICATION,
 } from '@shared/constants/notification.constants';
 import { AccountService } from '@shared/services/account.service';
@@ -71,6 +72,13 @@ export class AdminComponent {
           routerLink: ['users'],
           badge: '',
           title: USER_NOTIFICATION as any,
+        },
+        {
+          label: 'Запити',
+          icon: 'pi pi-fw pi-flag',
+          routerLink: ['requests'],
+          badge: '',
+          title: REQUEST_NOTIFICATION as any,
         },
         // {
         //   label: 'Запити',

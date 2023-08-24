@@ -1,3 +1,3 @@
-import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
+import { DeliveryStatus } from '@enums/delivery-status.enum';
 
-export type GetStatusFn = (status: string) => OrderDeliveryStatus;
+export type GetStatusFn = (status: string) => DeliveryStatus;

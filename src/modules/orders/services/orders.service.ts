@@ -1,10 +1,12 @@
 import Decimal from 'decimal.js';
 import { FilesService } from 'src/modules/files/services/files.service';
 import {
+  And,
   DataSource,
   EntityManager,
   FindOptionsWhere,
   In,
+  Not,
   QueryRunner,
 } from 'typeorm';
 
@@ -12,8 +14,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import {
-  COMPLETED_ORDER_STATUSES,
   ORDER_STATUSES_TO_DELIERY_STATUSES,
+  RETURNABLE_ORDER_STATUSES,
 } from '@constants/order.constants';
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
@@ -22,6 +24,7 @@ import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
+import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { OrderStatusEntity } from '@entities/order-status.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
@@ -31,7 +34,6 @@ import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
-import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { SyncProduct } from '@interfaces/one-c';
@@ -85,6 +87,48 @@ export class OrdersService {
     const ability = this.caslAbilityFactory.createForUser(user);
 
     let orders = await this.getOrdersWhere();
+
+    return orders
+      .filter((order) => ability.can(Action.Read, order))
+      .map((order) => sanitizeEntity(ability, order));
+  }
+
+  async getOrdersForReturnRequest(userId: string): Promise<OrderEntity[]> {
+    const manager = this.dataSource.createEntityManager();
+    const user = await manager.findOneOrFail(UserEntity, {
+      where: { id: userId },
+    });
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    let statuses = await manager.find(OrderStatusEntity, {
+      where: {
+        status: In(RETURNABLE_ORDER_STATUSES),
+      },
+      relations: ['order'],
+    });
+
+    let requests = await manager.find(OrderReturnRequestEntity, {
+      relations: ['order'],
+    });
+
+    let orders = await this.dataSource.manager.find(OrderEntity, {
+      where: {
+        id: And(
+          In(statuses.map((status) => status.order.id)),
+          Not(In(requests.map((request) => request.order.id))),
+        ),
+      },
+      relations: [
+        'items',
+        'items.product.properties',
+        'items.productProperties.images',
+        'customer',
+      ],
+      order: {
+        createdAt: 'DESC',
+      },
+    });
 
     return orders
       .filter((order) => ability.can(Action.Read, order))
@@ -425,14 +469,14 @@ export class OrdersService {
     order: OrderEntity,
     status: OrderStatus,
   ) {
-    if (!COMPLETED_ORDER_STATUSES.includes(status)) {
+    const deliveryStatus = ORDER_STATUSES_TO_DELIERY_STATUSES.get(status);
+
+    if (!deliveryStatus) {
       return;
     }
 
     await queryRunner.manager.update(OrderDeliveryEntity, order.delivery.id, {
-      status:
-        ORDER_STATUSES_TO_DELIERY_STATUSES.get(status) ||
-        OrderDeliveryStatus.Unspecified,
+      status: deliveryStatus,
     });
   }
 
@@ -579,12 +623,14 @@ export class OrdersService {
 
     await this.updateOrderDeliveryStatus(queryRunner, order, status);
 
-    if (
-      newStatus.status === OrderStatus.Cancelled ||
-      newStatus.status === OrderStatus.Refunded
-    ) {
+    if (newStatus.status === OrderStatus.Cancelled) {
       await this.updateBalanceAndStockOnCancel(queryRunner.manager, order);
       await this.oneCApiClientService.cancel(order.id);
+      await this.oneCApiClientService.refunds({
+        userId,
+        amount: order.total.toNumber(),
+        date: new Date(),
+      });
     }
 
     return newStatus;
@@ -599,12 +645,14 @@ export class OrdersService {
       userId: userId,
       id: order.id,
       total: this.calculateTotal(order.items),
+      number: order.number!,
       status: newStatus,
       items: order.items.map((item) => ({
         sku: item.product.sku,
         quantity: item.quantity,
         price: item.productProperties.price,
       })),
+      description: order.customerNote,
       createdAt: order.createdAt,
     });
   }
@@ -641,6 +689,7 @@ export class OrdersService {
         'delivery.waybill',
         'statuses',
         'customer',
+        'returnRequest.request',
       ],
       order: {
         statuses: {

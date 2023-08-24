@@ -18,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
 import { OrderStatus } from '@shared/enums/order-status.enum';
+import { RequestType } from '@shared/enums/request-type.enum';
 import { Role } from '@shared/enums/role.enum';
 import { OrderUpdateFormGroup } from '@shared/interfaces/dto/update-order.dto';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
@@ -45,6 +46,8 @@ export class OrderViewComponent {
   showWaybillViewDialog = false;
   submitting = false;
   orderId = this.route.snapshot.params['number'];
+
+  RequestType = RequestType;
 
   orderNoteForm = this.formBuilder.group({
     customerNote: [''],

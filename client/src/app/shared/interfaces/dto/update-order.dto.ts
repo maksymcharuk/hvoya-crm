@@ -1,6 +1,6 @@
 import { AbstractControl, FormGroup } from '@angular/forms';
 
-import { OrderDeliveryStatus } from '@shared/enums/order-delivery-status.enum';
+import { DeliveryStatus } from '@shared/enums/delivery-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 
 import { OrderCreateDTO } from './create-order.dto';
@@ -8,7 +8,7 @@ import { OrderCreateDTO } from './create-order.dto';
 export interface OrderUpdateDTO extends Partial<OrderCreateDTO> {
   orderStatus?: OrderStatus;
   orderStatusComment?: string;
-  deliveryStatus?: OrderDeliveryStatus;
+  deliveryStatus?: DeliveryStatus;
   managerNote?: string;
   customerNote?: string;
 }

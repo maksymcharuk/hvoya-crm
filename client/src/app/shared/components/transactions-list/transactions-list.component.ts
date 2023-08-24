@@ -64,9 +64,20 @@ export class TransactionsListComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  navigateToOrder(orderNumber: number) {
+  navigateToEntity(transaction: PaymentTransaction) {
     // TODO: create URL builder service and move this logic there
     const path = this.currentUser?.isAnyAdmin ? '/admin' : '/dashboard';
-    this.router.navigate([`${path}/orders/${orderNumber}`]);
+    let entityPath: any[] = [];
+    if (transaction.order) {
+      entityPath = ['orders', transaction.order.number];
+    } else if (transaction.orderReturnRequest) {
+      entityPath = [
+        'requests',
+        'return-requests',
+        transaction.orderReturnRequest.request?.number,
+      ];
+    }
+
+    this.router.navigate([path, ...entityPath]);
   }
 }

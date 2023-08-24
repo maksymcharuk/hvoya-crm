@@ -6,5 +6,6 @@ export const SHARED_BALANCE_READ_FIELDS = [
   'paymentTransactions[].amount',
   'paymentTransactions[].createdAt',
   ...combine('paymentTransactions[].order', SHARED_ORDER_READ_FIELDS),
+  'paymentTransactions[].orderReturnRequest',
   'paymentTransactions[].status',
 ];

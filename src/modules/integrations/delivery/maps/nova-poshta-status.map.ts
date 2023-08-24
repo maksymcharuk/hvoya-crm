@@ -1,24 +1,24 @@
-import { OrderDeliveryStatus } from '@enums/order-delivery-status.enum';
+import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { GetStatusFn } from '@interfaces/delivery';
 
-export const NovaPoshtaStatusMap: { [key in OrderDeliveryStatus]: string[] } = {
-  [OrderDeliveryStatus.Accepted]: ['прийнято', 'передано'],
-  [OrderDeliveryStatus.InTransit]: ['відправлено', 'прямує', 'відправлення у'],
-  [OrderDeliveryStatus.Arrived]: ['прибув', 'прибуло', 'у відділенні'],
-  [OrderDeliveryStatus.Received]: ['отримано'],
-  [OrderDeliveryStatus.Returned]: ['повернуто'],
-  [OrderDeliveryStatus.Declined]: ['відмовлено'],
-  [OrderDeliveryStatus.Unspecified]: [],
-  [OrderDeliveryStatus.Pending]: ['накладну'],
+export const NovaPoshtaStatusMap: { [key in DeliveryStatus]: string[] } = {
+  [DeliveryStatus.Accepted]: ['прийнято', 'передано'],
+  [DeliveryStatus.InTransit]: ['відправлено', 'прямує', 'відправлення у'],
+  [DeliveryStatus.Arrived]: ['прибув', 'прибуло', 'у відділенні'],
+  [DeliveryStatus.Received]: ['отримано'],
+  [DeliveryStatus.Returned]: ['повернуто', 'повернення'],
+  [DeliveryStatus.Declined]: ['відмовлено', 'відмова', 'відмовився'],
+  [DeliveryStatus.Unspecified]: [],
+  [DeliveryStatus.Pending]: ['накладну'],
 };
 
-export const getStatus: GetStatusFn = (status: string): OrderDeliveryStatus => {
+export const getStatus: GetStatusFn = (status: string): DeliveryStatus => {
   // If status string contains any tag in NovaPoshtaStatusMap, return the key else return Unspecified
   return (
-    (Object.keys(NovaPoshtaStatusMap).find((key: OrderDeliveryStatus) => {
+    (Object.keys(NovaPoshtaStatusMap).find((key: DeliveryStatus) => {
       return NovaPoshtaStatusMap[key].some((tag) => {
         return status.toLowerCase().includes(tag.toLowerCase());
       });
-    }) as OrderDeliveryStatus) || OrderDeliveryStatus.Unspecified
+    }) as DeliveryStatus) || DeliveryStatus.Unspecified
   );
 };

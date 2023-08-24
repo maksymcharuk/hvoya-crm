@@ -30,11 +30,14 @@ export class NotificationsComponent {
     if (!notification.data) {
       return '';
     }
+    // TODO: create URL builder service and move this logic there
     const root = this.user?.isAnyAdmin ? '/admin' : '/dashboard';
     if (notification.dataIsOrder(notification.data)) {
       return `${root}/orders/${notification.data.number}`;
     } else if (notification.dataIsUser(notification.data)) {
       return `${root}/users/${notification.data.id}`;
+    } else if (notification.dataIsRequest(notification.data)) {
+      return `${root}/requests/return-requests/${notification.data.number}`;
     } else {
       return '';
     }

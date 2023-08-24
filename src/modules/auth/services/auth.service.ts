@@ -219,7 +219,7 @@ export class AuthService {
       decodedToken = this.jwtService.verify(token) as JwtTokenPayload;
     } catch (error) {
       throw new HttpException(
-        'Посилання для зміни паролю недійсне або закінчився термін дії. Спробуйте подати заявку на відновлення паролю ще раз.',
+        'Посилання для зміни паролю недійсне або закінчився термін дії. Спробуйте подати запит на відновлення паролю ще раз.',
         HttpStatus.BAD_REQUEST,
       );
     }

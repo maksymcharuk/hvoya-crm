@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { environment } from '@environment/environment';
+import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
 import { AccountService } from '@shared/services/account.service';
+import { UserService } from '@shared/services/user.service';
 
 import { UserBalanceService } from '../../services/user-balance.service';
 
@@ -17,10 +20,13 @@ export class BalanceWidgetComponent {
     'Для поповнення рахунку потрібно вказати номер договору, який вказано на цьому сайті.';
   // TODO: create experiment flags service or something
   environment = environment;
+  currentUser = this.userService.getUser();
 
   constructor(
     private userBalance: UserBalanceService,
     private accountService: AccountService,
+    private readonly router: Router,
+    private readonly userService: UserService,
   ) {}
 
   addFundsTest() {
@@ -29,5 +35,22 @@ export class BalanceWidgetComponent {
 
   redirectToBank() {
     window.open(environment.privatBankPaymentUrl, '_blank');
+  }
+
+  navigateToEntity(transaction: PaymentTransaction) {
+    // TODO: create URL builder service and move this logic there
+    const path = this.currentUser?.isAnyAdmin ? '/admin' : '/dashboard';
+    let entityPath: any[] = [];
+    if (transaction.order) {
+      entityPath = ['orders', transaction.order.number];
+    } else if (transaction.orderReturnRequest) {
+      entityPath = [
+        'requests',
+        'return-requests',
+        transaction.orderReturnRequest.request?.number,
+      ];
+    }
+
+    this.router.navigate([path, ...entityPath]);
   }
 }

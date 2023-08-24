@@ -1,12 +1,12 @@
 export interface RefundsDtoData {
-  companyId: string;
+  companyId?: string;
   userId: string;
   amount: number;
   date: Date;
 }
 
 export class RefundsDto {
-  id_company: string;
+  id_company?: string;
   id_counterparty: string;
   amount: number;
   date: string; // '2023-05-29T13:49:28'
