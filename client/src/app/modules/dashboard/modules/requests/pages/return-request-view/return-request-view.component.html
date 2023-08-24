@@ -30,7 +30,9 @@
         <div *ngIf="request.managerComment" class="my-5">
           <ul class="striped-list">
             <li class="striped-list__item">
-              <div class="striped-list__item-key">Коментар менеджера</div>
+              <div class="striped-list__item-key align-self-baseline">
+                Коментар менеджера
+              </div>
               <div class="striped-list__item-value">
                 <div class="mb-2">{{ request.managerComment }}</div>
                 <div class="flex">
@@ -117,17 +119,9 @@
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Статус доставки</div>
                 <div class="striped-list__item-value">
-                  <div class="py-2 mr-5">
-                    <div class="flex align-items-center mb-1">
-                      <app-return-request-delivery-status-badge
-                        [status]="request.returnRequest!.delivery.status!"
-                      ></app-return-request-delivery-status-badge>
-                    </div>
-                    <div *ngIf="request.returnRequest!.delivery.rawStatus">
-                      <b>Повний статус:</b>
-                      {{ request.returnRequest!.delivery.rawStatus }}
-                    </div>
-                  </div>
+                  <app-return-request-delivery-status-badge
+                    [status]="request.returnRequest!.delivery.status!"
+                  ></app-return-request-delivery-status-badge>
                 </div>
               </li>
               <li class="striped-list__item">

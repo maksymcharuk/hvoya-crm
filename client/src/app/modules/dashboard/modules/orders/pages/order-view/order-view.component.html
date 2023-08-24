@@ -23,6 +23,14 @@
             label="Скасувати замовлення"
             (click)="confirmOrderCancelation()"
           ></p-button>
+          <p-button
+            *ngIf="'return' | able : order"
+            icon="pi pi-times"
+            styleClass="p-button-danger"
+            label="Оформити повернення"
+            [routerLink]="['/dashboard/requests/create']"
+            [queryParams]="{ orderNumber: order.number }"
+          ></p-button>
         </div>
         <div class="my-5">
           <ul class="striped-list">

@@ -13,7 +13,10 @@ import {
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { ORDER_STATUSES_TO_DELIERY_STATUSES } from '@constants/order.constants';
+import {
+  ORDER_STATUSES_TO_DELIERY_STATUSES,
+  RETURNABLE_ORDER_STATUSES,
+} from '@constants/order.constants';
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
@@ -100,8 +103,7 @@ export class OrdersService {
 
     let statuses = await manager.find(OrderStatusEntity, {
       where: {
-        // TODO: figure out if TransferedToDelivery is ok for refunds, or we should add new status
-        status: In([OrderStatus.Fulfilled, OrderStatus.Refused]),
+        status: In(RETURNABLE_ORDER_STATUSES),
       },
       relations: ['order'],
     });
@@ -687,6 +689,7 @@ export class OrdersService {
         'delivery.waybill',
         'statuses',
         'customer',
+        'returnRequest.request',
       ],
       order: {
         statuses: {

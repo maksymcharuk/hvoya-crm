@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { RequestType } from '@shared/enums/request-type.enum';
 
@@ -18,4 +19,9 @@ export class RequestCreateComponent {
       label,
     };
   });
+
+  constructor(private readonly route: ActivatedRoute) {
+    this.selectedType =
+      this.route.snapshot.queryParams['requestType'] || RequestType.Return;
+  }
 }

@@ -5065,8 +5065,6 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border: 1px solid #dee2e6;
   color: #343a40;
   border-bottom: 0 none;
-  border-top-right-radius: 6px;
-  border-top-left-radius: 6px;
 }
 .p-fileupload .p-fileupload-buttonbar .p-button {
   margin-right: 0.5rem;
@@ -5081,8 +5079,6 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   padding: 2rem 1rem;
   border: 1px solid #dee2e6;
   color: var(--text-color);
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
 }
 .p-fileupload .p-progressbar {
   height: 0.25rem;
@@ -5103,6 +5099,10 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   background: var(--primary-600);
   color: #ffffff;
   border-color: var(--primary-600);
+}
+
+.p-fileupload-choose .p-icon-wrapper {
+  margin-right: 0.5rem;
 }
 
 .p-breadcrumb {

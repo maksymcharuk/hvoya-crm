@@ -19,3 +19,9 @@ export const UNUPDATABLE_ORDER_STATUSES = [
   OrderStatus.Refunded,
   OrderStatus.Refused,
 ];
+
+// Only Fulfilled and Refused orders can be returned
+export const RETURNABLE_ORDER_STATUSES = [
+  OrderStatus.Fulfilled,
+  OrderStatus.Refused,
+];

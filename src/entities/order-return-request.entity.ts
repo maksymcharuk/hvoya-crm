@@ -41,7 +41,7 @@ export class OrderReturnRequestEntity extends BaseEntity {
   @JoinColumn()
   delivery: OrderReturnDeliveryEntity;
 
-  @OneToOne(() => OrderEntity)
+  @OneToOne(() => OrderEntity, (order) => order.returnRequest)
   @JoinColumn()
   order: OrderEntity;
 

@@ -4,6 +4,7 @@ import { OrderStatus as OrderStatusEnum } from '@shared/enums/order-status.enum'
 
 import { BaseEntity } from './base.entity';
 import { File } from './file.entity';
+import { OrderReturnRequest } from './order-return-request.entity';
 import { ProductProperties, ProductVariant } from './product.entity';
 import { User } from './user.entity';
 
@@ -73,6 +74,7 @@ export class Order extends BaseEntity {
   customer: User;
   customerNote?: string;
   managerNote?: string;
+  returnRequest?: OrderReturnRequest | null;
 
   get currentStatus(): OrderStatus {
     return this.statuses.length ? this.statuses[0]! : new OrderStatus();
@@ -89,5 +91,8 @@ export class Order extends BaseEntity {
     this.customer = new User(data?.customer);
     this.customerNote = data?.customerNote;
     this.managerNote = data?.managerNote;
+    this.returnRequest = data?.returnRequest
+      ? new OrderReturnRequest(data?.returnRequest)
+      : null;
   }
 }

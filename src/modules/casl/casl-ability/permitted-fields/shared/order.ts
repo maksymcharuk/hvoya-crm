@@ -6,4 +6,5 @@ export const SHARED_ORDER_READ_FIELDS = [
   'items',
   'delivery',
   'createdAt',
+  'returnRequest',
 ];

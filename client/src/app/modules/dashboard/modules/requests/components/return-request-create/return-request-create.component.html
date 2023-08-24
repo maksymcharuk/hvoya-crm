@@ -1,18 +1,16 @@
-<form
-  [formGroup]="returnRequestForm"
-  (ngSubmit)="onSubmit(returnRequestForm.value)"
->
+<form [formGroup]="returnRequestForm" (ngSubmit)="onSubmit()">
   <div class="p-fluid p-formgrid grid">
     <div class="field col-12">
       <label for="orders">Замовлення:</label>
       <p-dropdown
         id="orders"
-        [options]="orders"
-        optionLabel="number"
-        [showClear]="true"
         filterBy="number"
         placeholder="Виберіть замовлення для повернення"
-        (onChange)="onOrderSelected($event.value)"
+        optionLabel="number"
+        formControlName="order"
+        [options]="(orders$ | async) || []"
+        [showClear]="true"
+        [filter]="true"
       ></p-dropdown>
     </div>
     <ng-container formArrayName="requestedItems">
@@ -26,7 +24,7 @@
         </div>
       </ng-container>
     </ng-container>
-    <ng-container *ngIf="orderSelected">
+    <ng-container *ngIf="orderControl.value">
       <div class="field col-6">
         <label for="customerComment">Причина повернення:</label>
         <textarea
@@ -112,7 +110,8 @@
           [auto]="true"
           [maxFileSize]="1000000"
           [disabled]="submitting"
-          (uploadHandler)="onWaybillUpload($event)"
+          (uploadHandler)="onWaybillUpload($event.files)"
+          (onRemove)="onWaybillRemove()"
         >
         </p-fileUpload>
         <app-form-control-error-message

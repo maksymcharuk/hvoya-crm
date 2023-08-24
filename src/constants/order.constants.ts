@@ -9,6 +9,12 @@ export const CANCELABLE_ORDER_STATUSES = [
   OrderStatus.Processing,
 ];
 
+// Only Fulfilled and Refused orders can be returned
+export const RETURNABLE_ORDER_STATUSES = [
+  OrderStatus.Fulfilled,
+  OrderStatus.Refused,
+];
+
 // Order statuses that can't be changed manually
 export const UNCHANGEABLE_ORDER_STATUSES = [
   OrderStatus.Fulfilled,

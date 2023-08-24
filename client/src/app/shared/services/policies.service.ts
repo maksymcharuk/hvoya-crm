@@ -7,7 +7,10 @@ import {
   PureAbility,
 } from '@casl/ability';
 
-import { UNUPDATABLE_ORDER_STATUSES } from '@shared/constants/order.constants';
+import {
+  RETURNABLE_ORDER_STATUSES,
+  UNUPDATABLE_ORDER_STATUSES,
+} from '@shared/constants/order.constants';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Role } from '@shared/enums/role.enum';
@@ -102,6 +105,13 @@ export class PoliciesService {
           ['update', 'cancel'],
           Order,
           (order: Order) => order.currentStatus.status === OrderStatus.Pending,
+        );
+        can(
+          'return',
+          Order,
+          (order: Order) =>
+            !order.returnRequest &&
+            RETURNABLE_ORDER_STATUSES.includes(order.currentStatus.status),
         );
         can('create', OrderReturnRequest);
         can(

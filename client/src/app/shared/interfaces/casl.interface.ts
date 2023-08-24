@@ -17,6 +17,7 @@ export type Actions =
   | 'delete'
   // Orders
   | 'cancel'
+  | 'return'
   // Requests
   | 'approve'
   // Pages

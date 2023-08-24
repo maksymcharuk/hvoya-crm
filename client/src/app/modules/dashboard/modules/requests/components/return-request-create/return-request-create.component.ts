@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { finalize } from 'rxjs';
+import { Observable, finalize, share } from 'rxjs';
 
 import { Component } from '@angular/core';
 import {
@@ -9,7 +9,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   IMAGE_ACCEPTABLE_FILE_FORMATS,
@@ -34,38 +34,55 @@ export class ReturnRequestCreateComponent {
   deliveryServices = Object.keys(DeliveryService);
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   imageFormats = IMAGE_ACCEPTABLE_FILE_FORMATS;
-  orderSelected = false;
   submitting = false;
-  selectedOrder!: Order;
+  orders$: Observable<Order[]> = this.ordersService
+    .getOrdersForReturnRequest()
+    .pipe(share());
 
   returnRequestForm = this.formBuilder.nonNullable.group({
-    trackingId: [
-      '',
-      [Validators.required, alphanumeric({ allowSpaces: true })],
-    ],
-    waybill: [null, Validators.required],
+    order: this.formBuilder.nonNullable.control<Order | null>(
+      null,
+      Validators.required,
+    ),
+    trackingId: this.formBuilder.nonNullable.control<string>('', [
+      Validators.required,
+      alphanumeric({ allowSpaces: true }),
+    ]),
+    waybill: this.formBuilder.nonNullable.control<File | null>(
+      null,
+      Validators.required,
+    ),
     customerImages: this.formBuilder.nonNullable.array<File>([]),
-    deliveryService: [this.deliveryServices[0], Validators.required],
-    requestedItems: this.formBuilder.nonNullable.array([]),
-    customerComment: ['', Validators.required],
-    requestType: [RequestType.Return],
+    deliveryService: this.formBuilder.nonNullable.control<DeliveryService>(
+      DeliveryService.NovaPoshta,
+      Validators.required,
+    ),
+    requestedItems: this.formBuilder.nonNullable.array<RequestItemUIEntity>([]),
+    customerComment: this.formBuilder.nonNullable.control<string>(
+      '',
+      Validators.required,
+    ),
+    requestType: this.formBuilder.nonNullable.control<RequestType>(
+      RequestType.Return,
+      Validators.required,
+    ),
   });
 
-  get requestedItems() {
-    return this.returnRequestForm.get(
-      'requestedItems',
-    ) as FormArray<FormControl>;
+  get orderControl(): AbstractControl {
+    return this.returnRequestForm.controls.order;
+  }
+
+  get requestedItems(): FormArray<FormControl<RequestItemUIEntity>> {
+    return this.returnRequestForm.controls.requestedItems;
   }
 
   get waybillControl(): AbstractControl {
-    return this.returnRequestForm.get('waybill')!;
+    return this.returnRequestForm.controls.waybill;
   }
 
   get customerImagesControl(): FormArray<FormControl<File>> {
     return this.returnRequestForm.controls.customerImages;
   }
-
-  orders: Order[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -74,13 +91,19 @@ export class ReturnRequestCreateComponent {
     private readonly messageService: MessageService,
     private readonly router: Router,
     private readonly userService: UserService,
+    private readonly route: ActivatedRoute,
   ) {
-    this.ordersService.getOrdersForReturnRequest().subscribe((orders) => {
-      this.orders = orders;
+    this.orders$.subscribe((orders) => {
+      this.setOrder(orders, this.route.snapshot.queryParams['orderNumber']);
+    });
+    this.orderControl.valueChanges.subscribe((order) => {
+      this.onOrderChange(order);
     });
   }
 
-  onSubmit(value: any) {
+  onSubmit() {
+    const formValue = this.returnRequestForm.value;
+
     if (!this.returnRequestForm.valid) {
       this.returnRequestForm.markAllAsTouched();
       return;
@@ -89,24 +112,24 @@ export class ReturnRequestCreateComponent {
     this.submitting = true;
     const formData = new FormData();
 
-    value = {
-      customerComment: value.customerComment,
-      requestType: value.requestType,
+    const value = {
+      customerComment: formValue.customerComment,
+      requestType: formValue.requestType,
       returnRequest: {
-        trackingId: value.trackingId,
-        deliveryService: value.deliveryService,
-        requestedItems: value.requestedItems,
-        orderNumber: this.selectedOrder.number,
+        trackingId: formValue.trackingId,
+        deliveryService: formValue.deliveryService,
+        requestedItems: formValue.requestedItems,
+        orderNumber: formValue.order!.number,
       },
-      waybill: value.waybill,
-      customerImages: value.customerImages,
+      waybill: formValue.waybill,
+      customerImages: formValue.customerImages,
     };
 
-    formData.append('customerComment', value.customerComment);
-    formData.append('requestType', value.requestType);
+    formData.append('customerComment', value.customerComment!);
+    formData.append('requestType', value.requestType!);
     formData.append('returnRequest', JSON.stringify(value.returnRequest));
-    formData.append('waybill', value.waybill);
-    value.customerImages.forEach((image: File) => {
+    formData.append('waybill', value.waybill!);
+    value.customerImages!.forEach((image: File) => {
       formData.append('images', image);
     });
 
@@ -129,15 +152,13 @@ export class ReturnRequestCreateComponent {
       });
   }
 
-  onOrderSelected(order: Order) {
+  onOrderChange(order: Order) {
     this.requestedItems.clear();
-    this.orderSelected = false;
-    this.selectedOrder = order;
 
     if (order) {
       order.items.forEach((item: OrderItem) => {
         this.requestedItems.push(
-          this.formBuilder.control(
+          this.formBuilder.nonNullable.control(
             new RequestItemUIEntity({
               quantity: item.quantity,
               orderItem: item,
@@ -145,12 +166,15 @@ export class ReturnRequestCreateComponent {
           ),
         );
       });
-      this.orderSelected = true;
     }
   }
 
-  onWaybillUpload(event: any) {
-    this.waybillControl.patchValue(event.files[0]);
+  onWaybillUpload(files: File[]) {
+    this.waybillControl.patchValue(files[0]);
+  }
+
+  onWaybillRemove() {
+    this.waybillControl.patchValue(null);
   }
 
   onCustomerImagesUpload(files: File[]) {
@@ -166,5 +190,19 @@ export class ReturnRequestCreateComponent {
         (control) => control.value !== file,
       );
     this.customerImagesControl.updateValueAndValidity();
+  }
+
+  private setOrder(orders: Order[], orderNumber?: number) {
+    if (!orderNumber) {
+      return;
+    }
+
+    const order = orders.find((o) => o.number === orderNumber);
+
+    if (!order) {
+      return;
+    }
+
+    this.orderControl.patchValue(order);
   }
 }
