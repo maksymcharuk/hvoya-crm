@@ -1,8 +1,8 @@
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { BehaviorSubject, finalize } from 'rxjs';
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -19,6 +19,15 @@ import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestItemUIEntity } from '@shared/interfaces/ui-entities/request-item.ui-entity';
 import { RequestsService } from '@shared/services/requests.service';
 
+enum Action {
+  Approve = 'approve',
+  Reject = 'reject',
+}
+
+const CONFIRM_MESSAGE =
+  'Ви справді хочете підтвердити цей запит на повернення?';
+const REJECT_MESSAGE = 'Ви справді хочете відхилити цей запит на повернення?';
+
 @Component({
   selector: 'app-return-request-view',
   templateUrl: './return-request-view.component.html',
@@ -32,6 +41,9 @@ export class ReturnRequestViewComponent implements OnInit {
   requestedItems: OrderReturnRequestItemEntity[] = [];
   submitting = false;
   imageFormats = IMAGE_ACCEPTABLE_FILE_FORMATS;
+  confirmRejectHeader = '';
+  acceptButtonStyleClass = '';
+  action = Action;
 
   returnRequestForm = this.formBuilder.nonNullable.group(
     {
@@ -68,6 +80,8 @@ export class ReturnRequestViewComponent implements OnInit {
     private readonly requestsService: RequestsService,
     private readonly formBuilder: FormBuilder,
     private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService,
+    private readonly cdRef: ChangeDetectorRef,
   ) {
     this.requestsService
       .getRequest(this.requestNumber)
@@ -135,6 +149,8 @@ export class ReturnRequestViewComponent implements OnInit {
       formData.append('images', image);
     });
 
+    this.submitting = true;
+
     this.requestsService
       .approveRequest(formData, this.requestNumber)
       .pipe(finalize(() => (this.submitting = false)))
@@ -164,6 +180,8 @@ export class ReturnRequestViewComponent implements OnInit {
     formValue.managerImages!.forEach((image: any) => {
       formData.append('images', image);
     });
+
+    this.submitting = true;
 
     this.requestsService
       .rejectRequest(formData, this.requestNumber)
@@ -213,5 +231,24 @@ export class ReturnRequestViewComponent implements OnInit {
         (control) => control.value !== file,
       );
     this.managerImagesControl.updateValueAndValidity();
+  }
+
+  confirmOrRejectToggle(action: Action) {
+    this.confirmRejectHeader =
+      action === Action.Approve ? CONFIRM_MESSAGE : REJECT_MESSAGE;
+    this.acceptButtonStyleClass =
+      action === Action.Approve ? 'p-button-success' : 'p-button-danger';
+
+    this.cdRef.detectChanges();
+
+    this.confirmationService.confirm({
+      accept: () => {
+        if (action === Action.Approve) {
+          this.approveReturnRequest();
+        } else {
+          this.rejectReturnRequest();
+        }
+      },
+    });
   }
 }

@@ -12,13 +12,11 @@ export const COMMENT_REQUIRED_ORDER_STATUSES = [
   OrderStatus.Refused,
 ];
 
-// Order statuses when order can not be updated
-export const UNUPDATABLE_ORDER_STATUSES = [
-  OrderStatus.Fulfilled,
-  OrderStatus.Cancelled,
-  OrderStatus.Refunded,
-  OrderStatus.Refused,
-];
+// Order statuses when order can be updated
+export const UPDATABLE_ORDER_STATUSES = [OrderStatus.Pending];
+
+// Order statuses that can be et manually
+export const MANUAL_ORDER_STATUSES = [OrderStatus.Cancelled];
 
 // Only Fulfilled and Refused orders can be returned
 export const RETURNABLE_ORDER_STATUSES = [

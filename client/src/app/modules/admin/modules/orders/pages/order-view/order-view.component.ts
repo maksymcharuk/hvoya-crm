@@ -15,9 +15,9 @@ import { ActivatedRoute } from '@angular/router';
 
 import {
   COMMENT_REQUIRED_ORDER_STATUSES,
+  MANUAL_ORDER_STATUSES,
   WAYBILL_ACCEPTABLE_FILE_FORMATS,
 } from '@shared/constants/order.constants';
-import { OrderStatus } from '@shared/enums/order-status.enum';
 import { OrderUpdateFormGroup } from '@shared/interfaces/dto/update-order.dto';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
 import { Order } from '@shared/interfaces/entities/order.entity';
@@ -38,9 +38,9 @@ export class OrderViewComponent implements OnDestroy {
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
   statusSubmitting$ = new BehaviorSubject<boolean>(false);
   statusEdit = false;
-  orderStatuses = Object.entries(OrderStatus).map(([key, value]) => ({
-    label: key,
-    value,
+  orderStatuses = MANUAL_ORDER_STATUSES.map((status) => ({
+    label: status,
+    value: status,
   }));
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   showWaybillViewDialog = false;
