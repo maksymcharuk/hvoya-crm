@@ -1,5 +1,7 @@
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
+import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
@@ -35,6 +37,8 @@ import { RequestsRoutingModule } from './requests-routing.module';
     InputTextareaModule,
     ImageModule,
     FileUploadModule,
+    ConfirmDialogModule,
   ],
+  providers: [ConfirmationService],
 })
 export class RequestsModule {}

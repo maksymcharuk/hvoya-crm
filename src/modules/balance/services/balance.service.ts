@@ -141,6 +141,7 @@ export class BalanceService {
       transaction = await queryRunner.manager.save(PaymentTransactionEntity, {
         id: transaction.id,
         status: TransactionStatus.Success,
+        syncOneCStatus: TransactionSyncOneCStatus.Success,
       });
 
       await this.oneCService.depositFunds({

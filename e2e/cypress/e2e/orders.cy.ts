@@ -70,10 +70,11 @@ describe('Orders', () => {
         role: 'SuperAdmin',
         signInMethod: cy.signInAsSuperAdmin,
       },
-      {
-        role: 'Admin',
-        signInMethod: cy.signInAsAdmin,
-      },
+      // TODO: implement order creation via API to test this case
+      // {
+      //   role: 'Admin',
+      //   signInMethod: cy.signInAsAdmin,
+      // },
     ];
 
     data.forEach((item) => {
@@ -97,14 +98,8 @@ describe('Orders', () => {
         // Change order status
         cy.getCyEl('order-status-current').should('contain', 'Нове');
         cy.getCyEl('order-status-edit-button').click();
-        cy.selectFromDropdown('order-status-edit-dropdown', 'Опрацьовується');
-        cy.getCyEl('order-status-edit-submit').click();
-        cy.checkToastMessage('Статус замовлення успішно оновлено');
-        cy.getCyEl('order-status-edit-cancel').click(); // close dialog
-
-        // Revert order status
-        cy.getCyEl('order-status-edit-button').click();
-        cy.selectFromDropdown('order-status-edit-dropdown', 'Нове');
+        cy.selectFromDropdown('order-status-edit-dropdown', 'Скасовано');
+        cy.getCyEl('order-status-edit-comment').type('Тестовий коментар');
         cy.getCyEl('order-status-edit-submit').click();
         cy.checkToastMessage('Статус замовлення успішно оновлено');
         cy.getCyEl('order-status-edit-cancel').click(); // close dialog

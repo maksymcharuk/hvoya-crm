@@ -36,6 +36,7 @@ import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
+import { TransactionSyncOneCStatus } from '@enums/transaction-sync-one-c-status.enum';
 import { SyncProduct } from '@interfaces/one-c';
 import { validateOrderStatus } from '@utils/orders/validate-orer-status.util';
 import { sanitizeEntity } from '@utils/serialize-entity.util';
@@ -236,6 +237,7 @@ export class OrdersService {
         transaction.id,
         {
           status: TransactionStatus.Success,
+          syncOneCStatus: TransactionSyncOneCStatus.Success,
         },
       );
 
@@ -491,6 +493,7 @@ export class OrdersService {
     const transaction = await manager.save(PaymentTransactionEntity, {
       amount: order.total,
       status: TransactionStatus.Success,
+      syncOneCStatus: TransactionSyncOneCStatus.Success,
       balance,
       order,
     });

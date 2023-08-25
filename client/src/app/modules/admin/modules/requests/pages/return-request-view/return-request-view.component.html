@@ -75,7 +75,7 @@
                     </app-form-control-error-message>
                   </div>
                   <div class="field col-6">
-                    <label for="customerImages">Зображення:</label>
+                    <label for="customerImages">Фото:</label>
                     <p-fileUpload
                       [accept]="imageFormats"
                       [customUpload]="true"
@@ -94,15 +94,23 @@
                 <p-button
                   icon="pi pi-check"
                   label="Підтвердити"
-                  (click)="approveReturnRequest()"
+                  [disabled]="submitting"
+                  (click)="confirmOrRejectToggle(action.Approve)"
                 ></p-button>
                 <p-button
                   icon="pi pi-times"
                   label="Відхилити"
                   styleClass="p-button-danger"
                   class="ml-3"
-                  (click)="rejectReturnRequest()"
+                  [disabled]="submitting"
+                  (click)="confirmOrRejectToggle(action.Reject)"
                 ></p-button>
+
+                <p-confirmDialog
+                  rejectButtonStyleClass="p-button-outlined p-button-secondary"
+                  [acceptButtonStyleClass]="acceptButtonStyleClass"
+                  [header]="confirmRejectHeader"
+                ></p-confirmDialog>
               </div>
             </form>
           </ng-container>

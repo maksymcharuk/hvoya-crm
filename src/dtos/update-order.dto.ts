@@ -2,6 +2,7 @@ import { Transform } from 'class-transformer';
 import {
   IsAlphanumeric,
   IsEnum,
+  IsIn,
   IsNotEmpty,
   IsOptional,
   ValidateIf,
@@ -24,6 +25,9 @@ export class UpdateOrderDto extends PartialType(CreateOrderDto) {
 
   @IsOptional()
   @IsEnum(OrderStatus)
+  @IsIn([OrderStatus.Cancelled], {
+    message: 'Вручну можна змінити статус лише на "Скасовано"',
+  })
   orderStatus?: OrderStatus;
 
   @ValidateIf((o) => {

@@ -7,6 +7,7 @@ import {
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
+import { CANCELABLE_ORDER_STATUSES } from '@constants/order.constants';
 import { BalanceEntity } from '@entities/balance.entity';
 import { CartEntity } from '@entities/cart.entity';
 import { FaqEntity } from '@entities/faq.entity';
@@ -23,7 +24,6 @@ import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { OrderReturnRequestStatus } from '@enums/order-return-request-status.enum';
-import { OrderStatus } from '@enums/order-status.enum';
 import { Role } from '@enums/role.enum';
 
 import { ADMIN_ORDER_READ_FIELDS } from './permitted-fields/admin/order';
@@ -239,7 +239,9 @@ export class CaslAbilityFactory {
     // Can update or cancel only his own orders with status pending
     can([Action.Update, Action.Cancel], OrderEntity, {
       ['customer.id' as keyof OrderEntity]: currentUser.id,
-      ['statuses.0.status' as keyof OrderEntity]: OrderStatus.Pending,
+      ['statuses.0.status' as keyof OrderEntity]: {
+        $in: CANCELABLE_ORDER_STATUSES,
+      },
     });
     // Can read only his own orders
     can([Action.Read], OrderEntity, USER_ORDER_READ_FIELDS, {

@@ -27,6 +27,7 @@ import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { Folder } from '@enums/folder.enum';
 import { OrderReturnRequestStatus } from '@enums/order-return-request-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
+import { TransactionSyncOneCStatus } from '@enums/transaction-sync-one-c-status.enum';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 import { FilesService } from '@modules/files/services/files.service';
@@ -453,6 +454,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       {
         amount: total,
         status: TransactionStatus.Success,
+        syncOneCStatus: TransactionSyncOneCStatus.Success,
         balance,
         orderReturnRequest,
       },

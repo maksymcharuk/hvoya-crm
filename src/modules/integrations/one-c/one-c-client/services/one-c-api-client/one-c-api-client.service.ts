@@ -28,7 +28,7 @@ import {
   SyncProductsResponseData,
 } from '@interfaces/one-c';
 
-const { isTest, isDevelopment } = config();
+const { isTest } = config();
 
 @Injectable()
 export class OneCApiClientService {
@@ -207,7 +207,7 @@ export class OneCApiClientService {
   }
 
   private makeApiCall<T>(apiCall: Observable<T>): Promise<T> {
-    if (isTest() || isDevelopment()) {
+    if (isTest()) {
       return Promise.resolve() as Promise<T>;
     }
     return firstValueFrom(

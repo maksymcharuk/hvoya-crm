@@ -9,7 +9,7 @@ import {
 
 import {
   RETURNABLE_ORDER_STATUSES,
-  UNUPDATABLE_ORDER_STATUSES,
+  UPDATABLE_ORDER_STATUSES,
 } from '@shared/constants/order.constants';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
@@ -67,11 +67,8 @@ export class PoliciesService {
         can('create', User);
         can('update', User, (user: User) => user.role !== Role.SuperAdmin);
         can(['create', 'update'], Faq);
-        can(
-          'update',
-          Order,
-          (order: Order) =>
-            !UNUPDATABLE_ORDER_STATUSES.includes(order.currentStatus.status),
+        can('update', Order, (order: Order) =>
+          UPDATABLE_ORDER_STATUSES.includes(order.currentStatus.status),
         );
         can(
           ['approve', 'update'],
@@ -85,11 +82,8 @@ export class PoliciesService {
         can('read', User);
         can('update', User, (user: User) => user.role === Role.User);
         can(['create', 'update'], Faq);
-        can(
-          'update',
-          Order,
-          (order: Order) =>
-            !UNUPDATABLE_ORDER_STATUSES.includes(order.currentStatus.status),
+        can('update', Order, (order: Order) =>
+          UPDATABLE_ORDER_STATUSES.includes(order.currentStatus.status),
         );
         can(
           ['approve', 'update'],
