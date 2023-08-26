@@ -24,12 +24,6 @@
   <div class="order-view grid">
     <div class="col-12">
       <div class="card order-view__content">
-        <p-progressBar
-          *ngIf="submitting"
-          class="order-view__progress"
-          mode="indeterminate"
-          [style]="{ height: '4px' }"
-        ></p-progressBar>
         <h4 class="flex align-items-center">
           <span>Замовлення №{{ order.number }}</span>
         </h4>
@@ -73,6 +67,12 @@
               <div class="striped-list__item-key">Нотатка</div>
               <div class="striped-list__item-value">
                 <form class="p-fluid" [formGroup]="orderNoteForm">
+                  <p-progressBar
+                    class="order-view__note-progress-bar"
+                    mode="indeterminate"
+                    [class.visible]="isNoteSaving"
+                    [style]="{ height: '4px' }"
+                  ></p-progressBar>
                   <textarea
                     rows="5"
                     cols="30"

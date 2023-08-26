@@ -6,6 +6,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
@@ -49,6 +50,7 @@ import { UsersRoutingModule } from './users-routing.module';
     DialogModule,
     TooltipModule,
     MultiSelectModule,
+    ProgressBarModule,
   ],
   providers: [ConfirmationService],
 })

@@ -19,6 +19,7 @@
   align-items: center;
   background-color: #ffffff;
   padding: 30px 30px 50px;
+  position: relative;
   max-width: 100%;
   width: 800px;
 
@@ -31,6 +32,18 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+
+  &__progress-bar {
+    position: absolute;
+    border: 0.5rem solid #fff;
+    bottom: 100%;
+    width: 100%;
+    visibility: hidden;
+
+    &.visible {
+      visibility: visible;
+    }
   }
 
   a {

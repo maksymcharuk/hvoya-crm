@@ -9,11 +9,12 @@
     position: relative;
   }
 
-  &__progress {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+  &__note-progress-bar {
+    visibility: hidden;
+
+    &.visible {
+      visibility: visible;
+    }
   }
 }
 

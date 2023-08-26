@@ -9,9 +9,7 @@ export interface CreateUserDto {
   email: string;
   password: string;
   phoneNumber: string;
-  storeName: string;
   website: string;
-  bio: string;
 }
 
 export interface CreateAdminDto {
@@ -49,9 +47,7 @@ export class UsersService {
     email: 'test-user@email.com',
     password: 'Test12345',
     phoneNumber: '0679876542',
-    storeName: 'Whole Foods',
     website: 'https://hvoya.com',
-    bio: 'I am a test user',
   };
 
   createUser(data?: Partial<CreateUserDto>) {

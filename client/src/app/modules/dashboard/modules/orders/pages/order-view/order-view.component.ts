@@ -10,12 +10,14 @@ import {
   mergeMap,
   of,
   takeUntil,
+  tap,
 } from 'rxjs';
 
 import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { FIELD_UPDATE_DEBOUNCE_TIME } from '@shared/constants/base.constants';
 import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { RequestType } from '@shared/enums/request-type.enum';
@@ -44,8 +46,8 @@ export class OrderViewComponent {
   roleEnum = Role;
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   showWaybillViewDialog = false;
-  submitting = false;
   orderId = this.route.snapshot.params['number'];
+  isNoteSaving = false;
 
   RequestType = RequestType;
 
@@ -104,7 +106,18 @@ export class OrderViewComponent {
     });
 
     this.customerNoteControl.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(700), distinctUntilChanged())
+      .pipe(
+        tap(() => (this.isNoteSaving = true)),
+        debounceTime(FIELD_UPDATE_DEBOUNCE_TIME),
+        takeUntil(this.destroy$),
+        distinctUntilChanged((valueP, valueC) => {
+          const equals = valueP === valueC;
+          if (equals) {
+            this.isNoteSaving = false;
+          }
+          return equals;
+        }),
+      )
       .subscribe((note) => {
         const formData = new FormData();
         formData.append('customerNote', note);
@@ -155,10 +168,9 @@ export class OrderViewComponent {
   }
 
   updateOrderNote(note: FormData) {
-    this.submitting = true;
     this.ordersService
       .updateByCustomer(this.orderId, note)
-      .pipe(finalize(() => (this.submitting = false)))
+      .pipe(finalize(() => (this.isNoteSaving = false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
         this.messageService.add({

@@ -5,7 +5,7 @@ export interface CounterpartyDtoData {
   middleName: string;
   email: string;
   phoneNumber: string;
-  bio: string;
+  bio?: string;
 }
 
 export class Counterparty {
@@ -24,7 +24,7 @@ export class Counterparty {
     this.surname = data.middleName;
     this.email = data.email;
     this.phonenumber = data.phoneNumber;
-    this.description = data.bio;
+    this.description = data.bio || '';
   }
 }
 

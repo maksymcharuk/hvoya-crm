@@ -118,23 +118,6 @@
     </app-form-control-error-message>
   </div>
   <div class="field">
-    <label for="storeName">Назва магазину:</label>
-    <input
-      id="storeName"
-      pInputText
-      pKeyFilter="alpha"
-      formControlName="storeName"
-      data-cy="store-name"
-    />
-    <app-form-control-error-message
-      [formGroup]="updateProfileForm"
-      controlName="storeName"
-      errorType="required"
-      errorMessage="Потрібно ввести назву магазину"
-    >
-    </app-form-control-error-message>
-  </div>
-  <div class="field">
     <label for="website">
       Веб-сайт або сторінка у соц. мережі
       <i
@@ -158,24 +141,6 @@
       controlName="website"
       errorType="required"
       errorMessage="Потрібно ввести посилання на веб-сайт або сторінку у соціальній мережі"
-    >
-    </app-form-control-error-message>
-  </div>
-  <div class="field">
-    <label for="bio">Про себе:</label>
-    <textarea
-      id="bio"
-      pInputTextarea
-      [rows]="5"
-      [autoResize]="true"
-      formControlName="bio"
-      data-cy="bio"
-    ></textarea>
-    <app-form-control-error-message
-      [formGroup]="updateProfileForm"
-      controlName="bio"
-      errorType="required"
-      errorMessage="Потрібно ввести опис"
     >
     </app-form-control-error-message>
   </div>
