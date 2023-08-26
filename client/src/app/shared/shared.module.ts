@@ -70,6 +70,7 @@ import {
   RoleNamePipe,
   TransactionStatusPipe,
   TransactionSyncOneCStatusPipe,
+  TruncatePipe,
 } from './pipes';
 
 registerLocaleData(localeUk);
@@ -85,6 +86,7 @@ const PIPES = [
   ProductPackageSize,
   ProductWeight,
   RequestTypePipe,
+  TruncatePipe,
 ];
 
 const COMPONENTS = [
