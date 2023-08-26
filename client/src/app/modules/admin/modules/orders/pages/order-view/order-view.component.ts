@@ -7,12 +7,14 @@ import {
   distinctUntilChanged,
   finalize,
   takeUntil,
+  tap,
 } from 'rxjs';
 
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { FIELD_UPDATE_DEBOUNCE_TIME } from '@shared/constants/base.constants';
 import {
   COMMENT_REQUIRED_ORDER_STATUSES,
   MANUAL_ORDER_STATUSES,
@@ -45,7 +47,7 @@ export class OrderViewComponent implements OnDestroy {
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   showWaybillViewDialog = false;
   showOrderStatusDialog = false;
-  submitting = false;
+  isNoteSaving = false;
 
   updateWaybillForm = this.formBuilder.group({
     trackingId: [
@@ -134,7 +136,18 @@ export class OrderViewComponent implements OnDestroy {
     });
 
     this.managerNoteControl.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(700), distinctUntilChanged())
+      .pipe(
+        tap(() => (this.isNoteSaving = true)),
+        takeUntil(this.destroy$),
+        debounceTime(FIELD_UPDATE_DEBOUNCE_TIME),
+        distinctUntilChanged((valueP, valueC) => {
+          const equals = valueP === valueC;
+          if (equals) {
+            this.isNoteSaving = false;
+          }
+          return equals;
+        }),
+      )
       .subscribe((note) => {
         const formData = new FormData();
         formData.append('managerNote', note);
@@ -221,10 +234,9 @@ export class OrderViewComponent implements OnDestroy {
   }
 
   updateOrderNote(note: FormData) {
-    this.submitting = true;
     this.ordersService
       .orderUpdate(this.route.snapshot.params['number'], note)
-      .pipe(finalize(() => (this.submitting = false)))
+      .pipe(finalize(() => (this.isNoteSaving = false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
         this.messageService.add({

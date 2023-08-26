@@ -6,4 +6,12 @@
     flex-wrap: wrap;
     margin-bottom: 1rem;
   }
+
+  &__note-progress-bar {
+    visibility: hidden;
+
+    &.visible {
+      visibility: visible;
+    }
+  }
 }

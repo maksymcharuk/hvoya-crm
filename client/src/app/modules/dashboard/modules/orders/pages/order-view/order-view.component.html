@@ -24,12 +24,6 @@
   <div class="grid order-view">
     <div class="col-12">
       <div class="card order-view__content">
-        <p-progressBar
-          *ngIf="submitting"
-          class="order-view__progress"
-          mode="indeterminate"
-          [style]="{ height: '4px' }"
-        ></p-progressBar>
         <div class="flex align-items-center justify-content-between mb-3">
           <h4 class="flex align-items-center m-0">
             <span>Замовлення №{{ order.number }}</span>
@@ -73,6 +67,12 @@
                   [formGroup]="orderNoteForm"
                   *ngIf="'update' | able : order; else noUpdateNote"
                 >
+                  <p-progressBar
+                    class="order-view__note-progress-bar"
+                    mode="indeterminate"
+                    [class.visible]="isNoteSaving"
+                    [style]="{ height: '4px' }"
+                  ></p-progressBar>
                   <textarea
                     rows="5"
                     cols="30"

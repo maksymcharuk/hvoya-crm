@@ -6,6 +6,7 @@ import {
   distinctUntilChanged,
   finalize,
   takeUntil,
+  tap,
 } from 'rxjs';
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -17,6 +18,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { FIELD_UPDATE_DEBOUNCE_TIME } from '@shared/constants/base.constants';
 import { Role } from '@shared/enums/role.enum';
 import {
   UpdateUserByAdminDTO,
@@ -37,6 +39,7 @@ export class UserComponent implements OnInit, OnDestroy {
   showConfirmUserDialog = false;
   userConfirmationForm!: FormGroup;
   submitting = false;
+  isNoteSaving = false;
   currentUser = this.userService.getUser();
 
   readonly roleEnum = Role;
@@ -86,7 +89,18 @@ export class UserComponent implements OnInit, OnDestroy {
     });
 
     this.noteControl.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(700), distinctUntilChanged())
+      .pipe(
+        tap(() => (this.isNoteSaving = true)),
+        takeUntil(this.destroy$),
+        debounceTime(FIELD_UPDATE_DEBOUNCE_TIME),
+        distinctUntilChanged((valueP, valueC) => {
+          const equals = valueP === valueC;
+          if (equals) {
+            this.isNoteSaving = false;
+          }
+          return equals;
+        }),
+      )
       .subscribe((note) => {
         this.updateUserByAdmin({ note });
       });
@@ -161,6 +175,7 @@ export class UserComponent implements OnInit, OnDestroy {
   updateUserByAdmin(updateData: UpdateUserByAdminDTO) {
     this.userService
       .updateUserByAdmin(this.user.id, updateData)
+      .pipe(finalize(() => (this.isNoteSaving = false)))
       .subscribe((user: User) => {
         this.user = user;
         this.messageService.add({
