@@ -117,7 +117,7 @@
               <ng-container *ngIf="notification.dataIsUser(notification.data)">
                 <ng-template #title>
                   <div class="flex align-items-center">
-                    <i class="pi pi-user mr-2"></i>
+                    <i class="pi pi-user-plus mr-2"></i>
                     Користувач створив акаунт
                   </div>
                 </ng-template>
@@ -140,7 +140,7 @@
               <ng-container *ngIf="notification.dataIsUser(notification.data)">
                 <ng-template #title>
                   <div class="flex align-items-center">
-                    <i class="pi pi-user mr-2"></i>
+                    <i class="pi pi-verified mr-2"></i>
                     Акаунт підтвердженно
                   </div>
                 </ng-template>
@@ -163,12 +163,35 @@
               <ng-container *ngIf="notification.dataIsUser(notification.data)">
                 <ng-template #title>
                   <div class="flex align-items-center">
-                    <i class="pi pi-user mr-2"></i>
+                    <i class="pi pi-user-plus mr-2"></i>
                     Новий адміністратор
                   </div>
                 </ng-template>
                 <ng-template #body>
                   {{ notification.data.fullName }}
+                </ng-template>
+                <ng-container
+                  *ngTemplateOutlet="
+                    notificationTmpl;
+                    context: {
+                      title: title,
+                      body: body,
+                      notification: notification
+                    }
+                  "
+                ></ng-container>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="notificationType.UserDeleted">
+              <ng-container *ngIf="notification.dataIsUser(notification.data)">
+                <ng-template #title>
+                  <div class="flex align-items-center">
+                    <i class="pi pi-user-minus mr-2"></i>
+                    Акаунт видалено
+                  </div>
+                </ng-template>
+                <ng-template #body>
+                  Користувач: {{ notification.data.fullName }}
                 </ng-template>
                 <ng-container
                   *ngTemplateOutlet="

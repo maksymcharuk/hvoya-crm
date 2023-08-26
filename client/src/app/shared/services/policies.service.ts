@@ -63,8 +63,15 @@ export class PoliciesService {
     switch (currentUser.role) {
       case Role.SuperAdmin:
         can('visit', AdminPage);
-        can('read', User);
-        can('create', User);
+        can(['read', 'create'], User);
+        can(
+          'delete',
+          User,
+          (user: User) =>
+            user.role === Role.User &&
+            !user.orders?.length &&
+            !user.balance?.paymentTransactions?.length,
+        );
         can('update', User, (user: User) => user.role !== Role.SuperAdmin);
         can(['create', 'update'], Faq);
         can('update', Order, (order: Order) =>

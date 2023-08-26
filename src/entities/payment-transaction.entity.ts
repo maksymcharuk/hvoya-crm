@@ -43,7 +43,10 @@ export class PaymentTransactionEntity extends BaseEntity {
   @ManyToOne(() => OrderEntity, (order) => order.paymentTransactions)
   order: OrderEntity;
 
-  @ManyToOne(() => OrderReturnRequestEntity, (request) => request.paymentTransactions)
+  @ManyToOne(
+    () => OrderReturnRequestEntity,
+    (request) => request.paymentTransactions,
+  )
   orderReturnRequest: OrderReturnRequestEntity;
 
   @ManyToOne(() => BalanceEntity, (balance) => balance.paymentTransactions)

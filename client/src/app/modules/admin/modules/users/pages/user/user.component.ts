@@ -14,9 +14,10 @@ import {
   AbstractControl,
   FormBuilder,
   FormGroup,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { FIELD_UPDATE_DEBOUNCE_TIME } from '@shared/constants/base.constants';
 import { Role } from '@shared/enums/role.enum';
@@ -37,6 +38,7 @@ export class UserComponent implements OnInit, OnDestroy {
   isFreezing: boolean = false;
   admins$ = this.userService.getAdmins();
   showConfirmUserDialog = false;
+  showDeleteDialog = false;
   userConfirmationForm!: FormGroup;
   submitting = false;
   isNoteSaving = false;
@@ -49,6 +51,13 @@ export class UserComponent implements OnInit, OnDestroy {
     note: [''],
   }) as UpdateUserByAdminFormGroup;
 
+  deleteUserForm = this.fb.group({
+    confirmationString: [
+      '',
+      [Validators.required, this.validateConfirmationString.bind(this)],
+    ],
+  });
+
   get noteControl(): AbstractControl {
     return this.userForm.get('note')!;
   }
@@ -57,6 +66,7 @@ export class UserComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private userService: UserService,
     private route: ActivatedRoute,
+    private router: Router,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
   ) {}
@@ -111,12 +121,34 @@ export class UserComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  validateConfirmationString(
+    control: AbstractControl,
+  ): ValidationErrors | null {
+    if (!control.value || !this.user) {
+      return null;
+    }
+
+    if (control.value !== `${this.user.lastName} ${this.user.firstName}`) {
+      return { invalidConfirmationString: true };
+    }
+
+    return null;
+  }
+
   openConfirmUserDialog() {
     this.showConfirmUserDialog = true;
   }
 
-  hideDialog() {
+  hideUserConfirmDialog() {
     this.showConfirmUserDialog = false;
+  }
+
+  openDeleteUserDialog() {
+    this.showDeleteDialog = true;
+  }
+
+  closeDeleteDialog() {
+    this.showDeleteDialog = false;
   }
 
   confirmUser() {
@@ -135,7 +167,7 @@ export class UserComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => (this.submitting = false)))
       .subscribe((user: User) => {
         this.user = user;
-        this.hideDialog();
+        this.hideUserConfirmDialog();
         this.messageService.add({
           severity: 'success',
           detail: 'Користувача підтверджено',
@@ -183,5 +215,21 @@ export class UserComponent implements OnInit, OnDestroy {
           detail: 'Дані користувача оновлено',
         });
       });
+  }
+
+  deleteUser() {
+    if (!this.deleteUserForm.valid) {
+      this.deleteUserForm.markAllAsTouched();
+      return;
+    }
+
+    this.userService.deleteUser(this.user.id).subscribe(() => {
+      this.closeDeleteDialog();
+      this.messageService.add({
+        severity: 'success',
+        detail: 'Користувача видалено',
+      });
+      this.router.navigate(['/admin/users']);
+    });
   }
 }

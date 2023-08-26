@@ -14,8 +14,8 @@ export abstract class DeliveryStatusUpdateService<T> {
   protected readonly manager = this.dataSource.createEntityManager();
 
   constructor(
-    private readonly dataSource: DataSource,
-    private readonly deliveryServiceFactory: DeliveryServiceFactory,
+    protected readonly dataSource: DataSource,
+    protected readonly deliveryServiceFactory: DeliveryServiceFactory,
   ) {}
 
   async updateStatuses(): Promise<void> {

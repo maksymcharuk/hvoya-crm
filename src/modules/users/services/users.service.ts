@@ -1,7 +1,13 @@
 import { validate } from 'class-validator';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
@@ -12,6 +18,7 @@ import { CreateUserDto } from '@dtos/create-user.dto';
 import { SendAdminInvitationDto } from '@dtos/send-admin-invitation.dto';
 import { UpdateUserDto } from '@dtos/update-user.dto';
 import { BalanceEntity } from '@entities/balance.entity';
+import { CartEntity } from '@entities/cart.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Env } from '@enums/env.enum';
@@ -134,9 +141,14 @@ export class UsersService {
     id: string,
     currentUserId: string,
   ): Promise<UserEntity | null> {
-    const currentUser = await this.usersRepository.findOneOrFail({
+    const currentUser = await this.usersRepository.findOne({
       where: { id: currentUserId },
     });
+
+    if (!currentUser) {
+      throw new NotFoundException('Користувача нe знайдено');
+    }
+
     const ability = this.caslAbilityFactory.createForUser(currentUser);
 
     const user = await this.usersRepository.findOneOrFail({
@@ -303,5 +315,56 @@ export class UsersService {
       new AdminInvitationMail(sendAdminInvitationDto.role, url),
       sendAdminInvitationDto.email,
     );
+  }
+
+  async delete(id: string): Promise<void> {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const user = await queryRunner.manager.findOne(UserEntity, {
+        where: { id },
+        relations: ['orders', 'balance.paymentTransactions', 'cart'],
+      });
+
+      if (!user) {
+        throw new HttpException('Користувача нe знайдено', 404);
+      }
+
+      const hasOrders = user.orders.length > 0;
+      const hasTransactions = user.balance.paymentTransactions.length > 0;
+
+      switch (true) {
+        case hasOrders:
+          throw new BadRequestException(
+            'Користувач має замовлення, видалення неможливе',
+          );
+        case hasTransactions:
+          throw new BadRequestException(
+            'Користувач має транзакції, видалення неможливе',
+          );
+      }
+
+      await queryRunner.manager.remove(UserEntity, user);
+      await queryRunner.manager.remove(BalanceEntity, user.balance);
+
+      if (user.cart) {
+        await queryRunner.manager.remove(CartEntity, user.cart);
+      }
+
+      this.eventEmitter.emit(NotificationEvent.UserDeleted, {
+        data: user,
+        type: NotificationType.UserDeleted,
+      });
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(err.message || err.response.message, err.status);
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

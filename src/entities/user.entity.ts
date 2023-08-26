@@ -98,7 +98,9 @@ export class UserEntity extends BaseEntity {
   @JoinColumn()
   balance: BalanceEntity;
 
-  @OneToMany(() => NotificationEntity, (notification) => notification.user)
+  @OneToMany(() => NotificationEntity, (notification) => notification.user, {
+    onDelete: 'CASCADE',
+  })
   notifications: NotificationEntity[];
 
   @ManyToOne(() => UserEntity, (user) => user.managedUsers)
