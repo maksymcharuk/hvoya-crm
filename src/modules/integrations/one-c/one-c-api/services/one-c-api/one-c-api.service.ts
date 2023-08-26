@@ -12,7 +12,6 @@ import { OrderEntity } from '@entities/order.entity';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
-import { validateOrderStatus } from '@utils/orders/validate-orer-status.util';
 
 import { OrdersService } from '@modules/orders/services/orders.service';
 
@@ -49,8 +48,6 @@ export class OneCApiService {
     if (orderStatus.status === updateOrderData.status) {
       return;
     }
-
-    validateOrderStatus(orderStatus.status, updateOrderData.status);
 
     const queryRunner = this.dataSource.createQueryRunner();
 
