@@ -10,8 +10,8 @@ import {
   SignUpDTOFormGroup,
 } from '@shared/interfaces/dto/sign-up.dto';
 import { AuthService } from '@shared/services/auth.service';
-import { PasswordValidators } from '@shared/validators/password-validator';
 import { cyrillic } from '@shared/validators/cyrillic.validator';
+import { PasswordValidators } from '@shared/validators/password-validator';
 
 @Component({
   selector: 'app-sign-up',
@@ -43,9 +43,7 @@ export class SignUpComponent implements OnInit {
       middleName: ['', [Validators.required, cyrillic()]],
       lastName: ['', [Validators.required, cyrillic()]],
       phoneNumber: ['', Validators.required],
-      storeName: ['', Validators.required],
       website: ['', Validators.required],
-      bio: ['', Validators.required],
     },
     {
       validator: PasswordValidators.MatchValidator,
@@ -56,7 +54,7 @@ export class SignUpComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private authService: AuthService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.signUpForm.valueChanges.subscribe(() => {

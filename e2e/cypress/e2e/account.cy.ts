@@ -26,17 +26,13 @@ describe('Account', () => {
         const lastName = 'ТестПрізвище';
         const firstName = 'ТестІмя';
         const middleName = 'ТестПобатькові';
-        const storeName = 'TestStoreName';
         const website = 'https://hvoya.com';
-        const bio = 'TestBio';
 
         cy.getCyEl('phone-number', 'input').clear().type(phoneNumber);
         cy.getCyEl('last-name').clear().type(lastName);
         cy.getCyEl('first-name').clear().type(firstName);
         cy.getCyEl('middle-name').clear().type(middleName);
-        cy.getCyEl('store-name').clear().type(storeName);
         cy.getCyEl('website').clear().type(website);
-        cy.getCyEl('bio').clear().type(bio);
 
         cy.getCyEl('submit').click();
 
@@ -54,9 +50,7 @@ describe('Account', () => {
         cy.getCyEl('last-name').should('have.value', lastName);
         cy.getCyEl('first-name').should('have.value', firstName);
         cy.getCyEl('middle-name').should('have.value', middleName);
-        cy.getCyEl('store-name').should('have.value', storeName);
         cy.getCyEl('website').should('have.value', website);
-        cy.getCyEl('bio').should('have.value', bio);
         cy.get('.user-info .user-info__name').contains(
           `${lastName} ${firstName}`,
         );

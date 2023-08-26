@@ -12,7 +12,6 @@ export class User extends BaseEntity {
   phoneNumber: string;
   storeName: string;
   website: string;
-  bio: string;
   role: Role;
   emailConfirmed: boolean;
   userConfirmed: boolean;
@@ -53,7 +52,6 @@ export class User extends BaseEntity {
     this.lastName = data?.lastName || '';
     this.phoneNumber = data?.phoneNumber || '';
     this.storeName = data?.storeName || '';
-    this.bio = data?.bio || '';
     this.role = data?.role || Role.User;
     this.emailConfirmed =
       data?.emailConfirmed !== undefined ? data.emailConfirmed : true;

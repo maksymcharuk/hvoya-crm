@@ -54,6 +54,75 @@
               </app-form-control-error-message>
             </div>
             <div class="field">
+              <label for="password">Пароль</label>
+              <p-password
+                name="password"
+                formControlName="password"
+                [toggleMask]="true"
+                placeholder="Введіть пароль"
+                data-cy="password"
+              >
+                <ng-template pTemplate="footer">
+                  <p-divider></p-divider>
+                  <p class="mt-2">Вимоги до паролю</p>
+                  <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                    <li [ngClass]="{ valid: !hasLowerCase }">
+                      Хоча б одна мала літера
+                      <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
+                    </li>
+                    <li [ngClass]="{ valid: !hasUpperCase }">
+                      Хоча б одна велика літера
+                      <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
+                    </li>
+                    <li [ngClass]="{ valid: !hasNumeric }">
+                      Хоча б одна цифра
+                      <i class="pi pi-check" *ngIf="!hasNumeric"></i>
+                    </li>
+                    <li [ngClass]="{ valid: !hasMinLength }">
+                      Не менше 8 символів
+                      <i class="pi pi-check" *ngIf="!hasMinLength"></i>
+                    </li>
+                  </ul>
+                </ng-template>
+              </p-password>
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="password"
+                errorType="required"
+                errorMessage="Потрібно ввести пароль"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field">
+              <label for="confirmPassword">Підтвердіть пароль</label>
+              <p-password
+                name="confirmPassword"
+                formControlName="confirmPassword"
+                [toggleMask]="true"
+                [feedback]="false"
+                placeholder="Підтвердіть пароль"
+                data-cy="confirm-password"
+              >
+              </p-password>
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="confirmPassword"
+                errorType="required"
+                errorMessage="Потрібно підтвердити пароль"
+              >
+              </app-form-control-error-message>
+              <app-form-control-error-message
+                [formGroup]="signUpForm"
+                controlName="confirmPassword"
+                errorType="mismatch"
+                errorMessage="Паролі не збігаються"
+              >
+              </app-form-control-error-message>
+            </div>
+          </div>
+          <!-- Right column -->
+          <div class="col-12 md:col-6 flex flex-column">
+            <div class="field">
               <label for="lastName">Прізвище</label>
               <input
                 name="lastName"
@@ -129,86 +198,6 @@
               </app-form-control-error-message>
             </div>
             <div class="field">
-              <label for="password">Пароль</label>
-              <p-password
-                name="password"
-                formControlName="password"
-                [toggleMask]="true"
-                placeholder="Введіть пароль"
-                data-cy="password"
-              >
-                <ng-template pTemplate="footer">
-                  <p-divider></p-divider>
-                  <p class="mt-2">Вимоги до паролю</p>
-                  <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                    <li [ngClass]="{ valid: !hasLowerCase }">
-                      Хоча б одна мала літера
-                      <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
-                    </li>
-                    <li [ngClass]="{ valid: !hasUpperCase }">
-                      Хоча б одна велика літера
-                      <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
-                    </li>
-                    <li [ngClass]="{ valid: !hasNumeric }">
-                      Хоча б одна цифра
-                      <i class="pi pi-check" *ngIf="!hasNumeric"></i>
-                    </li>
-                    <li [ngClass]="{ valid: !hasMinLength }">
-                      Не менше 8 символів
-                      <i class="pi pi-check" *ngIf="!hasMinLength"></i>
-                    </li>
-                  </ul>
-                </ng-template>
-              </p-password>
-              <app-form-control-error-message
-                [formGroup]="signUpForm"
-                controlName="password"
-                errorType="required"
-                errorMessage="Потрібно ввести пароль"
-              >
-              </app-form-control-error-message>
-            </div>
-            <div class="field">
-              <label for="confirmPassword">Підтвердіть пароль</label>
-              <p-password
-                name="confirmPassword"
-                formControlName="confirmPassword"
-                [toggleMask]="true"
-                [feedback]="false"
-                placeholder="Підтвердіть пароль"
-                data-cy="confirm-password"
-              >
-              </p-password>
-              <app-form-control-error-message
-                [formGroup]="signUpForm"
-                controlName="confirmPassword"
-                errorType="required"
-                errorMessage="Потрібно підтвердити пароль"
-              >
-              </app-form-control-error-message>
-            </div>
-          </div>
-          <!-- Right column -->
-          <div class="col-12 md:col-6 flex flex-column">
-            <div class="field">
-              <label for="storeName">Назва магазину</label>
-              <input
-                name="storeName"
-                formControlName="storeName"
-                type="text"
-                pInputText
-                placeholder="Введіть назву магазину"
-                data-cy="store-name"
-              />
-              <app-form-control-error-message
-                [formGroup]="signUpForm"
-                controlName="storeName"
-                errorType="required"
-                errorMessage="Потрібно ввести назву магазину"
-              >
-              </app-form-control-error-message>
-            </div>
-            <div class="field">
               <label for="website">
                 Веб-сайт або сторінка у соц. мережі
                 <i
@@ -230,28 +219,6 @@
                 controlName="website"
                 errorType="required"
                 errorMessage="Потрібно ввести посилання на веб-сайт або сторінку у соціальній мережі"
-              >
-              </app-form-control-error-message>
-            </div>
-            <div class="field flex flex-column flex-auto">
-              <label for="bio" class="flex-none">Опис організації</label>
-              <textarea
-                class="flex-auto"
-                rows="5"
-                cols="80"
-                pInputTextarea
-                [autoResize]="true"
-                name="bio"
-                formControlName="bio"
-                placeholder="Введіть опис вашої організації"
-                data-cy="bio"
-              >
-              </textarea>
-              <app-form-control-error-message
-                [formGroup]="signUpForm"
-                controlName="bio"
-                errorType="required"
-                errorMessage="Потрібно ввести опис"
               >
               </app-form-control-error-message>
             </div>

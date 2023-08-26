@@ -28,9 +28,7 @@ export class ProfileComponent implements OnInit {
     lastName: ['', [Validators.required, cyrillic()]],
     firstName: ['', [Validators.required, cyrillic()]],
     middleName: ['', [Validators.required, cyrillic()]],
-    storeName: ['', Validators.required],
     website: ['', Validators.required],
-    bio: ['', Validators.required],
   }) as UpdateUserProfileFormGroup;
 
   constructor(
@@ -38,7 +36,7 @@ export class ProfileComponent implements OnInit {
     private accountService: AccountService,
     private messageService: MessageService,
     private clipboard: Clipboard,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.accountService.profile$.subscribe((profile) => {
@@ -48,9 +46,7 @@ export class ProfileComponent implements OnInit {
           lastName: profile.lastName,
           firstName: profile.firstName,
           middleName: profile.middleName,
-          storeName: profile.storeName,
           website: profile.website,
-          bio: profile.bio,
         });
         this.accountNumber = profile.accountNumber;
       }
