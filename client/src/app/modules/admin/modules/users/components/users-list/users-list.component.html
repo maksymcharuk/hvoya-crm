@@ -46,26 +46,35 @@
             <p-sortIcon field="manager.fullName"></p-sortIcon>
           </div>
         </th>
-        <th>
-          <i
-            class="pi pi-check-circle text-green-500"
-            pTooltip="Акаунт користувача підтверджено"
-            tooltipPosition="left"
-          ></i>
+        <th pSortableColumn="userConfirmed">
+          <div class="flex justify-content-between align-items-center">
+            <i
+              class="pi pi-check-circle text-green-500"
+              pTooltip="Акаунт користувача підтверджено"
+              tooltipPosition="left"
+            ></i>
+            <p-sortIcon field="userConfirmed"></p-sortIcon>
+          </div>
         </th>
-        <th>
-          <i
-            class="pi pi-envelope text-green-500"
-            pTooltip="Електронна пошта користувача підтверджена"
-            tooltipPosition="left"
-          ></i>
+        <th pSortableColumn="emailConfirmed">
+          <div class="flex justify-content-between align-items-center">
+            <i
+              class="pi pi-envelope text-green-500"
+              pTooltip="Електронна пошта користувача підтверджена"
+              tooltipPosition="left"
+            ></i>
+            <p-sortIcon field="emailConfirmed"></p-sortIcon>
+          </div>
         </th>
-        <th>
-          <i
-            class="pi pi-times-circle text-red-500"
-            pTooltip="Акаунт користувача призупинено"
-            tooltipPosition="left"
-          ></i>
+        <th pSortableColumn="userFreezed">
+          <div class="flex justify-content-between align-items-center">
+            <i
+              class="pi pi-times-circle text-red-500"
+              pTooltip="Акаунт користувача призупинено"
+              tooltipPosition="left"
+            ></i>
+            <p-sortIcon field="userFreezed"></p-sortIcon>
+          </div>
         </th>
       </tr>
       <tr>
@@ -98,9 +107,18 @@
             </ng-template>
           </p-columnFilter>
         </th>
-        <th></th>
-        <th></th>
-        <th></th>
+        <th>
+          <p-columnFilter type="boolean" field="userConfirmed"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter
+            type="boolean"
+            field="emailConfirmed"
+          ></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="boolean" field="userFreezed"></p-columnFilter>
+        </th>
       </tr>
     </ng-template>
     <ng-template pTemplate="groupheader" let-user>

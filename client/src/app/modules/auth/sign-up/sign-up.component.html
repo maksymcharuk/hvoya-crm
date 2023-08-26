@@ -3,6 +3,12 @@
     <img src="assets/images/logo.svg" alt="logo" />
   </a>
   <div class="sign-up-wrapper">
+    <p-progressBar
+      class="sign-up-wrapper__progress-bar"
+      mode="indeterminate"
+      [class.visible]="isLoading"
+      [style]="{ height: '4px' }"
+    ></p-progressBar>
     <div class="sign-up-wrapper-title">
       <h3>Реєстрація</h3>
     </div>
