@@ -85,4 +85,8 @@ export class UserService {
       sendAdminInvitationDTO,
     );
   }
+
+  deleteUser(userId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/users/${userId}`);
+  }
 }

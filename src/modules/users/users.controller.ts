@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 
 import { User } from '@decorators/user.decorator';
 import { ConfirmUserDto } from '@dtos/confirm-user.dto';
@@ -87,5 +95,13 @@ export class UsersController {
     @Body() sendAdminInvitationDto: SendAdminInvitationDto,
   ) {
     return this.usersService.sendAdminInvitation(sendAdminInvitationDto);
+  }
+
+  @Delete(':id')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Delete, UserEntity),
+  )
+  async deleteUser(@Param('id') id: string) {
+    return this.usersService.delete(id);
   }
 }

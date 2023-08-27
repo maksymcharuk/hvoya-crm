@@ -17,13 +17,15 @@ export class BalanceEntity extends BaseEntity {
   })
   amount: Decimal;
 
-  @OneToOne(() => UserEntity, (user) => user.balance)
+  @OneToOne(() => UserEntity, (user) => user.balance, {
+    onDelete: 'CASCADE',
+  })
   owner: UserEntity;
 
   @OneToMany(
     () => PaymentTransactionEntity,
     (transaction) => transaction.balance,
-    { eager: true },
+    { eager: true, onDelete: 'CASCADE' },
   )
   paymentTransactions: PaymentTransactionEntity[];
 

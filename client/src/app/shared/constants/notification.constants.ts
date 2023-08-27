@@ -10,6 +10,7 @@ export const USER_NOTIFICATION = [
   NotificationType.UserCreated,
   NotificationType.UserConfirmed,
   NotificationType.AdminCreated,
+  NotificationType.UserDeleted,
 ];
 
 export const REQUEST_NOTIFICATION = [
