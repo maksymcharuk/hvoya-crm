@@ -1,23 +1,24 @@
-<div class="freezed-page-wrapper">
+<div class="freezed-page">
   <a routerLink="/">
-    <img
-      class="confirm-page-wrapper-logo"
-      src="assets/images/logo.svg"
-      alt="logo"
-    />
+    <img src="assets/images/logo.svg" alt="logo" />
   </a>
-  <h1>Ваш аккаутн тимчасово призупинено</h1>
-  <p>
-    Для уточнення причин ви можете зв'язатися з нами за контактами вказаними
-    нижче
-  </p>
-  <p><strong>Номери телефонів:</strong></p>
-  <div>+380 67 123 45 67</div>
-  <div>+380 67 123 45 76</div>
-  <p class="mt-3"><strong>Електронні пошти:</strong></p>
-  <div>test@gmail.com</div>
-
-  <a class="btn btn-primary mt-4" [routerLink]="['/', 'auth', 'sign-in']"
-    >Перейти на сторінку входу</a
-  >
+  <div class="freezed-page__wrapper">
+    <h2>Ваш аккаунт тимчасово призупинено</h2>
+    <p>
+      Для уточнення причин ви можете зв'язатися з нами за контактами вказаними
+      нижче:
+    </p>
+    <p>
+      <strong>Номери телефонів:</strong> <br />
+      +38 (067) 334-72-13 <br />
+      +38 (067) 334-72-11 <br />
+    </p>
+    <p class="mt-3">
+      <strong>Електронна пошта:</strong> <br />
+      sales@hvoya.com
+    </p>
+    <a class="btn btn-primary mt-4" [routerLink]="['/', 'auth', 'sign-in']">
+      Перейти на сторінку входу
+    </a>
+  </div>
 </div>

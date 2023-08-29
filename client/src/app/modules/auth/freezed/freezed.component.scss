@@ -1,13 +1,24 @@
-.freezed-page-wrapper {
-  height: 100vh;
+.freezed-page {
+  background-color: var(--primary-color);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
+  padding: 50px 30px;
 
-  &-logo {
-      top: 120px;
-      position: absolute;
+  img {
+    margin-bottom: 20px;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 30px 30px 50px;
+    max-width: 100%;
+    width: 700px;
   }
 }
