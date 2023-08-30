@@ -38,7 +38,8 @@
     "db:setup": "npm run db:drop && npm run db:create",
     "db:setup-test": "NODE_ENV=test npm run db:setup && NODE_ENV=test npm run db:seed",
     "db:backup": "ts-node ./src/modules/database/scripts/backup.ts",
-    "db:restore": "ts-node ./src/modules/database/scripts/restore.ts"
+    "db:restore": "ts-node ./src/modules/database/scripts/restore.ts",
+    "run:seed": "SEEDING_MODE=true ts-node -r tsconfig-paths/register ./src/modules/database/scripts/seed.ts"
   },
   "pre-push": [
     "test:ui"

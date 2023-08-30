@@ -18,8 +18,8 @@ import { User } from '@decorators/user.decorator';
 import { CreateOrderDto } from '@dtos/create-order.dto';
 import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
-import { OrderEntity } from '@entities/order.entity';
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
+import { OrderEntity } from '@entities/order.entity';
 import { Action } from '@enums/action.enum';
 
 import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
@@ -31,11 +31,15 @@ import { OrdersService } from './services/orders.service';
 @Controller('orders')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class OrdersController {
-  constructor(private ordersService: OrdersService) { }
+  constructor(private ordersService: OrdersService) {}
 
   @Get('return-requests')
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderReturnRequestEntity))
-  async getOrdersForReturnRequest(@User('id') userId: string): Promise<OrderEntity[]> {
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, OrderReturnRequestEntity),
+  )
+  async getOrdersForReturnRequest(
+    @User('id') userId: string,
+  ): Promise<OrderEntity[]> {
     return this.ordersService.getOrdersForReturnRequest(userId);
   }
 
