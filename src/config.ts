@@ -41,6 +41,8 @@ export default () => {
   const isStaging = () => process.env['NODE_ENV'] === Env.Staging;
   const isDevelopment = () => process.env['NODE_ENV'] === Env.Development;
   const isTest = () => process.env['NODE_ENV'] === Env.Test;
+  const isOneCDisabled = () =>
+    isTest() || process.env['SEEDING_MODE'] === 'true';
 
   // Logger
   const getLoggerConfigs = () => {
@@ -74,5 +76,6 @@ export default () => {
     isStaging,
     isDevelopment,
     isTest,
+    isOneCDisabled,
   };
 };
