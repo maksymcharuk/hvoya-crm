@@ -2,7 +2,8 @@
   <div class="col-12">
     <div class="card p-0">
       <app-transactions-list
-        [balance]="(balance$ | async)!"
+        [paymentTransactions]="paymentTransactions$ | async"
+        (onLoadData)="onLoadPaymentTransactions($event)"
       ></app-transactions-list>
     </div>
   </div>

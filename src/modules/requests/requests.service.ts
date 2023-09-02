@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { DataSource, SelectQueryBuilder } from 'typeorm';
 
 import {
   BadRequestException,
@@ -11,6 +11,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
 import { CreateRequestDto } from '@dtos/create-request.dto';
 import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
+import { RequestsPageOptionsDto } from '@dtos/requests-page-options.dto';
 import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
@@ -18,6 +19,10 @@ import { Action } from '@enums/action.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { RequestType } from '@enums/request-type.enum';
+import { Role } from '@enums/role.enum';
+import { SortOrder } from '@enums/sort-order.enum';
+import { PageMeta } from '@interfaces/page-meta.interface';
+import { Page } from '@interfaces/page.interface';
 import { sanitizeEntity } from '@utils/serialize-entity.util';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
@@ -35,24 +40,102 @@ export class RequestsService {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  async getRequests(userId: string): Promise<RequestEntity[]> {
+  async getRequests(
+    currentUserId: string,
+    pageOptionsDto: RequestsPageOptionsDto,
+    userId?: string,
+  ): Promise<Page<RequestEntity>> {
     const manager = this.dataSource.createEntityManager();
-    const user = await manager.findOneOrFail(UserEntity, {
-      where: { id: userId },
-    });
 
+    const user = await manager.findOneOrFail(UserEntity, {
+      where: { id: currentUserId },
+    });
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    const requests = await this.dataSource.manager.find(RequestEntity, {
-      relations: ['returnRequest', 'customer', 'returnRequest.delivery'],
-      order: {
-        createdAt: 'DESC',
-      },
-    });
+    const queryBuilder = this.getRequestQuery();
 
-    return requests
-      .filter((request) => ability.can(Action.Read, request))
-      .map((request) => sanitizeEntity(ability, request));
+    if (userId) {
+      queryBuilder.andWhere('request.customer = :userId', { userId });
+    } else if (user.role === Role.User) {
+      queryBuilder.andWhere('request.customer = :currentUserId', {
+        currentUserId,
+      });
+    }
+
+    if (pageOptionsDto.createdAt) {
+      const startDate = new Date(pageOptionsDto.createdAt);
+      const endDate = new Date(pageOptionsDto.createdAt);
+      endDate.setHours(23, 59, 59, 999);
+      queryBuilder
+        .andWhere('request.createdAt >= :startDate', { startDate })
+        .andWhere('request.createdAt <= :endDate', { endDate });
+    }
+
+    if (pageOptionsDto.customerIds && pageOptionsDto.customerIds.length > 0) {
+      queryBuilder.andWhere('customer.id IN (:...customerIds)', {
+        customerIds: pageOptionsDto.customerIds,
+      });
+    }
+
+    if (pageOptionsDto.orderReturnRequestStatus) {
+      queryBuilder.andWhere(
+        'returnRequest.status = :orderReturnRequestStatus',
+        {
+          orderReturnRequestStatus: pageOptionsDto.orderReturnRequestStatus,
+        },
+      );
+    }
+
+    if (pageOptionsDto.requestType) {
+      queryBuilder.andWhere('request.requestType = :requestType', {
+        requestType: pageOptionsDto.requestType,
+      });
+    }
+
+    if (pageOptionsDto.orderReturnRequestDeliveryStatus) {
+      queryBuilder.andWhere(
+        'delivery.status = :orderReturnRequestDeliveryStatus',
+        {
+          orderReturnRequestDeliveryStatus:
+            pageOptionsDto.orderReturnRequestDeliveryStatus,
+        },
+      );
+    }
+
+    if (pageOptionsDto.searchQuery) {
+      queryBuilder.andWhere(
+        'request.number LIKE LOWER(:searchQuery) OR LOWER(delivery.trackingId) LIKE LOWER(:searchQuery)',
+        {
+          searchQuery: `%${pageOptionsDto.searchQuery}%`,
+        },
+      );
+    }
+
+    if (pageOptionsDto.orderBy) {
+      queryBuilder.orderBy(
+        `request.${pageOptionsDto.orderBy}`,
+        pageOptionsDto.order,
+      );
+    } else {
+      queryBuilder.orderBy(`request.createdAt`, SortOrder.DESC);
+    }
+
+    if (pageOptionsDto.take !== 0) {
+      queryBuilder.take(pageOptionsDto.take);
+    }
+
+    queryBuilder.skip(pageOptionsDto.skip);
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    const requests = entities.map((request) =>
+      sanitizeEntity<RequestEntity>(ability, request),
+    );
+
+    const pageMetaDto = new PageMeta({ itemCount, pageOptionsDto });
+
+    return new Page(requests, pageMetaDto);
   }
 
   async getRequest(userId: string, number: string): Promise<RequestEntity> {
@@ -216,5 +299,22 @@ export class RequestsService {
     );
 
     return this.getRequest(userId, request.number!);
+  }
+
+  private getRequestQuery(number?: string): SelectQueryBuilder<RequestEntity> {
+    const query = this.dataSource.createQueryBuilder(RequestEntity, 'request');
+
+    if (number) {
+      query.where('request.number = :number', { number });
+    }
+
+    query
+      .leftJoinAndSelect('request.returnRequest', 'returnRequest')
+      .leftJoinAndSelect('returnRequest.delivery', 'delivery')
+      .leftJoinAndSelect('request.customer', 'customer')
+      .leftJoinAndSelect('request.customerImages', 'customerImages')
+      .leftJoinAndSelect('request.managerImages', 'managerImages');
+
+    return query;
   }
 }

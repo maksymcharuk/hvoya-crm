@@ -18,7 +18,7 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-// import { SortingOrder } from '@shared/enums/sorting-order.enum';
+// import { SortOrder } from '@shared/enums/sort-order.enum';
 import { CartItem } from '@shared/interfaces/entities/cart.entity';
 import {
   ProductBase,
@@ -51,19 +51,19 @@ export class ProductListComponent implements OnDestroy {
 
   // sortOptions = [
   //   {
-  //     value: { id: 1, orderBy: 'name', order: SortingOrder.DESC },
+  //     value: { id: 1, orderBy: 'name', order: SortOrder.DESC },
   //     label: 'Назва (А-Я)',
   //   },
   //   {
-  //     value: { id: 2, orderBy: 'name', order: SortingOrder.ASC },
+  //     value: { id: 2, orderBy: 'name', order: SortOrder.ASC },
   //     label: 'Назва (Я-А)',
   //   },
   //   {
-  //     value: { id: 3, orderBy: 'price', order: SortingOrder.DESC },
+  //     value: { id: 3, orderBy: 'price', order: SortOrder.DESC },
   //     label: 'Ціна найдорожче',
   //   },
   //   {
-  //     value: { id: 4, orderBy: 'price', order: SortingOrder.ASC },
+  //     value: { id: 4, orderBy: 'price', order: SortOrder.ASC },
   //     label: 'Ціна найдешевше',
   //   },
   // ];

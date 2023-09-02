@@ -1,8 +1,11 @@
+import { BehaviorSubject } from 'rxjs';
+
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { environment } from '@environment/environment';
 import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
 import { AccountService } from '@shared/services/account.service';
 import { UserService } from '@shared/services/user.service';
 
@@ -15,6 +18,8 @@ import { UserBalanceService } from '../../services/user-balance.service';
 })
 export class BalanceWidgetComponent {
   balance$ = this.userBalance.balance$;
+  paymentTransactions$ = new BehaviorSubject<PaymentTransaction[]>([]);
+  transactionsLoading = true;
   profile$ = this.accountService.profile$;
   topUpTooltipMessage =
     'Для поповнення рахунку потрібно вказати номер договору, який вказано на цьому сайті.';
@@ -27,7 +32,19 @@ export class BalanceWidgetComponent {
     private accountService: AccountService,
     private readonly router: Router,
     private readonly userService: UserService,
-  ) {}
+  ) {
+    if (this.currentUser) {
+      this.userService
+        .getUserPaymentTransactions(
+          this.currentUser.id,
+          new PageOptions({ rows: 3 }),
+        )
+        .subscribe((transactions) => {
+          this.paymentTransactions$.next(transactions.data);
+          this.transactionsLoading = false;
+        });
+    }
+  }
 
   addFundsTest() {
     this.userBalance.addFunds();

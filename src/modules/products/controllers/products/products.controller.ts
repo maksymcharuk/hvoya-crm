@@ -18,13 +18,13 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 import { User } from '@decorators/user.decorator';
 import { CreateProductDto } from '@dtos/create-product.dto';
-import { PageOptionsDto } from '@dtos/page-options.dto';
-import { PageDto } from '@dtos/page.dto';
+import { ProductsPageOptionsDto } from '@dtos/products-page-options.dto';
 import { UpdateProductDto } from '@dtos/update-product.dto';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { Action } from '@enums/action.enum';
+import { Page } from '@interfaces/page.interface';
 
 import { JwtAuthGuard } from '../../../auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '../../../casl/casl-ability/casl-ability.factory';
@@ -108,9 +108,12 @@ export class ProductsController {
   )
   getFilteredProducts(
     @User('id') userId: string,
-    @Query() pageOptionsDto: PageOptionsDto,
-  ): Promise<PageDto<ProductBaseEntity>> {
-    return this.productsService.getFilteredProducts(userId, pageOptionsDto);
+    @Query() productsPageOptionsDto: ProductsPageOptionsDto,
+  ): Promise<Page<ProductBaseEntity>> {
+    return this.productsService.getFilteredProducts(
+      userId,
+      productsPageOptionsDto,
+    );
   }
 
   @Get(':id')

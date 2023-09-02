@@ -1,16 +1,20 @@
 import jwt_decode from 'jwt-decode';
 import { Observable, map } from 'rxjs';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
 import { ConfirmUserDTO } from '@shared/interfaces/dto/confirm-user.dto';
 import { SendAdminInvitationDTO } from '@shared/interfaces/dto/send-admin-invitation.dto';
 import { UpdateUserByAdminDTO } from '@shared/interfaces/dto/update-user-by-admin.dto';
+import { Order } from '@shared/interfaces/entities/order.entity';
+import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
 import { TokenUser } from '@shared/interfaces/entities/token-user.entity';
 import { User } from '@shared/interfaces/entities/user.entity';
 import { JwtTokenPayload } from '@shared/interfaces/jwt-payload.interface';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
+import { Page } from '@shared/interfaces/page.interface';
 
 import { TokenService } from './token.service';
 
@@ -29,27 +33,78 @@ export class UserService {
     return new TokenUser(decodedToken.user);
   }
 
-  getUsers(): Observable<User[]> {
+  getUsers(pageOptions: PageOptions): Observable<Page<User>> {
+    let params = new HttpParams({ fromObject: pageOptions.toParams() });
+
     return this.http
-      .get<User[]>(`${environment.apiUrl}/users`)
-      .pipe(map((users) => users.map((user) => new User(user))));
+      .get<Page<User>>(`${environment.apiUrl}/users`, { params })
+      .pipe(
+        map((users) => ({
+          data: users.data.map((user) => new User(user)),
+          meta: users.meta,
+        })),
+      );
   }
 
-  getAdmins(): Observable<User[]> {
+  getUserOrders(
+    userId: string,
+    pageOptions?: PageOptions,
+  ): Observable<Page<Order>> {
+    let params = new HttpParams({ fromObject: pageOptions?.toParams() });
+
     return this.http
-      .get<User[]>(`${environment.apiUrl}/users/admins`)
-      .pipe(map((users) => users.map((user) => new User(user))));
+      .get<Page<Order>>(`${environment.apiUrl}/users/${userId}/orders`, {
+        params,
+      })
+      .pipe(
+        map((orders) => ({
+          data: orders.data.map((order) => new Order(order)),
+          meta: orders.meta,
+        })),
+      );
+  }
+
+  getUserPaymentTransactions(
+    userId: string,
+    pageOptions?: PageOptions,
+  ): Observable<Page<PaymentTransaction>> {
+    let params = new HttpParams({ fromObject: pageOptions?.toParams() });
+
+    return this.http
+      .get<Page<PaymentTransaction>>(
+        `${environment.apiUrl}/users/${userId}/payment-transactions`,
+        {
+          params,
+        },
+      )
+      .pipe(
+        map((paymentTransaction) => ({
+          data: paymentTransaction.data.map(
+            (paymentTransaction) => new PaymentTransaction(paymentTransaction),
+          ),
+          meta: paymentTransaction.meta,
+        })),
+      );
+  }
+
+  getAdminUsers(userId: string, pageOptions?: PageOptions) {
+    let params = new HttpParams({ fromObject: pageOptions?.toParams() });
+
+    return this.http
+      .get<Page<User>>(`${environment.apiUrl}/users/${userId}/users`, {
+        params,
+      })
+      .pipe(
+        map((user) => ({
+          data: user.data.map((user) => new User(user)),
+          meta: user.meta,
+        })),
+      );
   }
 
   getUserById(userId: string): Observable<User> {
     return this.http
       .get<User>(`${environment.apiUrl}/users/${userId}`)
-      .pipe(map((user) => new User(user)));
-  }
-
-  getUserByIdFull(userId: string): Observable<User> {
-    return this.http
-      .get<User>(`${environment.apiUrl}/users/${userId}/full`)
       .pipe(map((user) => new User(user)));
   }
 

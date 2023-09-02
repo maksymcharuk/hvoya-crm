@@ -17,6 +17,7 @@ export class UserListItemComponent {
 
   @Input() user!: User;
   @Input() userNotification: any;
+  @Input() hideManager: boolean = false;
 
   constructor(private readonly notificationsService: NotificationsService) {}
 

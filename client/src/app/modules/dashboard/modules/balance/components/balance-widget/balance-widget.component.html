@@ -35,10 +35,22 @@
       <div class="col-12">
         <p-table
           class="block"
-          [value]="balance.paymentTransactions | slice : 0 : 3"
+          [value]="(paymentTransactions$ | async) || []"
           [rows]="3"
+          [loading]="transactionsLoading"
           [rowHover]="true"
         >
+          <ng-template pTemplate="loadingicon"></ng-template>
+          <ng-template pTemplate="loadingbody">
+            <ng-container *ngFor="let _ of [].constructor(3)">
+              <tr>
+                <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
+                <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+                <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+                <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+              </tr>
+            </ng-container>
+          </ng-template>
           <ng-template pTemplate="header">
             <tr
               class="p-selectable-row"

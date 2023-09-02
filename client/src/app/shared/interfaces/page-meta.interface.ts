@@ -1,4 +1,4 @@
-export interface PageMetaDto {
+export interface PageMeta {
   readonly page: number;
   readonly take: number;
   readonly itemCount: number;

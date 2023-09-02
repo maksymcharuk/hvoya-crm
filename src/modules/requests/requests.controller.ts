@@ -9,6 +9,7 @@ import {
   ParseFilePipe,
   Post,
   Put,
+  Query,
   UploadedFile,
   UploadedFiles,
   UseGuards,
@@ -24,9 +25,11 @@ import { User } from '@decorators/user.decorator';
 import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
 import { CreateRequestDto } from '@dtos/create-request.dto';
 import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
+import { RequestsPageOptionsDto } from '@dtos/requests-page-options.dto';
 import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
 import { Action } from '@enums/action.enum';
+import { Page } from '@interfaces/page.interface';
 
 import { JwtAuthGuard } from '@modules/auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '@modules/casl/casl-ability/casl-ability.factory';
@@ -44,8 +47,11 @@ export class RequestsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, RequestEntity),
   )
-  async getRequests(@User('id') userId: string): Promise<RequestEntity[]> {
-    return this.requestService.getRequests(userId);
+  async getRequests(
+    @User('id') userId: string,
+    @Query() requestsPageOptionsDto: RequestsPageOptionsDto,
+  ): Promise<Page<RequestEntity>> {
+    return this.requestService.getRequests(userId, requestsPageOptionsDto);
   }
 
   @Get(':number')

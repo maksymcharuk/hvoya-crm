@@ -13,7 +13,7 @@ import { OrdersService } from '@modules/orders/services/orders.service';
 import { ProductsService } from '@modules/products/services/products/products.service';
 import { UsersService } from '@modules/users/services/users.service';
 
-const NUMBER_OF_ORDERS = 1;
+const NUMBER_OF_ORDERS = 100;
 
 export class OrdersSeeder {
   app: INestApplicationContext;
@@ -49,7 +49,7 @@ export class OrdersSeeder {
       throw new Error('User not found');
     }
 
-    await this.balanceService.addFunds(user.id, 1000000);
+    await this.balanceService.addFunds(user.id, 10000000);
 
     const products = await this.setupProducts(user.id);
     const numberOfOrders = NUMBER_OF_ORDERS;

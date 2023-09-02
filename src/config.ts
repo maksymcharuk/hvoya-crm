@@ -42,7 +42,7 @@ export default () => {
   const isDevelopment = () => process.env['NODE_ENV'] === Env.Development;
   const isTest = () => process.env['NODE_ENV'] === Env.Test;
   const isOneCDisabled = () =>
-    isTest() || process.env['SEEDING_MODE'] === 'true';
+    isTest() || process.env['SEEDING_MODE'] === 'true' || isDevelopment();
 
   // Logger
   const getLoggerConfigs = () => {

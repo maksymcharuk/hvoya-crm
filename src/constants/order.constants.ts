@@ -6,6 +6,12 @@ import { OrderStatus } from '@enums/order-status.enum';
 // Only Pending orders can be canceled
 export const CANCELABLE_ORDER_STATUSES = [OrderStatus.Pending];
 
+// Order statuses that can be set manually
+export const MANUAL_ORDER_STATUSES = [
+  OrderStatus.Cancelled,
+  OrderStatus.Fulfilled,
+];
+
 // Only Fulfilled and Refused orders can be returned
 export const RETURNABLE_ORDER_STATUSES = [
   OrderStatus.Fulfilled,

@@ -1,14 +1,23 @@
+import { LazyLoadEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 
-import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { TransactionStatus } from '@shared/enums/transaction-status.enum';
 import { TransactionSyncOneCStatus } from '@shared/enums/transaction-sync-one-c-status.enum';
-import { Balance } from '@shared/interfaces/entities/balance.entity';
 import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
+import { Page } from '@shared/interfaces/page.interface';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
@@ -17,17 +26,18 @@ import { UserService } from '@shared/services/user.service';
   styleUrls: ['./transactions-list.component.scss'],
 })
 export class TransactionsListComponent implements OnDestroy {
-  @Input() set balance(balance: Balance | undefined) {
-    if (!balance) {
-      return;
+  @Input() set paymentTransactions(
+    paymentTransactions: Page<PaymentTransaction> | null,
+  ) {
+    this.paymentTransactionsInternal = paymentTransactions;
+    if (paymentTransactions) {
+      this.loading = false;
     }
-    this.balanceInternal = balance;
-    this.loading = false;
   }
   @ViewChild('transactionsTable') transactionsTable!: Table;
+  @Output() onLoadData = new EventEmitter<PageOptions>();
 
   transactions: PaymentTransaction[] = [];
-  globalFilterFields = ['amount', 'createdAt'];
   searchForm = this.fb.group({
     search: [''],
   });
@@ -36,11 +46,11 @@ export class TransactionsListComponent implements OnDestroy {
   loading = true;
   currentUser = this.userService.getUser();
 
-  get balance(): Balance {
-    return this.balanceInternal;
+  get paymentTransactions(): Page<PaymentTransaction> | null {
+    return this.paymentTransactionsInternal;
   }
 
-  private balanceInternal!: Balance;
+  private paymentTransactionsInternal: Page<PaymentTransaction> | null = null;
   private destroy$ = new Subject();
 
   get searchControl() {
@@ -79,5 +89,13 @@ export class TransactionsListComponent implements OnDestroy {
     }
 
     this.router.navigate([path, ...entityPath]);
+  }
+
+  onLazyLoad(event: LazyLoadEvent) {
+    this.loading = true;
+    if (this.paymentTransactions) {
+      this.paymentTransactions.data = [];
+    }
+    this.onLoadData.emit(new PageOptions(event));
   }
 }

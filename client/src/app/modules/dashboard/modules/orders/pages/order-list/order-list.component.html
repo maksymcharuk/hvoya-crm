@@ -2,8 +2,8 @@
   <div class="col-12">
     <div class="card p-0">
       <app-order-list
-        [orders]="orders$ | async"
-        [adminView]="false"
+        [orders]="pageOrders$ | async"
+        (onLoadData)="loadOrders($event)"
       ></app-order-list>
     </div>
   </div>

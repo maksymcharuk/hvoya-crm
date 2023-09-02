@@ -14,6 +14,7 @@ import { UserEntity } from '@entities/user.entity';
 import { WSocketModule } from '@gateways/websocket/websocket.module';
 
 import { JwTokenModule } from '@modules/jw-token/jw-token.module';
+import { PaymentTransactionsModule } from '@modules/payment-transactions/payment-transactions.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -72,6 +73,7 @@ import { UsersModule } from './modules/users/users.module';
       max: 20, // maximum number of items in cache
     }),
     RequestsModule,
+    PaymentTransactionsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
+import { UsersPageOptionsDto } from '@dtos/users-page-options.dto';
 import { NotificationEvent } from '@enums/notification-event.enum';
+import { Role } from '@enums/role.enum';
 import { NotificationCreatedEvent } from '@interfaces/notifications/notification-created.interface';
 import { sanitizeEntity } from '@utils/serialize-entity.util';
 
@@ -59,9 +61,13 @@ export class NotificationListenerService {
   }
 
   private async sendNotificationToAdmins(payload: NotificationCreatedEvent) {
-    let adminUsers = await this.usersService.getAllAdmins();
+    let adminUsers = await this.usersService.getUsers(
+      new UsersPageOptionsDto({
+        roles: [Role.SuperAdmin, Role.Admin],
+      }),
+    );
 
-    adminUsers.forEach((user) => {
+    adminUsers.data.forEach((user) => {
       const ability = this.caslAbilityFactory.createForUser(user);
       this.notificationService.create(user, {
         ...payload,

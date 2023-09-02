@@ -8,6 +8,7 @@ import {
   ParseFilePipe,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -16,11 +17,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { User } from '@decorators/user.decorator';
 import { CreateOrderDto } from '@dtos/create-order.dto';
+import { OrdersPageOptionsDto } from '@dtos/orders-page-options.dto';
 import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { Action } from '@enums/action.enum';
+import { Page } from '@interfaces/page.interface';
 
 import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
@@ -43,6 +46,15 @@ export class OrdersController {
     return this.ordersService.getOrdersForReturnRequest(userId);
   }
 
+  @Get()
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderEntity))
+  async getOrders(
+    @User('id') userId: string,
+    @Query() ordersPageOptionsDto: OrdersPageOptionsDto,
+  ): Promise<Page<OrderEntity>> {
+    return this.ordersService.getOrders(userId, ordersPageOptionsDto);
+  }
+
   @Get(':number')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderEntity))
   async getOrder(
@@ -50,12 +62,6 @@ export class OrdersController {
     @Param('number') number: string,
   ): Promise<OrderEntity> {
     return this.ordersService.getOrder(userId, number);
-  }
-
-  @Get()
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderEntity))
-  async getOrders(@User('id') userId: string): Promise<OrderEntity[]> {
-    return this.ordersService.getOrders(userId);
   }
 
   @Put(':number')

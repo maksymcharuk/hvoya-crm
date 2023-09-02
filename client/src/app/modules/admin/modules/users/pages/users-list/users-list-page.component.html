@@ -11,7 +11,10 @@
       ></p-button>
     </div>
     <div class="card p-0">
-      <app-users-list [users]="users$ | async"></app-users-list>
+      <app-users-list
+        [users]="users$ | async"
+        (onLoadData)="loadUsers($event)"
+      ></app-users-list>
     </div>
   </div>
 </div>

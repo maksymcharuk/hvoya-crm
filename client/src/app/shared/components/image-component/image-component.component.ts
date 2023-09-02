@@ -6,8 +6,6 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
   styleUrls: ['./image-component.component.scss'],
 })
 export class ImageComponentComponent implements OnChanges {
-  @Input() loader: string =
-    'https://media.tenor.com/images/f864cbf3ea7916572605edd3b3fe637f/tenor.gif';
   @Input() height: string = '100%';
   @Input() width: string = '100%';
   @Input() image!: string;

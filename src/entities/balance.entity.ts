@@ -25,7 +25,7 @@ export class BalanceEntity extends BaseEntity {
   @OneToMany(
     () => PaymentTransactionEntity,
     (transaction) => transaction.balance,
-    { eager: true, onDelete: 'CASCADE' },
+    { onDelete: 'CASCADE' },
   )
   paymentTransactions: PaymentTransactionEntity[];
 

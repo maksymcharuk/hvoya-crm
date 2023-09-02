@@ -3,9 +3,7 @@ import { DataSource, SelectQueryBuilder } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateProductDto } from '@dtos/create-product.dto';
-import { PageMetaDto } from '@dtos/page-meta.dto';
-import { PageOptionsDto } from '@dtos/page-options.dto';
-import { PageDto } from '@dtos/page.dto';
+import { ProductsPageOptionsDto } from '@dtos/products-page-options.dto';
 import { UpdateProductDto } from '@dtos/update-product.dto';
 import { FileEntity } from '@entities/file.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
@@ -14,6 +12,8 @@ import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Folder } from '@enums/folder.enum';
+import { PageMeta } from '@interfaces/page-meta.interface';
+import { Page } from '@interfaces/page.interface';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 import { FilesService } from '@modules/files/services/files.service';
@@ -288,8 +288,8 @@ export class ProductsService {
 
   async getFilteredProducts(
     userId: string,
-    pageOptionsDto: PageOptionsDto,
-  ): Promise<PageDto<ProductBaseEntity>> {
+    pageOptionsDto: ProductsPageOptionsDto,
+  ): Promise<Page<ProductBaseEntity>> {
     const user = await this.dataSource.manager.findOneByOrFail(UserEntity, {
       id: userId,
     });
@@ -331,6 +331,8 @@ export class ProductsService {
       queryBuilder.andWhere('variants.stock > 0');
     }
 
+    console.log(pageOptionsDto);
+
     queryBuilder
       // .orderBy(`properties.${pageOptionsDto.orderBy}`, pageOptionsDto.order)
       // .orderBy(`productBase.createdAt`, SortOrder.ASC)
@@ -350,9 +352,9 @@ export class ProductsService {
         return product.variants.length;
       });
 
-    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+    const pageMetaDto = new PageMeta({ itemCount, pageOptionsDto });
 
-    return new PageDto(products, pageMetaDto);
+    return new Page(products, pageMetaDto);
   }
 
   async getProductsCategories(): Promise<ProductCategoryEntity[]> {
