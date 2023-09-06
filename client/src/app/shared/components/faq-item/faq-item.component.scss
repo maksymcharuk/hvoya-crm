@@ -1,4 +1,10 @@
 :host ::ng-deep {
+  .rich-content {
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+
   .p-panel .p-panel-icons-end {
     align-items: center;
     display: flex;

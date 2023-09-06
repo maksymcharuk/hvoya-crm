@@ -1,7 +1,10 @@
 <p-panel
   [header]="faq.question"
   [toggleable]="true"
-  [collapsed]="false"
+  [collapsed]="true"
+  [toggler]="toggler"
+  expandIcon="pi pi-minus"
+  collapseIcon="pi pi-plus"
   data-cy="faq-item"
 >
   <ng-template pTemplate="icons">
@@ -22,7 +25,7 @@
       <p-menu #menu id="config_menu" [model]="items" [popup]="true"></p-menu>
     </ng-container>
   </ng-template>
-  <div [innerHTML]="faq.answer"></div>
+  <div class="rich-content" [innerHTML]="faq.answer | safeHtml"></div>
 </p-panel>
 
 <p-confirmDialog

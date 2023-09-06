@@ -18,6 +18,7 @@ import { Faq } from '@shared/interfaces/entities/faq.entity';
 })
 export class FaqItemComponent implements OnChanges {
   @Input() faq!: Faq;
+  @Input() toggler: 'icon' | 'header' = 'icon';
 
   @Output() onUpdate = new EventEmitter<Faq>();
   @Output() onPublishToggle = new EventEmitter<Faq>();
