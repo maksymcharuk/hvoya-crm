@@ -68,6 +68,7 @@ import {
   ProductWeight,
   RequestTypePipe,
   RoleNamePipe,
+  SafeHtmlPipe,
   TransactionStatusPipe,
   TransactionSyncOneCStatusPipe,
   TruncatePipe,
@@ -87,6 +88,7 @@ const PIPES = [
   ProductWeight,
   RequestTypePipe,
   TruncatePipe,
+  SafeHtmlPipe,
 ];
 
 const COMPONENTS = [
