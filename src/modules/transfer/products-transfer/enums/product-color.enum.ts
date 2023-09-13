@@ -9,5 +9,6 @@ export enum ProductColor {
   BlueSnowy,
   WhiteSnowy,
   WhiteGreenBlue,
+  Red,
   Undefined,
 }

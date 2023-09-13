@@ -11,8 +11,10 @@ export function getUniqueProductSizes(arr: ProductVariant[]): ProductSize[] {
 
   if (allSizes.length > 0 && allSizes[0]?.diameter) {
     result = getUniqueObjectsByKey(allSizes, 'diameter');
-  } else {
+  } else if (allSizes.length > 0 && allSizes[0]?.height) {
     result = getUniqueObjectsByKey(allSizes, 'height');
+  } else {
+    result = getUniqueObjectsByKey(allSizes, 'width');
   }
 
   return result;

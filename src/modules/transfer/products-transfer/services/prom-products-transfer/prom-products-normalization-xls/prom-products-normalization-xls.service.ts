@@ -118,6 +118,8 @@ export class PromProductsNormalizationServiceXls
       name.toLowerCase().includes('венок')
     ) {
       return {
+        height: 0,
+        width: 0,
         diameter: Number(size),
         ...packageSize,
       };
@@ -125,7 +127,8 @@ export class PromProductsNormalizationServiceXls
 
     return {
       height: Number(size),
-      width: product.width ? Number(product.width) : undefined,
+      width: product.width ? Number(product.width) : 0,
+      diameter: 0,
       ...packageSize,
     };
   }
