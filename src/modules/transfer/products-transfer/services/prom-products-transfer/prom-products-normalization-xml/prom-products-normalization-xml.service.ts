@@ -27,18 +27,23 @@ export class PromProductsNormalizationServiceXml
   normalize(data: PromProductsXml): NormalizedProductsData {
     let products: NormalizedProductBase[] | undefined = [];
     try {
-      const categories = data.yml_catalog.shop[0]?.categories[0]?.category.map(
-        (category: PromCategoryXml) => {
-          return {
-            name: category._.trim(),
-            externalId: category.$.id,
-          };
-        },
-      );
-      const productBaseList =
-        data.yml_catalog.shop[0]?.categories[0]?.category.filter(
-          (category: PromCategoryXml) => category.$.parentId !== undefined,
+      const promCategoriesXml =
+        data.yml_catalog.shop[0]?.categories[0]?.category;
+
+      if (!promCategoriesXml) {
+        throw new HttpException(
+          'Товарів для імпорту не знайдено',
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
+      }
+
+      const categories = promCategoriesXml.map((category: PromCategoryXml) => {
+        return {
+          name: category._.trim(),
+          externalId: category.$.id,
+        };
+      });
+      const productBaseList = this.getBaseProducts(promCategoriesXml);
       products = productBaseList
         ?.map((productBase: PromCategoryXml) => ({
           name: productBase._.trim(),
@@ -84,6 +89,16 @@ export class PromProductsNormalizationServiceXml
     return { products };
   }
 
+  private getBaseProducts(categories: PromCategoryXml[]): PromCategoryXml[] {
+    const baseProducts = categories.filter(
+      (category: PromCategoryXml) =>
+        category.$.parentId !== undefined ||
+        !categories.some((c) => c.$.parentId === category.$.id),
+    );
+
+    return baseProducts;
+  }
+
   private getWeight(params: PromOfferXml['param']): number | undefined {
     const weightParam = params.find((param: PromOfferXml['param'][0]) =>
       param.$.name.includes('Вес'),
@@ -107,14 +122,21 @@ export class PromProductsNormalizationServiceXml
       if (name!.includes('вінок') || name!.includes('Вінок')) {
         const diameter = Number(size);
         return {
+          height: 0,
+          width: 0,
           diameter: diameter || this.getDimension(offer.param, 'Диаметр', true),
         };
       }
     }
 
+    const width =
+      this.getDimension(offer.param, 'Диаметр нижнего яруса', true) ||
+      this.getDimension(offer.param, 'Ширина', true);
+
     return {
       height: height || this.getDimension(offer.param, 'Высота'),
-      width: this.getDimension(offer.param, 'Диаметр нижнего яруса', true),
+      width: width,
+      diameter: 0,
     };
   }
 
@@ -126,13 +148,13 @@ export class PromProductsNormalizationServiceXml
     param: PromOfferXml['param'],
     key: string,
     matchFull: boolean = false,
-  ): number | undefined {
+  ): number {
     const dimensionParam = param.find((param: PromOfferXml['param'][0]) =>
       matchFull ? param.$.name === key : param.$.name.includes(key),
     );
 
     if (!dimensionParam) {
-      return;
+      return 0;
     }
 
     if (dimensionParam.$.unit === 'м' || dimensionParam._.includes('.')) {

@@ -73,6 +73,13 @@ export const productColorsMap = new Map<ProductColor, NormalizedProductColor>([
     },
   ],
   [
+    ProductColor.Red,
+    {
+      name: 'Червоний',
+      hex: '#d9342b',
+    },
+  ],
+  [
     ProductColor.Undefined,
     {
       name: 'Невизначений',

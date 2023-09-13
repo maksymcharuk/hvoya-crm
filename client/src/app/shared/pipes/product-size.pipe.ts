@@ -9,6 +9,8 @@ export class ProductSizePipe implements PipeTransform {
       return mode === 'short'
         ? `${value.diameter} см`
         : `${value.diameter}x${value.height} см`;
+    } else if (!value.height) {
+      return `${value.width} см`;
     } else {
       return mode === 'short'
         ? `${value.height} см`

@@ -15,4 +15,5 @@ export const promColorsMap = new Map<string, ProductColor>([
   ['Белый кончик|Зеленый', ProductColor.GreenWhite],
   ['Белый кончик|Темно-зеленый', ProductColor.GreenWhite],
   ['Белый|Зеленый|Голубой', ProductColor.WhiteGreenBlue],
+  ['Красный', ProductColor.Red],
 ]);

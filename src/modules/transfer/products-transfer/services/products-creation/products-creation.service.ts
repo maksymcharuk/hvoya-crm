@@ -206,15 +206,15 @@ export class ProductsCreationService {
     const manager = this.dataSource.createEntityManager();
     const query = manager.createQueryBuilder(ProductSizeEntity, 'productSize');
 
-    if (size.height) {
+    if (size.height !== undefined) {
       query.andWhere('productSize.height = :height', { height: size.height });
     }
 
-    if (size.width) {
+    if (size.width !== undefined) {
       query.andWhere('productSize.width = :width', { width: size.width });
     }
 
-    if (size.diameter) {
+    if (size.diameter !== undefined) {
       query.andWhere('productSize.diameter = :diameter', {
         diameter: size.diameter,
       });
