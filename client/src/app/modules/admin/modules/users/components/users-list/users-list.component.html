@@ -1,175 +1,153 @@
-<ng-container *ngIf="!loading; else skeleton">
-  <p-table
-    #usersTable
-    dataKey="id"
-    currentPageReportTemplate="Показано {first} до {last} з {totalRecords} користувачів"
-    [value]="users"
-    [rowHover]="true"
-    [rows]="50"
-    [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[25, 50, 100]"
-    [paginator]="true"
-    [filterDelay]="0"
-    [globalFilterFields]="globalFilterFields"
-    rowGroupMode="subheader"
-    [groupRowsBy]="('read' | able : userEntity) ? 'role' : null"
-  >
-    <ng-template pTemplate="caption">
-      <div class="table-header flex justify-content-between align-items-center">
-        Користувачі
-        <form [formGroup]="searchForm" class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            formControlName="search"
-            type="text"
-            placeholder="Пошук"
-          />
-        </form>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="header">
+<p-table
+  #usersTable
+  dataKey="id"
+  currentPageReportTemplate="Показано {first} до {last} з {totalRecords} користувачів"
+  [rowHover]="true"
+  [rows]="10"
+  [showCurrentPageReport]="true"
+  [paginator]="true"
+  [filterDelay]="0"
+  rowGroupMode="subheader"
+  [groupRowsBy]="('read' | able : userEntity) ? 'role' : null"
+  [lazy]="true"
+  [value]="users?.data || []"
+  [loading]="loading"
+  [totalRecords]="users?.meta?.itemCount || 0"
+  [sortOrder]="-1"
+  (onLazyLoad)="onLazyLoad($event)"
+>
+  <ng-template pTemplate="loadingicon"></ng-template>
+  <ng-template pTemplate="loadingbody">
+    <ng-container *ngFor="let _ of [].constructor(10)">
       <tr>
-        <th>Номер договору</th>
-        <th pSortableColumn="fullName">
-          <div class="flex justify-content-between align-items-center">
-            ПІБ
-            <p-sortIcon field="fullName"></p-sortIcon>
-          </div>
-        </th>
-        <th>Нотатка</th>
-        <th>Пошта</th>
-        <th>Номер телефону</th>
-        <th pSortableColumn="manager.fullName">
-          <div class="flex justify-content-between align-items-center">
-            Менеджер
-            <p-sortIcon field="manager.fullName"></p-sortIcon>
-          </div>
-        </th>
-        <th pSortableColumn="userConfirmed">
-          <div class="flex justify-content-between align-items-center">
-            <i
-              class="pi pi-check-circle text-green-500"
-              pTooltip="Акаунт користувача підтверджено"
-              tooltipPosition="left"
-            ></i>
-            <p-sortIcon field="userConfirmed"></p-sortIcon>
-          </div>
-        </th>
-        <th pSortableColumn="emailConfirmed">
-          <div class="flex justify-content-between align-items-center">
-            <i
-              class="pi pi-envelope text-green-500"
-              pTooltip="Електронна пошта користувача підтверджена"
-              tooltipPosition="left"
-            ></i>
-            <p-sortIcon field="emailConfirmed"></p-sortIcon>
-          </div>
-        </th>
-        <th pSortableColumn="userFreezed">
-          <div class="flex justify-content-between align-items-center">
-            <i
-              class="pi pi-times-circle text-red-500"
-              pTooltip="Акаунт користувача призупинено"
-              tooltipPosition="left"
-            ></i>
-            <p-sortIcon field="userFreezed"></p-sortIcon>
-          </div>
-        </th>
-      </tr>
-      <tr>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th>
-          <p-columnFilter
-            field="managers"
-            matchMode="in"
-            [showMenu]="false"
-            class="ml-auto"
-          >
-            <ng-template pTemplate="filter" let-value>
-              <p-multiSelect
-                [ngModel]="value"
-                [options]="managers"
-                placeholder="Виберіть ПІБ"
-                appendTo="body"
-                (onChange)="filterByName($event.value)"
-                optionLabel="lastName"
-                selectedItemsLabel="ellipsis"
-              >
-                <ng-template let-option pTemplate="item">
-                  <span>{{ option.fullName }}</span>
-                </ng-template>
-              </p-multiSelect>
-            </ng-template>
-          </p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter type="boolean" field="userConfirmed"></p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter
-            type="boolean"
-            field="emailConfirmed"
-          ></p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter type="boolean" field="userFreezed"></p-columnFilter>
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="groupheader" let-user>
-      <tr *ngIf="'read' | able : user" pRowGroupHeader>
-        <td colspan="9">
-          <span class="font-bold ml-2">{{ user.role | roleName }}</span>
+        <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+        <td *ngIf="!hideManager">
+          <p-skeleton height="16px" width="55px"></p-skeleton>
         </td>
+        <td><p-skeleton height="18px" width="18px"></p-skeleton></td>
+        <td><p-skeleton height="18px" width="18px"></p-skeleton></td>
+        <td><p-skeleton height="18px" width="18px"></p-skeleton></td>
       </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-user let-notification>
-      <tr
-        class="p-selectable-row"
-        [routerLink]="['/admin', 'users', user.id]"
-        app-user-list-item
-        [user]="user"
-        [userNotification]="notification"
-      ></tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="9">Користувачів не знайдено</td>
-      </tr>
-    </ng-template>
-  </p-table>
-</ng-container>
-
-<ng-template #skeleton>
-  <div class="p-4 border-bottom-1 border-300">
-    <div class="flex justify-content-between align-items-center">
-      <p-skeleton height="16px" width="85px"></p-skeleton>
-      <p-skeleton height="39px" width="228px"></p-skeleton>
+    </ng-container>
+  </ng-template>
+  <ng-template pTemplate="caption">
+    <div class="table-header flex justify-content-between align-items-center">
+      Користувачі
+      <form [formGroup]="searchForm" class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          formControlName="search"
+          type="text"
+          placeholder="Пошук"
+        />
+      </form>
     </div>
-  </div>
-  <div class="p-4 border-bottom-1 border-300">
-    <div class="flex justify-content-between align-items-center">
-      <p-skeleton height="28px" width="28px"></p-skeleton>
-      <p-skeleton height="28px" width="85px"></p-skeleton>
-      <p-skeleton height="28px" width="175px"></p-skeleton>
-      <p-skeleton height="28px" width="175px"></p-skeleton>
-      <p-skeleton height="28px" width="175px"></p-skeleton>
-    </div>
-  </div>
-  <ng-container *ngFor="let _ of [].constructor(5)">
-    <div class="p-4 border-bottom-1 border-300">
-      <div class="flex justify-content-between align-items-center">
-        <p-skeleton height="28px" width="28px"></p-skeleton>
-        <p-skeleton height="28px" width="85px"></p-skeleton>
-        <p-skeleton height="16px" width="98px"></p-skeleton>
-        <p-skeleton height="19px" width="86px"></p-skeleton>
-        <p-skeleton height="16px" width="55px"></p-skeleton>
-      </div>
-    </div>
-  </ng-container>
-</ng-template>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Номер договору</th>
+      <th pSortableColumn="lastName">
+        <div class="flex justify-content-between align-items-center">
+          ПІБ
+          <p-sortIcon field="lastName"></p-sortIcon>
+        </div>
+      </th>
+      <th>Нотатка</th>
+      <th>Пошта</th>
+      <th>Номер телефону</th>
+      <th *ngIf="!hideManager">Менеджер</th>
+      <th pSortableColumn="userConfirmed">
+        <div class="flex justify-content-between align-items-center">
+          <i
+            class="pi pi-check-circle text-green-500"
+            pTooltip="Акаунт користувача підтверджено"
+            tooltipPosition="left"
+          ></i>
+          <p-sortIcon field="userConfirmed"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="emailConfirmed">
+        <div class="flex justify-content-between align-items-center">
+          <i
+            class="pi pi-envelope text-green-500"
+            pTooltip="Електронна пошта користувача підтверджена"
+            tooltipPosition="left"
+          ></i>
+          <p-sortIcon field="emailConfirmed"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="userFreezed">
+        <div class="flex justify-content-between align-items-center">
+          <i
+            class="pi pi-times-circle text-red-500"
+            pTooltip="Акаунт користувача призупинено"
+            tooltipPosition="left"
+          ></i>
+          <p-sortIcon field="userFreezed"></p-sortIcon>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th *ngIf="!hideManager">
+        <p-columnFilter [showMenu]="false" class="ml-auto">
+          <ng-template pTemplate="filter" let-value>
+            <p-multiSelect
+              [ngModel]="value"
+              [options]="(managers$ | async) || []"
+              placeholder="Виберіть ПІБ"
+              appendTo="body"
+              (onChange)="filterByManager($event.value)"
+              optionLabel="lastName"
+              selectedItemsLabel="ellipsis"
+            >
+              <ng-template let-option pTemplate="item">
+                <span>{{ option.fullName }}</span>
+              </ng-template>
+            </p-multiSelect>
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter type="boolean" field="userConfirmed"></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter type="boolean" field="emailConfirmed"></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter type="boolean" field="userFreezed"></p-columnFilter>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="groupheader" let-user>
+    <tr *ngIf="'read' | able : user" pRowGroupHeader>
+      <td colspan="9">
+        <span class="font-bold ml-2">{{ user.role | roleName }}</span>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-user let-notification>
+    <tr
+      app-user-list-item
+      class="p-selectable-row"
+      [routerLink]="['/admin', 'users', user.id]"
+      [user]="user"
+      [userNotification]="notification"
+      [hideManager]="hideManager"
+    ></tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [attr.colspan]="hideManager ? 8 : 9">Користувачів не знайдено</td>
+    </tr>
+  </ng-template>
+</p-table>

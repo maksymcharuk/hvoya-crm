@@ -7,7 +7,6 @@ import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { OneCClientModule } from '@modules/integrations/one-c/one-c-client/one-c-client.module';
 
 import { CaslModule } from '../casl/casl.module';
-import { UsersModule } from '../users/users.module';
 import { BalanceController } from './balance.controller';
 import { BalanceTasksService } from './services/balance-tasks.service';
 import { BalanceService } from './services/balance.service';
@@ -16,7 +15,6 @@ import { BalanceService } from './services/balance.service';
   imports: [
     TypeOrmModule.forFeature([BalanceEntity, PaymentTransactionEntity]),
     CaslModule,
-    UsersModule,
     OneCClientModule,
   ],
   controllers: [BalanceController],

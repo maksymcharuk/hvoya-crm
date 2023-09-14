@@ -8,6 +8,7 @@ import {
   In,
   Not,
   QueryRunner,
+  SelectQueryBuilder,
 } from 'typeorm';
 
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -18,6 +19,7 @@ import {
   RETURNABLE_ORDER_STATUSES,
 } from '@constants/order.constants';
 import { CreateOrderDto } from '@dtos/create-order.dto';
+import { OrdersPageOptionsDto } from '@dtos/orders-page-options.dto';
 import { UpdateOrderByCustomerDto } from '@dtos/update-order-by-customer.dto';
 import { UpdateOrderDto } from '@dtos/update-order.dto';
 import { BalanceEntity } from '@entities/balance.entity';
@@ -35,9 +37,13 @@ import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
+import { Role } from '@enums/role.enum';
+import { SortOrder } from '@enums/sort-order.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { TransactionSyncOneCStatus } from '@enums/transaction-sync-one-c-status.enum';
 import { SyncProduct } from '@interfaces/one-c';
+import { PageMeta } from '@interfaces/page-meta.interface';
+import { Page } from '@interfaces/page.interface';
 import { validateOrderStatus } from '@utils/orders/validate-orer-status.util';
 import { sanitizeEntity } from '@utils/serialize-entity.util';
 
@@ -79,19 +85,85 @@ export class OrdersService {
     return sanitizeEntity(ability, order);
   }
 
-  async getOrders(userId: string): Promise<OrderEntity[]> {
+  async getOrders(
+    currentUserId: string,
+    pageOptionsDto: OrdersPageOptionsDto,
+    userId?: string,
+  ): Promise<Page<OrderEntity>> {
     const manager = this.dataSource.createEntityManager();
     const user = await manager.findOneOrFail(UserEntity, {
-      where: { id: userId },
+      where: { id: currentUserId },
     });
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    let orders = await this.getOrdersWhere();
+    const queryBuilder = this.getOrderQuery();
 
-    return orders
-      .filter((order) => ability.can(Action.Read, order))
-      .map((order) => sanitizeEntity(ability, order));
+    if (userId) {
+      queryBuilder.andWhere('order.customer = :userId', { userId });
+    } else if (user.role === Role.User) {
+      queryBuilder.andWhere('order.customer = :currentUserId', {
+        currentUserId,
+      });
+    }
+
+    if (pageOptionsDto.createdAt) {
+      const startDate = new Date(pageOptionsDto.createdAt);
+      const endDate = new Date(pageOptionsDto.createdAt);
+      endDate.setHours(23, 59, 59, 999);
+      queryBuilder
+        .andWhere('order.createdAt >= :startDate', { startDate })
+        .andWhere('order.createdAt <= :endDate', { endDate });
+    }
+
+    if (pageOptionsDto.status) {
+      queryBuilder.andWhere('statuses.status = :status', {
+        status: pageOptionsDto.status,
+      });
+    }
+
+    if (pageOptionsDto.deliveryStatus) {
+      queryBuilder.andWhere('delivery.status = :deliveryStatus', {
+        deliveryStatus: pageOptionsDto.deliveryStatus,
+      });
+    }
+
+    if (pageOptionsDto.customerIds) {
+      queryBuilder.andWhere('order.customer IN (:...customersIds)', {
+        customersIds: pageOptionsDto.customerIds,
+      });
+    }
+
+    if (pageOptionsDto.searchQuery) {
+      queryBuilder.andWhere(
+        'LOWER(order.number) LIKE LOWER(:searchQuery) OR LOWER(delivery.trackingId) LIKE LOWER(:searchQuery)',
+        {
+          searchQuery: `%${pageOptionsDto.searchQuery}%`,
+        },
+      );
+    }
+
+    if (pageOptionsDto.orderBy) {
+      queryBuilder.addOrderBy(
+        `order.${pageOptionsDto.orderBy}`,
+        pageOptionsDto.order,
+      );
+    } else {
+      queryBuilder.addOrderBy(`order.createdAt`, SortOrder.DESC);
+    }
+
+    queryBuilder.skip(pageOptionsDto.skip).take(pageOptionsDto.take);
+
+    const itemCount = await queryBuilder.getCount();
+    let { entities } = await queryBuilder.getRawAndEntities();
+
+    const orders: OrderEntity[] = entities.map((order) =>
+      sanitizeEntity(ability, order),
+    );
+
+    const pageMetaDto = new PageMeta({ itemCount, pageOptionsDto });
+
+    return new Page(orders, pageMetaDto);
   }
 
   async getOrdersForReturnRequest(userId: string): Promise<OrderEntity[]> {
@@ -490,6 +562,12 @@ export class OrdersService {
     const balance = await manager.findOneOrFail(BalanceEntity, {
       where: { owner: { id: order.customer.id } },
     });
+    const paymentTransactions = await manager.find(PaymentTransactionEntity, {
+      where: { balance: { id: balance.id } },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
     const transaction = await manager.save(PaymentTransactionEntity, {
       amount: order.total,
       status: TransactionStatus.Success,
@@ -500,7 +578,7 @@ export class OrdersService {
     await manager.save(BalanceEntity, {
       id: balance.id,
       amount: balance.amount.plus(order.total),
-      paymentTransactions: [...balance.paymentTransactions, transaction],
+      paymentTransactions: [...paymentTransactions, transaction],
     });
 
     // Update products stock
@@ -696,29 +774,38 @@ export class OrdersService {
       ],
       order: {
         statuses: {
-          createdAt: 'DESC',
+          createdAt: SortOrder.DESC,
         },
       },
     });
   }
 
-  private getOrdersWhere(
-    params?: FindOptionsWhere<OrderEntity>,
-  ): Promise<OrderEntity[]> {
-    return this.dataSource.manager.find(OrderEntity, {
-      where: params,
-      relations: [
-        'items.productProperties',
-        'delivery',
+  private getOrderQuery(number?: string): SelectQueryBuilder<OrderEntity> {
+    const query = this.dataSource.createQueryBuilder(OrderEntity, 'order');
+
+    if (number) {
+      query.where('order.number = :number', { number });
+    }
+    const statusesSubQuery = query
+      .subQuery()
+      .select('id')
+      .from(OrderStatusEntity, 'orderStatus')
+      .where('orderStatus.order = order.id')
+      .orderBy('orderStatus.createdAt', SortOrder.DESC)
+      .limit(1);
+
+    query
+      .leftJoinAndSelect('order.items', 'items')
+      .leftJoinAndSelect('items.productProperties', 'productProperties')
+      .leftJoinAndSelect('productProperties.images', 'images')
+      .leftJoinAndSelect('order.delivery', 'delivery')
+      .leftJoinAndSelect('order.customer', 'customer')
+      .leftJoinAndSelect(
+        'order.statuses',
         'statuses',
-        'customer',
-      ],
-      order: {
-        createdAt: 'DESC',
-        statuses: {
-          createdAt: 'DESC',
-        },
-      },
-    });
+        `statuses.id IN (${statusesSubQuery.getQuery()})`,
+      );
+
+    return query;
   }
 }

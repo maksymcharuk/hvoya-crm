@@ -1,238 +1,183 @@
-<ng-container *ngIf="!loading; else skeleton">
-  <p-table
-    #requestsTable
-    dataKey="id"
-    currentPageReportTemplate="Показано {first} до {last} з {totalRecords} запитів"
-    [value]="requests!"
-    [rowHover]="true"
-    [rows]="50"
-    [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[25, 50, 100]"
-    [paginator]="true"
-    [filterDelay]="0"
-    [globalFilterFields]="globalFilterFields"
-  >
-    <ng-template pTemplate="caption">
-      <div class="table-header flex justify-content-between align-items-center">
-        Запити
-        <form [formGroup]="searchForm" class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            formControlName="search"
-            type="text"
-            placeholder="Пошук"
-          />
-        </form>
-      </div>
-    </ng-template>
-    <ng-template pTemplate="header">
+<p-table
+  #requestsTable
+  dataKey="id"
+  currentPageReportTemplate="Показано {first} до {last} з {totalRecords} запитів"
+  sortField="createdAt"
+  [lazy]="true"
+  [value]="requests?.data || []"
+  [rowHover]="true"
+  [rows]="10"
+  [loading]="loading"
+  [totalRecords]="requests?.meta?.itemCount || 0"
+  [showCurrentPageReport]="true"
+  [paginator]="true"
+  [sortOrder]="-1"
+  (onLazyLoad)="onLazyLoad($event)"
+>
+  <ng-template pTemplate="loadingicon"></ng-template>
+  <ng-template pTemplate="loadingbody">
+    <ng-container *ngFor="let _ of [].constructor(10)">
       <tr>
-        <th pSortableColumn="number">
-          <div class="flex justify-content-between align-items-center">
-            Номер
-            <p-sortIcon field="number"></p-sortIcon>
-          </div>
-        </th>
-        <th pSortableColumn="createdAt">
-          <div class="flex justify-content-between align-items-center">
-            Дата
-            <p-sortIcon field="createdAt"></p-sortIcon>
-          </div>
-        </th>
-        <th pSortableColumn="requestType">
-          <div class="flex justify-content-between align-items-center">
-            Тип запиту
-            <p-sortIcon field="requestType"></p-sortIcon>
-          </div>
-        </th>
-        <th pSortableColumn="returnRequest.status">
-          <div class="flex justify-content-between align-items-center">
-            Статус
-            <p-sortIcon field="returnRequest.status"></p-sortIcon>
-          </div>
-        </th>
-        <th pSortableColumn="returnRequest.delivery.status">
-          <div class="flex justify-content-between align-items-center">
-            Статус доставки
-            <p-sortIcon field="returnRequest.delivery.status"></p-sortIcon>
-          </div>
-        </th>
-        <th>
-          <div class="flex justify-content-between align-items-center">
-            Номер ТТН
-          </div>
-        </th>
+        <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
+        <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
         <ng-container *ngIf="adminView">
-          <th pSortableColumn="customer.lastName">
-            <div class="flex justify-content-between align-items-center">
-              ПІБ
-              <p-sortIcon field="customer.lastName"></p-sortIcon>
-            </div>
-          </th>
+          <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
         </ng-container>
       </tr>
-      <tr>
+    </ng-container>
+  </ng-template>
+  <ng-template pTemplate="caption">
+    <div class="table-header flex justify-content-between align-items-center">
+      Запити
+      <form [formGroup]="searchForm" class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          formControlName="search"
+          type="text"
+          placeholder="Пошук"
+        />
+      </form>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="number">
+        <div class="flex justify-content-between align-items-center">
+          Номер
+          <p-sortIcon field="number"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="createdAt">
+        <div class="flex justify-content-between align-items-center">
+          Дата
+          <p-sortIcon field="createdAt"></p-sortIcon>
+        </div>
+      </th>
+      <th>Тип запиту</th>
+      <th>Статус</th>
+      <th>Статус доставки</th>
+      <th>Номер ТТН</th>
+      <ng-container *ngIf="adminView">
+        <th>ПІБ</th>
+      </ng-container>
+    </tr>
+    <tr>
+      <th></th>
+      <th>
+        <p-columnFilter type="date" field="createdAt" [showMenu]="false">
+          <ng-template pTemplate="filter" let-filter="filterCallback">
+            <p-calendar
+              (onSelect)="filter($event)"
+              (onClear)="filter($event)"
+              appendTo="body"
+              placeholder="Дата"
+              [showClear]="true"
+            ></p-calendar>
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter field="requestType" [showMenu]="false" class="ml-auto">
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <p-dropdown
+              [ngModel]="value"
+              [options]="requestTypes"
+              (onChange)="filter($event.value)"
+              [showClear]="true"
+              placeholder="Тип"
+              appendTo="body"
+            >
+              <ng-template let-option pTemplate="item">
+                {{ option.label | requestType }}
+              </ng-template>
+              <ng-template let-item pTemplate="selectedItem">
+                {{ item.label | requestType }}
+              </ng-template>
+            </p-dropdown>
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter
+          field="orderReturnRequestStatus"
+          [showMenu]="false"
+          class="ml-auto"
+        >
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <p-dropdown
+              [ngModel]="value"
+              [options]="requestStatuses"
+              (onChange)="filter($event.value)"
+              [showClear]="true"
+              placeholder="Cтатус"
+              appendTo="body"
+            >
+              <ng-template let-option pTemplate="item">
+                <app-request-status-badge
+                  [status]="option.label"
+                ></app-request-status-badge>
+              </ng-template>
+              <ng-template let-item pTemplate="selectedItem">
+                <app-request-status-badge
+                  [status]="item.label"
+                ></app-request-status-badge>
+              </ng-template>
+            </p-dropdown>
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter
+          field="orderReturnRequestDeliveryStatus"
+          [showMenu]="false"
+          class="ml-auto"
+        >
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <p-dropdown
+              [ngModel]="value"
+              [options]="deliveryStatuses"
+              (onChange)="filter($event.value)"
+              [showClear]="true"
+              placeholder="Статус"
+              appendTo="body"
+            >
+              <ng-template let-option pTemplate="item">
+                <app-return-request-delivery-status-badge
+                  [status]="option.label"
+                ></app-return-request-delivery-status-badge>
+              </ng-template>
+              <ng-template let-item pTemplate="selectedItem">
+                <app-return-request-delivery-status-badge
+                  [status]="item.label"
+                ></app-return-request-delivery-status-badge>
+              </ng-template>
+            </p-dropdown>
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th></th>
+      <ng-container *ngIf="adminView">
         <th></th>
-        <th>
-          <p-columnFilter type="date" field="createdAt" [showMenu]="false">
-            <ng-template pTemplate="filter" let-filter="filterCallback">
-              <p-calendar
-                (onSelect)="filter($event)"
-                (onClear)="filter($event)"
-                appendTo="body"
-                placeholder="Дата"
-                [showClear]="true"
-              ></p-calendar>
-            </ng-template>
-          </p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter
-            field="returnRequest.requestType"
-            matchMode="equals"
-            [showMenu]="false"
-            class="ml-auto"
-          >
-            <ng-template
-              pTemplate="filter"
-              let-value
-              let-filter="filterCallback"
-            >
-              <p-dropdown
-                [ngModel]="value"
-                [options]="requestTypes"
-                (onChange)="filter($event.value)"
-                [showClear]="true"
-                placeholder="Тип"
-                appendTo="body"
-              >
-                <ng-template let-option pTemplate="item">
-                  {{ option.label | requestType }}
-                </ng-template>
-                <ng-template let-item pTemplate="selectedItem">
-                  {{ item.label | requestType }}
-                </ng-template>
-              </p-dropdown>
-            </ng-template>
-          </p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter
-            field="returnRequest.status"
-            matchMode="equals"
-            [showMenu]="false"
-            class="ml-auto"
-          >
-            <ng-template
-              pTemplate="filter"
-              let-value
-              let-filter="filterCallback"
-            >
-              <p-dropdown
-                [ngModel]="value"
-                [options]="requestStatuses"
-                (onChange)="filter($event.value)"
-                [showClear]="true"
-                placeholder="Cтатус"
-                appendTo="body"
-              >
-                <ng-template let-option pTemplate="item">
-                  <app-request-status-badge
-                    [status]="option.label"
-                  ></app-request-status-badge>
-                </ng-template>
-                <ng-template let-item pTemplate="selectedItem">
-                  <app-request-status-badge
-                    [status]="item.label"
-                  ></app-request-status-badge>
-                </ng-template>
-              </p-dropdown>
-            </ng-template>
-          </p-columnFilter>
-        </th>
-        <th>
-          <p-columnFilter
-            field="returnRequest.delivery.status"
-            matchMode="equals"
-            [showMenu]="false"
-            class="ml-auto"
-          >
-            <ng-template
-              pTemplate="filter"
-              let-value
-              let-filter="filterCallback"
-            >
-              <p-dropdown
-                [ngModel]="value"
-                [options]="deliveryStatuses"
-                (onChange)="filter($event.value)"
-                [showClear]="true"
-                placeholder="Статус"
-                appendTo="body"
-              >
-                <ng-template let-option pTemplate="item">
-                  <app-return-request-delivery-status-badge
-                    [status]="option.label"
-                  ></app-return-request-delivery-status-badge>
-                </ng-template>
-                <ng-template let-item pTemplate="selectedItem">
-                  <app-return-request-delivery-status-badge
-                    [status]="item.label"
-                  ></app-return-request-delivery-status-badge>
-                </ng-template>
-              </p-dropdown>
-            </ng-template>
-          </p-columnFilter>
-        </th>
-        <th></th>
-        <ng-container *ngIf="adminView">
-          <th></th>
-        </ng-container>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-request let-notification>
-      <tr
-        class="p-selectable-row"
-        app-request-list-item
-        [request]="request"
-        [adminView]="adminView"
-        [requestNotification]="notification"
-      ></tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td [attr.colspan]="5">Запитів не знайдено</td>
-      </tr>
-    </ng-template>
-  </p-table>
-</ng-container>
-
-<ng-template #skeleton>
-  <div class="p-4 border-bottom-1 border-300">
-    <div class="flex justify-content-between align-items-center">
-      <p-skeleton height="16px" width="85px"></p-skeleton>
-      <p-skeleton height="39px" width="228px"></p-skeleton>
-    </div>
-  </div>
-  <div class="p-4 border-bottom-1 border-300">
-    <div class="flex justify-content-between align-items-center">
-      <p-skeleton height="28px" width="28px"></p-skeleton>
-      <p-skeleton height="28px" width="85px"></p-skeleton>
-      <p-skeleton height="28px" width="175px"></p-skeleton>
-      <p-skeleton height="28px" width="175px"></p-skeleton>
-      <p-skeleton height="28px" width="175px"></p-skeleton>
-    </div>
-  </div>
-  <ng-container *ngFor="let _ of [].constructor(5)">
-    <div class="p-4 border-bottom-1 border-300">
-      <div class="flex justify-content-between align-items-center">
-        <p-skeleton height="28px" width="28px"></p-skeleton>
-        <p-skeleton height="28px" width="85px"></p-skeleton>
-        <p-skeleton height="16px" width="98px"></p-skeleton>
-        <p-skeleton height="19px" width="86px"></p-skeleton>
-        <p-skeleton height="16px" width="55px"></p-skeleton>
-      </div>
-    </div>
-  </ng-container>
-</ng-template>
+      </ng-container>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-request let-notification>
+    <tr
+      class="p-selectable-row"
+      app-request-list-item
+      [request]="request"
+      [adminView]="adminView"
+      [requestNotification]="notification"
+    ></tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td [attr.colspan]="adminView ? 7 : 6">Запитів не знайдено</td>
+    </tr>
+  </ng-template>
+</p-table>

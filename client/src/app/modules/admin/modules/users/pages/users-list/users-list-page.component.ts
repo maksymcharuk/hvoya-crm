@@ -1,11 +1,13 @@
 import { MessageService } from 'primeng/api';
-import { finalize } from 'rxjs';
+import { BehaviorSubject, finalize } from 'rxjs';
 
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Role } from '@shared/enums/role.enum';
 import { User } from '@shared/interfaces/entities/user.entity';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
+import { Page } from '@shared/interfaces/page.interface';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
@@ -13,7 +15,7 @@ import { UserService } from '@shared/services/user.service';
   styleUrls: ['./users-list-page.component.scss'],
 })
 export class UsersListPageComponent {
-  users$ = this.userService.getUsers();
+  users$ = new BehaviorSubject<Page<User> | null>(null);
   showAdminInvitationDialog = false;
   adminInvitationLoading = false;
 
@@ -30,6 +32,12 @@ export class UsersListPageComponent {
     this.adminInvitationForm = this.fb.group({
       email: ['', Validators.required],
       role: [Role.Admin, Validators.required],
+    });
+  }
+
+  loadUsers(pageOptions: PageOptions) {
+    this.userService.getUsers(pageOptions).subscribe((orders) => {
+      this.users$.next(orders);
     });
   }
 

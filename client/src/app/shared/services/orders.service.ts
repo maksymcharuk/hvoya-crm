@@ -1,17 +1,18 @@
 import { Observable, map } from 'rxjs';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
-
 import { Order } from '@shared/interfaces/entities/order.entity';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
+import { Page } from '@shared/interfaces/page.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrdersService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   orderCreate(orderCreateFormData: FormData): Observable<Order> {
     return this.http
@@ -40,10 +41,19 @@ export class OrdersService {
       .pipe(map((order) => new Order(order)));
   }
 
-  getOrders(): Observable<Order[]> {
+  getOrders(pageOptions: PageOptions): Observable<Page<Order>> {
+    let params = new HttpParams({ fromObject: pageOptions.toParams() });
+
     return this.http
-      .get<Order[]>(`${environment.apiUrl}/orders`)
-      .pipe(map((orders) => orders.map((order) => new Order(order))));
+      .get<Page<Order>>(`${environment.apiUrl}/orders`, {
+        params,
+      })
+      .pipe(
+        map((orders) => ({
+          data: orders.data.map((order) => new Order(order)),
+          meta: orders.meta,
+        })),
+      );
   }
 
   getOrdersForReturnRequest(): Observable<Order[]> {

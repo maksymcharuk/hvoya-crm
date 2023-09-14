@@ -1,11 +1,22 @@
+import { LazyLoadEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { Subject, debounceTime, map, takeUntil } from 'rxjs';
 
-import { Component, Input, OnDestroy, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
+import { Role } from '@shared/enums/role.enum';
 import { User } from '@shared/interfaces/entities/user.entity';
-import { getUniqueObjectsByKey } from '@shared/utils';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
+import { Page } from '@shared/interfaces/page.interface';
+import { UserService } from '@shared/services/user.service';
 
 @Component({
   selector: 'app-users-list',
@@ -17,32 +28,30 @@ export class UsersListComponent implements OnDestroy {
   searchForm = this.fb.group({
     search: [''],
   });
-  globalFilterFields = [
-    'accountNumber',
-    'firstName',
-    'lastName',
-    'middleName',
-    'email',
-    'phoneNumber',
-  ];
   userEntity = User;
-  managers: User[] = [];
+  managers$ = this.userService
+    .getUsers(
+      new PageOptions({
+        rows: 0,
+        filters: { roles: { value: [Role.Admin, Role.SuperAdmin] } },
+      }),
+    )
+    .pipe(map((users) => users.data));
 
-  private usersInternal: User[] = [];
+  private usersInternal: Page<User> | null = null;
   private destroy$ = new Subject();
-
-  @Input() set users(users: User[] | null) {
-    if (!users) {
-      return;
-    }
-    this.managers = this.getUniqueManagers(users);
+  @Input() set users(users: Page<User> | null) {
     this.usersInternal = users;
-    this.loading = false;
+    if (users) {
+      this.loading = false;
+    }
   }
+  @Input() hideManager: boolean = false;
+  @Output() onLoadData = new EventEmitter<PageOptions>();
 
   @ViewChild('usersTable') usersTable!: Table;
 
-  get users(): any[] {
+  get users(): Page<User> | null {
     return this.usersInternal;
   }
 
@@ -50,7 +59,7 @@ export class UsersListComponent implements OnDestroy {
     return this.searchForm.get('search');
   }
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private userService: UserService) {
     this.searchControl?.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe((query) => {
@@ -63,18 +72,19 @@ export class UsersListComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  filterByName(managers: User[]) {
+  filterByManager(managers: User[]) {
     this.usersTable.filter(
-      managers.map((manager) => manager.fullName),
-      'manager.fullName',
+      managers.map((manager) => manager.id),
+      'managerIds',
       'in',
     );
   }
 
-  private getUniqueManagers(users: User[]) {
-    const managers: User[] = users
-      .filter((user) => !!user.manager)
-      .map((user) => user.manager!);
-    return getUniqueObjectsByKey(managers, 'id');
+  onLazyLoad(event: LazyLoadEvent) {
+    this.loading = true;
+    if (this.users) {
+      this.users.data = [];
+    }
+    this.onLoadData.emit(new PageOptions(event));
   }
 }

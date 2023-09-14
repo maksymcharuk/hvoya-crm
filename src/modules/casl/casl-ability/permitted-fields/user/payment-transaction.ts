@@ -1,0 +1,5 @@
+import { SHARED_PAYMENT_TRANSACTION_READ_FIELDS } from '../shared/payment-transaction';
+
+export const USER_PAYMENT_TRANSACTION_READ_FIELDS = [
+  ...SHARED_PAYMENT_TRANSACTION_READ_FIELDS,
+];

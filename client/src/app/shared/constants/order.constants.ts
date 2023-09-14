@@ -15,8 +15,11 @@ export const COMMENT_REQUIRED_ORDER_STATUSES = [
 // Order statuses when order can be updated
 export const UPDATABLE_ORDER_STATUSES = [OrderStatus.Pending];
 
-// Order statuses that can be et manually
-export const MANUAL_ORDER_STATUSES = [OrderStatus.Cancelled];
+// Order statuses that can be set manually
+export const MANUAL_ORDER_STATUSES = [
+  OrderStatus.Cancelled,
+  OrderStatus.Fulfilled,
+];
 
 // Only Fulfilled and Refused orders can be returned
 export const RETURNABLE_ORDER_STATUSES = [

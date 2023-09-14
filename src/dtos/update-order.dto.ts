@@ -10,7 +10,10 @@ import {
 
 import { PartialType } from '@nestjs/mapped-types';
 
-import { COMMENT_REQUIRED_ORDER_STATUSES } from '@constants/order.constants';
+import {
+  COMMENT_REQUIRED_ORDER_STATUSES,
+  MANUAL_ORDER_STATUSES,
+} from '@constants/order.constants';
 import { OrderStatus } from '@enums/order-status.enum';
 
 import { CreateOrderDto } from './create-order.dto';
@@ -25,7 +28,7 @@ export class UpdateOrderDto extends PartialType(CreateOrderDto) {
 
   @IsOptional()
   @IsEnum(OrderStatus)
-  @IsIn([OrderStatus.Cancelled], {
+  @IsIn(MANUAL_ORDER_STATUSES, {
     message: 'Вручну можна змінити статус лише на "Скасовано"',
   })
   orderStatus?: OrderStatus;

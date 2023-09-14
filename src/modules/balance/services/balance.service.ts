@@ -40,16 +40,7 @@ export class BalanceService {
 
     const balance = await this.balanceRepository.findOneOrFail({
       where: { owner: { id: currentUserId } },
-      relations: [
-        'paymentTransactions.order',
-        'paymentTransactions.orderReturnRequest.request',
-        'owner',
-      ],
-      order: {
-        paymentTransactions: {
-          createdAt: 'DESC',
-        },
-      },
+      relations: ['owner'],
     });
 
     const ability = this.caslAbilityFactory.createForUser(user);
@@ -65,6 +56,13 @@ export class BalanceService {
   ): Promise<BalanceEntity> {
     let balance = await manager.findOneOrFail(BalanceEntity, {
       where: { owner: { id: userId } },
+    });
+
+    const paymentTransactions = await manager.find(PaymentTransactionEntity, {
+      where: { balance: { id: balance.id } },
+      order: {
+        createdAt: 'DESC',
+      },
     });
 
     const paymentTransaction = await manager.create(PaymentTransactionEntity, {
@@ -84,19 +82,13 @@ export class BalanceService {
       await manager.save(BalanceEntity, {
         id: balance.id,
         amount: balance.amount.minus(amount.neg()),
-        paymentTransactions: [
-          ...balance.paymentTransactions,
-          paymentTransaction,
-        ],
+        paymentTransactions: [...paymentTransactions, paymentTransaction],
       });
     } else {
       await manager.save(BalanceEntity, {
         id: balance.id,
         amount: balance.amount.plus(amount),
-        paymentTransactions: [
-          ...balance.paymentTransactions,
-          paymentTransaction,
-        ],
+        paymentTransactions: [...paymentTransactions, paymentTransaction],
       });
     }
 
@@ -171,6 +163,13 @@ export class BalanceService {
       where: { owner: { id: userId } },
     });
 
+    const paymentTransactions = await manager.find(PaymentTransactionEntity, {
+      where: { balance: { id: balance.id } },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
     const transaction = await manager.save(PaymentTransactionEntity, {
       ...paymentTransaction,
       bankTransactionId,
@@ -179,7 +178,7 @@ export class BalanceService {
 
     await manager.save(BalanceEntity, {
       id: balance.id,
-      paymentTransactions: [...balance.paymentTransactions, transaction],
+      paymentTransactions: [...paymentTransactions, transaction],
     });
 
     try {

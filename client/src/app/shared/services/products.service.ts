@@ -5,12 +5,12 @@ import { Injectable } from '@angular/core';
 import { Params } from '@angular/router';
 
 import { environment } from '@environment/environment';
-import { PageDto } from '@shared/interfaces/dto/page.dto';
 import {
   ProductBase,
   ProductCategory,
   ProductVariant,
 } from '@shared/interfaces/entities/product.entity';
+import { Page } from '@shared/interfaces/page.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +45,7 @@ export class ProductsService {
 
   getFilteredProducts(filter: Params, page: number): Observable<ProductBase[]> {
     return this.http
-      .get<PageDto<ProductBase[]>>(`${environment.apiUrl}/products/filtered`, {
+      .get<Page<ProductBase>>(`${environment.apiUrl}/products/filtered`, {
         params: { ...filter, page },
       })
       .pipe(

@@ -437,6 +437,16 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       where: { owner: { id: userId } },
     });
 
+    const paymentTransactions = await queryRunner.manager.find(
+      PaymentTransactionEntity,
+      {
+        where: { balance: { id: balance.id } },
+        order: {
+          createdAt: 'DESC',
+        },
+      },
+    );
+
     const orderReturnRequest = await queryRunner.manager.findOneOrFail(
       OrderReturnRequestEntity,
       {
@@ -463,7 +473,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     await queryRunner.manager.save(BalanceEntity, {
       id: balance.id,
       amount: balance.amount.plus(total),
-      paymentTransactions: [...balance.paymentTransactions, transaction],
+      paymentTransactions: [...paymentTransactions, transaction],
     });
   }
 

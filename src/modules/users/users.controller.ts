@@ -5,15 +5,22 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 
 import { User } from '@decorators/user.decorator';
 import { ConfirmUserDto } from '@dtos/confirm-user.dto';
+import { OrdersPageOptionsDto } from '@dtos/orders-page-options.dto';
+import { PaymentTransactionsPageOptionsDto } from '@dtos/payment-transactions-page-options.dto';
 import { SendAdminInvitationDto } from '@dtos/send-admin-invitation.dto';
 import { UpdateUserByAdminDto } from '@dtos/update-user-by-admin.dto';
+import { UsersPageOptionsDto } from '@dtos/users-page-options.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
+
+import { OrdersService } from '@modules/orders/services/orders.service';
+import { PaymentTransactionsService } from '@modules/payment-transactions/services/payment-transactions.service';
 
 import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
@@ -24,13 +31,11 @@ import { UsersService } from './services/users.service';
 @Controller('users')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
-
-  @Get('admins')
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
-  async getAllAdmins(@User('id') userId: string) {
-    return this.usersService.getAllAdmins(userId);
-  }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly ordersService: OrdersService,
+    private readonly paymentTransactionsService: PaymentTransactionsService,
+  ) {}
 
   @Get(':id')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
@@ -38,13 +43,56 @@ export class UsersController {
     return this.usersService.showById(id);
   }
 
-  @Get(':id/full')
+  @Delete(':id')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Delete, UserEntity),
+  )
+  async deleteUser(@Param('id') id: string) {
+    return this.usersService.delete(id);
+  }
+
+  @Get(':id/orders')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
-  async getUserByIdFull(
+  async getUserOrders(
     @User('id') currentUserId: string,
-    @Param('id') id: string,
+    @Param('id') userId: string,
+    @Query() ordersPageOptionsDto: OrdersPageOptionsDto,
   ) {
-    return this.usersService.findByIdFull(id, currentUserId);
+    return this.ordersService.getOrders(
+      currentUserId,
+      ordersPageOptionsDto,
+      userId,
+    );
+  }
+
+  @Get(':id/payment-transactions')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
+  async getUserPaymentTransactions(
+    @User('id') currentUserId: string,
+    @Param('id') userId: string,
+    @Query()
+    paymentTransactionsPageOptionsDto: PaymentTransactionsPageOptionsDto,
+  ) {
+    return this.paymentTransactionsService.getPaymentTransactions(
+      currentUserId,
+      paymentTransactionsPageOptionsDto,
+      userId,
+    );
+  }
+
+  @Get(':id/users')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
+  async getUserUsers(
+    @User('id') currentUserId: string,
+    @Param('id') userId: string,
+    @Query()
+    usersPageOptionsDto: UsersPageOptionsDto,
+  ) {
+    return this.usersService.getUsers(
+      usersPageOptionsDto,
+      currentUserId,
+      userId,
+    );
   }
 
   @Post(':id/update-by-admin')
@@ -64,8 +112,11 @@ export class UsersController {
 
   @Get()
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
-  async getUsers(@User('id') userId: string) {
-    return this.usersService.getAll(userId);
+  async getUsers(
+    @User('id') userId: string,
+    @Query() usersPageOptionsDto: UsersPageOptionsDto,
+  ) {
+    return this.usersService.getUsers(usersPageOptionsDto, userId);
   }
 
   @Post('confirm')
@@ -95,13 +146,5 @@ export class UsersController {
     @Body() sendAdminInvitationDto: SendAdminInvitationDto,
   ) {
     return this.usersService.sendAdminInvitation(sendAdminInvitationDto);
-  }
-
-  @Delete(':id')
-  @CheckPolicies((ability: AppAbility) =>
-    ability.can(Action.Delete, UserEntity),
-  )
-  async deleteUser(@Param('id') id: string) {
-    return this.usersService.delete(id);
   }
 }

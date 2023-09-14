@@ -20,10 +20,12 @@ import { AuthSignInDto } from '@dtos/auth-sign-in.dto';
 import { AuthSignUpDto } from '@dtos/auth-sign-up.dto';
 import { ResetPasswordDto } from '@dtos/reset-password.dto';
 import { SendAdminInvitationDto } from '@dtos/send-admin-invitation.dto';
+import { UsersPageOptionsDto } from '@dtos/users-page-options.dto';
 import { UserEntity } from '@entities/user.entity';
 import { Env } from '@enums/env.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
+import { Role } from '@enums/role.enum';
 import { JwtTokenPayload } from '@interfaces/jwt-token-payload.interface';
 
 import { ConfirmEmailMail } from '@modules/mail/mails/confirm-email.mail';
@@ -77,20 +79,22 @@ export class AuthService {
     const { email } = authSignUpDto;
 
     let user = await this.usersService.findByEmail(email);
-    let adminUsers = await this.usersService.getAllSuperAdmins();
+    let adminUsers = await this.usersService.getUsers(
+      new UsersPageOptionsDto({ roles: [Role.SuperAdmin] }),
+    );
     if (user) {
       throw new HttpException(
         'Користувач з такою електронною поштою вже існує. Спробуйте іншу пошту.',
         HttpStatus.CONFLICT,
       );
     }
-    if (adminUsers.length === 0) {
+    if (adminUsers.data.length === 0) {
       throw new HttpException(
         'Немає адміністраторів. Створіть адміністратора',
         HttpStatus.CONFLICT,
       );
     }
-    let adminEmails = adminUsers.map((user) => user.email);
+    let adminEmails = adminUsers.data.map((user) => user.email);
 
     await queryRunner.connect();
     await queryRunner.startTransaction();

@@ -1,19 +1,26 @@
+import { LazyLoadEvent } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { Subject, debounceTime, map, takeUntil } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
   OnDestroy,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
 import { DeliveryStatus } from '@shared/enums/delivery-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
+import { Role } from '@shared/enums/role.enum';
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { User } from '@shared/interfaces/entities/user.entity';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
+import { Page } from '@shared/interfaces/page.interface';
+import { UserService } from '@shared/services/user.service';
 import { getUniqueObjectsByKey } from '@shared/utils/get-unique-objects-by-key.util';
 
 @Component({
@@ -24,18 +31,24 @@ import { getUniqueObjectsByKey } from '@shared/utils/get-unique-objects-by-key.u
 })
 export class OrderListComponent implements OnDestroy {
   @Input() adminView = false;
-  @Input() set orders(orders: Order[] | null) {
-    if (!orders) {
-      return;
-    }
-    this.customers = this.getUniqueCustomers(orders);
+  @Input() set orders(orders: Page<Order> | null) {
     this.orderInternal = orders;
-    this.loading = false;
+    if (orders) {
+      this.loading = false;
+    }
   }
+  @Output() onLoadData = new EventEmitter<PageOptions>();
   @ViewChild('ordersTable') ordersTable!: Table;
 
   loading = true;
-  customers: User[] = [];
+  customers$ = this.userService
+    .getUsers(
+      new PageOptions({
+        rows: 0,
+        filters: { roles: { value: [Role.User] } },
+      }),
+    )
+    .pipe(map((users) => users.data));
   searchForm = this.fb.group({
     search: [''],
   });
@@ -56,30 +69,21 @@ export class OrderListComponent implements OnDestroy {
     };
   });
 
-  get orders(): any[] {
+  get orders(): Page<Order> | null {
     return this.orderInternal;
-  }
-
-  get globalFilterFields() {
-    const defaultFilterFields = ['number', 'total', 'delivery.trackingId'];
-    return this.adminView
-      ? [
-          ...defaultFilterFields,
-          'customer.firstName',
-          'customer.lastName',
-          'customer.middleName',
-        ]
-      : defaultFilterFields;
   }
 
   get searchControl() {
     return this.searchForm.get('search');
   }
 
-  private orderInternal: any[] = [];
+  private orderInternal: Page<Order> | null = null;
   private destroy$ = new Subject();
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private readonly userService: UserService,
+  ) {
     this.searchControl?.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe((query) => {
@@ -97,11 +101,19 @@ export class OrderListComponent implements OnDestroy {
     return getUniqueObjectsByKey(customers, 'id');
   }
 
-  filterByName(customers: User[]) {
+  filterByCustomer(customers: User[]) {
     this.ordersTable.filter(
-      customers.map((customer) => customer.fullName),
-      'customer.fullName',
+      customers.map((customer) => customer.id),
+      'customerIds',
       'in',
     );
+  }
+
+  onLazyLoad(event: LazyLoadEvent) {
+    this.loading = true;
+    if (this.orders) {
+      this.orders.data = [];
+    }
+    this.onLoadData.emit(new PageOptions(event));
   }
 }

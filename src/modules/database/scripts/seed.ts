@@ -20,7 +20,7 @@ class Seed {
     const seedType = process.env['npm_config_seed_type'];
 
     if (!seedType || ![Type.Orders].includes(seedType as Type)) {
-      console.error("No type provided. Can be: 'orders'");
+      console.error("No 'seed-type' provided. Can be: 'orders'");
       return;
     }
 

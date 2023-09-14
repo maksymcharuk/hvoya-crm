@@ -1,10 +1,13 @@
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
 import {
+  BehaviorSubject,
   Subject,
   debounceTime,
   distinctUntilChanged,
   finalize,
+  map,
+  switchMap,
   takeUntil,
   tap,
 } from 'rxjs';
@@ -25,7 +28,11 @@ import {
   UpdateUserByAdminDTO,
   UpdateUserByAdminFormGroup,
 } from '@shared/interfaces/dto/update-user-by-admin.dto';
+import { Order } from '@shared/interfaces/entities/order.entity';
+import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
 import { User } from '@shared/interfaces/entities/user.entity';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
+import { Page } from '@shared/interfaces/page.interface';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
@@ -34,9 +41,21 @@ import { UserService } from '@shared/services/user.service';
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit, OnDestroy {
-  user!: User;
+  user$ = new BehaviorSubject<User | null>(null);
+  orders$ = new BehaviorSubject<Page<Order> | null>(null);
+  paymentTransactions$ = new BehaviorSubject<Page<PaymentTransaction> | null>(
+    null,
+  );
+  users$ = new BehaviorSubject<Page<User> | null>(null);
   isFreezing: boolean = false;
-  admins$ = this.userService.getAdmins();
+  admins$ = this.userService
+    .getUsers(
+      new PageOptions({
+        rows: 0,
+        filters: { roles: { value: [Role.Admin, Role.SuperAdmin] } },
+      }),
+    )
+    .pipe(map((users) => users.data));
   showConfirmUserDialog = false;
   showDeleteDialog = false;
   userConfirmationForm!: FormGroup;
@@ -76,26 +95,22 @@ export class UserComponent implements OnInit, OnDestroy {
       managerId: ['', [Validators.required]],
     });
 
-    this.route.params.subscribe((params) => {
-      this.userService.getUserByIdFull(params['id']).subscribe((user: User) => {
-        this.user = user;
-        this.userForm.patchValue(
-          {
-            note: user.note,
-          },
-          {
-            emitEvent: false,
-          },
-        );
-        this.userConfirmationForm.patchValue(
-          {
-            managerId: user.manager?.id,
-          },
-          {
-            emitEvent: false,
-          },
-        );
+    this.route.params
+      .pipe(switchMap((params) => this.userService.getUserById(params['id'])))
+      .subscribe((user) => {
+        this.user$.next(user);
       });
+
+    this.user$.subscribe((user) => {
+      if (!user) {
+        return;
+      }
+
+      this.userForm.patchValue({ note: user.note }, { emitEvent: false });
+      this.userConfirmationForm.patchValue(
+        { managerId: user.manager?.id },
+        { emitEvent: false },
+      );
     });
 
     this.noteControl.valueChanges
@@ -124,11 +139,13 @@ export class UserComponent implements OnInit, OnDestroy {
   validateConfirmationString(
     control: AbstractControl,
   ): ValidationErrors | null {
-    if (!control.value || !this.user) {
+    const user = this.user$.getValue();
+
+    if (!control.value || !user) {
       return null;
     }
 
-    if (control.value !== `${this.user.lastName} ${this.user.firstName}`) {
+    if (control.value !== `${user.lastName} ${user.firstName}`) {
       return { invalidConfirmationString: true };
     }
 
@@ -152,7 +169,9 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   confirmUser() {
-    if (!this.userConfirmationForm.valid) {
+    const user = this.user$.getValue();
+
+    if (!this.userConfirmationForm.valid || !user) {
       this.userConfirmationForm.markAllAsTouched();
       return;
     }
@@ -161,12 +180,12 @@ export class UserComponent implements OnInit, OnDestroy {
 
     this.userService
       .confirmUser({
-        userId: this.user.id,
+        userId: user.id,
         managerId: this.userConfirmationForm.value.managerId,
       })
       .pipe(finalize(() => (this.submitting = false)))
       .subscribe((user: User) => {
-        this.user = user;
+        this.user$.next(user);
         this.hideUserConfirmDialog();
         this.messageService.add({
           severity: 'success',
@@ -184,13 +203,19 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   freezeUserToggle() {
+    const user = this.user$.getValue();
+
+    if (!user) {
+      return;
+    }
+
     this.isFreezing = true;
     this.userService
-      .freezeUserToggle(this.user.id)
+      .freezeUserToggle(user.id)
       .pipe(finalize(() => (this.isFreezing = false)))
       .subscribe((user: User) => {
-        this.user = user;
-        if (this.user.userFreezed) {
+        this.user$.next(user);
+        if (user.userFreezed) {
           this.messageService.add({
             severity: 'success',
             detail: 'Акаунт користувача призупинено',
@@ -205,11 +230,17 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   updateUserByAdmin(updateData: UpdateUserByAdminDTO) {
+    const user = this.user$.getValue();
+
+    if (!user) {
+      return;
+    }
+
     this.userService
-      .updateUserByAdmin(this.user.id, updateData)
+      .updateUserByAdmin(user.id, updateData)
       .pipe(finalize(() => (this.isNoteSaving = false)))
       .subscribe((user: User) => {
-        this.user = user;
+        this.user$.next(user);
         this.messageService.add({
           severity: 'success',
           detail: 'Дані користувача оновлено',
@@ -218,12 +249,14 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   deleteUser() {
-    if (!this.deleteUserForm.valid) {
+    const user = this.user$.getValue();
+
+    if (!this.deleteUserForm.valid || !user) {
       this.deleteUserForm.markAllAsTouched();
       return;
     }
 
-    this.userService.deleteUser(this.user.id).subscribe(() => {
+    this.userService.deleteUser(user.id).subscribe(() => {
       this.closeDeleteDialog();
       this.messageService.add({
         severity: 'success',
@@ -231,5 +264,43 @@ export class UserComponent implements OnInit, OnDestroy {
       });
       this.router.navigate(['/admin/users']);
     });
+  }
+
+  onLoadOrders(pageOptions: PageOptions) {
+    const user = this.user$.getValue();
+
+    if (!user) {
+      return;
+    }
+
+    this.userService
+      .getUserOrders(user.id, pageOptions)
+      .subscribe((orders) => this.orders$.next(orders));
+  }
+
+  onLoadPaymentTransactions(pageOptions: PageOptions) {
+    const user = this.user$.getValue();
+
+    if (!user) {
+      return;
+    }
+
+    this.userService
+      .getUserPaymentTransactions(user.id, pageOptions)
+      .subscribe((paymentTransactions) =>
+        this.paymentTransactions$.next(paymentTransactions),
+      );
+  }
+
+  onLoadUsers(pageOptions: PageOptions) {
+    const user = this.user$.getValue();
+
+    if (!user) {
+      return;
+    }
+
+    this.userService
+      .getAdminUsers(user.id, pageOptions)
+      .subscribe((users) => this.users$.next(users));
   }
 }

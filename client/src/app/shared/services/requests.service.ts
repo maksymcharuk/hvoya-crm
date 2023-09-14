@@ -1,10 +1,12 @@
 import { Observable, map } from 'rxjs';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
+import { Page } from '@shared/interfaces/page.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -12,13 +14,18 @@ import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 export class RequestsService {
   constructor(private http: HttpClient) {}
 
-  getRequests(): Observable<RequestEntity[]> {
+  getRequests(pageOptions: PageOptions): Observable<Page<RequestEntity>> {
+    let params = new HttpParams({ fromObject: pageOptions.toParams() });
+
     return this.http
-      .get<RequestEntity[]>(`${environment.apiUrl}/requests`)
+      .get<Page<RequestEntity>>(`${environment.apiUrl}/requests`, {
+        params,
+      })
       .pipe(
-        map((requests) =>
-          requests.map((request) => new RequestEntity(request)),
-        ),
+        map((requests) => ({
+          data: requests.data.map((request) => new RequestEntity(request)),
+          meta: requests.meta,
+        })),
       );
   }
 

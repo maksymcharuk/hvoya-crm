@@ -30,7 +30,7 @@
   <span class="p-column-title">Номер телефону</span>
   <span class="white-space-nowrap">{{ user.phoneNumber | phoneNumber }}</span>
 </td>
-<td>{{ user.manager ? user.manager.fullName : '-' }}</td>
+<td *ngIf="!hideManager">{{ user.manager ? user.manager.fullName : '-' }}</td>
 <td
   [ngClass]="{
     'text-red-500': !user.userConfirmed,

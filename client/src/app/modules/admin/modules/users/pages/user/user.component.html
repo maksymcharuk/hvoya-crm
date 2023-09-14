@@ -1,268 +1,283 @@
-<div *ngIf="user" class="grid user">
-  <div class="col-12">
-    <div class="card">
-      <div class="user__header">
-        <h4 class="mb-0">{{ user.fullName }}</h4>
-        <span *ngIf="user.isUser">
-          Поточний баланс: <b>{{ user.balance?.amount | currency }}</b>
-        </span>
-      </div>
-      <div class="my-5">
-        <ul class="striped-list">
-          <li class="striped-list__item">
-            <div class="striped-list__item-key">Пошта</div>
-            <div class="striped-list__item-value">
-              {{ user.email }}
-            </div>
-          </li>
-          <li class="striped-list__item">
-            <div class="striped-list__item-key">Номер тефону</div>
-            <div class="striped-list__item-value">
-              {{ user.phoneNumber | phoneNumber }}
-            </div>
-          </li>
-          <!-- User-specific fields -->
-          <ng-container *ngIf="user.isUser">
+<ng-container *ngIf="user$ | async as user">
+  <div class="grid user">
+    <div class="col-12">
+      <div class="card">
+        <div class="user__header">
+          <h4 class="mb-0">{{ user.fullName }}</h4>
+          <span *ngIf="user.isUser">
+            Поточний баланс: <b>{{ user.balance?.amount | currency }}</b>
+          </span>
+        </div>
+        <div class="my-5">
+          <ul class="striped-list">
             <li class="striped-list__item">
-              <div class="striped-list__item-key">Номер договору</div>
+              <div class="striped-list__item-key">Пошта</div>
               <div class="striped-list__item-value">
-                {{ user.accountNumber }}
+                {{ user.email }}
               </div>
             </li>
             <li class="striped-list__item">
-              <div class="striped-list__item-key">
-                Веб-сайт/сторінка у соц. мережі
-              </div>
+              <div class="striped-list__item-key">Номер тефону</div>
               <div class="striped-list__item-value">
-                <a [href]="user.website" target="_blank">{{ user.website }}</a>
+                {{ user.phoneNumber | phoneNumber }}
               </div>
             </li>
-          </ng-container>
-          <!-- User-specific fields END-->
-          <li class="striped-list__item">
-            <div class="striped-list__item-key">Дата реєстрації</div>
-            <div class="striped-list__item-value">
-              {{ user.createdAt | date : 'short' }}
-            </div>
-          </li>
-          <li
-            *ngIf="user.isUser || user.id === currentUser?.id"
-            class="striped-list__item"
-          >
-            <div class="striped-list__item-key">Нотатки</div>
-            <div class="striped-list__item-value">
-              <form class="p-fluid" [formGroup]="userForm">
-                <p-progressBar
-                  class="user__note-progress-bar"
-                  mode="indeterminate"
-                  [class.visible]="isNoteSaving"
-                  [style]="{ height: '4px' }"
-                ></p-progressBar>
-                <textarea
-                  rows="5"
-                  cols="30"
-                  pInputTextarea
-                  [autoResize]="true"
-                  formControlName="note"
-                ></textarea>
-              </form>
-            </div>
-          </li>
-          <li class="striped-list__item" *ngIf="'update' | able : user">
-            <div class="striped-list__item-key">Керування</div>
-            <div class="striped-list__item-value flex">
-              <button
-                *ngIf="!user.userConfirmed; else confirmed"
-                pButton
-                pRipple
-                label="Надати доступ до системи"
-                (click)="openConfirmUserDialog()"
-                class="p-button-success mr-4"
-                data-cy="confirm-user-open-dialog-button"
-              ></button>
-              <ng-template #confirmed>
+            <!-- User-specific fields -->
+            <ng-container *ngIf="user.isUser">
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Номер договору</div>
+                <div class="striped-list__item-value">
+                  {{ user.accountNumber }}
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">
+                  Веб-сайт/сторінка у соц. мережі
+                </div>
+                <div class="striped-list__item-value">
+                  <a [href]="user.website" target="_blank">{{
+                    user.website
+                  }}</a>
+                </div>
+              </li>
+            </ng-container>
+            <!-- User-specific fields END-->
+            <li class="striped-list__item">
+              <div class="striped-list__item-key">Дата реєстрації</div>
+              <div class="striped-list__item-value">
+                {{ user.createdAt | date : 'short' }}
+              </div>
+            </li>
+            <li
+              *ngIf="user.isUser || user.id === currentUser?.id"
+              class="striped-list__item"
+            >
+              <div class="striped-list__item-key">Нотатки</div>
+              <div class="striped-list__item-value">
+                <form class="p-fluid" [formGroup]="userForm">
+                  <p-progressBar
+                    class="user__note-progress-bar"
+                    mode="indeterminate"
+                    [class.visible]="isNoteSaving"
+                    [style]="{ height: '4px' }"
+                  ></p-progressBar>
+                  <textarea
+                    rows="5"
+                    cols="30"
+                    pInputTextarea
+                    [autoResize]="true"
+                    formControlName="note"
+                  ></textarea>
+                </form>
+              </div>
+            </li>
+            <li class="striped-list__item" *ngIf="'update' | able : user">
+              <div class="striped-list__item-key">Керування</div>
+              <div class="striped-list__item-value flex">
                 <button
+                  *ngIf="!user.userConfirmed; else confirmed"
                   pButton
                   pRipple
-                  [disabled]="true"
-                  label="Доступ надано"
-                  class="p-button-outlined p-button-success mr-4"
+                  label="Надати доступ до системи"
+                  (click)="openConfirmUserDialog()"
+                  class="p-button-success mr-4"
+                  data-cy="confirm-user-open-dialog-button"
                 ></button>
-              </ng-template>
-              <button
-                *ngIf="user.userFreezed; else freeze"
-                pButton
-                label="Відновити"
-                (click)="confirmFreezeToggle()"
-                class="p-button-success"
-                icon="pi pi-unlock"
-                data-cy="unfreeze-user-button"
-              ></button>
-              <ng-template #freeze>
+                <ng-template #confirmed>
+                  <button
+                    pButton
+                    pRipple
+                    [disabled]="true"
+                    label="Доступ надано"
+                    class="p-button-outlined p-button-success mr-4"
+                  ></button>
+                </ng-template>
                 <button
+                  *ngIf="user.userFreezed; else freeze"
                   pButton
-                  label="Призупинити"
+                  label="Відновити"
                   (click)="confirmFreezeToggle()"
-                  class="p-button-danger"
-                  icon="pi pi-lock"
-                  data-cy="freeze-user-button"
+                  class="p-button-success"
+                  icon="pi pi-unlock"
+                  data-cy="unfreeze-user-button"
                 ></button>
-              </ng-template>
-              <p-confirmDialog
-                rejectButtonStyleClass="p-button-outlined p-button-secondary"
-                acceptButtonStyleClass="p-button-danger"
-                [header]="
-                  'Ви впевнені, що хочете ' +
-                  (user.userFreezed ? 'відновити' : 'призупинити') +
-                  ' акаунт цього користувача?'
-                "
-              ></p-confirmDialog>
-              <button
-                *ngIf="'delete' | able : user"
-                pButton
-                label="Видалити акаунт"
-                (click)="openDeleteUserDialog()"
-                class="p-button-danger ml-auto"
-                icon="pi pi-times"
-                data-cy="unfreeze-user-button"
-              ></button>
-            </div>
-          </li>
-        </ul>
+                <ng-template #freeze>
+                  <button
+                    pButton
+                    label="Призупинити"
+                    (click)="confirmFreezeToggle()"
+                    class="p-button-danger"
+                    icon="pi pi-lock"
+                    data-cy="freeze-user-button"
+                  ></button>
+                </ng-template>
+                <p-confirmDialog
+                  rejectButtonStyleClass="p-button-outlined p-button-secondary"
+                  acceptButtonStyleClass="p-button-danger"
+                  [header]="
+                    'Ви впевнені, що хочете ' +
+                    (user.userFreezed ? 'відновити' : 'призупинити') +
+                    ' акаунт цього користувача?'
+                  "
+                ></p-confirmDialog>
+                <button
+                  *ngIf="'delete' | able : user"
+                  pButton
+                  label="Видалити акаунт"
+                  (click)="openDeleteUserDialog()"
+                  class="p-button-danger ml-auto"
+                  icon="pi pi-times"
+                  data-cy="unfreeze-user-button"
+                ></button>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
+
+      <p-tabView *ngIf="user.isUser">
+        <p-tabPanel header="Історія замовлень">
+          <app-order-list
+            [orders]="orders$ | async"
+            [adminView]="true"
+            (onLoadData)="onLoadOrders($event)"
+          ></app-order-list>
+        </p-tabPanel>
+        <p-tabPanel header="Історія транзакцій">
+          <app-transactions-list
+            [paymentTransactions]="paymentTransactions$ | async"
+            (onLoadData)="onLoadPaymentTransactions($event)"
+          ></app-transactions-list>
+        </p-tabPanel>
+      </p-tabView>
+
+      <p-tabView *ngIf="user.isAnyAdmin">
+        <p-tabPanel header="Підлеглі дропшипери">
+          <app-users-list
+            [users]="users$ | async"
+            [hideManager]="true"
+            (onLoadData)="onLoadUsers($event)"
+          ></app-users-list>
+        </p-tabPanel>
+      </p-tabView>
     </div>
-
-    <p-tabView *ngIf="user.isUser">
-      <p-tabPanel header="Історія замовлень">
-        <app-order-list [orders]="user.orders || []"></app-order-list>
-      </p-tabPanel>
-      <p-tabPanel header="Історія транзакцій">
-        <app-transactions-list [balance]="user.balance"></app-transactions-list>
-      </p-tabPanel>
-    </p-tabView>
-
-    <p-tabView *ngIf="user.isAnyAdmin">
-      <p-tabPanel header="Підлеглі дропшипери">
-        <app-users-list [users]="user.managedUsers || []"></app-users-list>
-      </p-tabPanel>
-    </p-tabView>
   </div>
-</div>
 
-<p-dialog
-  [(visible)]="showConfirmUserDialog"
-  [style]="{ width: '450px' }"
-  header="Відповідальний менеджер"
-  [modal]="true"
-  styleClass="p-fluid"
->
-  <ng-template pTemplate="content">
-    <form [formGroup]="userConfirmationForm">
-      <div class="field">
-        <label for="name">Менеджер</label>
-        <p-dropdown
-          optionValue="id"
-          filterBy="fullName"
-          placeholder="Виберіть менеджера"
-          appendTo="body"
-          formControlName="managerId"
-          data-cy="manager-list-dropdown"
-          [filter]="true"
-          [options]="(admins$ | async)!"
-          [showClear]="true"
-        >
-          <ng-template let-selectedAdmin pTemplate="selectedItem">
-            <div>{{ selectedAdmin.fullName }}</div>
-          </ng-template>
-          <ng-template let-admin pTemplate="item">
-            <div>{{ admin.fullName }}</div>
-          </ng-template>
-        </p-dropdown>
-        <app-form-control-error-message
-          [formGroup]="userConfirmationForm"
-          controlName="managerId"
-          errorType="required"
-          errorMessage="Необхідно вибрати менеджера"
-        >
-        </app-form-control-error-message>
-      </div>
-    </form>
-  </ng-template>
+  <p-dialog
+    [(visible)]="showConfirmUserDialog"
+    [style]="{ width: '450px' }"
+    header="Відповідальний менеджер"
+    [modal]="true"
+    styleClass="p-fluid"
+  >
+    <ng-template pTemplate="content">
+      <form [formGroup]="userConfirmationForm">
+        <div class="field">
+          <label for="name">Менеджер</label>
+          <p-dropdown
+            optionValue="id"
+            filterBy="fullName"
+            placeholder="Виберіть менеджера"
+            appendTo="body"
+            formControlName="managerId"
+            data-cy="manager-list-dropdown"
+            [filter]="true"
+            [options]="(admins$ | async)!"
+            [showClear]="true"
+          >
+            <ng-template let-selectedAdmin pTemplate="selectedItem">
+              <div>{{ selectedAdmin.fullName }}</div>
+            </ng-template>
+            <ng-template let-admin pTemplate="item">
+              <div>{{ admin.fullName }}</div>
+            </ng-template>
+          </p-dropdown>
+          <app-form-control-error-message
+            [formGroup]="userConfirmationForm"
+            controlName="managerId"
+            errorType="required"
+            errorMessage="Необхідно вибрати менеджера"
+          >
+          </app-form-control-error-message>
+        </div>
+      </form>
+    </ng-template>
 
-  <ng-template pTemplate="footer">
-    <p-button
-      label="Відмінити"
-      icon="pi pi-times"
-      styleClass="p-button-outlined p-button-secondary"
-      (onClick)="hideUserConfirmDialog()"
-    ></p-button>
-    <p-button
-      label="Надати доступ"
-      icon="pi pi-check"
-      data-cy="confirm-user-submit-button"
-      [disabled]="submitting"
-      (onClick)="confirmUser()"
-    ></p-button>
-  </ng-template>
-</p-dialog>
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Відмінити"
+        icon="pi pi-times"
+        styleClass="p-button-outlined p-button-secondary"
+        (onClick)="hideUserConfirmDialog()"
+      ></p-button>
+      <p-button
+        label="Надати доступ"
+        icon="pi pi-check"
+        data-cy="confirm-user-submit-button"
+        [disabled]="submitting"
+        (onClick)="confirmUser()"
+      ></p-button>
+    </ng-template>
+  </p-dialog>
 
-<p-dialog
-  styleClass="p-fluid"
-  header="Видалення акаунту"
-  [style]="{ width: '500px' }"
-  [modal]="true"
-  [(visible)]="showDeleteDialog"
->
-  <ng-template pTemplate="content">
-    <form [formGroup]="deleteUserForm">
-      <div class="field">
-        <label for="confirmationString" class="w-full">
-          <div class="mb-1">
-            Для видалення акаунту користувача введіть його прізвище та ім'я:
-          </div>
-          <div class="text-center p-2 surface-200">
-            <b>{{ user.lastName }} {{ user.firstName }}</b>
-          </div>
-        </label>
-        <input
-          pInputText
-          id="confirmationString"
-          name="confirmationString"
-          placeholder="Введіть прізвище та ім'я користувача"
-          formControlName="confirmationString"
-          autocomplete="off"
-        />
-        <app-form-control-error-message
-          [formGroup]="deleteUserForm"
-          controlName="confirmationString"
-          errorType="required"
-          errorMessage="Необхідно заповнити це поле"
-        >
-        </app-form-control-error-message>
-        <app-form-control-error-message
-          [formGroup]="deleteUserForm"
-          controlName="confirmationString"
-          errorType="invalidConfirmationString"
-          errorMessage="Зачення повинно містити прізвище та ім'я користувача"
-        >
-        </app-form-control-error-message>
-      </div>
-    </form>
-  </ng-template>
+  <p-dialog
+    styleClass="p-fluid"
+    header="Видалення акаунту"
+    [style]="{ width: '500px' }"
+    [modal]="true"
+    [(visible)]="showDeleteDialog"
+  >
+    <ng-template pTemplate="content">
+      <form [formGroup]="deleteUserForm">
+        <div class="field">
+          <label for="confirmationString" class="w-full">
+            <div class="mb-1">
+              Для видалення акаунту користувача введіть його прізвище та ім'я:
+            </div>
+            <div class="text-center p-2 surface-200">
+              <b>{{ user.lastName }} {{ user.firstName }}</b>
+            </div>
+          </label>
+          <input
+            pInputText
+            id="confirmationString"
+            name="confirmationString"
+            placeholder="Введіть прізвище та ім'я користувача"
+            formControlName="confirmationString"
+            autocomplete="off"
+          />
+          <app-form-control-error-message
+            [formGroup]="deleteUserForm"
+            controlName="confirmationString"
+            errorType="required"
+            errorMessage="Необхідно заповнити це поле"
+          >
+          </app-form-control-error-message>
+          <app-form-control-error-message
+            [formGroup]="deleteUserForm"
+            controlName="confirmationString"
+            errorType="invalidConfirmationString"
+            errorMessage="Зачення повинно містити прізвище та ім'я користувача"
+          >
+          </app-form-control-error-message>
+        </div>
+      </form>
+    </ng-template>
 
-  <ng-template pTemplate="footer">
-    <p-button
-      label="Відмінити"
-      styleClass="p-button-outlined p-button-secondary"
-      (onClick)="closeDeleteDialog()"
-    ></p-button>
-    <p-button
-      styleClass="p-button-danger"
-      label="Видалити"
-      icon="pi pi-times"
-      data-cy="confirm-user-submit-button"
-      [disabled]="submitting"
-      (onClick)="deleteUser()"
-    ></p-button>
-  </ng-template>
-</p-dialog>
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Відмінити"
+        styleClass="p-button-outlined p-button-secondary"
+        (onClick)="closeDeleteDialog()"
+      ></p-button>
+      <p-button
+        styleClass="p-button-danger"
+        label="Видалити"
+        icon="pi pi-times"
+        data-cy="confirm-user-submit-button"
+        [disabled]="submitting"
+        (onClick)="deleteUser()"
+      ></p-button>
+    </ng-template>
+  </p-dialog>
+</ng-container>

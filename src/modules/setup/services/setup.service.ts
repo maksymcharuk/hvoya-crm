@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { UsersPageOptionsDto } from '@dtos/users-page-options.dto';
+import { Role } from '@enums/role.enum';
+
 import { UsersService } from '@modules/users/services/users.service';
 
 import { DEFAULT_ADMIN_DATA } from '../data/default-admin.data';
@@ -22,9 +25,11 @@ export class SetupService {
   }
 
   async createInitialAdmin() {
-    const admins = await this.usersService.getAllSuperAdmins();
+    const admins = await this.usersService.getUsers(
+      new UsersPageOptionsDto({ roles: [Role.SuperAdmin] }),
+    );
 
-    if (admins.length > 0) {
+    if (admins.data.length > 0) {
       return;
     }
 
