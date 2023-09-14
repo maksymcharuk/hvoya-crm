@@ -1,9 +1,9 @@
 import { Transform } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
-import { RequestType } from 'client/src/app/shared/enums/request-type.enum';
 
 import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { OrderReturnRequestStatus } from '@enums/order-return-request-status.enum';
+import { RequestType } from '@enums/request-type.enum';
 
 import { PageOptionsDto } from './page-options.dto';
 
