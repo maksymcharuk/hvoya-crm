@@ -5,7 +5,7 @@ export const NovaPoshtaStatusMap: { [key in DeliveryStatus]: string[] } = {
   [DeliveryStatus.Accepted]: ['прийнято', 'передано'],
   [DeliveryStatus.InTransit]: ['відправлено', 'прямує', 'відправлення у'],
   [DeliveryStatus.Arrived]: ['прибув', 'прибуло', 'у відділенні'],
-  [DeliveryStatus.Received]: ['отримано'],
+  [DeliveryStatus.Received]: ['отримано', 'видана'],
   [DeliveryStatus.Returned]: ['повернуто', 'повернення'],
   [DeliveryStatus.Declined]: ['відмовлено', 'відмова', 'відмовився'],
   [DeliveryStatus.Unspecified]: [],
