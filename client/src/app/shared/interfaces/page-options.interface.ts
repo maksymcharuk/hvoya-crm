@@ -16,7 +16,7 @@ export class PageOptions {
     this.orderBy = data.sortField;
     this.searchQuery = data.globalFilter || null;
     this.filters = data.filters ? this.getFilters(data.filters) : {};
-    this.take = data.rows ? String(data.rows) : undefined;
+    this.take = data.rows !== undefined ? String(data.rows) : undefined;
     this.skip = data.first !== undefined ? String(data.first) : undefined;
     this.page = data.page;
   }

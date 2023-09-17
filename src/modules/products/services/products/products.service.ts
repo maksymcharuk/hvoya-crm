@@ -331,8 +331,6 @@ export class ProductsService {
       queryBuilder.andWhere('variants.stock > 0');
     }
 
-    console.log(pageOptionsDto);
-
     queryBuilder
       // .orderBy(`properties.${pageOptionsDto.orderBy}`, pageOptionsDto.order)
       // .orderBy(`productBase.createdAt`, SortOrder.ASC)
