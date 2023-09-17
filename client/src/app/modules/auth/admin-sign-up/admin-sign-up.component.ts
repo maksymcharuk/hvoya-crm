@@ -12,6 +12,7 @@ import { AdminSignUpDTOFormGroup } from '@shared/interfaces/dto/admin-sign-up.dt
 import { JwtAdminInvitation } from '@shared/interfaces/jwt-admin-invitation.interface';
 import { AuthService } from '@shared/services/auth.service';
 import { TokenService } from '@shared/services/token.service';
+import { cyrillic } from '@shared/validators/cyrillic.validator';
 import { PasswordValidators } from '@shared/validators/password-validator';
 
 @Component({
@@ -45,9 +46,9 @@ export class AdminSignUpComponent {
         ],
       ],
       confirmPassword: ['', Validators.required],
-      firstName: ['', Validators.required],
-      middleName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      firstName: ['', [Validators.required, cyrillic()]],
+      middleName: ['', [Validators.required, cyrillic()]],
+      lastName: ['', [Validators.required, cyrillic()]],
       phoneNumber: ['', Validators.required],
     },
     {
