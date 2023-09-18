@@ -18,7 +18,6 @@ export const UPDATABLE_ORDER_STATUSES = [OrderStatus.Pending];
 // Order statuses that can be set manually
 export const MANUAL_ORDER_STATUSES = [
   OrderStatus.Cancelled,
-  OrderStatus.Fulfilled,
 ];
 
 // Only Fulfilled and Refused orders can be returned
