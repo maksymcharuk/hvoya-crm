@@ -163,7 +163,9 @@
             <li class="striped-list__item">
               <div class="striped-list__item-key">ПІБ</div>
               <div class="striped-list__item-value">
-                {{ request.customer!.fullName }}
+                <a [routerLink]="['/admin', 'users', request.customer.id]">
+                  {{ request.customer.fullName }}
+                </a>
               </div>
             </li>
             <li class="striped-list__item">
@@ -171,7 +173,7 @@
               <div class="striped-list__item-value">
                 <ng-container
                   *ngIf="
-                    request.customer!.phoneNumber as phoneNumber;
+                    request.customer.phoneNumber as phoneNumber;
                     else emptyPhoneNumber
                   "
                   >{{ phoneNumber | phoneNumber }}</ng-container
@@ -302,6 +304,12 @@
                   <ng-template #noWaybill>
                     <span>—</span>
                   </ng-template>
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Номер ТТН</div>
+                <div class="striped-list__item-value">
+                  {{ request.returnRequest.delivery.trackingId }}
                 </div>
               </li>
             </ul>
