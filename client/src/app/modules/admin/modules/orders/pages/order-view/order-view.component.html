@@ -191,7 +191,10 @@
                 </ng-template>
               </div>
             </li>
-            <li *ngIf="'update' | able : order" class="striped-list__item">
+            <li
+              *ngIf="'update' | able : order; else noUpdateWaybill"
+              class="striped-list__item"
+            >
               <div class="striped-list__item-key"></div>
               <form
                 [formGroup]="updateWaybillForm"
@@ -245,6 +248,14 @@
                 ></button>
               </form>
             </li>
+            <ng-template #noUpdateWaybill>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Номер ТТН</div>
+                <div class="striped-list__item-value">
+                  {{ order.delivery.trackingId }}
+                </div>
+              </li>
+            </ng-template>
           </ul>
         </div>
         <div>

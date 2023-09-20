@@ -60,6 +60,7 @@ import { VerticalMenuComponent } from './components/vertical-menu/vertical-menu.
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpExceptionInterceptor } from './interceptors/http-exception.interceptor';
 import {
+  AddHttpPipe,
   DateAgoPipe,
   DeliveryServiceNamePipe,
   PhoneNumberPipe,
@@ -89,6 +90,7 @@ const PIPES = [
   RequestTypePipe,
   TruncatePipe,
   SafeHtmlPipe,
+  AddHttpPipe,
 ];
 
 const COMPONENTS = [
