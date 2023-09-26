@@ -1,282 +1,305 @@
 <ng-container *ngIf="notifications$ | async as notifications">
-  <p-scrollPanel
-    *ngIf="notifications.length > 0; else noNotifications"
-    class="notifications-list"
-    styleClass="notifications-list__scroll-panel"
-    [style]="{ width: '100%', maxHeight: '400px' }"
+  <div
+    infinite-scroll
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="50"
+    infiniteScrollContainer=".notifications-list"
+    (scrolled)="onScrolled()"
   >
-    <a
-      *ngFor="let notification of notifications"
-      class="notification-card"
-      [routerLink]="getPath(notification)"
-      [class.checked]="notification.checked"
-      (click)="checkNotification(notification)"
+    <div
+      *ngIf="notifications.length > 0; else noNotifications"
+      class="notifications-list"
     >
-      <div class="notification-card__date-wrapper">
-        <div class="notification-card__date">
-          {{ notification.createdAt | dateAgo }}
+      <a
+        *ngFor="let notification of notifications"
+        class="notification-card"
+        [routerLink]="getPath(notification)"
+        [class.checked]="notification.checked"
+        (click)="checkNotification(notification)"
+      >
+        <div class="notification-card__date-wrapper">
+          <div class="notification-card__date">
+            {{ notification.createdAt | dateAgo }}
+          </div>
         </div>
-      </div>
-      <div class="notification-card__inner">
-        <ng-container *ngIf="notification.type === notificationType.Info">
-          <div class="notification-card__body">{{ notification?.message }}</div>
-        </ng-container>
-        <ng-container *ngIf="notification.type !== notificationType.Info">
-          <ng-container [ngSwitch]="notification.type">
-            <ng-container *ngSwitchCase="notificationType.OrderCreated">
-              <ng-container *ngIf="notification.dataIsOrder(notification.data)">
-                <ng-template #title>
-                  <div class="flex align-items-center">
-                    <i class="pi pi-shopping-bag mr-2"></i>
-                    Нове замовлення №{{ notification.data.number }}
-                  </div>
-                </ng-template>
-                <ng-template #body>
-                  Замовник: {{ notification.data.customer.fullName }}
-                </ng-template>
+        <div class="notification-card__inner">
+          <ng-container *ngIf="notification.type === notificationType.Info">
+            <div class="notification-card__body">
+              {{ notification?.message }}
+            </div>
+          </ng-container>
+          <ng-container *ngIf="notification.type !== notificationType.Info">
+            <ng-container [ngSwitch]="notification.type">
+              <ng-container *ngSwitchCase="notificationType.OrderCreated">
                 <ng-container
-                  *ngTemplateOutlet="
-                    notificationTmpl;
-                    context: {
-                      title: title,
-                      body: body,
-                      notification: notification
-                    }
-                  "
-                ></ng-container>
+                  *ngIf="notification.dataIsOrder(notification.data)"
+                >
+                  <ng-template #title>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-shopping-bag mr-2"></i>
+                      Нове замовлення №{{ notification.data.number }}
+                    </div>
+                  </ng-template>
+                  <ng-template #body>
+                    Замовник: {{ notification.data.customer.fullName }}
+                  </ng-template>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      notificationTmpl;
+                      context: {
+                        title: title,
+                        body: body,
+                        notification: notification
+                      }
+                    "
+                  ></ng-container>
+                </ng-container>
               </ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="notificationType.OrderStatusUpdated">
-              <ng-container *ngIf="notification.dataIsOrder(notification.data)">
-                <ng-template #title>
-                  <div class="flex align-items-center">
-                    <i class="pi pi-shopping-bag mr-2"></i>
-                    Замовлення №{{ notification.data.number }} (статус змінено)
-                  </div>
-                </ng-template>
-                <ng-template #body>
-                  <div
-                    *ngIf="notification.data.statuses[1] as prevStatus"
-                    class="flex mb-1"
-                  >
-                    <div class="mb-1 mr-2">Попередній статус:</div>
-                    <app-order-status-badge
-                      [status]="prevStatus.status"
-                    ></app-order-status-badge>
-                  </div>
-                  <div class="flex">
-                    <div class="mb-1 mr-2">Новий статус:</div>
-                    <app-order-status-badge
-                      [status]="notification.data.currentStatus.status"
-                    ></app-order-status-badge>
-                  </div>
-                </ng-template>
+              <ng-container *ngSwitchCase="notificationType.OrderStatusUpdated">
                 <ng-container
-                  *ngTemplateOutlet="
-                    notificationTmpl;
-                    context: {
-                      title: title,
-                      body: body,
-                      notification: notification
-                    }
-                  "
-                ></ng-container>
+                  *ngIf="notification.dataIsOrder(notification.data)"
+                >
+                  <ng-template #title>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-shopping-bag mr-2"></i>
+                      Замовлення №{{ notification.data.number }} (статус
+                      змінено)
+                    </div>
+                  </ng-template>
+                  <ng-template #body>
+                    <div
+                      *ngIf="notification.data.statuses[1] as prevStatus"
+                      class="flex mb-1"
+                    >
+                      <div class="mb-1 mr-2">Попередній статус:</div>
+                      <app-order-status-badge
+                        [status]="prevStatus.status"
+                      ></app-order-status-badge>
+                    </div>
+                    <div class="flex">
+                      <div class="mb-1 mr-2">Новий статус:</div>
+                      <app-order-status-badge
+                        [status]="notification.data.currentStatus.status"
+                      ></app-order-status-badge>
+                    </div>
+                  </ng-template>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      notificationTmpl;
+                      context: {
+                        title: title,
+                        body: body,
+                        notification: notification
+                      }
+                    "
+                  ></ng-container>
+                </ng-container>
               </ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="notificationType.OrderCancelled">
-              <ng-container *ngIf="notification.dataIsOrder(notification.data)">
-                <ng-template #title>
-                  <div class="flex align-items-center">
-                    <i class="pi pi-shopping-bag mr-2"></i>
-                    Замовлення №{{ notification.data.number }}
-                  </div>
-                </ng-template>
-                <ng-template #body>
-                  <div class="flex align-items-center mb-1">
-                    Замовлення
-                    <app-order-status-badge
-                      class="ml-2"
-                      [status]="notification.data.currentStatus.status"
-                    ></app-order-status-badge>
-                  </div>
-                  Замовник: {{ notification.data.customer.fullName }}
-                </ng-template>
+              <ng-container *ngSwitchCase="notificationType.OrderCancelled">
                 <ng-container
-                  *ngTemplateOutlet="
-                    notificationTmpl;
-                    context: {
-                      title: title,
-                      body: body,
-                      notification: notification
-                    }
-                  "
-                ></ng-container>
+                  *ngIf="notification.dataIsOrder(notification.data)"
+                >
+                  <ng-template #title>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-shopping-bag mr-2"></i>
+                      Замовлення №{{ notification.data.number }}
+                    </div>
+                  </ng-template>
+                  <ng-template #body>
+                    <div class="flex align-items-center mb-1">
+                      Замовлення
+                      <app-order-status-badge
+                        class="ml-2"
+                        [status]="notification.data.currentStatus.status"
+                      ></app-order-status-badge>
+                    </div>
+                    Замовник: {{ notification.data.customer.fullName }}
+                  </ng-template>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      notificationTmpl;
+                      context: {
+                        title: title,
+                        body: body,
+                        notification: notification
+                      }
+                    "
+                  ></ng-container>
+                </ng-container>
               </ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="notificationType.UserCreated">
-              <ng-container *ngIf="notification.dataIsUser(notification.data)">
-                <ng-template #title>
-                  <div class="flex align-items-center">
-                    <i class="pi pi-user-plus mr-2"></i>
-                    Користувач створив акаунт
-                  </div>
-                </ng-template>
-                <ng-template #body>
-                  {{ notification.data.fullName }}
-                </ng-template>
+              <ng-container *ngSwitchCase="notificationType.UserCreated">
                 <ng-container
-                  *ngTemplateOutlet="
-                    notificationTmpl;
-                    context: {
-                      title: title,
-                      body: body,
-                      notification: notification
-                    }
-                  "
-                ></ng-container>
+                  *ngIf="notification.dataIsUser(notification.data)"
+                >
+                  <ng-template #title>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-user-plus mr-2"></i>
+                      Користувач створив акаунт
+                    </div>
+                  </ng-template>
+                  <ng-template #body>
+                    {{ notification.data.fullName }}
+                  </ng-template>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      notificationTmpl;
+                      context: {
+                        title: title,
+                        body: body,
+                        notification: notification
+                      }
+                    "
+                  ></ng-container>
+                </ng-container>
               </ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="notificationType.UserConfirmed">
-              <ng-container *ngIf="notification.dataIsUser(notification.data)">
-                <ng-template #title>
-                  <div class="flex align-items-center">
-                    <i class="pi pi-verified mr-2"></i>
-                    Акаунт підтвердженно
-                  </div>
-                </ng-template>
-                <ng-template #body>
-                  {{ notification.data.fullName }}
-                </ng-template>
+              <ng-container *ngSwitchCase="notificationType.UserConfirmed">
                 <ng-container
-                  *ngTemplateOutlet="
-                    notificationTmpl;
-                    context: {
-                      title: title,
-                      body: body,
-                      notification: notification
-                    }
-                  "
-                ></ng-container>
+                  *ngIf="notification.dataIsUser(notification.data)"
+                >
+                  <ng-template #title>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-verified mr-2"></i>
+                      Акаунт підтвердженно
+                    </div>
+                  </ng-template>
+                  <ng-template #body>
+                    {{ notification.data.fullName }}
+                  </ng-template>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      notificationTmpl;
+                      context: {
+                        title: title,
+                        body: body,
+                        notification: notification
+                      }
+                    "
+                  ></ng-container>
+                </ng-container>
               </ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="notificationType.AdminCreated">
-              <ng-container *ngIf="notification.dataIsUser(notification.data)">
-                <ng-template #title>
-                  <div class="flex align-items-center">
-                    <i class="pi pi-user-plus mr-2"></i>
-                    Новий адміністратор
-                  </div>
-                </ng-template>
-                <ng-template #body>
-                  {{ notification.data.fullName }}
-                </ng-template>
+              <ng-container *ngSwitchCase="notificationType.AdminCreated">
                 <ng-container
-                  *ngTemplateOutlet="
-                    notificationTmpl;
-                    context: {
-                      title: title,
-                      body: body,
-                      notification: notification
-                    }
-                  "
-                ></ng-container>
+                  *ngIf="notification.dataIsUser(notification.data)"
+                >
+                  <ng-template #title>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-user-plus mr-2"></i>
+                      Новий адміністратор
+                    </div>
+                  </ng-template>
+                  <ng-template #body>
+                    {{ notification.data.fullName }}
+                  </ng-template>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      notificationTmpl;
+                      context: {
+                        title: title,
+                        body: body,
+                        notification: notification
+                      }
+                    "
+                  ></ng-container>
+                </ng-container>
               </ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="notificationType.UserDeleted">
-              <ng-container *ngIf="notification.dataIsUser(notification.data)">
-                <ng-template #title>
-                  <div class="flex align-items-center">
-                    <i class="pi pi-user-minus mr-2"></i>
-                    Акаунт видалено
-                  </div>
-                </ng-template>
-                <ng-template #body>
-                  Користувач: {{ notification.data.fullName }}
-                </ng-template>
+              <ng-container *ngSwitchCase="notificationType.UserDeleted">
                 <ng-container
-                  *ngTemplateOutlet="
-                    notificationTmpl;
-                    context: {
-                      title: title,
-                      body: body,
-                      notification: notification
-                    }
-                  "
-                ></ng-container>
+                  *ngIf="notification.dataIsUser(notification.data)"
+                >
+                  <ng-template #title>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-user-minus mr-2"></i>
+                      Акаунт видалено
+                    </div>
+                  </ng-template>
+                  <ng-template #body>
+                    Користувач: {{ notification.data.fullName }}
+                  </ng-template>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      notificationTmpl;
+                      context: {
+                        title: title,
+                        body: body,
+                        notification: notification
+                      }
+                    "
+                  ></ng-container>
+                </ng-container>
               </ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="notificationType.RequestCreated">
-              <ng-container
-                *ngIf="notification.dataIsRequest(notification.data)"
+              <ng-container *ngSwitchCase="notificationType.RequestCreated">
+                <ng-container
+                  *ngIf="notification.dataIsRequest(notification.data)"
+                >
+                  <ng-template #title>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-flag mr-2"></i>
+                      Новий запит №{{ notification.data.number }}
+                    </div>
+                  </ng-template>
+                  <ng-template #body>
+                    <div class="mb-2">
+                      Тип: {{ notification.data.requestType | requestType }}
+                    </div>
+                    Запит від: {{ notification.data.customer.fullName }}
+                  </ng-template>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      notificationTmpl;
+                      context: {
+                        title: title,
+                        body: body,
+                        notification: notification
+                      }
+                    "
+                  ></ng-container>
+                </ng-container> </ng-container
+              ><ng-container
+                *ngSwitchCase="
+                  notification.type === notificationType.RequestApproved ||
+                  notification.type === notificationType.RequestRejected
+                    ? notification.type
+                    : ''
+                "
               >
-                <ng-template #title>
-                  <div class="flex align-items-center">
-                    <i class="pi pi-flag mr-2"></i>
-                    Новий запит №{{ notification.data.number }}
-                  </div>
-                </ng-template>
-                <ng-template #body>
-                  <div class="mb-2">
-                    Тип: {{ notification.data.requestType | requestType }}
-                  </div>
-                  Запит від: {{ notification.data.customer.fullName }}
-                </ng-template>
                 <ng-container
-                  *ngTemplateOutlet="
-                    notificationTmpl;
-                    context: {
-                      title: title,
-                      body: body,
-                      notification: notification
-                    }
-                  "
-                ></ng-container>
-              </ng-container> </ng-container
-            ><ng-container
-              *ngSwitchCase="
-                notification.type === notificationType.RequestApproved ||
-                notification.type === notificationType.RequestRejected
-                  ? notification.type
-                  : ''
-              "
-            >
-              <ng-container
-                *ngIf="notification.dataIsRequest(notification.data)"
-              >
-                <ng-template #title>
-                  <div class="flex align-items-center">
-                    <i class="pi pi-flag mr-2"></i>
-                    Запит №{{ notification.data.number }} (статус змінено)
-                  </div>
-                </ng-template>
-                <ng-template #body>
-                  <div class="mb-1">
-                    Тип: {{ notification.data.requestType | requestType }}
-                  </div>
-                  <div class="flex">
-                    <span class="mr-2">Статус:</span>
-                    <app-request-status-badge
-                      [status]="notification.data.returnRequest.status"
-                    ></app-request-status-badge>
-                  </div>
-                </ng-template>
-                <ng-container
-                  *ngTemplateOutlet="
-                    notificationTmpl;
-                    context: {
-                      title: title,
-                      body: body,
-                      notification: notification
-                    }
-                  "
-                ></ng-container>
+                  *ngIf="notification.dataIsRequest(notification.data)"
+                >
+                  <ng-template #title>
+                    <div class="flex align-items-center">
+                      <i class="pi pi-flag mr-2"></i>
+                      Запит №{{ notification.data.number }} (статус змінено)
+                    </div>
+                  </ng-template>
+                  <ng-template #body>
+                    <div class="mb-1">
+                      Тип: {{ notification.data.requestType | requestType }}
+                    </div>
+                    <div class="flex">
+                      <span class="mr-2">Статус:</span>
+                      <app-request-status-badge
+                        [status]="notification.data.returnRequest.status"
+                      ></app-request-status-badge>
+                    </div>
+                  </ng-template>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      notificationTmpl;
+                      context: {
+                        title: title,
+                        body: body,
+                        notification: notification
+                      }
+                    "
+                  ></ng-container>
+                </ng-container>
               </ng-container>
             </ng-container>
           </ng-container>
-        </ng-container>
-      </div>
-    </a>
-  </p-scrollPanel>
+        </div>
+      </a>
+    </div>
+  </div>
 </ng-container>
 
 <ng-template
