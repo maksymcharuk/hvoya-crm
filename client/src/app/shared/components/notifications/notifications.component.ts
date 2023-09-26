@@ -1,3 +1,5 @@
+import { BehaviorSubject, combineLatest, of, switchMap, zip } from 'rxjs';
+
 import { Component } from '@angular/core';
 
 import { NotificationType } from '@shared/enums/notification-type.enum';
@@ -11,14 +13,37 @@ import { UserService } from '@shared/services/user.service';
   styleUrls: ['./notifications.component.scss'],
 })
 export class NotificationsComponent {
-  notifications$ = this.notificationsService.notifications$;
+  notifications$ = new BehaviorSubject<NotificationEntity[]>([]);
+  scrolled$ = new BehaviorSubject<boolean>(false);
   notificationType = NotificationType;
   user = this.userService.getUser();
+  take = 10;
+  skip = 0;
 
   constructor(
     private notificationsService: NotificationsService,
     private userService: UserService,
-  ) {}
+  ) {
+    combineLatest([this.notificationsService.notifications$, this.scrolled$])
+      .pipe(
+        switchMap(([notifications, scrolled]) => {
+          if (scrolled) {
+            this.skip += this.take;
+          }
+          return zip([of(notifications), this.notifications$]);
+        }),
+      )
+      .subscribe(([allNotifications, currentNotifications]) => {
+        this.notifications$.next([
+          ...currentNotifications,
+          ...allNotifications.slice(this.skip, this.skip + this.take),
+        ]);
+      });
+  }
+
+  onScrolled() {
+    this.scrolled$.next(true);
+  }
 
   checkNotification(notification: NotificationEntity) {
     if (!notification.checked) {
