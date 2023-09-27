@@ -315,14 +315,12 @@ export class ProductsCreationService {
         productVariantExists.properties,
       );
 
-      if (propertiesEqual) {
-        return productVariantExists;
+      if (!propertiesEqual) {
+        properties = await manager.save(ProductPropertiesEntity, {
+          ...productVariantExists.properties,
+          ...properties,
+        });
       }
-
-      properties = await manager.save(ProductPropertiesEntity, {
-        ...productVariantExists.properties,
-        ...properties,
-      });
 
       await manager.update(ProductVariantEntity, productVariantExists.id, {
         sku: productVariant.sku,
