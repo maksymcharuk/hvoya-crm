@@ -98,7 +98,10 @@ export class ProductsCreationService {
       try {
         await this.upsertProductCategory(productCategory);
       } catch (error) {
-        this.errors.push({ error, entity: productCategory });
+        this.errors.push({
+          error: Object.assign({}, error),
+          entity: productCategory,
+        });
       }
     }
 
@@ -106,7 +109,10 @@ export class ProductsCreationService {
       try {
         await this.upsertProductColor(productColor);
       } catch (error) {
-        this.errors.push({ error, entity: productColor });
+        this.errors.push({
+          error: Object.assign({}, error),
+          entity: productColor,
+        });
       }
     }
 
@@ -114,7 +120,10 @@ export class ProductsCreationService {
       try {
         await this.upsertProductSize(productSize);
       } catch (error) {
-        this.errors.push({ error, entity: productSize });
+        this.errors.push({
+          error: Object.assign({}, error),
+          entity: productSize,
+        });
       }
     }
 
@@ -122,7 +131,10 @@ export class ProductsCreationService {
       try {
         await this.upsertProductPackageSize(productPackageSize);
       } catch (error) {
-        this.errors.push({ error, entity: productPackageSize });
+        this.errors.push({
+          error: Object.assign({}, error),
+          entity: productPackageSize,
+        });
       }
     }
   }
@@ -132,7 +144,7 @@ export class ProductsCreationService {
       try {
         await this.upsertProductBase(product);
       } catch (error) {
-        this.errors.push({ error, entity: product });
+        this.errors.push({ error: Object.assign({}, error), entity: product });
       }
     }
   }
@@ -310,17 +322,23 @@ export class ProductsCreationService {
     });
 
     if (productVariantExists) {
-      const propertiesEqual = this.compareProperties(
-        properties,
-        productVariantExists.properties,
-      );
+      let propertiesEqual = false;
 
-      if (!propertiesEqual) {
-        properties = await manager.save(ProductPropertiesEntity, {
-          ...productVariantExists.properties,
-          ...properties,
-        });
+      if (productVariantExists.properties) {
+        propertiesEqual = this.compareProperties(
+          properties,
+          productVariantExists.properties,
+        );
       }
+
+      if (propertiesEqual) {
+        return productVariantExists;
+      }
+
+      properties = await manager.save(ProductPropertiesEntity, {
+        ...productVariantExists.properties,
+        ...properties,
+      });
 
       await manager.update(ProductVariantEntity, productVariantExists.id, {
         sku: productVariant.sku,

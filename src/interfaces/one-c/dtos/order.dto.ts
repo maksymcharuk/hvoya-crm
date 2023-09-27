@@ -37,21 +37,7 @@ export class Order {
     this.order_status = getOrderStatusName(data.status);
     this.list_products = data.items.map((item) => new Product(item));
     this.date = data.createdAt.toISOString();
-    this.description = this.formDesctiption(data.description, data.number);
-  }
-
-  private formDesctiption(description?: string, orderNumber?: string): string {
-    const arr = [];
-
-    if (orderNumber) {
-      arr.push(`№${orderNumber}`);
-    }
-
-    if (description) {
-      arr.push(description);
-    }
-
-    return arr.join(': ');
+    this.description = data.description || '';
   }
 }
 
