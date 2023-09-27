@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js';
 import { DataSource } from 'typeorm';
 
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { ProductPropertiesEntity } from '@entities/product-properties.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
@@ -20,7 +20,12 @@ export class OneCSyncService {
     const products = await this.dataSource.manager.find(ProductVariantEntity, {
       relations: ['properties'],
     });
+
     const oneCProducts = await this.oneCApiClientService.syncProducts();
+
+    if (!oneCProducts) {
+      throw new BadRequestException('Не вдалося отримати товари з 1С');
+    }
 
     for (let product of products) {
       const newProduct = oneCProducts.find(
