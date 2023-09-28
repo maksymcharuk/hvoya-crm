@@ -74,3 +74,48 @@
     ></button>
   </form>
 </div>
+
+<div *ngIf="importResults$ | async as importResults" class="card">
+  <h5>Результати імпорту</h5>
+
+  <h6><b>Створено:</b></h6>
+  <div>Базових товарів: {{ importResults.created.productBases.length }}</div>
+  <div>Товарів: {{ importResults.created.productVariants.length }}</div>
+  <div>Категорій: {{ importResults.created.productCategories.length }}</div>
+  <div>Фотографій: {{ importResults.created.productImages.length }}</div>
+  <div>Кольорів: {{ importResults.created.productColors.length }}</div>
+  <div>Розмірів: {{ importResults.created.productSizes.length }}</div>
+  <div>Габаритів: {{ importResults.created.productPackageSizes.length }}</div>
+
+  <h6><b>Оновлено:</b></h6>
+  <div>Базових товарів: {{ importResults.updated.productBases.length }}</div>
+  <div>Товарів: {{ importResults.updated.productVariants.length }}</div>
+
+  <h6><b>Всього:</b></h6>
+  <div>
+    Базових товарів:
+    {{
+      importResults.created.productBases.length +
+        importResults.updated.productBases.length
+    }}
+  </div>
+  <div>
+    Товарів:
+    {{
+      importResults.created.productVariants.length +
+        importResults.updated.productVariants.length
+    }}
+  </div>
+
+  <h6><b>Помилки:</b></h6>
+  <div>Всього: {{ importResults.errors.length }}</div>
+  <p-panel
+    header="Технічні деталі"
+    [toggleable]="true"
+    [collapsed]="true"
+    expandIcon="pi pi-minus"
+    collapseIcon="pi pi-plus"
+  >
+    <!-- <div class="rich-content" [innerHTML]="faq.answer | safeHtml"></div> -->
+  </p-panel>
+</div>

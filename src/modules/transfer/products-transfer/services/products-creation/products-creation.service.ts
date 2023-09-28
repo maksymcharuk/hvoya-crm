@@ -20,37 +20,30 @@ import {
   NormalizedProductVariant,
   NormalizedProductsData,
 } from '../../interfaces/normalized-products-data.interface';
-
-interface UpsetionError {
-  error: Error;
-  entity:
-    | NormalizedProductBase
-    | NormalizedProductVariant
-    | NormalizedProductCategory
-    | NormalizedProductColor
-    | NormalizedProductSize;
-}
+import { UpsertionStats } from '../../interfaces/upsert-stats.interface';
 
 @Injectable()
 export class ProductsCreationService {
-  private errors: UpsetionError[] = [];
+  private stats: UpsertionStats = this.getInitialStats();
 
   constructor(private readonly dataSource: DataSource) {}
 
   async upsertProducts(productsData: NormalizedProductsData) {
-    this.errors = [];
+    this.stats = this.getInitialStats();
 
     await this.upsertDepencencies(productsData.products);
     await this.upsertMain(productsData.products);
 
-    if (this.errors.length) {
+    if (this.stats.errors.length) {
       throw new HttpException(
         {
           message: 'Не вдалося завантажити деякі товари',
-          errors: this.errors,
+          stats: this.stats,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    } else {
+      return this.stats;
     }
   }
 
@@ -98,8 +91,8 @@ export class ProductsCreationService {
       try {
         await this.upsertProductCategory(productCategory);
       } catch (error) {
-        this.errors.push({
-          error: Object.assign({}, error),
+        this.stats.errors.push({
+          error: this.formatError(error),
           entity: productCategory,
         });
       }
@@ -109,8 +102,8 @@ export class ProductsCreationService {
       try {
         await this.upsertProductColor(productColor);
       } catch (error) {
-        this.errors.push({
-          error: Object.assign({}, error),
+        this.stats.errors.push({
+          error: this.formatError(error),
           entity: productColor,
         });
       }
@@ -120,8 +113,8 @@ export class ProductsCreationService {
       try {
         await this.upsertProductSize(productSize);
       } catch (error) {
-        this.errors.push({
-          error: Object.assign({}, error),
+        this.stats.errors.push({
+          error: this.formatError(error),
           entity: productSize,
         });
       }
@@ -131,8 +124,8 @@ export class ProductsCreationService {
       try {
         await this.upsertProductPackageSize(productPackageSize);
       } catch (error) {
-        this.errors.push({
-          error: Object.assign({}, error),
+        this.stats.errors.push({
+          error: this.formatError(error),
           entity: productPackageSize,
         });
       }
@@ -144,7 +137,10 @@ export class ProductsCreationService {
       try {
         await this.upsertProductBase(product);
       } catch (error) {
-        this.errors.push({ error: Object.assign({}, error), entity: product });
+        this.stats.errors.push({
+          error: this.formatError(error),
+          entity: product,
+        });
       }
     }
   }
@@ -173,6 +169,7 @@ export class ProductsCreationService {
       return productCategoryExists;
     }
 
+    this.stats.created.productCategories.push(productCategory);
     return manager.save(ProductCategoryEntity, {
       name: productCategory.name,
       externalIds: [productCategory.externalId],
@@ -189,6 +186,7 @@ export class ProductsCreationService {
       return productImageExists;
     }
 
+    this.stats.created.productImages.push(url);
     return manager.save(FileEntity, { url });
   }
 
@@ -204,6 +202,7 @@ export class ProductsCreationService {
       return productColorExists;
     }
 
+    this.stats.created.productColors.push(color);
     return manager.save(ProductColorEntity, {
       name: color.name,
       hex: color.hex,
@@ -238,6 +237,7 @@ export class ProductsCreationService {
       return productSizeExists;
     }
 
+    this.stats.created.productSizes.push(size);
     return manager.save(ProductSizeEntity, {
       height: size.height,
       width: size.width,
@@ -280,6 +280,7 @@ export class ProductsCreationService {
       return productSizeExists;
     }
 
+    this.stats.created.productPackageSizes.push(size);
     return manager.save(ProductPackageSizeEntity, {
       height: size.packageHeight,
       width: size.packageWidth,
@@ -324,21 +325,22 @@ export class ProductsCreationService {
     if (productVariantExists) {
       let propertiesEqual = false;
 
-      if (productVariantExists.properties) {
-        propertiesEqual = this.compareProperties(
-          properties,
-          productVariantExists.properties,
-        );
-      }
+      // if (productVariantExists.properties) {
+      propertiesEqual = this.compareProperties(
+        properties,
+        productVariantExists.properties,
+      );
+      // }
 
-      if (propertiesEqual) {
-        return productVariantExists;
+      if (!propertiesEqual) {
+        // properties = await manager.save(ProductPropertiesEntity, {
+        //   ...productVariantExists.properties,
+        //   ...properties,
+        // });
+        // await manager.update(ProductVariantEntity, productVariantExists.id, {
+        //   properties: { id: properties.id },
+        // });
       }
-
-      properties = await manager.save(ProductPropertiesEntity, {
-        ...productVariantExists.properties,
-        ...properties,
-      });
 
       await manager.update(ProductVariantEntity, productVariantExists.id, {
         sku: productVariant.sku,
@@ -352,6 +354,7 @@ export class ProductsCreationService {
         properties: { id: properties.id },
       });
 
+      this.stats.updated.productVariants.push(productVariant);
       return productVariantExists;
     }
 
@@ -368,6 +371,7 @@ export class ProductsCreationService {
       product: { id: variant.id },
     });
 
+    this.stats.created.productVariants.push(productVariant);
     return variant;
   }
 
@@ -398,6 +402,7 @@ export class ProductsCreationService {
         ),
       );
 
+      this.stats.updated.productBases.push(productBase);
       return productBaseExists;
     }
 
@@ -415,6 +420,7 @@ export class ProductsCreationService {
       ),
     );
 
+    this.stats.created.productBases.push(productBase);
     return newProductBase;
   }
 
@@ -459,16 +465,43 @@ export class ProductsCreationService {
     packageSize: ProductPackageSizeEntity | ProductSizeEntity,
     packageSizeExists: ProductPackageSizeEntity | ProductSizeEntity,
   ) {
-    // If package size is not yet set
-    if (packageSizeExists === null) {
-      return false;
-    }
-
     // If package size is no found keep the old one
     if (!packageSize) {
       return true;
     }
 
+    // If package size is not yet set
+    if (packageSizeExists === null) {
+      return false;
+    }
+
     return packageSize.id === packageSizeExists.id;
+  }
+
+  private formatError(error: Error): Error {
+    return {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+    };
+  }
+
+  private getInitialStats(): UpsertionStats {
+    return {
+      created: {
+        productBases: [],
+        productVariants: [],
+        productCategories: [],
+        productColors: [],
+        productSizes: [],
+        productPackageSizes: [],
+        productImages: [],
+      },
+      updated: {
+        productBases: [],
+        productVariants: [],
+      },
+      errors: [],
+    };
   }
 }

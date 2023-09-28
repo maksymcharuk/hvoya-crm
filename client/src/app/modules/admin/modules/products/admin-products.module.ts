@@ -6,6 +6,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { PanelModule } from 'primeng/panel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TabViewModule } from 'primeng/tabview';
 import { TooltipModule } from 'primeng/tooltip';
@@ -55,6 +56,7 @@ import { ViewProductComponent } from './pages/view-product/view-product.componen
     TooltipModule,
     SelectButtonModule,
     CheckboxModule,
+    PanelModule,
   ],
 })
 export class AdminProductsModule {}

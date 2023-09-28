@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { finalize } from 'rxjs';
+import { BehaviorSubject, catchError, finalize } from 'rxjs';
 
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -11,6 +11,7 @@ import {
   ImportProductsDTO,
   ImportProductsFormGroup,
 } from '@shared/interfaces/dto/import-products.dto';
+import { ProductsTransferImportResponse } from '@shared/interfaces/responses/products-transfer-import.response';
 import { ProductsTransferService } from '@shared/services/products-transfer.service';
 
 @Component({
@@ -19,6 +20,9 @@ import { ProductsTransferService } from '@shared/services/products-transfer.serv
   styleUrls: ['./transfer.component.scss'],
 })
 export class TransferComponent {
+  importResults$ = new BehaviorSubject<ProductsTransferImportResponse | null>(
+    null,
+  );
   submitting = false;
 
   importSourceTypeEnum = ProductsImportSourceType;
@@ -102,8 +106,13 @@ export class TransferComponent {
           this.submitting = false;
           this.sourceType?.enable();
         }),
+        catchError((err: any) => {
+          this.importResults$.next(err.error.stats);
+          throw err;
+        }),
       )
-      .subscribe(() => {
+      .subscribe((response: ProductsTransferImportResponse) => {
+        this.importResults$.next(response);
         this.messageService.add({
           severity: 'success',
           detail: 'Товари успішно імпортовано',

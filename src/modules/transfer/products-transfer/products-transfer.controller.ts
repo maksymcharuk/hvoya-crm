@@ -30,6 +30,7 @@ import { OneCSyncService } from '@modules/integrations/one-c/one-c-client/servic
 
 import { ImportProductsDto } from './dtos/import-products.dto';
 import { ProductsImportSource } from './enums/product-import-source.enum';
+import { UpsertionStats } from './interfaces/upsert-stats.interface';
 import { PromProductsTransferService } from './services/prom-products-transfer/prom-products-transfer.service';
 
 @Controller('products-transfer')
@@ -70,7 +71,7 @@ export class ProductsTransferController {
       }),
     )
     file?: Express.Multer.File,
-  ) {
+  ): Promise<UpsertionStats> {
     if (!link && !file) {
       throw new HttpException(
         'Необхідно надати файл або посилання',
@@ -127,7 +128,8 @@ export class ProductsTransferController {
     switch (source) {
       case ProductsImportSource.Prom:
         response = await this.promProductsTransferService.import(result, type!);
-        await this.oneCSyncService.syncProducts();
+        console.log(this.oneCSyncService);
+        // this.oneCSyncService.syncProducts();
         return response;
       default:
         throw new HttpException(
