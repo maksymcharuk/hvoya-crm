@@ -331,14 +331,16 @@ export class ProductsCreationService {
         );
       }
 
-      if (propertiesEqual) {
-        return productVariantExists;
-      }
+      if (!propertiesEqual) {
+        properties = await manager.save(ProductPropertiesEntity, {
+          ...productVariantExists.properties,
+          ...properties,
+        });
 
-      properties = await manager.save(ProductPropertiesEntity, {
-        ...productVariantExists.properties,
-        ...properties,
-      });
+        await manager.update(ProductVariantEntity, productVariantExists.id, {
+          properties: { id: properties.id },
+        });
+      }
 
       await manager.update(ProductVariantEntity, productVariantExists.id, {
         sku: productVariant.sku,
@@ -349,7 +351,6 @@ export class ProductsCreationService {
           ]),
         ),
         baseProduct: { id: productBaseId },
-        properties: { id: properties.id },
       });
 
       return productVariantExists;
