@@ -13,6 +13,7 @@ export const UkrPoshtaStatusMap: { [key in DeliveryStatus]: string[] } = {
     'відправлення посилки',
     'слідує',
     'прямує до точки видачі',
+    'з сортувального центру',
   ],
   [DeliveryStatus.Arrived]: [
     'у відділенні',
