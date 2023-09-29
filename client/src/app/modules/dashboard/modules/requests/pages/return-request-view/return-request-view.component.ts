@@ -64,8 +64,12 @@ export class ReturnRequestViewComponent {
     this.showWaybillViewDialog = true;
   }
 
-  onFileUpload(event: any) {
+  onWaybillUpload(event: any) {
     this.waybillControl.patchValue(event.files[0]);
+  }
+
+  onWaybillRemove() {
+    this.waybillControl.patchValue(null);
   }
 
   updateWaybill() {
@@ -74,12 +78,18 @@ export class ReturnRequestViewComponent {
       return;
     }
 
+    const formValue = this.updateWaybillForm.value;
     const formData = new FormData();
-    formData.append(
-      'trackingId',
-      this.updateWaybillForm.get('trackingId')?.value,
-    );
-    formData.append('waybill', this.updateWaybillForm.get('waybill')?.value);
+
+    const value = {
+      returnRequest: {
+        trackingId: formValue.trackingId,
+      },
+      waybill: formValue.waybill,
+    };
+
+    formData.append('returnRequest', JSON.stringify(value.returnRequest));
+    formData.append('documents', value.waybill!);
 
     this.waybillSubmitting$.next(true);
     this.requestsService
@@ -91,7 +101,7 @@ export class ReturnRequestViewComponent {
         this.waybillControl.reset();
         this.messageService.add({
           severity: 'success',
-          detail: 'ТТП успішно оновлено',
+          detail: 'Дані доставки успішно оновлено',
         });
       });
   }

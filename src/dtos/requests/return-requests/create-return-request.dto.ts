@@ -1,5 +1,10 @@
-import { Transform } from 'class-transformer';
-import { IsAlphanumeric, IsEnum, IsNotEmpty } from 'class-validator';
+import { Transform, Type, plainToClass } from 'class-transformer';
+import {
+  IsAlphanumeric,
+  IsEnum,
+  IsNotEmpty,
+  ValidateNested,
+} from 'class-validator';
 
 import { DeliveryService } from '@enums/delivery-service.enum';
 
@@ -9,11 +14,6 @@ export class OrderReturnRequestItemDto {
 
   @IsNotEmpty({ message: 'Необхідно вказати замовлення' })
   orderItemId: string;
-
-  constructor(data: OrderReturnRequestItemDto) {
-    this.quantity = data.quantity;
-    this.orderItemId = data.orderItemId;
-  }
 }
 
 export class CreateReturnRequestDto {
@@ -29,6 +29,14 @@ export class CreateReturnRequestDto {
   deliveryService: DeliveryService;
 
   @IsNotEmpty({ message: 'Необхідно вказати товари' })
+  @Transform(({ value }) => {
+    value = typeof value === 'string' ? JSON.parse(value) : value;
+    return value.map((item: any) =>
+      plainToClass(OrderReturnRequestItemDto, item),
+    );
+  })
+  @ValidateNested({ each: true, always: true })
+  @Type(() => OrderReturnRequestItemDto)
   requestedItems: OrderReturnRequestItemDto[];
 
   @IsNotEmpty({ message: 'Необхідно вказати номер замовлення' })

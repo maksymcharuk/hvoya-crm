@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 
-import { ORDER_NOTIFICATIONS, REQUEST_NOTIFICATION } from '@shared/constants/notification.constants';
+import { ICONS } from '@shared/constants/base.constants';
+import {
+  ORDER_NOTIFICATIONS,
+  REQUEST_NOTIFICATION,
+} from '@shared/constants/notification.constants';
 import { AccountService } from '@shared/services/account.service';
 import { AuthService } from '@shared/services/auth.service';
 import { NotificationsService } from '@shared/services/notifications.service';
@@ -41,7 +45,7 @@ export class DashboardComponent {
         },
         {
           label: 'Замовлення',
-          icon: 'pi pi-fw pi-shopping-bag',
+          icon: `pi pi-fw ${ICONS.ORDER}`,
           routerLink: ['orders'],
           badge: '',
           title: ORDER_NOTIFICATIONS as any,

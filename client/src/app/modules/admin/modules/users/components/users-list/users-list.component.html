@@ -3,7 +3,7 @@
   dataKey="id"
   currentPageReportTemplate="Показано {first} до {last} з {totalRecords} користувачів"
   [rowHover]="true"
-  [rows]="20"
+  [rows]="rows"
   [showCurrentPageReport]="true"
   [paginator]="true"
   [filterDelay]="0"
@@ -18,7 +18,7 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(10)">
+    <ng-container *ngFor="let _ of [].constructor(rows)">
       <tr>
         <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
         <td><p-skeleton height="16px" width="98px"></p-skeleton></td>

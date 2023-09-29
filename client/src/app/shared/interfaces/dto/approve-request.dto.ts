@@ -1,10 +1,10 @@
 export interface ApproveReturnRequestDTO {
-  approvedItems: ApproveReturnRequestItemDto[];
+  approvedItems: ApproveReturnRequestItemDTO[];
   managerComment?: string;
   deduction: number;
 }
 
-export interface ApproveReturnRequestItemDto {
+export interface ApproveReturnRequestItemDTO {
   quantity: number;
   orderItemId: string;
 }

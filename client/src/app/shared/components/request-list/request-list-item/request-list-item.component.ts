@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { RequestType } from '@shared/enums/request-type.enum';
 import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { NotificationsService } from '@shared/services/notifications.service';
@@ -19,13 +20,15 @@ export class RequestListItemComponent {
   @Input() request!: RequestEntity;
   @Input() requestNotification: any;
 
+  requestType = RequestType;
+
   notifications$ = this.notificationsService.notifications$;
 
   constructor(
     private readonly userService: UserService,
     private readonly router: Router,
     private readonly notificationsService: NotificationsService,
-  ) { }
+  ) {}
 
   showRequestNotification(
     request: RequestEntity,
@@ -50,15 +53,26 @@ export class RequestListItemComponent {
       : '/dashboard';
 
     switch (this.request.requestType) {
-      case 'Return':
+      case RequestType.Return:
         this.router.navigate([
           `${path}/requests/return-requests/${this.request.number}`,
         ]);
         if (this.requestNotification) {
-          this.notificationsService.checkNotification(this.requestNotification.id);
+          this.notificationsService.checkNotification(
+            this.requestNotification.id,
+          );
         }
         break;
-
+      case RequestType.FundsWithdrawal:
+        this.router.navigate([
+          `${path}/requests/funds-withdrawal-requests/${this.request.number}`,
+        ]);
+        if (this.requestNotification) {
+          this.notificationsService.checkNotification(
+            this.requestNotification.id,
+          );
+        }
+        break;
       default:
         break;
     }

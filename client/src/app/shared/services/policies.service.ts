@@ -11,6 +11,7 @@ import {
   RETURNABLE_ORDER_STATUSES,
   UPDATABLE_ORDER_STATUSES,
 } from '@shared/constants/order.constants';
+import { FundsWithdrawalRequestStatus } from '@shared/enums/funds-withdrawal-request-status.enum';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Role } from '@shared/enums/role.enum';
@@ -20,6 +21,7 @@ import {
   Subjects,
 } from '@shared/interfaces/casl.interface';
 import { Faq } from '@shared/interfaces/entities/faq.entity';
+import { FundsWithdrawalRequest } from '@shared/interfaces/entities/funds-withdrawal-request.entity';
 import { OrderReturnRequest } from '@shared/interfaces/entities/order-return-request.entity';
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { User } from '@shared/interfaces/entities/user.entity';
@@ -82,6 +84,13 @@ export class PoliciesService {
           OrderReturnRequest,
           (orderReturnRequest: OrderReturnRequest) =>
             orderReturnRequest.status === OrderReturnRequestStatus.Pending,
+        );
+        can(
+          'approve',
+          FundsWithdrawalRequest,
+          (fundsWithdrawalRequest: FundsWithdrawalRequest) =>
+            fundsWithdrawalRequest.status ===
+            FundsWithdrawalRequestStatus.Pending,
         );
         break;
       case Role.Admin:

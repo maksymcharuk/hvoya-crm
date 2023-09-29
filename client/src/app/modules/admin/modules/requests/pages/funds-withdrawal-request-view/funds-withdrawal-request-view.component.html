@@ -1,0 +1,194 @@
+<div class="request-view grid" data-cy="request-view-page">
+  <div class="col-12">
+    <div class="card request-view__content">
+      <div *ngIf="request$ | async as request">
+        <h4 class="flex align-items-center">
+          <span>Виведення коштів №{{ request.number }}</span>
+        </h4>
+        <ng-container
+          *ngIf="
+            'approve' | able : request.fundsWithdrawalRequest;
+            else infoView
+          "
+        >
+          <form [formGroup]="fundsWithdrawalRequestForm" class="formgrid grid">
+            <div class="p-fluid field col-12 xl:col-6">
+              <label for="managerComment">Коментар:</label>
+              <textarea
+                rows="5"
+                cols="30"
+                id="managerComment"
+                pInputTextarea
+                [autoResize]="true"
+                formControlName="managerComment"
+              ></textarea>
+              <app-form-control-error-message
+                [formGroup]="fundsWithdrawalRequestForm"
+                controlName="managerComment"
+                errorType="required"
+                errorMessage="Потрібно вказати причину відхилення запиту"
+              >
+              </app-form-control-error-message>
+            </div>
+            <div class="field col-12 xl:col-6">
+              <label for="receipt">Документ:</label>
+              <p-fileUpload
+                [accept]="'.pdf'"
+                [customUpload]="true"
+                [auto]="true"
+                [maxFileSize]="1000000"
+                [disabled]="submitting"
+                [multiple]="true"
+                (uploadHandler)="onReceiptUpload($event.files)"
+                (onRemove)="onReceiptRemove()"
+              >
+              </p-fileUpload>
+              <app-form-control-error-message
+                [formGroup]="fundsWithdrawalRequestForm"
+                controlName="receipt"
+                errorType="required"
+                errorMessage="Потрібно завантажити фото документа що підтверджує повернення коштів"
+              >
+              </app-form-control-error-message>
+            </div>
+          </form>
+          <div class="grid mb-5">
+            <div class="col-12">
+              <div class="flex justify-content-end">
+                <p-button
+                  icon="pi pi-check"
+                  label="Підтвердити"
+                  [disabled]="submitting"
+                  (click)="confirmOrRejectToggle(action.Approve)"
+                ></p-button>
+                <p-button
+                  icon="pi pi-times"
+                  label="Відхилити"
+                  styleClass="p-button-danger"
+                  class="ml-3"
+                  [disabled]="submitting"
+                  (click)="confirmOrRejectToggle(action.Reject)"
+                ></p-button>
+
+                <p-confirmDialog
+                  rejectButtonStyleClass="p-button-outlined p-button-secondary"
+                  [acceptButtonStyleClass]="acceptButtonStyleClass"
+                  [header]="confirmRejectHeader"
+                ></p-confirmDialog>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #infoView>
+          <ul
+            *ngIf="
+              request.managerComment ||
+              request.fundsWithdrawalRequest!.fundsWithdrawalReceipt?.url
+            "
+            class="striped-list my-5"
+          >
+            <li *ngIf="request.managerComment" class="striped-list__item">
+              <div class="striped-list__item-key align-self-baseline">
+                Коментар менеджера
+              </div>
+              <div class="striped-list__item-value">
+                <div class="mb-2">{{ request.managerComment }}</div>
+              </div>
+            </li>
+            <li
+              *ngIf="
+                request.fundsWithdrawalRequest!.fundsWithdrawalReceipt
+                  ?.url as url
+              "
+              class="striped-list__item"
+            >
+              <div class="striped-list__item-key align-self-baseline">
+                Документ
+              </div>
+              <div class="striped-list__item-value">
+                <p-button
+                  icon="pi pi-eye"
+                  label="Переглянути документ"
+                  (click)="showReceiptViewDialogHandler()"
+                ></p-button>
+                <p-dialog
+                  [header]="'Документ (запит №' + request.number + ')'"
+                  [(visible)]="showReceiptViewDialog"
+                  [modal]="true"
+                  [style]="{ width: '80vw' }"
+                  [draggable]="false"
+                  [resizable]="false"
+                >
+                  <ngx-doc-viewer
+                    [url]="url"
+                    viewer="pdf"
+                    style="width: 100%; height: 70vh"
+                  ></ngx-doc-viewer>
+                </p-dialog>
+              </div>
+            </li>
+          </ul>
+        </ng-template>
+        <div class="grid">
+          <div class="col-12 xl:col-6">
+            <h5>Дані запиту</h5>
+            <ul class="striped-list">
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Статус</div>
+                <div class="striped-list__item-value">
+                  <app-request-status-badge
+                    [status]="request.fundsWithdrawalRequest!.status"
+                  ></app-request-status-badge>
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key align-self-baseline">
+                  Сума
+                </div>
+                <div class="striped-list__item-value">
+                  <div class="mb-2">
+                    {{ request.fundsWithdrawalRequest!.amount | currency }}
+                  </div>
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key align-self-baseline">
+                  Коментар до запиту
+                </div>
+                <div class="striped-list__item-value">
+                  <div class="mb-2">{{ request.customerComment || '—' }}</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="col-12 xl:col-6">
+            <h5>Дані дропшипера</h5>
+            <ul class="striped-list">
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">ПІБ</div>
+                <div class="striped-list__item-value">
+                  <a [routerLink]="['/admin', 'users', request.customer.id]">
+                    {{ request.customer.fullName }}
+                  </a>
+                </div>
+              </li>
+              <li class="striped-list__item">
+                <div class="striped-list__item-key">Номер телефону</div>
+                <div class="striped-list__item-value">
+                  <ng-container
+                    *ngIf="
+                      request.customer.phoneNumber as phoneNumber;
+                      else emptyPhoneNumber
+                    "
+                    >{{ phoneNumber | phoneNumber }}</ng-container
+                  >
+                  <ng-template #emptyPhoneNumber>-</ng-template>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

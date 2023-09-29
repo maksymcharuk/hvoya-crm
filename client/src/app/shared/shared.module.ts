@@ -49,6 +49,7 @@ import { ProductViewComponent } from './components/product-view/product-view.com
 import { RequestListItemComponent } from './components/request-list/request-list-item/request-list-item.component';
 import { RequestListComponent } from './components/request-list/request-list.component';
 import { RequestStatusBadgeComponent } from './components/request-status-badge/request-status-badge.component';
+import { RequestTypeBadgeComponent } from './components/request-type-badge/request-type-badge.component';
 import { ReturnRequestDeliveryStatusBadgeComponent } from './components/return-request-delivery-status-badge/return-request-delivery-status-badge.component';
 import { ReturnRequestItemListComponent } from './components/return-request-item-list/return-request-item-list.component';
 import { ReturnRequestOrderItemComponent } from './components/return-request-order-item/return-request-order-item.component';
@@ -70,6 +71,7 @@ import {
   RequestTypePipe,
   RoleNamePipe,
   SafeHtmlPipe,
+  TransactionIconPipe,
   TransactionStatusPipe,
   TransactionSyncOneCStatusPipe,
   TruncatePipe,
@@ -91,6 +93,7 @@ const PIPES = [
   TruncatePipe,
   SafeHtmlPipe,
   AddHttpPipe,
+  TransactionIconPipe,
 ];
 
 const COMPONENTS = [
@@ -121,6 +124,7 @@ const COMPONENTS = [
   ReturnRequestViewItemComponent,
   ReturnRequestOrderItemComponent,
   ReturnRequestItemListComponent,
+  RequestTypeBadgeComponent,
 ];
 
 const PRIMENG_MODULES = [

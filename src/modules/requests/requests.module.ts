@@ -1,8 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-
-import { RequestEntity } from '@entities/request.entity';
-import { UserEntity } from '@entities/user.entity';
 
 import { CaslModule } from '@modules/casl/casl.module';
 import { FilesModule } from '@modules/files/files.module';
@@ -10,12 +6,13 @@ import { FilesModule } from '@modules/files/files.module';
 import { RequestContext } from './core/request-context';
 import { RequestsController } from './requests.controller';
 import { RequestsService } from './requests.service';
+import { FundsWithdrawRequestsModule } from './strategies/funds-withdraw-requests/funds-withdraw-requests.module';
 import { ReturnRequestsModule } from './strategies/return-requests/return-requests.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([RequestEntity, UserEntity]),
     ReturnRequestsModule,
+    FundsWithdrawRequestsModule,
     FilesModule,
     CaslModule,
   ],

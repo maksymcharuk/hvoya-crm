@@ -17,7 +17,10 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { FIELD_UPDATE_DEBOUNCE_TIME } from '@shared/constants/base.constants';
+import {
+  FIELD_UPDATE_DEBOUNCE_TIME,
+  ICONS,
+} from '@shared/constants/base.constants';
 import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { RequestType } from '@shared/enums/request-type.enum';
@@ -39,6 +42,8 @@ export class OrderViewComponent {
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
 
   private readonly destroy$ = new Subject<void>();
+
+  ICONS = ICONS;
 
   order$ = new BehaviorSubject<Order | null>(null);
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
@@ -162,7 +167,7 @@ export class OrderViewComponent {
         this.waybillControl.reset();
         this.messageService.add({
           severity: 'success',
-          detail: 'ТТП успішно оновлено',
+          detail: 'Дані доставки успішно оновлено',
         });
       });
   }

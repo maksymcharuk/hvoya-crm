@@ -6,7 +6,7 @@
   [lazy]="true"
   [value]="orders?.data || []"
   [rowHover]="true"
-  [rows]="20"
+  [rows]="rows"
   [loading]="loading"
   [totalRecords]="orders?.meta?.itemCount || 0"
   [showCurrentPageReport]="true"
@@ -16,7 +16,7 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(10)">
+    <ng-container *ngFor="let _ of [].constructor(rows)">
       <tr>
         <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
         <td><p-skeleton height="28px" width="85px"></p-skeleton></td>

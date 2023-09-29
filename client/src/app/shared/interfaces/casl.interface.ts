@@ -1,6 +1,7 @@
 import { AbilityClass, InferSubjects, PureAbility } from '@casl/ability';
 
 import { Faq } from './entities/faq.entity';
+import { FundsWithdrawalRequest } from './entities/funds-withdrawal-request.entity';
 import { OrderReturnRequest } from './entities/order-return-request.entity';
 import { Order } from './entities/order.entity';
 import { RequestEntity } from './entities/request.entity';
@@ -32,8 +33,9 @@ export type Subjects =
       | typeof Order
       | typeof Faq
       | typeof User
-      | typeof OrderReturnRequest
       | typeof RequestEntity
+      | typeof OrderReturnRequest
+      | typeof FundsWithdrawalRequest
     >
   | 'all';
 

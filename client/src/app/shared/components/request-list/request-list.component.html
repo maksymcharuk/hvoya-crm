@@ -6,7 +6,7 @@
   [lazy]="true"
   [value]="requests?.data || []"
   [rowHover]="true"
-  [rows]="20"
+  [rows]="rows"
   [loading]="loading"
   [totalRecords]="requests?.meta?.itemCount || 0"
   [showCurrentPageReport]="true"
@@ -16,7 +16,7 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(10)">
+    <ng-container *ngFor="let _ of [].constructor(rows)">
       <tr>
         <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
         <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
@@ -93,10 +93,14 @@
               appendTo="body"
             >
               <ng-template let-option pTemplate="item">
-                {{ option.label | requestType }}
+                <app-request-type-badge
+                  [type]="option.label"
+                ></app-request-type-badge>
               </ng-template>
               <ng-template let-item pTemplate="selectedItem">
-                {{ item.label | requestType }}
+                <app-request-type-badge
+                  [type]="item.label"
+                ></app-request-type-badge>
               </ng-template>
             </p-dropdown>
           </ng-template>
@@ -104,7 +108,7 @@
       </th>
       <th>
         <p-columnFilter
-          field="orderReturnRequestStatus"
+          field="requestStatus"
           [showMenu]="false"
           class="ml-auto"
         >
@@ -168,8 +172,8 @@
   </ng-template>
   <ng-template pTemplate="body" let-request let-notification>
     <tr
-      class="p-selectable-row"
       app-request-list-item
+      class="p-selectable-row"
       [request]="request"
       [adminView]="adminView"
       [requestNotification]="notification"

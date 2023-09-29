@@ -3,6 +3,7 @@ import { Table } from 'primeng/table';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
@@ -24,6 +25,7 @@ import { UserService } from '@shared/services/user.service';
   selector: 'app-transactions-list',
   templateUrl: './transactions-list.component.html',
   styleUrls: ['./transactions-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TransactionsListComponent implements OnDestroy {
   @Input() set paymentTransactions(
@@ -45,6 +47,7 @@ export class TransactionsListComponent implements OnDestroy {
   transactionSyncOneCStatus = TransactionSyncOneCStatus;
   loading = true;
   currentUser = this.userService.getUser();
+  rows = 20;
 
   get paymentTransactions(): Page<PaymentTransaction> | null {
     return this.paymentTransactionsInternal;
@@ -85,6 +88,12 @@ export class TransactionsListComponent implements OnDestroy {
         'requests',
         'return-requests',
         transaction.orderReturnRequest.request?.number,
+      ];
+    } else if (transaction.fundsWithdrawalRequest) {
+      entityPath = [
+        'requests',
+        'funds-withdrawal-requests',
+        transaction.fundsWithdrawalRequest.request?.number,
       ];
     }
 

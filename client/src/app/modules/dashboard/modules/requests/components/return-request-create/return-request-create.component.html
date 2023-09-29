@@ -1,144 +1,156 @@
 <form [formGroup]="returnRequestForm" (ngSubmit)="onSubmit()">
-  <div class="p-fluid p-formgrid grid">
-    <div class="field col-12">
-      <label for="orders">Замовлення:</label>
-      <p-dropdown
-        id="orders"
-        filterBy="number"
-        placeholder="Виберіть замовлення для повернення"
-        optionLabel="number"
-        formControlName="order"
-        [options]="(orders$ | async) || []"
-        [showClear]="true"
-        [filter]="true"
-      ></p-dropdown>
-      <app-form-control-error-message
-        [formGroup]="returnRequestForm"
-        controlName="order"
-        errorType="required"
-        errorMessage="Необхідно вибрати замовлення"
-      ></app-form-control-error-message>
-    </div>
-    <ng-container formArrayName="requestedItems">
-      <ng-container
-        *ngFor="let requestedItemForm of requestedItems.controls; let i = index"
-      >
-        <div class="field col-12">
-          <label>Виберіть товари які хочете повернути:</label>
-          <app-return-request-order-item
-            [formControl]="requestedItemForm"
-          ></app-return-request-order-item>
-        </div>
-      </ng-container>
-    </ng-container>
-    <ng-container *ngIf="orderControl.value">
-      <div class="field col-6">
-        <label for="customerComment">Причина повернення:</label>
-        <textarea
-          id="customerComment"
-          rows="5"
-          cols="30"
-          pInputTextarea
-          [autoResize]="true"
-          formControlName="customerComment"
-        ></textarea>
-        <app-form-control-error-message
-          [formGroup]="returnRequestForm"
-          controlName="customerComment"
-          errorType="required"
-          errorMessage="Це є обов'язковим полем"
-        ></app-form-control-error-message>
-      </div>
-      <div class="field col-6">
-        <label for="customerImages">Фото:</label>
-        <p-fileUpload
-          [accept]="imageFormats"
-          [customUpload]="true"
-          [auto]="true"
-          [maxFileSize]="1000000"
-          [disabled]="submitting"
-          [multiple]="true"
-          (uploadHandler)="onCustomerImagesUpload($event.files)"
-          (onRemove)="onCustomerImageRemove($event.file)"
-        >
-        </p-fileUpload>
-      </div>
+  <div class="p-fluid">
+    <div class="formgrid grid">
       <div class="field col-12">
-        <label for="delivery-service">Служба доставки:</label>
+        <label for="orders">Замовлення:</label>
         <p-dropdown
-          id="delivery-service"
-          [options]="deliveryServices"
-          formControlName="deliveryService"
+          id="orders"
+          filterBy="number"
+          placeholder="Виберіть замовлення для повернення"
+          optionLabel="number"
+          formControlName="order"
+          [options]="(orders$ | async) || []"
+          [showClear]="true"
+          [filter]="true"
+        ></p-dropdown>
+        <app-form-control-error-message
+          [formGroup]="returnRequestForm"
+          controlName="order"
+          errorType="required"
+          errorMessage="Необхідно вибрати замовлення"
+        ></app-form-control-error-message>
+      </div>
+      <ng-container formArrayName="requestedItems">
+        <ng-container
+          *ngFor="
+            let requestedItemForm of requestedItems.controls;
+            let i = index
+          "
         >
-          <ng-template let-selected pTemplate="selectedItem">
-            <app-delivery-service-badge
-              *ngIf="selected as deliveryService"
-              mode="short"
-              [withText]="true"
-              [deliveryService]="deliveryService"
-            ></app-delivery-service-badge>
-          </ng-template>
-          <ng-template let-option pTemplate="item">
-            <app-delivery-service-badge
-              *ngIf="option as deliveryService"
-              mode="short"
-              [withText]="true"
-              [deliveryService]="deliveryService"
-            ></app-delivery-service-badge>
-          </ng-template>
-        </p-dropdown>
-        <app-form-control-error-message
-          [formGroup]="returnRequestForm"
-          controlName="deliveryService"
-          errorType="required"
-          errorMessage="Це є обов'язковим полем"
-        ></app-form-control-error-message>
-      </div>
-      <div class="field col-6">
-        <label for="tracking-id">Номер ТТН:</label>
-        <input id="tracking-id" pInputText formControlName="trackingId" />
-        <app-form-control-error-message
-          [formGroup]="returnRequestForm"
-          controlName="trackingId"
-          errorType="required"
-          errorMessage="Потрібно ввести номер ТТН"
-        ></app-form-control-error-message>
-        <app-form-control-error-message
-          [formGroup]="returnRequestForm"
-          controlName="trackingId"
-          errorType="alphanumeric"
-          errorMessage="Номер ТТН повинен містити тільки літери та цифри"
-        ></app-form-control-error-message>
-      </div>
-      <div class="field col-12 md:col-6">
-        <label for="tracking-id">Файл маркування:</label>
-        <p-fileUpload
-          [accept]="fileFormats"
-          [customUpload]="true"
-          [auto]="true"
-          [maxFileSize]="1000000"
-          [disabled]="submitting"
-          (uploadHandler)="onWaybillUpload($event.files)"
-          (onRemove)="onWaybillRemove()"
-        >
-        </p-fileUpload>
-        <app-form-control-error-message
-          [formGroup]="returnRequestForm"
-          controlName="waybill"
-          errorType="required"
-          errorMessage="Це є обов'язковим полем"
-        ></app-form-control-error-message>
-      </div>
-      <div class="grid justify-content-end col-12">
-        <div class="field col-3">
-          <button
-            type="submit"
-            pButton
-            label="Відправити"
-            [disabled]="submitting"
-          ></button>
+          <div class="field col-12">
+            <label>Виберіть товари які хочете повернути:</label>
+            <app-return-request-order-item
+              [formControl]="requestedItemForm"
+            ></app-return-request-order-item>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <ng-container *ngIf="orderControl.value">
+    <div class="p-fluid">
+      <div class="grid">
+        <div class="col-6">
+          <div class="formgrid grid">
+            <div class="field col-12">
+              <label for="customerComment">Причина повернення:</label>
+              <textarea
+                id="customerComment"
+                rows="5"
+                cols="30"
+                pInputTextarea
+                [autoResize]="true"
+                formControlName="customerComment"
+              ></textarea>
+              <app-form-control-error-message
+                [formGroup]="returnRequestForm"
+                controlName="customerComment"
+                errorType="required"
+                errorMessage="Необхідно вказати причину повернення"
+              ></app-form-control-error-message>
+            </div>
+            <div class="field col-12">
+              <label for="customerImages">Фото:</label>
+              <p-fileUpload
+                [accept]="imageFormats"
+                [customUpload]="true"
+                [auto]="true"
+                [maxFileSize]="1000000"
+                [disabled]="submitting"
+                [multiple]="true"
+                (uploadHandler)="onCustomerImagesUpload($event.files)"
+                (onRemove)="onCustomerImageRemove($event.file)"
+              >
+              </p-fileUpload>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="formgrid grid">
+            <div class="field col-12">
+              <label for="delivery-service">Служба доставки:</label>
+              <p-dropdown
+                id="delivery-service"
+                [options]="deliveryServices"
+                formControlName="deliveryService"
+              >
+                <ng-template let-selected pTemplate="selectedItem">
+                  <app-delivery-service-badge
+                    *ngIf="selected as deliveryService"
+                    mode="short"
+                    [withText]="true"
+                    [deliveryService]="deliveryService"
+                  ></app-delivery-service-badge>
+                </ng-template>
+                <ng-template let-option pTemplate="item">
+                  <app-delivery-service-badge
+                    *ngIf="option as deliveryService"
+                    mode="short"
+                    [withText]="true"
+                    [deliveryService]="deliveryService"
+                  ></app-delivery-service-badge>
+                </ng-template>
+              </p-dropdown>
+              <app-form-control-error-message
+                [formGroup]="returnRequestForm"
+                controlName="deliveryService"
+                errorType="required"
+                errorMessage="Це є обов'язковим полем"
+              ></app-form-control-error-message>
+            </div>
+            <div class="field col-12">
+              <label for="tracking-id">Номер ТТН:</label>
+              <input id="tracking-id" pInputText formControlName="trackingId" />
+              <app-form-control-error-message
+                [formGroup]="returnRequestForm"
+                controlName="trackingId"
+                errorType="required"
+                errorMessage="Потрібно ввести номер ТТН"
+              ></app-form-control-error-message>
+              <app-form-control-error-message
+                [formGroup]="returnRequestForm"
+                controlName="trackingId"
+                errorType="alphanumeric"
+                errorMessage="Номер ТТН повинен містити тільки літери та цифри"
+              ></app-form-control-error-message>
+            </div>
+            <div class="field col-12">
+              <label for="tracking-id">Експрес-накладна:</label>
+              <p-fileUpload
+                [accept]="fileFormats"
+                [customUpload]="true"
+                [auto]="true"
+                [maxFileSize]="1000000"
+                [disabled]="submitting"
+                (uploadHandler)="onWaybillUpload($event.files)"
+                (onRemove)="onWaybillRemove()"
+              >
+              </p-fileUpload>
+            </div>
+          </div>
         </div>
       </div>
-    </ng-container>
-  </div>
+    </div>
+    <div class="grid">
+      <div class="flex justify-content-end col-12">
+        <button
+          type="submit"
+          pButton
+          label="Відправити"
+          [disabled]="submitting"
+        ></button>
+      </div>
+    </div>
+  </ng-container>
 </form>

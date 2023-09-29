@@ -37,9 +37,11 @@ export class UsersListComponent implements OnDestroy {
       }),
     )
     .pipe(map((users) => users.data));
+  rows = 20;
 
   private usersInternal: Page<User> | null = null;
   private destroy$ = new Subject();
+
   @Input() set users(users: Page<User> | null) {
     this.usersInternal = users;
     if (users) {

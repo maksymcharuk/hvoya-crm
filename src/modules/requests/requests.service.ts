@@ -8,11 +8,7 @@ import {
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
-import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
-import { CreateRequestDto } from '@dtos/create-request.dto';
-import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
 import { RequestsPageOptionsDto } from '@dtos/requests-page-options.dto';
-import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
@@ -28,6 +24,11 @@ import { sanitizeEntity } from '@utils/serialize-entity.util';
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 
 import { RequestContext } from './core/request-context';
+import { ApproveRequestContextDto } from './interfaces/approve-request-strategy.dto';
+import { CreateRequestContextDto } from './interfaces/create-request-strategy.dto';
+import { RejectRequestContextDto } from './interfaces/reject-request-strategy.dto';
+import { UpdateRequestByCustomerContextDto } from './interfaces/update-request-by-customer.strategy.dto';
+import { FundsWithdrawRequestsStrategy } from './strategies/funds-withdraw-requests/funds-withdraw-requests.strategy';
 import { ReturnRequestsStrategy } from './strategies/return-requests/return-requests.strategy';
 
 @Injectable()
@@ -36,6 +37,7 @@ export class RequestsService {
     private dataSource: DataSource,
     private requestContext: RequestContext,
     private returnRequestsStrategy: ReturnRequestsStrategy,
+    private fundsWithdrawalRequestsStrategy: FundsWithdrawRequestsStrategy,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
   ) {}
@@ -77,11 +79,11 @@ export class RequestsService {
       });
     }
 
-    if (pageOptionsDto.orderReturnRequestStatus) {
+    if (pageOptionsDto.requestStatus) {
       queryBuilder.andWhere(
-        'returnRequest.status = :orderReturnRequestStatus',
+        'returnRequest.status = :requestStatus OR fundsWithdrawalRequest.status = :requestStatus',
         {
-          orderReturnRequestStatus: pageOptionsDto.orderReturnRequestStatus,
+          requestStatus: pageOptionsDto.requestStatus,
         },
       );
     }
@@ -154,6 +156,7 @@ export class RequestsService {
         'returnRequest.approvedItems.orderItem.product.baseProduct',
         'returnRequest.order',
         'returnRequest.delivery',
+        'fundsWithdrawalRequest.fundsWithdrawalReceipt',
         'customerImages',
         'customer',
       ],
@@ -170,28 +173,21 @@ export class RequestsService {
     return sanitizeEntity(ability, request);
   }
 
-  async createRequest(
-    userId: string,
-    createRequestDto: CreateRequestDto,
-    waybill?: Express.Multer.File,
-    customerImages?: Express.Multer.File[],
-  ): Promise<RequestEntity> {
-    switch (createRequestDto.requestType) {
+  async createRequest(data: CreateRequestContextDto): Promise<RequestEntity> {
+    switch (data.createRequestDto.requestType) {
       case RequestType.Return:
         this.requestContext.setStrategy(this.returnRequestsStrategy);
+        break;
+      case RequestType.FundsWithdrawal:
+        this.requestContext.setStrategy(this.fundsWithdrawalRequestsStrategy);
         break;
       default:
         throw new BadRequestException('Невідомий тип запиту');
     }
 
-    const r = await this.requestContext.createRequest(
-      userId,
-      createRequestDto,
-      waybill,
-      customerImages,
-    );
+    const r = await this.requestContext.createRequest(data);
 
-    const request = await this.getRequest(userId, r.number!);
+    const request = await this.getRequest(data.userId, r.number!);
 
     this.eventEmitter.emit(NotificationEvent.RequestCreated, {
       data: this.dataSource.manager.create(RequestEntity, request),
@@ -201,32 +197,25 @@ export class RequestsService {
     return request;
   }
 
-  async approveRequest(
-    userId: string,
-    requestNumber: string,
-    approveRequestDto: ApproveReturnRequestDto,
-    managerImages?: Express.Multer.File[],
-  ): Promise<RequestEntity> {
+  async approveRequest(data: ApproveRequestContextDto): Promise<RequestEntity> {
     let r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
-      where: { number: requestNumber },
+      where: { number: data.requestNumber },
     });
 
     switch (r.requestType) {
       case RequestType.Return:
         this.requestContext.setStrategy(this.returnRequestsStrategy);
         break;
+      case RequestType.FundsWithdrawal:
+        this.requestContext.setStrategy(this.fundsWithdrawalRequestsStrategy);
+        break;
       default:
         throw new BadRequestException('Невідомий тип запиту');
     }
 
-    await this.requestContext.approveRequest(
-      userId,
-      requestNumber,
-      approveRequestDto,
-      managerImages,
-    );
+    await this.requestContext.approveRequest(data);
 
-    const request = await this.getRequest(userId, r.number!);
+    const request = await this.getRequest(data.userId, r.number!);
 
     this.eventEmitter.emit(NotificationEvent.RequestApproved, {
       data: this.dataSource.manager.create(RequestEntity, request),
@@ -237,32 +226,25 @@ export class RequestsService {
     return request;
   }
 
-  async rejectRequest(
-    userId: string,
-    requestNumber: string,
-    rejectRequestDto: RejectReturnRequestDto,
-    managerImages?: Express.Multer.File[],
-  ): Promise<RequestEntity> {
+  async rejectRequest(data: RejectRequestContextDto): Promise<RequestEntity> {
     let r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
-      where: { number: requestNumber },
+      where: { number: data.requestNumber },
     });
 
     switch (r.requestType) {
       case RequestType.Return:
         this.requestContext.setStrategy(this.returnRequestsStrategy);
         break;
+      case RequestType.FundsWithdrawal:
+        this.requestContext.setStrategy(this.fundsWithdrawalRequestsStrategy);
+        break;
       default:
         throw new BadRequestException('Невідомий тип запиту');
     }
 
-    await this.requestContext.rejectRequest(
-      userId,
-      requestNumber,
-      rejectRequestDto,
-      managerImages,
-    );
+    await this.requestContext.rejectRequest(data);
 
-    const request = await this.getRequest(userId, r.number!);
+    const request = await this.getRequest(data.userId, r.number!);
 
     this.eventEmitter.emit(NotificationEvent.RequestRejected, {
       data: this.dataSource.manager.create(RequestEntity, request),
@@ -274,13 +256,10 @@ export class RequestsService {
   }
 
   async updateRequestByCustomer(
-    userId: string,
-    requestNumber: string,
-    updateRequestByCustomerDto: UpdateRequestByCustomerDto,
-    waybill?: Express.Multer.File,
+    data: UpdateRequestByCustomerContextDto,
   ): Promise<RequestEntity> {
     const request = await this.dataSource.manager.findOneOrFail(RequestEntity, {
-      where: { number: requestNumber },
+      where: { number: data.requestNumber },
     });
 
     switch (request.requestType) {
@@ -291,14 +270,9 @@ export class RequestsService {
         throw new BadRequestException('Невідомий тип запиту');
     }
 
-    await this.requestContext.updateRequestByCustomer(
-      userId,
-      requestNumber,
-      updateRequestByCustomerDto,
-      waybill,
-    );
+    await this.requestContext.updateRequestByCustomer(data);
 
-    return this.getRequest(userId, request.number!);
+    return this.getRequest(data.userId, request.number!);
   }
 
   private getRequestQuery(number?: string): SelectQueryBuilder<RequestEntity> {
@@ -311,9 +285,11 @@ export class RequestsService {
     query
       .leftJoinAndSelect('request.returnRequest', 'returnRequest')
       .leftJoinAndSelect('returnRequest.delivery', 'delivery')
-      .leftJoinAndSelect('request.customer', 'customer')
-      .leftJoinAndSelect('request.customerImages', 'customerImages')
-      .leftJoinAndSelect('request.managerImages', 'managerImages');
+      .leftJoinAndSelect(
+        'request.fundsWithdrawalRequest',
+        'fundsWithdrawalRequest',
+      )
+      .leftJoinAndSelect('request.customer', 'customer');
 
     return query;
   }

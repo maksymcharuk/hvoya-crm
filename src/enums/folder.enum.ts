@@ -3,4 +3,5 @@ export enum Folder {
   OrderFiles = 'files/orders',
   ReturnRequestFiles = 'files/return-requests',
   ReturnRequestImages = 'images/return-requests',
+  FundsWithdrawRequestFiles = 'files/funds-withdraw-requests',
 }

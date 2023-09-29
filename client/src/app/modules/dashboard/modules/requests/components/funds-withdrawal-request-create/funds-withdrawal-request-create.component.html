@@ -1,0 +1,50 @@
+<form [formGroup]="fundsWithdrawalRequestForm" (ngSubmit)="onSubmit()">
+  <div class="p-fluid formgrid grid">
+    <div class="field col-6">
+      <label for="amount">Сума:</label>
+      <p-inputNumber
+        mode="decimal"
+        formControlName="amount"
+        currency="UAH"
+        mode="currency"
+        locale="uk-UA"
+        [min]="0"
+        [allowEmpty]="false"
+      ></p-inputNumber>
+      <app-form-control-error-message
+        [formGroup]="fundsWithdrawalRequestForm"
+        controlName="amount"
+        errorType="required"
+        errorMessage="Це є обов'язковим полем"
+      ></app-form-control-error-message>
+      <app-form-control-error-message
+        [formGroup]="fundsWithdrawalRequestForm"
+        controlName="amount"
+        errorType="min"
+        errorMessage="Сума не може бути меншою за 1"
+      >
+      </app-form-control-error-message>
+    </div>
+    <div class="field col-6">
+      <label for="customerComment">Коментар:</label>
+      <textarea
+        id="customerComment"
+        rows="5"
+        cols="30"
+        pInputTextarea
+        [autoResize]="true"
+        formControlName="customerComment"
+      ></textarea>
+    </div>
+    <div class="flex justify-content-end w-full">
+      <div class="col-3">
+        <button
+          type="submit"
+          pButton
+          label="Відправити"
+          [disabled]="submitting"
+        ></button>
+      </div>
+    </div>
+  </div>
+</form>

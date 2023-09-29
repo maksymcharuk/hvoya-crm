@@ -29,6 +29,7 @@ export class RequestListComponent implements OnDestroy {
   private destroy$ = new Subject();
 
   loading = true;
+  rows = 20;
   searchForm = this.fb.group({
     search: [''],
   });

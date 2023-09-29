@@ -16,7 +16,9 @@ import { AbilityModule } from '@casl/angular';
 
 import { SharedModule } from '@shared/shared.module';
 
+import { FundsWithdrawalRequestCreateComponent } from './components/funds-withdrawal-request-create/funds-withdrawal-request-create.component';
 import { ReturnRequestCreateComponent } from './components/return-request-create/return-request-create.component';
+import { FundsWithdrawalRequestViewComponent } from './pages/funds-withdrawal-request-view/funds-withdrawal-request-view.component';
 import { RequestCreateComponent } from './pages/request-create/request-create.component';
 import { RequestListComponent } from './pages/request-list/request-list.component';
 import { ReturnRequestViewComponent } from './pages/return-request-view/return-request-view.component';
@@ -28,6 +30,8 @@ import { RequestsRoutingModule } from './requests-routing.module';
     RequestCreateComponent,
     ReturnRequestCreateComponent,
     ReturnRequestViewComponent,
+    FundsWithdrawalRequestCreateComponent,
+    FundsWithdrawalRequestViewComponent,
   ],
   imports: [
     CommonModule,

@@ -48,10 +48,7 @@ export class ReturnRequestCreateComponent {
       Validators.required,
       alphanumeric({ allowSpaces: true }),
     ]),
-    waybill: this.formBuilder.nonNullable.control<File | null>(
-      null,
-      Validators.required,
-    ),
+    waybill: this.formBuilder.nonNullable.control<File | null>(null),
     customerImages: this.formBuilder.nonNullable.array<File>([]),
     deliveryService: this.formBuilder.nonNullable.control<DeliveryService>(
       DeliveryService.NovaPoshta,
@@ -128,7 +125,7 @@ export class ReturnRequestCreateComponent {
     formData.append('customerComment', value.customerComment!);
     formData.append('requestType', value.requestType!);
     formData.append('returnRequest', JSON.stringify(value.returnRequest));
-    formData.append('waybill', value.waybill!);
+    formData.append('documents', value.waybill!);
     value.customerImages!.forEach((image: File) => {
       formData.append('images', image);
     });

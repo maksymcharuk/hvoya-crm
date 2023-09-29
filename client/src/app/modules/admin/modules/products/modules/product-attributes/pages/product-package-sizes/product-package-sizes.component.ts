@@ -17,6 +17,7 @@ export class ProductPackageSizesComponent {
   sizes!: ProductPackageSize[];
   size!: ProductPackageSize;
   submitted!: boolean;
+  rows = 5;
 
   @ViewChild('productSizesTable') productSizesTable!: Table;
 

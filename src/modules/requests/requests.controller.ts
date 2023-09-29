@@ -2,31 +2,23 @@ import {
   BadRequestException,
   Body,
   Controller,
-  FileTypeValidator,
   Get,
-  MaxFileSizeValidator,
   Param,
-  ParseFilePipe,
   Post,
   Put,
   Query,
-  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-  FilesInterceptor,
-} from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 import { User } from '@decorators/user.decorator';
-import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
-import { CreateRequestDto } from '@dtos/create-request.dto';
-import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
 import { RequestsPageOptionsDto } from '@dtos/requests-page-options.dto';
-import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
+import { ApproveRequestDto } from '@dtos/requests/approve-request.dto';
+import { CreateRequestDto } from '@dtos/requests/create-request.dto';
+import { RejectRequestDto } from '@dtos/requests/reject-request.dto';
+import { UpdateRequestByCustomerDto } from '@dtos/requests/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
 import { Action } from '@enums/action.enum';
 import { Page } from '@interfaces/page.interface';
@@ -37,6 +29,40 @@ import { CheckPolicies } from '@modules/casl/check-policies.decorator';
 import { PoliciesGuard } from '@modules/casl/policies.guard';
 
 import { RequestsService } from './requests.service';
+
+const uploadFilesConfig = {
+  uploadFields: [
+    { name: 'documents', maxCount: 1 },
+    { name: 'images', maxCount: 3 },
+  ],
+  localOptions: {
+    fileFilter: (_req: any, file: any, callback: any) => {
+      switch (file.fieldname) {
+        case 'documents':
+          if (!file.mimetype.match(/(pdf)$/)) {
+            return callback(
+              new BadRequestException(
+                'Лише файли формату PDF дозволені для файлу маркування',
+              ),
+              false,
+            );
+          }
+          break;
+        case 'images':
+          if (!file.mimetype.match(/(jpeg|jpg|png)$/)) {
+            return callback(
+              new BadRequestException(
+                'Лише файли формату JPEG, JPG, PNG дозволені для зображень',
+              ),
+              false,
+            );
+          }
+          break;
+      }
+      callback(null, true);
+    },
+  },
+};
 
 @Controller('requests')
 @UseGuards(JwtAuthGuard, PoliciesGuard)
@@ -68,37 +94,8 @@ export class RequestsController {
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor(
-      [
-        { name: 'waybill', maxCount: 1 },
-        { name: 'images', maxCount: 3 },
-      ],
-      {
-        fileFilter: (_req, file, callback) => {
-          switch (file.fieldname) {
-            case 'waybill':
-              if (!file.mimetype.match(/(pdf)$/)) {
-                return callback(
-                  new BadRequestException(
-                    'Лише файли формату PDF дозволені для файлу маркування',
-                  ),
-                  false,
-                );
-              }
-              break;
-            case 'images':
-              if (!file.mimetype.match(/(jpeg|jpg|png)$/)) {
-                return callback(
-                  new BadRequestException(
-                    'Лише файли формату JPEG, JPG, PNG дозволені для зображень',
-                  ),
-                  false,
-                );
-              }
-              break;
-          }
-          callback(null, true);
-        },
-      },
+      uploadFilesConfig.uploadFields,
+      uploadFilesConfig.localOptions,
     ),
   )
   @CheckPolicies((ability: AppAbility) =>
@@ -108,101 +105,127 @@ export class RequestsController {
     @User('id') userId: string,
     @Body() createRequestDto: CreateRequestDto,
     @UploadedFiles()
-    files: { waybill: Express.Multer.File[]; images?: Express.Multer.File[] },
+    files: {
+      documents?: Express.Multer.File[];
+      images?: Express.Multer.File[];
+    },
   ): Promise<RequestEntity> {
-    const [waybill] = files.waybill;
+    let document;
 
-    return this.requestService.createRequest(
+    if (files.documents) {
+      [document] = files.documents;
+    }
+
+    return this.requestService.createRequest({
       userId,
       createRequestDto,
-      waybill,
-      files.images,
-    );
+      document,
+      images: files.images!,
+    });
   }
 
   @Put(':number/approve')
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      uploadFilesConfig.uploadFields,
+      uploadFilesConfig.localOptions,
+    ),
+  )
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Approve, RequestEntity),
   )
   async approveRequest(
     @User('id') userId: string,
     @Param('number') number: string,
-    @Body() approveRequestDto: ApproveReturnRequestDto,
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5000000 }),
-          new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
-        ],
-        fileIsRequired: false,
-      }),
-    )
-    managerImages: Express.Multer.File[],
+    @Body() approveRequestDto: ApproveRequestDto,
+    @UploadedFiles()
+    files: {
+      documents?: Express.Multer.File[];
+      images?: Express.Multer.File[];
+    },
   ): Promise<RequestEntity> {
-    console.log(approveRequestDto);
+    let document;
 
-    return this.requestService.approveRequest(
+    if (files.documents) {
+      [document] = files.documents;
+    }
+
+    return this.requestService.approveRequest({
       userId,
-      number,
+      requestNumber: number,
       approveRequestDto,
-      managerImages,
-    );
+      document,
+      images: files.images!,
+    });
   }
 
   @Put(':number/reject')
-  @UseInterceptors(FilesInterceptor('images'))
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      uploadFilesConfig.uploadFields,
+      uploadFilesConfig.localOptions,
+    ),
+  )
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Approve, RequestEntity),
   )
   async rejectRequest(
     @User('id') userId: string,
     @Param('number') number: string,
-    @Body() rejectRequestDto: RejectReturnRequestDto,
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5000000 }),
-          new FileTypeValidator({ fileType: '(jpeg|jpg|png)$' }),
-        ],
-        fileIsRequired: false,
-      }),
-    )
-    managerImages: Express.Multer.File[],
+    @Body() rejectRequestDto: RejectRequestDto,
+    @UploadedFiles()
+    files: {
+      documents?: Express.Multer.File[];
+      images?: Express.Multer.File[];
+    },
   ): Promise<RequestEntity> {
-    return this.requestService.rejectRequest(
+    let document;
+
+    if (files.documents) {
+      [document] = files.documents;
+    }
+
+    return this.requestService.rejectRequest({
       userId,
-      number,
+      requestNumber: number,
       rejectRequestDto,
-      managerImages,
-    );
+      document,
+      images: files.images!,
+    });
   }
 
   @Put(':number/update-by-customer')
-  @UseInterceptors(FileInterceptor('waybill'))
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      uploadFilesConfig.uploadFields,
+      uploadFilesConfig.localOptions,
+    ),
+  )
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Update, RequestEntity),
   )
-  async updateRequestWaybill(
+  async updateRequestByCustomer(
     @User('id') userId: string,
     @Param('number') requestNumber: string,
     @Body() updateRequestByCustomerDto: UpdateRequestByCustomerDto,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5000000 }),
-          new FileTypeValidator({ fileType: '(pdf)$' }),
-        ],
-        fileIsRequired: false,
-      }),
-    )
-    waybill: Express.Multer.File,
+    @UploadedFiles()
+    files: {
+      documents?: Express.Multer.File[];
+      images?: Express.Multer.File[];
+    },
   ): Promise<RequestEntity> {
-    return this.requestService.updateRequestByCustomer(
+    let document;
+
+    if (files.documents) {
+      [document] = files.documents;
+    }
+
+    return this.requestService.updateRequestByCustomer({
       userId,
       requestNumber,
       updateRequestByCustomerDto,
-      waybill,
-    );
+      document,
+      images: files.images!,
+    });
   }
 }

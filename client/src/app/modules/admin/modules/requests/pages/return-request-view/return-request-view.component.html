@@ -17,9 +17,9 @@
                   [formControl]="requestedItemForm"
                 ></app-return-request-order-item>
               </ng-container>
-              <div class="p-fluid my-4">
-                <div class="p-formgrid grid">
-                  <div class="field col-6">
+              <div class="my-4">
+                <div class="formgrid grid">
+                  <div class="p-fluid field col-6">
                     <label for="deduction">Відрахування:</label>
                     <p-inputNumber
                       mode="decimal"
@@ -39,7 +39,7 @@
                     </app-form-control-error-message>
                   </div>
                   <div
-                    class="field col-6 align-self-end flex justify-content-end"
+                    class="p-fluid field col-6 align-self-end flex justify-content-end"
                   >
                     <table>
                       <tr *ngIf="deduction.value > 0">
@@ -48,7 +48,7 @@
                       </tr>
                       <tr>
                         <td class="text-xl text-900 font-bold text-3xl">
-                          Сума:
+                          Всього:
                         </td>
                         <td class="text-xl text-900 font-bold text-3xl pl-5">
                           {{ total$ | async | currency }}
@@ -56,7 +56,7 @@
                       </tr>
                     </table>
                   </div>
-                  <div class="field col-6">
+                  <div class="p-fluid field col-6">
                     <label for="managerComment">Коментар:</label>
                     <textarea
                       rows="5"
@@ -116,20 +116,20 @@
           </ng-container>
           <ng-template #productsView>
             <app-return-request-item-list
-              [orderReturnRequest]="request.returnRequest"
+              [orderReturnRequest]="request.returnRequest!"
             ></app-return-request-item-list>
             <div class="flex justify-content-end my-4">
               <table>
-                <tr *ngIf="request.returnRequest.deduction > 0">
+                <tr *ngIf="request.returnRequest!.deduction > 0">
                   <td>Відрахування:</td>
                   <td class="pl-5">
-                    -{{ request.returnRequest.deduction | currency }}
+                    -{{ request.returnRequest!.deduction | currency }}
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-xl text-900 font-bold text-3xl">Сума:</td>
+                  <td class="text-xl text-900 font-bold text-3xl">Всього:</td>
                   <td class="text-xl text-900 font-bold text-3xl pl-5">
-                    {{ request.returnRequest.total | currency }}
+                    {{ request.returnRequest!.total | currency }}
                   </td>
                 </tr>
               </table>
@@ -188,6 +188,12 @@
             <h5>Дані запиту</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
+                <div class="striped-list__item-key">Дата</div>
+                <div class="striped-list__item-value">
+                  {{ request.createdAt | date : 'short' }}
+                </div>
+              </li>
+              <li class="striped-list__item">
                 <div class="striped-list__item-key">Статус</div>
                 <div class="striped-list__item-value">
                   <app-request-status-badge
@@ -198,17 +204,14 @@
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Замовлення</div>
                 <div class="striped-list__item-value">
-                  <div class="py-2 mr-5">
-                    <a
-                      [routerLink]="[
-                        '/admin',
-                        'orders',
-                        request.returnRequest.order.number
-                      ]"
-                      class="flex align-items-center mb-1"
-                      >{{ request.returnRequest.order.number }}
-                    </a>
-                  </div>
+                  <a
+                    [routerLink]="[
+                      '/admin',
+                      'orders',
+                      request.returnRequest!.order.number
+                    ]"
+                    >{{ request.returnRequest!.order.number }}
+                  </a>
                 </div>
               </li>
               <li class="striped-list__item">
@@ -228,12 +231,6 @@
                   </div>
                 </div>
               </li>
-              <li class="striped-list__item">
-                <div class="striped-list__item-key">Дата</div>
-                <div class="striped-list__item-value">
-                  {{ request.createdAt | date : 'short' }}
-                </div>
-              </li>
             </ul>
           </div>
           <div class="col-12 xl:col-6">
@@ -244,7 +241,7 @@
                 <div class="striped-list__item-value">
                   <app-delivery-service-badge
                     *ngIf="
-                      request.returnRequest.delivery
+                      request.returnRequest!.delivery
                         .deliveryService as deliveryService
                     "
                     [deliveryService]="deliveryService"
@@ -257,12 +254,12 @@
                   <div class="py-2 mr-5">
                     <div class="flex align-items-center mb-1">
                       <app-return-request-delivery-status-badge
-                        [status]="request.returnRequest.delivery.status!"
+                        [status]="request.returnRequest!.delivery.status!"
                       ></app-return-request-delivery-status-badge>
                     </div>
-                    <div *ngIf="request.returnRequest.delivery.rawStatus">
+                    <div *ngIf="request.returnRequest!.delivery.rawStatus">
                       <b>Повний статус:</b>
-                      {{ request.returnRequest.delivery.rawStatus }}
+                      {{ request.returnRequest!.delivery.rawStatus }}
                     </div>
                   </div>
                 </div>
@@ -270,15 +267,15 @@
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Номер ТТН</div>
                 <div class="striped-list__item-value">
-                  {{ request.returnRequest.delivery.trackingId }}
+                  {{ request.returnRequest!.delivery.trackingId }}
                 </div>
               </li>
               <li class="striped-list__item">
-                <div class="striped-list__item-key">Маркування (PDF)</div>
+                <div class="striped-list__item-key">Експрес-накладна</div>
                 <div class="striped-list__item-value">
                   <ng-container
                     *ngIf="
-                      request.returnRequest.delivery.waybill?.url as url;
+                      request.returnRequest!.delivery.waybill?.url as url;
                       else noWaybill
                     "
                   >

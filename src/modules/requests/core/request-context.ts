@@ -2,12 +2,12 @@ import { DataSource } from 'typeorm';
 
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
-import { CreateRequestDto } from '@dtos/create-request.dto';
-import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
-import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
 
+import { ApproveRequestContextDto } from '../interfaces/approve-request-strategy.dto';
+import { CreateRequestContextDto } from '../interfaces/create-request-strategy.dto';
+import { RejectRequestContextDto } from '../interfaces/reject-request-strategy.dto';
+import { UpdateRequestByCustomerContextDto } from '../interfaces/update-request-by-customer.strategy.dto';
 import { RequestStrategy } from './request-strategy.interface';
 
 /**
@@ -44,23 +44,17 @@ export class RequestContext {
    * implementing multiple versions of the algorithm on its own.
    */
   public async createRequest(
-    userId: string,
-    createRequestDto: CreateRequestDto,
-    waybillScan?: Express.Multer.File,
-    customerImages?: Express.Multer.File[],
+    data: CreateRequestContextDto,
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const request = await this.strategy.createRequest(
+      const request = await this.strategy.createRequest({
+        ...data,
         queryRunner,
-        userId,
-        createRequestDto,
-        waybillScan,
-        customerImages,
-      );
+      });
       await queryRunner.commitTransaction();
       return request;
     } catch (err) {
@@ -72,23 +66,17 @@ export class RequestContext {
   }
 
   public async approveRequest(
-    userId: string,
-    requestNumber: string,
-    approveRequestDto: ApproveReturnRequestDto,
-    managerImages?: Express.Multer.File[],
+    data: ApproveRequestContextDto,
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const request = await this.strategy.approveRequest(
+      const request = await this.strategy.approveRequest({
+        ...data,
         queryRunner,
-        userId,
-        requestNumber,
-        approveRequestDto,
-        managerImages,
-      );
+      });
       await queryRunner.commitTransaction();
       return request;
     } catch (err) {
@@ -100,23 +88,17 @@ export class RequestContext {
   }
 
   public async rejectRequest(
-    userId: string,
-    requestNumber: string,
-    rejectRequestDto: RejectReturnRequestDto,
-    managerImages?: Express.Multer.File[],
+    data: RejectRequestContextDto,
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const request = await this.strategy.rejectRequest(
+      const request = await this.strategy.rejectRequest({
+        ...data,
         queryRunner,
-        userId,
-        requestNumber,
-        rejectRequestDto,
-        managerImages,
-      );
+      });
       await queryRunner.commitTransaction();
       return request;
     } catch (err) {
@@ -128,23 +110,17 @@ export class RequestContext {
   }
 
   public async updateRequestByCustomer(
-    userId: string,
-    requestNumber: string,
-    updateRequestByCustomerDto: UpdateRequestByCustomerDto,
-    waybill?: Express.Multer.File,
+    data: UpdateRequestByCustomerContextDto,
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const request = await this.strategy.updateRequestByCustomer(
+      const request = await this.strategy.updateRequestByCustomer({
+        ...data,
         queryRunner,
-        userId,
-        requestNumber,
-        updateRequestByCustomerDto,
-        waybill,
-      );
+      });
       await queryRunner.commitTransaction();
       return request;
     } catch (err) {

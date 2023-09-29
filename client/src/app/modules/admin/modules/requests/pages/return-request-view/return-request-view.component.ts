@@ -14,15 +14,11 @@ import {
 import { ActivatedRoute } from '@angular/router';
 
 import { IMAGE_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
+import { RequestAction } from '@shared/enums/request-action.enum';
 import { OrderReturnRequestItemEntity } from '@shared/interfaces/entities/order-return-request.entity';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestItemUIEntity } from '@shared/interfaces/ui-entities/request-item.ui-entity';
 import { RequestsService } from '@shared/services/requests.service';
-
-enum Action {
-  Approve = 'approve',
-  Reject = 'reject',
-}
 
 const CONFIRM_MESSAGE =
   'Ви справді хочете підтвердити цей запит на повернення?';
@@ -43,7 +39,7 @@ export class ReturnRequestViewComponent implements OnInit {
   imageFormats = IMAGE_ACCEPTABLE_FILE_FORMATS;
   confirmRejectHeader = '';
   acceptButtonStyleClass = '';
-  action = Action;
+  action = RequestAction;
 
   returnRequestForm = this.formBuilder.nonNullable.group(
     {
@@ -142,12 +138,17 @@ export class ReturnRequestViewComponent implements OnInit {
     const formValue = this.returnRequestForm.value;
     const formData = new FormData();
 
-    formData.append('approvedItems', JSON.stringify(formValue.approvedItems));
     formData.append('managerComment', formValue.managerComment!);
-    formData.append('deduction', formValue.deduction?.toString()!);
     formValue.managerImages!.forEach((image: any) => {
       formData.append('images', image);
     });
+    formData.append(
+      'returnRequest',
+      JSON.stringify({
+        approvedItems: formValue.approvedItems,
+        deduction: formValue.deduction,
+      }),
+    );
 
     this.submitting = true;
 
@@ -233,17 +234,17 @@ export class ReturnRequestViewComponent implements OnInit {
     this.managerImagesControl.updateValueAndValidity();
   }
 
-  confirmOrRejectToggle(action: Action) {
+  confirmOrRejectToggle(action: RequestAction) {
     this.confirmRejectHeader =
-      action === Action.Approve ? CONFIRM_MESSAGE : REJECT_MESSAGE;
+      action === RequestAction.Approve ? CONFIRM_MESSAGE : REJECT_MESSAGE;
     this.acceptButtonStyleClass =
-      action === Action.Approve ? 'p-button-success' : 'p-button-danger';
+      action === RequestAction.Approve ? 'p-button-success' : 'p-button-danger';
 
     this.cdRef.detectChanges();
 
     this.confirmationService.confirm({
       accept: () => {
-        if (action === Action.Approve) {
+        if (action === RequestAction.Approve) {
           this.approveReturnRequest();
         } else {
           this.rejectReturnRequest();
