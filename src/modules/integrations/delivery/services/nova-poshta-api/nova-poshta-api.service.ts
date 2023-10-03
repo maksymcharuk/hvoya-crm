@@ -5,6 +5,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { DeliveryStatus } from '@enums/delivery-status.enum';
 import {
   GetDeliveryStatusesDto,
   GetDeliveryStatusesResponse,
@@ -37,7 +38,9 @@ export class NovaPoshtaApiService extends DeliveryApiService {
   ): Promise<GetDeliveryStatusesResponse> {
     const res = await this.getDeliveryStatusesInternal(getDeliveryStatusesDto);
     const statusesNewTrackingId = res.statuses.filter(
-      (status) => status.newTrackingId,
+      (status) =>
+        // If a parcel was declined, we don't need to get statuses for the new tracking number
+        status.newTrackingId && status.status !== DeliveryStatus.Declined,
     );
 
     // If delivery address was changed when a parcel was in transit
