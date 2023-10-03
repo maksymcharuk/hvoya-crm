@@ -344,10 +344,19 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       status: OrderReturnRequestStatus.Declined,
     });
 
-    await queryRunner.manager.save(OrderReturnDeliveryEntity, {
-      id: request.returnRequest!.delivery.id,
-      status: DeliveryStatus.Declined,
-    });
+    const delivery = await queryRunner.manager.findOneOrFail(
+      OrderReturnDeliveryEntity,
+      {
+        where: { id: request.returnRequest!.delivery.id },
+      },
+    );
+
+    if (delivery.status !== DeliveryStatus.Received) {
+      await queryRunner.manager.save(OrderReturnDeliveryEntity, {
+        id: request.returnRequest!.delivery.id,
+        status: DeliveryStatus.Declined,
+      });
+    }
 
     return request;
   }

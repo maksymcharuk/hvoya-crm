@@ -268,6 +268,12 @@
                 </div>
               </li>
               <li class="striped-list__item">
+                <div class="striped-list__item-key">Номер ТТН</div>
+                <div class="striped-list__item-value">
+                  {{ request.returnRequest.delivery.trackingId }}
+                </div>
+              </li>
+              <li class="striped-list__item">
                 <div class="striped-list__item-key">Маркування (PDF)</div>
                 <div class="striped-list__item-value">
                   <ng-container
@@ -304,12 +310,6 @@
                   <ng-template #noWaybill>
                     <span>—</span>
                   </ng-template>
-                </div>
-              </li>
-              <li class="striped-list__item">
-                <div class="striped-list__item-key">Номер ТТН</div>
-                <div class="striped-list__item-value">
-                  {{ request.returnRequest.delivery.trackingId }}
                 </div>
               </li>
             </ul>

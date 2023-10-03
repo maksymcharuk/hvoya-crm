@@ -23,10 +23,8 @@ export function validateOrderStatus(
   newStatus: OrderStatus,
 ) {
   switch (true) {
-    case canBeSetMannualy(newStatus):
-    case canBeCancelled(currenStatus, newStatus):
-      break;
-    default:
+    case !canBeSetMannualy(newStatus):
+    case !canBeCancelled(currenStatus, newStatus):
       throw new InternalServerErrorException(
         `
           Статус замовлення не може бути змінено з 
@@ -35,5 +33,7 @@ export function validateOrderStatus(
           ${getOrderStatusName(newStatus)}
         `,
       );
+    default:
+      break;
   }
 }

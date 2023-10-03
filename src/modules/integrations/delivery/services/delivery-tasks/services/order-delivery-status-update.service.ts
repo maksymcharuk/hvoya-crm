@@ -69,10 +69,23 @@ export class OrderDeliveryStatusUpdateService extends DeliveryStatusUpdateServic
     order: OrderEntity,
     deliveryStatus: DeliveryServiceRawStatus,
   ): Promise<void> {
+    const delivery = await this.manager.findOne(OrderDeliveryEntity, {
+      where: { id: order.delivery.id },
+    });
+
+    if (!delivery) {
+      return;
+    }
+
+    if (delivery.rawStatus === deliveryStatus.rawStatus) {
+      return;
+    }
+
     await this.manager.update(OrderDeliveryEntity, order.delivery.id, {
       status: deliveryStatus.status,
       rawStatus: deliveryStatus.rawStatus,
     });
+
     await this.updateOrderStatus(deliveryStatus.status, order);
   }
 

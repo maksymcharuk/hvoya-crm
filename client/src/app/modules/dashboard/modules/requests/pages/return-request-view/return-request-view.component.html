@@ -124,8 +124,11 @@
                   ></app-return-request-delivery-status-badge>
                 </div>
               </li>
-              <li class="striped-list__item">
-                <div class="striped-list__item-key">Номер ТТН:</div>
+              <li
+                *ngIf="!('update' | able : request.returnRequest)"
+                class="striped-list__item"
+              >
+                <div class="striped-list__item-key">Номер ТТН</div>
                 <div class="striped-list__item-value">
                   {{ request.returnRequest!.delivery.trackingId }}
                 </div>
@@ -170,10 +173,7 @@
                 </div>
               </li>
               <li
-                *ngIf="
-                  'approve' | able : request.returnRequest;
-                  else noUpdateWaybill
-                "
+                *ngIf="'update' | able : request.returnRequest"
                 class="striped-list__item"
               >
                 <div class="striped-list__item-key"></div>
@@ -229,14 +229,6 @@
                   ></button>
                 </form>
               </li>
-              <ng-template #noUpdateWaybill>
-                <li class="striped-list__item">
-                  <div class="striped-list__item-key">Номер ТТН</div>
-                  <div class="striped-list__item-value">
-                    {{ request.returnRequest!.delivery.trackingId }}
-                  </div>
-                </li>
-              </ng-template>
             </ul>
           </div>
         </div>
