@@ -11,6 +11,7 @@ import { CANCELABLE_ORDER_STATUSES } from '@constants/order.constants';
 import { BalanceEntity } from '@entities/balance.entity';
 import { CartEntity } from '@entities/cart.entity';
 import { FaqEntity } from '@entities/faq.entity';
+import { FundsWithdrawRequestEntity } from '@entities/funds-withdraw-request.entity';
 import { NotificationEntity } from '@entities/notification.entity';
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { OrderEntity } from '@entities/order.entity';
@@ -24,6 +25,7 @@ import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
+import { FundsWithdrawRequestStatus } from '@enums/funds-withdraw-request-status.enum';
 import { OrderReturnRequestStatus } from '@enums/order-return-request-status.enum';
 import { Role } from '@enums/role.enum';
 
@@ -56,9 +58,10 @@ type Subjects =
       | typeof FaqEntity
       | typeof BalanceEntity
       | typeof NotificationEntity
-      | typeof OrderReturnRequestEntity
-      | typeof RequestEntity
       | typeof PaymentTransactionEntity
+      | typeof RequestEntity
+      | typeof OrderReturnRequestEntity
+      | typeof FundsWithdrawRequestEntity
     >
   | 'AdminAalytics'
   | 'PersonalAnalytics'
@@ -115,8 +118,9 @@ export class CaslAbilityFactory {
     cannot([Action.AddTo, Action.RemoveFrom], CartEntity);
     // -------------------------------------------------------------------------
 
-    // Return requests
+    // Requests
     // -------------------------------------------------------------------------
+    cannot(Action.Create, OrderReturnRequestEntity);
     cannot(
       [Action.Update, Action.Approve, Action.Decline],
       OrderReturnRequestEntity,
@@ -124,6 +128,15 @@ export class CaslAbilityFactory {
         status: { $ne: OrderReturnRequestStatus.Pending },
       },
     );
+    cannot(Action.Create, FundsWithdrawRequestEntity);
+    cannot(
+      [Action.Update, Action.Approve, Action.Decline],
+      FundsWithdrawRequestEntity,
+      {
+        status: { $ne: FundsWithdrawRequestStatus.Pending },
+      },
+    );
+    cannot(Action.Create, RequestEntity);
     can(Action.Read, RequestEntity, ANY_ADMIN_REQUEST_READ_FIELDS);
 
     // Payment transactions
@@ -187,7 +200,7 @@ export class CaslAbilityFactory {
     can([Action.Read, Action.Create, Action.Update], NotificationEntity);
     // -------------------------------------------------------------------------
 
-    // Return requests
+    // Requests
     // -------------------------------------------------------------------------
     can(Action.Read, OrderReturnRequestEntity);
     can(
@@ -195,6 +208,14 @@ export class CaslAbilityFactory {
       OrderReturnRequestEntity,
       {
         status: OrderReturnRequestStatus.Pending,
+      },
+    );
+    can(Action.Read, FundsWithdrawRequestEntity);
+    can(
+      [Action.Update, Action.Approve, Action.Decline],
+      FundsWithdrawRequestEntity,
+      {
+        status: FundsWithdrawRequestStatus.Pending,
       },
     );
     can(Action.Read, RequestEntity, ANY_ADMIN_REQUEST_READ_FIELDS);
@@ -297,11 +318,15 @@ export class CaslAbilityFactory {
     // -------------------------------------------------------------------------
     can(Action.Read, 'PersonalAnalytics');
 
-    // Return requests
+    // Requests
     // -------------------------------------------------------------------------
     can([Action.Read, Action.Create], OrderReturnRequestEntity);
     can([Action.Update], OrderReturnRequestEntity, {
       status: OrderReturnRequestStatus.Pending,
+    });
+    can([Action.Read, Action.Create], FundsWithdrawRequestEntity);
+    can([Action.Update], FundsWithdrawRequestEntity, {
+      status: FundsWithdrawRequestStatus.Pending,
     });
     can(Action.Read, RequestEntity, USER_REQUEST_READ_FIELDS, {
       ['customer.id' as keyof RequestEntity]: currentUser.id,

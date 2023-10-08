@@ -21,7 +21,7 @@ export class RequestsPageOptionsDto extends PageOptionsDto {
 
   @IsEnum(OrderReturnRequestStatus)
   @IsOptional()
-  readonly orderReturnRequestStatus: OrderReturnRequestStatus;
+  readonly requestStatus: OrderReturnRequestStatus;
 
   @IsEnum(RequestType)
   @IsOptional()

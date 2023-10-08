@@ -7,10 +7,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 
-import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
-import { CreateRequestDto } from '@dtos/create-request.dto';
-import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
-import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
@@ -33,6 +29,10 @@ import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.fact
 import { FilesService } from '@modules/files/services/files.service';
 import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
 import { RequestStrategy } from '@modules/requests/core/request-strategy.interface';
+import { ApproveRequestStrategyDto } from '@modules/requests/interfaces/approve-request-strategy.dto';
+import { CreateRequestStrategyDto } from '@modules/requests/interfaces/create-request-strategy.dto';
+import { RejectRequestStrategyDto } from '@modules/requests/interfaces/reject-request-strategy.dto';
+import { UpdateRequestByCustomerStrategyDto } from '@modules/requests/interfaces/update-request-by-customer.strategy.dto';
 
 @Injectable()
 export class ReturnRequestsStrategy implements RequestStrategy {
@@ -42,20 +42,14 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     private readonly oneCApiClientService: OneCApiClientService,
   ) {}
 
-  async createRequest(
-    queryRunner: QueryRunner,
-    userId: string,
-    createRequestDto: CreateRequestDto,
-    waybillScan?: Express.Multer.File,
-    customerImages?: Express.Multer.File[],
-  ): Promise<RequestEntity> {
+  async createRequest(data: CreateRequestStrategyDto): Promise<RequestEntity> {
     let waybillFile!: FileEntity;
     try {
-      const isRequestExists = await queryRunner.manager.findOne(
+      const isRequestExists = await data.queryRunner.manager.findOne(
         OrderReturnRequestEntity,
         {
           where: {
-            order: { number: createRequestDto.returnRequest.orderNumber },
+            order: { number: data.createRequestDto.returnRequest.orderNumber },
           },
         },
       );
@@ -66,42 +60,51 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         );
       }
 
-      if (!waybillScan) {
-        throw new BadRequestException('Waybill scan is required');
+      const noItemToReturn =
+        data.createRequestDto.returnRequest.requestedItems.every(
+          (item) => item.quantity === 0,
+        );
+
+      if (noItemToReturn) {
+        throw new BadRequestException(
+          'Не вказано жодного товару для повернення',
+        );
       }
 
-      waybillFile = await this.filesService.uploadFile(
-        queryRunner,
-        waybillScan,
-        {
-          folder: Folder.ReturnRequestFiles,
-        },
-      );
+      if (data.document) {
+        waybillFile = await this.filesService.uploadFile(
+          data.queryRunner,
+          data.document,
+          {
+            folder: Folder.ReturnRequestFiles,
+          },
+        );
+      }
 
-      customerImages = customerImages || [];
+      data.images = data.images || [];
       const customerImagesFiles = await Promise.all(
-        customerImages.map((image) =>
-          this.filesService.uploadFile(queryRunner, image, {
+        data.images.map((image) =>
+          this.filesService.uploadFile(data.queryRunner, image, {
             folder: Folder.ReturnRequestImages,
           }),
         ),
       );
 
-      const requestDelivery = await queryRunner.manager.save(
+      const requestDelivery = await data.queryRunner.manager.save(
         OrderReturnDeliveryEntity,
         {
-          trackingId: createRequestDto.returnRequest.trackingId,
-          deliveryService: createRequestDto.returnRequest.deliveryService,
+          trackingId: data.createRequestDto.returnRequest.trackingId,
+          deliveryService: data.createRequestDto.returnRequest.deliveryService,
           waybill: waybillFile,
         },
       );
 
-      const order = await queryRunner.manager.findOneOrFail(OrderEntity, {
-        where: { number: createRequestDto.returnRequest.orderNumber },
+      const order = await data.queryRunner.manager.findOneOrFail(OrderEntity, {
+        where: { number: data.createRequestDto.returnRequest.orderNumber },
         relations: ['items'],
       });
 
-      const returnRequest = await queryRunner.manager.save(
+      const returnRequest = await data.queryRunner.manager.save(
         OrderReturnRequestEntity,
         {
           order: order,
@@ -109,16 +112,16 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         },
       );
 
-      await queryRunner.manager.save(
+      await data.queryRunner.manager.save(
         OrderReturnRequestItemEntity,
-        createRequestDto.returnRequest.requestedItems.map((item) => ({
+        data.createRequestDto.returnRequest.requestedItems.map((item) => ({
           orderItem: { id: item.orderItemId },
           quantity: item.quantity,
           orderReturnRequested: { id: returnRequest.id },
         })),
       );
 
-      const returnItems = await queryRunner.manager.find(
+      const returnItems = await data.queryRunner.manager.find(
         OrderReturnRequestItemEntity,
         {
           where: {
@@ -129,7 +132,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       );
       const returnItemsTotal = this.calculateTotal(returnItems);
 
-      const resultRequest = await queryRunner.manager.save(
+      const resultRequest = await data.queryRunner.manager.save(
         OrderReturnRequestEntity,
         {
           id: returnRequest.id,
@@ -138,11 +141,11 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         },
       );
 
-      return queryRunner.manager.save(RequestEntity, {
-        customer: { id: userId },
-        customerComment: createRequestDto.customerComment,
-        requestType: createRequestDto.requestType,
-        requestId: resultRequest.id,
+      return data.queryRunner.manager.save(RequestEntity, {
+        customer: { id: data.userId },
+        customerComment: data.createRequestDto.customerComment,
+        requestType: data.createRequestDto.requestType,
+        returnRequest: { id: resultRequest.id },
         customerImages: customerImagesFiles,
       });
     } catch (error) {
@@ -154,27 +157,23 @@ export class ReturnRequestsStrategy implements RequestStrategy {
   }
 
   async approveRequest(
-    queryRunner: QueryRunner,
-    userId: string,
-    requestNumber: string,
-    approveRequestDto: ApproveReturnRequestDto,
-    managerImages: Express.Multer.File[],
+    data: ApproveRequestStrategyDto,
   ): Promise<RequestEntity> {
     let request: RequestEntity;
-    const user = await queryRunner.manager.findOneOrFail(UserEntity, {
-      where: { id: userId },
+    const user = await data.queryRunner.manager.findOneOrFail(UserEntity, {
+      where: { id: data.userId },
     });
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    request = await queryRunner.manager.findOneOrFail(RequestEntity, {
+    request = await data.queryRunner.manager.findOneOrFail(RequestEntity, {
       relations: [
         'returnRequest.approvedItems.orderItem',
         'returnRequest.delivery',
         'returnRequest.order',
         'customer',
       ],
-      where: { number: requestNumber },
+      where: { number: data.requestNumber },
     });
 
     if (
@@ -186,25 +185,33 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       );
     }
 
-    const noItemToReturn = approveRequestDto.approvedItems.every(
-      (item) => item.quantity === 0,
-    );
+    const noItemToReturn =
+      data.approveRequestDto.returnRequest.approvedItems.every(
+        (item) => item.quantity === 0,
+      );
 
     if (noItemToReturn) {
       throw new BadRequestException('Не вказано жодного товару для повернення');
     }
 
-    const approvedOrderItems = await queryRunner.manager.find(OrderItemEntity, {
-      where: {
-        id: In(approveRequestDto.approvedItems.map((item) => item.orderItemId)),
+    const approvedOrderItems = await data.queryRunner.manager.find(
+      OrderItemEntity,
+      {
+        where: {
+          id: In(
+            data.approveRequestDto.returnRequest.approvedItems.map(
+              (item) => item.orderItemId,
+            ),
+          ),
+        },
       },
-    });
+    );
     const approvedItems =
-      await queryRunner.manager.create<OrderReturnRequestItemEntity>(
+      await data.queryRunner.manager.create<OrderReturnRequestItemEntity>(
         OrderReturnRequestItemEntity,
         approvedOrderItems.map((item) => ({
           orderItem: item,
-          quantity: approveRequestDto.approvedItems.find(
+          quantity: data.approveRequestDto.returnRequest.approvedItems.find(
             (i) => i.orderItemId === item.id,
           )!.quantity,
         })),
@@ -213,7 +220,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     const approvedItemsTotal = this.calculateTotal(approvedItems);
 
     const isDecutionGreatedThanTotal = new Decimal(
-      approveRequestDto.deduction,
+      data.approveRequestDto.returnRequest.deduction,
     ).greaterThan(approvedItemsTotal);
 
     if (isDecutionGreatedThanTotal) {
@@ -222,59 +229,59 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       );
     }
 
-    managerImages = managerImages || [];
+    data.images = data.images || [];
     const managerImagesFiles = await Promise.all(
-      managerImages.map((image) =>
-        this.filesService.uploadFile(queryRunner, image, {
+      data.images.map((image) =>
+        this.filesService.uploadFile(data.queryRunner, image, {
           folder: Folder.ReturnRequestImages,
         }),
       ),
     );
 
-    await queryRunner.manager.save(RequestEntity, {
+    await data.queryRunner.manager.save(RequestEntity, {
       id: request.id,
-      managerComment: approveRequestDto.managerComment,
+      managerComment: data.approveRequestDto.managerComment,
       managerImages: managerImagesFiles,
     });
 
-    await queryRunner.manager.save(OrderReturnRequestEntity, {
+    await data.queryRunner.manager.save(OrderReturnRequestEntity, {
       id: request.returnRequest!.id,
       status: OrderReturnRequestStatus.Approved,
-      deduction: approveRequestDto.deduction,
+      deduction: data.approveRequestDto.returnRequest.deduction,
     });
 
-    await queryRunner.manager.save(OrderReturnDeliveryEntity, {
+    await data.queryRunner.manager.save(OrderReturnDeliveryEntity, {
       id: request.returnRequest!.delivery.id,
       status: DeliveryStatus.Received,
     });
 
-    await queryRunner.manager.save(
+    await data.queryRunner.manager.save(
       OrderReturnRequestItemEntity,
-      approveRequestDto.approvedItems.map((item) => ({
+      data.approveRequestDto.returnRequest.approvedItems.map((item) => ({
         quantity: item.quantity,
         orderItem: { id: item.orderItemId },
         orderReturnApproved: { id: request.returnRequest!.id },
       })),
     );
 
-    await queryRunner.manager.save(OrderReturnRequestEntity, {
+    await data.queryRunner.manager.save(OrderReturnRequestEntity, {
       id: request!.returnRequest!.id,
       total: approvedItemsTotal,
     });
 
     await this.updateBalanceOnReturn(
-      queryRunner,
+      data.queryRunner,
       request.customer.id,
       request.id,
     );
 
-    await this.updateProductsStockOnReturn(queryRunner, request.id);
+    await this.updateProductsStockOnReturn(data.queryRunner, request.id);
 
-    const perItemDeduction = new Decimal(approveRequestDto.deduction).div(
-      approvedItems.length,
-    );
+    const perItemDeduction = new Decimal(
+      data.approveRequestDto.returnRequest.deduction,
+    ).div(approvedItems.length);
     await this.oneCApiClientService.return({
-      userId,
+      userId: data.userId,
       orderId: request.returnRequest!.order.id,
       items: approvedItems.map((item) => ({
         sku: item.orderItem.product.sku,
@@ -284,35 +291,31 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       createdAt: request.updatedAt,
     });
     await this.oneCApiClientService.refunds({
-      userId,
-      amount: approvedItemsTotal.minus(approveRequestDto.deduction).toNumber(),
+      userId: data.userId,
+      amount: approvedItemsTotal
+        .minus(data.approveRequestDto.returnRequest.deduction)
+        .toNumber(),
       date: request.updatedAt,
     });
 
     return request;
   }
 
-  async rejectRequest(
-    queryRunner: QueryRunner,
-    userId: string,
-    requestNumber: string,
-    rejectRequestDto: RejectReturnRequestDto,
-    managerImages: Express.Multer.File[],
-  ): Promise<RequestEntity> {
+  async rejectRequest(data: RejectRequestStrategyDto): Promise<RequestEntity> {
     let request: RequestEntity;
-    const user = await queryRunner.manager.findOneOrFail(UserEntity, {
-      where: { id: userId },
+    const user = await data.queryRunner.manager.findOneOrFail(UserEntity, {
+      where: { id: data.userId },
     });
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    request = await queryRunner.manager.findOneOrFail(RequestEntity, {
+    request = await data.queryRunner.manager.findOneOrFail(RequestEntity, {
       relations: [
         'returnRequest.approvedItems.orderItem',
         'returnRequest.delivery',
         'customer',
       ],
-      where: { number: requestNumber },
+      where: { number: data.requestNumber },
     });
 
     if (
@@ -324,27 +327,27 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       );
     }
 
-    managerImages = managerImages || [];
+    data.images = data.images || [];
     const managerImagesFiles = await Promise.all(
-      managerImages.map((image) =>
-        this.filesService.uploadFile(queryRunner, image, {
+      data.images.map((image) =>
+        this.filesService.uploadFile(data.queryRunner, image, {
           folder: Folder.ReturnRequestImages,
         }),
       ),
     );
 
-    await queryRunner.manager.save(RequestEntity, {
+    await data.queryRunner.manager.save(RequestEntity, {
       id: request.id,
-      managerComment: rejectRequestDto.managerComment,
+      managerComment: data.rejectRequestDto.managerComment,
       managerImages: managerImagesFiles,
     });
 
-    await queryRunner.manager.save(OrderReturnRequestEntity, {
+    await data.queryRunner.manager.save(OrderReturnRequestEntity, {
       id: request.returnRequest!.id,
       status: OrderReturnRequestStatus.Declined,
     });
 
-    const delivery = await queryRunner.manager.findOneOrFail(
+    const delivery = await data.queryRunner.manager.findOneOrFail(
       OrderReturnDeliveryEntity,
       {
         where: { id: request.returnRequest!.delivery.id },
@@ -352,7 +355,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     );
 
     if (delivery.status !== DeliveryStatus.Received) {
-      await queryRunner.manager.save(OrderReturnDeliveryEntity, {
+      await data.queryRunner.manager.save(OrderReturnDeliveryEntity, {
         id: request.returnRequest!.delivery.id,
         status: DeliveryStatus.Declined,
       });
@@ -362,25 +365,24 @@ export class ReturnRequestsStrategy implements RequestStrategy {
   }
 
   async updateRequestByCustomer(
-    queryRunner: QueryRunner,
-    userId: string,
-    requestNumber: string,
-    updateRequestByCustomerDto: UpdateRequestByCustomerDto,
-    waybill?: Express.Multer.File,
+    data: UpdateRequestByCustomerStrategyDto,
   ): Promise<RequestEntity> {
     let waybillScan: FileEntity | undefined;
 
     try {
-      const user = await queryRunner.manager.findOneOrFail(UserEntity, {
-        where: { id: userId },
+      const user = await data.queryRunner.manager.findOneOrFail(UserEntity, {
+        where: { id: data.userId },
       });
 
       const ability = this.caslAbilityFactory.createForUser(user);
 
-      const request = await queryRunner.manager.findOneOrFail(RequestEntity, {
-        relations: ['returnRequest', 'customer', 'returnRequest.delivery'],
-        where: { number: requestNumber },
-      });
+      const request = await data.queryRunner.manager.findOneOrFail(
+        RequestEntity,
+        {
+          relations: ['returnRequest', 'customer', 'returnRequest.delivery'],
+          where: { number: data.requestNumber },
+        },
+      );
 
       if (
         ability.cannot(Action.Update, request) ||
@@ -391,21 +393,22 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         );
       }
 
-      if (updateRequestByCustomerDto.trackingId) {
-        if (waybill) {
+      if (data.updateRequestByCustomerDto.returnRequest.trackingId) {
+        if (data.document) {
           waybillScan = await this.filesService.uploadFile(
-            queryRunner,
-            waybill,
+            data.queryRunner,
+            data.document,
             {
               folder: Folder.OrderFiles,
             },
           );
         }
-        await queryRunner.manager.update(
+        await data.queryRunner.manager.update(
           OrderReturnDeliveryEntity,
           request.returnRequest!.delivery.id,
           {
-            trackingId: updateRequestByCustomerDto.trackingId,
+            trackingId:
+              data.updateRequestByCustomerDto.returnRequest.trackingId,
             waybill: waybillScan,
           },
         );

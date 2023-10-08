@@ -2,7 +2,9 @@ import { BehaviorSubject, combineLatest, of, switchMap, zip } from 'rxjs';
 
 import { Component } from '@angular/core';
 
+import { ICONS } from '@shared/constants/base.constants';
 import { NotificationType } from '@shared/enums/notification-type.enum';
+import { RequestType } from '@shared/enums/request-type.enum';
 import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
 import { NotificationsService } from '@shared/services/notifications.service';
 import { UserService } from '@shared/services/user.service';
@@ -13,9 +15,12 @@ import { UserService } from '@shared/services/user.service';
   styleUrls: ['./notifications.component.scss'],
 })
 export class NotificationsComponent {
+  ICONS = ICONS;
+
   notifications$ = new BehaviorSubject<NotificationEntity[]>([]);
   scrolled$ = new BehaviorSubject<boolean>(false);
   notificationType = NotificationType;
+  requestType = RequestType;
   user = this.userService.getUser();
   take = 10;
   skip = 0;
@@ -62,7 +67,15 @@ export class NotificationsComponent {
     } else if (notification.dataIsUser(notification.data)) {
       return `${root}/users/${notification.data.id}`;
     } else if (notification.dataIsRequest(notification.data)) {
-      return `${root}/requests/return-requests/${notification.data.number}`;
+      if (notification.data.requestType === RequestType.Return) {
+        return `${root}/requests/return-requests/${notification.data.number}`;
+      } else if (
+        notification.data.requestType === RequestType.FundsWithdrawal
+      ) {
+        return `${root}/requests/funds-withdrawal-requests/${notification.data.number}`;
+      } else {
+        return '';
+      }
     } else {
       return '';
     }

@@ -1,22 +1,33 @@
 <div class="card">
-  <div class="p-fluid p-formgrid grid">
+  <div class="p-fluid formgrid grid">
     <div class="field col-12">
       <label for="type">Тип запиту:</label>
-      <p-dropdown id="type" [options]="requestTypes" [(ngModel)]="selectedType">
+      <p-dropdown
+        id="type"
+        [options]="requestTypes"
+        [(ngModel)]="selectedType"
+        placeholder="Виберіть тип запиту"
+      >
         <ng-template pTemplate="selectedItem">
-          {{ selectedType | requestType }}
+          <app-request-type-badge
+            [type]="selectedType"
+          ></app-request-type-badge>
         </ng-template>
         <ng-template let-item pTemplate="item">
-          {{ item.label | requestType }}
+          <app-request-type-badge [type]="item.label"></app-request-type-badge>
         </ng-template>
       </p-dropdown>
     </div>
   </div>
-  <div class="grid">
+  <div *ngIf="selectedType" class="grid">
     <div class="col-12">
       <div [ngSwitch]="selectedType">
         <app-return-request-create *ngSwitchCase="requestType.Return">
         </app-return-request-create>
+        <app-funds-withdrawal-request-create
+          *ngSwitchCase="requestType.FundsWithdrawal"
+        >
+        </app-funds-withdrawal-request-create>
       </div>
     </div>
   </div>

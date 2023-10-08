@@ -4,7 +4,7 @@
   currentPageReportTemplate="Показано {first} до {last} з {totalRecords} транзакцій"
   [value]="paymentTransactions?.data || []"
   [rowHover]="true"
-  [rows]="20"
+  [rows]="rows"
   [totalRecords]="paymentTransactions?.meta?.itemCount || 0"
   [showCurrentPageReport]="true"
   [lazy]="true"
@@ -15,7 +15,7 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(10)">
+    <ng-container *ngFor="let _ of [].constructor(rows)">
       <tr>
         <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
         <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
@@ -59,7 +59,7 @@
           <p-sortIcon field="createdAt"></p-sortIcon>
         </div>
       </th>
-      <th class="w-1">Замовлення/Повернення</th>
+      <th class="w-1"></th>
     </tr>
     <tr>
       <th></th>
@@ -109,16 +109,18 @@
       <td>{{ transaction.createdAt | date : 'short' }}</td>
       <td
         *ngIf="
-          transaction.order || transaction.orderReturnRequest;
+          transaction.order ||
+            transaction.orderReturnRequest ||
+            transaction.fundsWithdrawalRequest;
           else noEntity
         "
         class="text-center"
       >
         <button
           pButton
-          pTooltip="Натистіть для перегляду замовлення/повернення"
+          pTooltip="Натистіть для перегляду замовлення або запиту"
           tooltipPosition="left"
-          icon="pi pi-arrow-up-right"
+          [icon]="transaction | transactionIcon"
           (click)="navigateToEntity(transaction)"
         ></button>
       </td>

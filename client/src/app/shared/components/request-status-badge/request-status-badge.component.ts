@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
+import { FundsWithdrawalRequestStatus } from '@shared/enums/funds-withdrawal-request-status.enum';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 
 @Component({
@@ -9,7 +10,7 @@ import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-sta
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestStatusBadgeComponent {
-  @Input() status!: OrderReturnRequestStatus;
+  @Input() status!: OrderReturnRequestStatus | FundsWithdrawalRequestStatus;
 
   get style() {
     switch (this.status) {

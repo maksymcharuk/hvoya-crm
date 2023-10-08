@@ -36,13 +36,13 @@
         <p-table
           class="block"
           [value]="(paymentTransactions$ | async) || []"
-          [rows]="3"
+          [rows]="rows"
           [loading]="transactionsLoading"
           [rowHover]="true"
         >
           <ng-template pTemplate="loadingicon"></ng-template>
           <ng-template pTemplate="loadingbody">
-            <ng-container *ngFor="let _ of [].constructor(3)">
+            <ng-container *ngFor="let _ of [].constructor(rows)">
               <tr>
                 <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
                 <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
@@ -64,7 +64,7 @@
               <th>Сума</th>
               <th>Статус</th>
               <th>Дата</th>
-              <th class="w-1">Замовлення/Повернення</th>
+              <th class="w-1"></th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-transaction>
@@ -81,16 +81,18 @@
               <td>{{ transaction.createdAt | date : 'short' }}</td>
               <td
                 *ngIf="
-                  transaction.order || transaction.orderReturnRequest;
+                  transaction.order ||
+                    transaction.orderReturnRequest ||
+                    transaction.fundsWithdrawalRequest;
                   else noEntity
                 "
                 class="text-center"
               >
                 <button
                   pButton
-                  pTooltip="Натистіть для перегляду замовлення або повернення"
+                  pTooltip="Натистіть для перегляду замовлення або запиту"
                   tooltipPosition="left"
-                  icon="pi pi-arrow-up-right"
+                  [icon]="transaction | transactionIcon"
                   (click)="navigateToEntity(transaction)"
                 ></button>
               </td>

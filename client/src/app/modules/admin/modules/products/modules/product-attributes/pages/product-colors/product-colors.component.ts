@@ -17,6 +17,7 @@ export class ProductColorsComponent {
   colors!: ProductColor[];
   color!: ProductColor;
   submitted!: boolean;
+  rows = 5;
 
   @ViewChild('productColorsTable') productColorsTable!: Table;
 

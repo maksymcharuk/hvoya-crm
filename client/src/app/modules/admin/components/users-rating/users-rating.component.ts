@@ -10,6 +10,7 @@ import { AdminAnalyticsUserData } from '@shared/interfaces/responses/admin-analy
 export class UsersRatingComponent {
   private dataInternal!: AdminAnalyticsUserData[];
   loading = true;
+  rows = 10;
 
   @Input() set data(value: AdminAnalyticsUserData[]) {
     if (!value) {

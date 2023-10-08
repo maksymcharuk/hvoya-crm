@@ -11,6 +11,7 @@ import {
 import { RequestType } from '../enums/request-type.enum';
 import { BaseEntity } from './base.entity';
 import { FileEntity } from './file.entity';
+import { FundsWithdrawRequestEntity } from './funds-withdraw-request.entity';
 import { OrderReturnRequestEntity } from './order-return-request.entity';
 import { UserEntity } from './user.entity';
 
@@ -36,12 +37,13 @@ export class RequestEntity extends BaseEntity {
   })
   requestType: RequestType;
 
-  @Column()
-  requestId: string;
-
   @OneToOne(() => OrderReturnRequestEntity, (request) => request.request)
-  @JoinColumn({ name: 'requestId', referencedColumnName: 'id' })
+  @JoinColumn()
   returnRequest?: OrderReturnRequestEntity;
+
+  @OneToOne(() => FundsWithdrawRequestEntity, (request) => request.request)
+  @JoinColumn()
+  fundsWithdrawalRequest?: FundsWithdrawRequestEntity;
 
   @ManyToOne(() => UserEntity, (user) => user.requests)
   customer: UserEntity;

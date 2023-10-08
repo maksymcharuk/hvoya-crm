@@ -1,10 +1,9 @@
-import { QueryRunner } from 'typeorm';
-
-import { ApproveReturnRequestDto } from '@dtos/approve-return-request.dto';
-import { CreateRequestDto } from '@dtos/create-request.dto';
-import { RejectReturnRequestDto } from '@dtos/reject-return-request.dto';
-import { UpdateRequestByCustomerDto } from '@dtos/update-request-by-customer.dto';
 import { RequestEntity } from '@entities/request.entity';
+
+import { ApproveRequestStrategyDto } from '../interfaces/approve-request-strategy.dto';
+import { CreateRequestStrategyDto } from '../interfaces/create-request-strategy.dto';
+import { RejectRequestStrategyDto } from '../interfaces/reject-request-strategy.dto';
+import { UpdateRequestByCustomerStrategyDto } from '../interfaces/update-request-by-customer.strategy.dto';
 
 /**
  * The Strategy interface declares operations common to all supported versions
@@ -14,35 +13,10 @@ import { RequestEntity } from '@entities/request.entity';
  * Strategies.
  */
 export interface RequestStrategy {
-  createRequest(
-    queryRunner: QueryRunner,
-    userId: string,
-    createRequestDto: CreateRequestDto,
-    waybillScan?: Express.Multer.File,
-    customerImages?: Express.Multer.File[],
-  ): Promise<RequestEntity>;
-
-  approveRequest(
-    queryRunner: QueryRunner,
-    userId: string,
-    requestNumber: string,
-    approveRequestDto: ApproveReturnRequestDto,
-    managerImages?: Express.Multer.File[],
-  ): Promise<RequestEntity>;
-
-  rejectRequest(
-    queryRunner: QueryRunner,
-    userId: string,
-    requestNumber: string,
-    approveRequestDto: RejectReturnRequestDto,
-    managerImages?: Express.Multer.File[],
-  ): Promise<RequestEntity>;
-
+  createRequest(data: CreateRequestStrategyDto): Promise<RequestEntity>;
+  approveRequest(data: ApproveRequestStrategyDto): Promise<RequestEntity>;
+  rejectRequest(data: RejectRequestStrategyDto): Promise<RequestEntity>;
   updateRequestByCustomer(
-    queryRunner: QueryRunner,
-    userId: string,
-    requestNumber: string,
-    updateRequestByCustomerDto: UpdateRequestByCustomerDto,
-    waybill?: Express.Multer.File,
+    data: UpdateRequestByCustomerStrategyDto,
   ): Promise<RequestEntity>;
 }

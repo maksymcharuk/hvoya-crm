@@ -5,6 +5,7 @@ export const SHARED_REQUEST_READ_FIELDS = [
   'deduction',
   'requestType',
   'returnRequest',
+  'fundsWithdrawalRequest',
   'customer',
   'createdAt',
   'customerImages',

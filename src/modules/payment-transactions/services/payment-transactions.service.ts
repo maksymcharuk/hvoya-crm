@@ -100,6 +100,18 @@ export class PaymentTransactionsService {
         'paymentTransaction.orderReturnRequest',
         'orderReturnRequest',
       )
+      .leftJoinAndSelect(
+        'orderReturnRequest.request',
+        'orderReturnRequestParentRequest',
+      )
+      .leftJoinAndSelect(
+        'paymentTransaction.fundsWithdrawalRequest',
+        'fundsWithdrawalRequest',
+      )
+      .leftJoinAndSelect(
+        'fundsWithdrawalRequest.request',
+        'fundsWithdrawalParentRequest',
+      )
       .leftJoinAndSelect('paymentTransaction.balance', 'balance')
       .leftJoinAndSelect('balance.owner', 'owner');
 

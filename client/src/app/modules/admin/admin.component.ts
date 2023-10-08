@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+import { ICONS } from '@shared/constants/base.constants';
 import {
   ORDER_NOTIFICATIONS,
   REQUEST_NOTIFICATION,
@@ -61,7 +62,7 @@ export class AdminComponent {
         },
         {
           label: 'Замовлення',
-          icon: 'pi pi-fw pi-shopping-bag',
+          icon: `pi pi-fw ${ICONS.ORDER}`,
           routerLink: ['orders'],
           badge: '',
           title: ORDER_NOTIFICATIONS as any,

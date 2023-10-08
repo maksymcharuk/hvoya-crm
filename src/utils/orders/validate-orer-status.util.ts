@@ -12,10 +12,10 @@ function canBeSetMannualy(newStatus: OrderStatus) {
 }
 
 function canBeCancelled(currenStatus: OrderStatus, newStatus: OrderStatus) {
-  return (
-    newStatus === OrderStatus.Cancelled &&
-    CANCELABLE_ORDER_STATUSES.includes(currenStatus)
-  );
+  if (newStatus === OrderStatus.Cancelled) {
+    return CANCELABLE_ORDER_STATUSES.includes(currenStatus);
+  }
+  return true;
 }
 
 export function validateOrderStatus(

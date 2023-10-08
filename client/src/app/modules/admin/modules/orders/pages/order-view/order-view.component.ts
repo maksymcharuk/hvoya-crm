@@ -14,7 +14,10 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { FIELD_UPDATE_DEBOUNCE_TIME } from '@shared/constants/base.constants';
+import {
+  FIELD_UPDATE_DEBOUNCE_TIME,
+  ICONS,
+} from '@shared/constants/base.constants';
 import {
   COMMENT_REQUIRED_ORDER_STATUSES,
   MANUAL_ORDER_STATUSES,
@@ -35,6 +38,8 @@ export class OrderViewComponent implements OnDestroy {
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
 
   private readonly destroy$ = new Subject<void>();
+
+  ICONS = ICONS;
 
   order$ = new BehaviorSubject<Order | null>(null);
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
@@ -191,7 +196,7 @@ export class OrderViewComponent implements OnDestroy {
         this.waybillControl.reset();
         this.messageService.add({
           severity: 'success',
-          detail: 'ТТП успішно оновлено',
+          detail: 'Дані доставки успішно оновлено',
         });
       });
   }

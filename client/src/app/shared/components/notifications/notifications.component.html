@@ -36,7 +36,7 @@
                 >
                   <ng-template #title>
                     <div class="flex align-items-center">
-                      <i class="pi pi-shopping-bag mr-2"></i>
+                      <i class="pi mr-2" [ngClass]="ICONS.ORDER"></i>
                       Нове замовлення №{{ notification.data.number }}
                     </div>
                   </ng-template>
@@ -61,7 +61,7 @@
                 >
                   <ng-template #title>
                     <div class="flex align-items-center">
-                      <i class="pi pi-shopping-bag mr-2"></i>
+                      <i class="pi mr-2" [ngClass]="ICONS.ORDER"></i>
                       Замовлення №{{ notification.data.number }} (статус
                       змінено)
                     </div>
@@ -101,7 +101,7 @@
                 >
                   <ng-template #title>
                     <div class="flex align-items-center">
-                      <i class="pi pi-shopping-bag mr-2"></i>
+                      <i class="pi mr-2" [ngClass]="ICONS.ORDER"></i>
                       Замовлення №{{ notification.data.number }}
                     </div>
                   </ng-template>
@@ -273,13 +273,35 @@
                   </ng-template>
                   <ng-template #body>
                     <div class="mb-1">
-                      Тип: {{ notification.data.requestType | requestType }}
+                      Тип:
+                      <app-request-type-badge
+                        [type]="notification.data.requestType"
+                      ></app-request-type-badge>
                     </div>
                     <div class="flex">
                       <span class="mr-2">Статус:</span>
-                      <app-request-status-badge
-                        [status]="notification.data.returnRequest.status"
-                      ></app-request-status-badge>
+                      <ng-container [ngSwitch]="notification.data.requestType">
+                        <ng-container
+                          *ngSwitchCase="requestType.Return"
+                          [ngSwitch]="notification.data.returnRequest?.status"
+                        >
+                          <app-request-status-badge
+                            [status]="notification.data.returnRequest!.status"
+                          ></app-request-status-badge>
+                        </ng-container>
+                        <ng-container
+                          *ngSwitchCase="requestType.FundsWithdrawal"
+                          [ngSwitch]="
+                            notification.data.fundsWithdrawalRequest?.status
+                          "
+                        >
+                          <app-request-status-badge
+                            [status]="
+                              notification.data.fundsWithdrawalRequest!.status
+                            "
+                          ></app-request-status-badge>
+                        </ng-container>
+                      </ng-container>
                     </div>
                   </ng-template>
                   <ng-container

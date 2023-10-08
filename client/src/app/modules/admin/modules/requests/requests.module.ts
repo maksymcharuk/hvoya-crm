@@ -16,12 +16,17 @@ import { AbilityModule } from '@casl/angular';
 
 import { SharedModule } from '@shared/shared.module';
 
+import { FundsWithdrawalRequestViewComponent } from './pages/funds-withdrawal-request-view/funds-withdrawal-request-view.component';
 import { RequestListComponent } from './pages/request-list/request-list.component';
 import { ReturnRequestViewComponent } from './pages/return-request-view/return-request-view.component';
 import { RequestsRoutingModule } from './requests-routing.module';
 
 @NgModule({
-  declarations: [RequestListComponent, ReturnRequestViewComponent],
+  declarations: [
+    RequestListComponent,
+    ReturnRequestViewComponent,
+    FundsWithdrawalRequestViewComponent,
+  ],
   imports: [
     CommonModule,
     SharedModule,

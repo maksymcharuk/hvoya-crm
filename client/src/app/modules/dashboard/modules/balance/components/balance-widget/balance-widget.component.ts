@@ -26,6 +26,7 @@ export class BalanceWidgetComponent {
   // TODO: create experiment flags service or something
   environment = environment;
   currentUser = this.userService.getUser();
+  rows = 3;
 
   constructor(
     private userBalance: UserBalanceService,
@@ -37,7 +38,7 @@ export class BalanceWidgetComponent {
       this.userService
         .getUserPaymentTransactions(
           this.currentUser.id,
-          new PageOptions({ rows: 3 }),
+          new PageOptions({ rows: this.rows }),
         )
         .subscribe((transactions) => {
           this.paymentTransactions$.next(transactions.data);
@@ -65,6 +66,12 @@ export class BalanceWidgetComponent {
         'requests',
         'return-requests',
         transaction.orderReturnRequest.request?.number,
+      ];
+    } else if (transaction.fundsWithdrawalRequest) {
+      entityPath = [
+        'requests',
+        'funds-withdrawal-requests',
+        transaction.fundsWithdrawalRequest.request?.number,
       ];
     }
 

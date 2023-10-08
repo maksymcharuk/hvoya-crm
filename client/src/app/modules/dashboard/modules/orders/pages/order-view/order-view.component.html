@@ -2,7 +2,7 @@
   <p-messages *ngIf="order.returnRequest as returnRequest" severity="warn">
     <ng-template pTemplate>
       <div class="flex align-items-center">
-        <i class="pi pi-arrow-right-arrow-left mr-2"></i>
+        <i class="pi mr-2" [ngClass]="ICONS.ORDER_RETURN_REQUEST"></i>
         <span class="vertical-align-middle">
           Запит на повернення
           <a
@@ -202,7 +202,7 @@
                 class="striped-list__item-value"
               >
                 <div class="p-fluid">
-                  <div class="p-formgrid grid">
+                  <div class="formgrid grid">
                     <div class="field col-6">
                       <label for="tracking-id">Номер ТТН:</label>
                       <input
@@ -224,8 +224,6 @@
                       ></app-form-control-error-message>
                     </div>
                   </div>
-                </div>
-                <div class="p-formgrid grid">
                   <div class="field col-12 md:col-6">
                     <label for="tracking-id">Файл маркування:</label>
                     <p-fileUpload
@@ -261,7 +259,7 @@
             <div class="w-12rem hidden md:block"></div>
             <div class="md:pl-5 mt-2 flex-auto">
               <div class="flex justify-content-end mb-4 pt-4">
-                <span class="text-xl text-900 font-bold text-3xl">Сума:</span>
+                <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
                 <span
                   class="text-xl text-900 font-bold text-3xl ml-5"
                   data-cy="order-total-amount"

@@ -10,9 +10,10 @@ export class RequestTypePipe implements PipeTransform {
     switch (value) {
       case RequestType.Return:
         return 'Повернення';
+      case RequestType.FundsWithdrawal:
+        return 'Виведення коштів';
       default:
-        return 'Невідовий тип запиту'
+        return 'Невідомий тип запиту';
     }
-
   }
 }
