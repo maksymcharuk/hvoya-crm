@@ -2,7 +2,7 @@ export interface RefundsDtoData {
   companyId?: string;
   userId: string;
   amount: number;
-  date: Date;
+  createdAt: Date;
 }
 
 export class RefundsDto {
@@ -15,6 +15,6 @@ export class RefundsDto {
     this.id_company = data.companyId;
     this.id_counterparty = data.userId;
     this.amount = data.amount;
-    this.date = data.date.toISOString();
+    this.date = data.createdAt.toISOString();
   }
 }

@@ -280,22 +280,16 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     const perItemDeduction = new Decimal(
       data.approveRequestDto.returnRequest.deduction,
     ).div(approvedItems.length);
+
     await this.oneCApiClientService.return({
-      userId: data.userId,
+      userId: request.customer.id,
       orderId: request.returnRequest!.order.id,
       items: approvedItems.map((item) => ({
         sku: item.orderItem.product.sku,
         quantity: item.quantity,
         price: item.orderItem.productProperties.price.minus(perItemDeduction),
       })),
-      createdAt: request.updatedAt,
-    });
-    await this.oneCApiClientService.refunds({
-      userId: data.userId,
-      amount: approvedItemsTotal
-        .minus(data.approveRequestDto.returnRequest.deduction)
-        .toNumber(),
-      date: request.updatedAt,
+      createdAt: new Date(),
     });
 
     return request;

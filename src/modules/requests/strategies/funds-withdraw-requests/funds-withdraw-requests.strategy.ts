@@ -17,6 +17,7 @@ import { TransactionStatus } from '@enums/transaction-status.enum';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 import { FilesService } from '@modules/files/services/files.service';
+import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
 import { RequestStrategy } from '@modules/requests/core/request-strategy.interface';
 import { ApproveRequestStrategyDto } from '@modules/requests/interfaces/approve-request-strategy.dto';
 import { CreateRequestStrategyDto } from '@modules/requests/interfaces/create-request-strategy.dto';
@@ -28,6 +29,7 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
   constructor(
     private readonly caslAbilityFactory: CaslAbilityFactory,
     private readonly filesService: FilesService,
+    private readonly oneCApiClientService: OneCApiClientService,
   ) {}
 
   async createRequest(data: CreateRequestStrategyDto): Promise<RequestEntity> {
@@ -92,7 +94,7 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
         RequestEntity,
         {
           where: { number: data.requestNumber },
-          relations: ['fundsWithdrawalRequest'],
+          relations: ['fundsWithdrawalRequest', 'customer'],
         },
       );
 
@@ -128,6 +130,12 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
       await data.queryRunner.manager.save(RequestEntity, {
         id: request.id,
         managerComment: data.approveRequestDto.managerComment,
+      });
+
+      await this.oneCApiClientService.refunds({
+        userId: request.customer.id,
+        amount: request.fundsWithdrawalRequest!.amount.toNumber(),
+        createdAt: new Date(),
       });
 
       return await data.queryRunner.manager.findOneOrFail(RequestEntity, {
