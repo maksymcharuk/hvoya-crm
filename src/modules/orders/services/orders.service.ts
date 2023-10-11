@@ -440,7 +440,11 @@ export class OrdersService {
           );
         }
 
-        await this.upsertOrderToOneC(userId, order, updateOrderDto.orderStatus);
+        await this.upsertOrderToOneC(
+          order.customer.id,
+          order,
+          updateOrderDto.orderStatus,
+        );
       }
 
       await queryRunner.commitTransaction();
@@ -707,11 +711,6 @@ export class OrdersService {
     if (newStatus.status === OrderStatus.Cancelled) {
       await this.updateBalanceAndStockOnCancel(queryRunner.manager, order);
       await this.oneCApiClientService.cancel(order.id);
-      await this.oneCApiClientService.refunds({
-        userId,
-        amount: order.total.toNumber(),
-        date: new Date(),
-      });
     }
 
     return newStatus;

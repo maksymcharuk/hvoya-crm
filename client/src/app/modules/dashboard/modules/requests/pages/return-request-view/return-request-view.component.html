@@ -27,7 +27,10 @@
             </table>
           </div>
         </div>
-        <div *ngIf="request.managerComment" class="my-5">
+        <div
+          *ngIf="request.managerComment || request.managerImages.length !== 0"
+          class="my-5"
+        >
           <ul class="striped-list">
             <li class="striped-list__item">
               <div class="striped-list__item-key align-self-baseline">

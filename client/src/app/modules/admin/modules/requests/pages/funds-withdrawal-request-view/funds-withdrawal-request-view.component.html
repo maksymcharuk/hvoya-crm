@@ -134,6 +134,12 @@
             <h5>Дані запиту</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
+                <div class="striped-list__item-key">Дата</div>
+                <div class="striped-list__item-value">
+                  {{ request.createdAt | date : 'short' }}
+                </div>
+              </li>
+              <li class="striped-list__item">
                 <div class="striped-list__item-key">Статус</div>
                 <div class="striped-list__item-value">
                   <app-request-status-badge
