@@ -224,19 +224,21 @@
                       ></app-form-control-error-message>
                     </div>
                   </div>
-                  <div class="field col-12 md:col-6">
-                    <label for="tracking-id">Файл маркування:</label>
-                    <p-fileUpload
-                      #waybillUpload
-                      data-cy="order-waybill-upload"
-                      [accept]="fileFormats"
-                      [customUpload]="true"
-                      [auto]="true"
-                      [maxFileSize]="1000000"
-                      [disabled]="(waybillSubmitting$ | async)!"
-                      (uploadHandler)="onFileUpload($event)"
-                    >
-                    </p-fileUpload>
+                  <div class="formgrid grid">
+                    <div class="field col-12 md:col-6">
+                      <label for="tracking-id">Файл маркування:</label>
+                      <p-fileUpload
+                        #waybillUpload
+                        data-cy="order-waybill-upload"
+                        [accept]="fileFormats"
+                        [customUpload]="true"
+                        [auto]="true"
+                        [maxFileSize]="1000000"
+                        [disabled]="(waybillSubmitting$ | async)!"
+                        (uploadHandler)="onFileUpload($event)"
+                      >
+                      </p-fileUpload>
+                    </div>
                   </div>
                 </div>
                 <button
