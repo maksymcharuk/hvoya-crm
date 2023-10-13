@@ -7,6 +7,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   finalize,
+  map,
   mergeMap,
   of,
   takeUntil,
@@ -45,13 +46,13 @@ export class OrderViewComponent {
 
   ICONS = ICONS;
 
+  orderNumber$ = this.route.params.pipe(map((params) => params['number']));
   order$ = new BehaviorSubject<Order | null>(null);
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
   orderStatusEnum = OrderStatus;
   roleEnum = Role;
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   showWaybillViewDialog = false;
-  orderId = this.route.snapshot.params['number'];
   isNoteSaving = false;
 
   RequestType = RequestType;
@@ -84,9 +85,12 @@ export class OrderViewComponent {
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
   ) {
-    this.ordersService.getOrder(this.orderId).subscribe((order) => {
-      this.order$.next(order);
+    this.orderNumber$.subscribe((orderNumber) => {
+      this.ordersService.getOrder(orderNumber).subscribe((order) => {
+        this.order$.next(order);
+      });
     });
+
     this.order$.subscribe((order) => {
       if (!order) {
         return;
@@ -139,6 +143,10 @@ export class OrderViewComponent {
     this.waybillControl.patchValue(event.files[0]);
   }
 
+  getOrderNumber(): string {
+    return this.route.snapshot.params['number'];
+  }
+
   showWaybillViewDialogHandler() {
     this.showWaybillViewDialog = true;
   }
@@ -159,7 +167,7 @@ export class OrderViewComponent {
 
     this.waybillSubmitting$.next(true);
     this.ordersService
-      .updateByCustomer(this.orderId, formData)
+      .updateByCustomer(this.getOrderNumber(), formData)
       .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
@@ -174,7 +182,7 @@ export class OrderViewComponent {
 
   updateOrderNote(note: FormData) {
     this.ordersService
-      .updateByCustomer(this.orderId, note)
+      .updateByCustomer(this.getOrderNumber(), note)
       .pipe(finalize(() => (this.isNoteSaving = false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
@@ -189,7 +197,7 @@ export class OrderViewComponent {
     this.confirmationService.confirm({
       accept: () => {
         this.ordersService
-          .cancelOrderByCustomer(this.orderId)
+          .cancelOrderByCustomer(this.getOrderNumber())
           .pipe(
             mergeMap((order) => {
               return combineLatest([

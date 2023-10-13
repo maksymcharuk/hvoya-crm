@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -13,8 +13,8 @@ import { RequestsService } from '@shared/services/requests.service';
   styleUrls: ['./funds-withdrawal-request-view.component.scss'],
 })
 export class FundsWithdrawalRequestViewComponent {
-  requestNumber = this.route.snapshot.params['number'];
-  request$ = new BehaviorSubject<RequestEntity | null>(null);
+  requestNumber$ = this.route.params.pipe(map((params) => params['number']));
+  request$: Observable<RequestEntity | null>;
   returnRequestStatus = OrderReturnRequestStatus;
   showReceiptViewDialog = false;
 
@@ -22,9 +22,11 @@ export class FundsWithdrawalRequestViewComponent {
     private readonly route: ActivatedRoute,
     private readonly requestsService: RequestsService,
   ) {
-    this.requestsService.getRequest(this.requestNumber).subscribe((request) => {
-      this.request$.next(request);
-    });
+    this.request$ = this.requestNumber$.pipe(
+      switchMap((requestNumber) =>
+        this.requestsService.getRequest(requestNumber),
+      ),
+    );
   }
 
   showReceiptViewDialogHandler() {
