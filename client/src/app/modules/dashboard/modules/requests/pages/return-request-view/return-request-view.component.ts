@@ -1,6 +1,6 @@
 import { MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { BehaviorSubject, finalize } from 'rxjs';
+import { BehaviorSubject, finalize, map } from 'rxjs';
 
 import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
@@ -19,7 +19,7 @@ import { alphanumeric } from '@shared/validators/alphanumeric.validator';
   styleUrls: ['./return-request-view.component.scss'],
 })
 export class ReturnRequestViewComponent {
-  requestNumber = this.route.snapshot.params['number'];
+  requestNumber$ = this.route.params.pipe(map((params) => params['number']));
   request$ = new BehaviorSubject<RequestEntity | null>(null);
   showWaybillViewDialog = false;
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
@@ -46,10 +46,12 @@ export class ReturnRequestViewComponent {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
   ) {
-    this.requestsService.getRequest(this.requestNumber).subscribe((request) => {
-      this.request$.next(request);
-      this.updateWaybillForm.patchValue({
-        trackingId: request.returnRequest!.delivery.trackingId,
+    this.requestNumber$.subscribe((requestNumber) => {
+      this.requestsService.getRequest(requestNumber).subscribe((request) => {
+        this.request$.next(request);
+        this.updateWaybillForm.patchValue({
+          trackingId: request.returnRequest!.delivery.trackingId,
+        });
       });
     });
 

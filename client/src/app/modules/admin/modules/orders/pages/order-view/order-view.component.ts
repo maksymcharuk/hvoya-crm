@@ -6,6 +6,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   finalize,
+  map,
   takeUntil,
   tap,
 } from 'rxjs';
@@ -41,6 +42,7 @@ export class OrderViewComponent implements OnDestroy {
 
   ICONS = ICONS;
 
+  orderNumber$ = this.route.params.pipe(map((params) => params['number']));
   order$ = new BehaviorSubject<Order | null>(null);
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
   statusSubmitting$ = new BehaviorSubject<boolean>(false);
@@ -93,11 +95,12 @@ export class OrderViewComponent implements OnDestroy {
     private ordersService: OrdersService,
     private messageService: MessageService,
   ) {
-    this.ordersService
-      .getOrder(this.route.snapshot.params['number'])
-      .subscribe((order) => {
+    this.orderNumber$.subscribe((orderNumber) => {
+      this.ordersService.getOrder(orderNumber).subscribe((order) => {
         this.order$.next(order);
       });
+    });
+
     this.order$.subscribe((order) => {
       if (!order) {
         return;
