@@ -13,7 +13,10 @@ export const COMMENT_REQUIRED_ORDER_STATUSES = [
 ];
 
 // Order statuses when order can be updated
-export const UPDATABLE_ORDER_STATUSES = [OrderStatus.Pending];
+export const UPDATABLE_ORDER_STATUSES = [
+  OrderStatus.Pending,
+  OrderStatus.Processing,
+];
 
 // Order statuses that can be set manually
 export const MANUAL_ORDER_STATUSES = [OrderStatus.Cancelled];

@@ -7,7 +7,10 @@ import {
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
-import { CANCELABLE_ORDER_STATUSES } from '@constants/order.constants';
+import {
+  CANCELABLE_ORDER_STATUSES,
+  USER_UPDATEABLE_ORDER_STATUSES,
+} from '@constants/order.constants';
 import { BalanceEntity } from '@entities/balance.entity';
 import { CartEntity } from '@entities/cart.entity';
 import { FaqEntity } from '@entities/faq.entity';
@@ -279,8 +282,15 @@ export class CaslAbilityFactory {
     // Orders
     // -------------------------------------------------------------------------
     can([Action.Create], OrderEntity);
-    // Can update or cancel only his own orders with status pending
-    can([Action.Update, Action.Cancel], OrderEntity, {
+    // Can update only his own orders with status pending
+    can(Action.Update, OrderEntity, {
+      ['customer.id' as keyof OrderEntity]: currentUser.id,
+      ['statuses.0.status' as keyof OrderEntity]: {
+        $in: USER_UPDATEABLE_ORDER_STATUSES,
+      },
+    });
+    // Can cancel only his own orders with status pending
+    can(Action.Cancel, OrderEntity, {
       ['customer.id' as keyof OrderEntity]: currentUser.id,
       ['statuses.0.status' as keyof OrderEntity]: {
         $in: CANCELABLE_ORDER_STATUSES,

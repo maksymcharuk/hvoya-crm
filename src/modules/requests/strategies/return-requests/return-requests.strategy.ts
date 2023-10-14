@@ -13,6 +13,7 @@ import { OrderItemEntity } from '@entities/order-item.entity';
 import { OrderReturnDeliveryEntity } from '@entities/order-return-delivery.entity';
 import { OrderReturnRequestItemEntity } from '@entities/order-return-request-item.entity';
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
+import { OrderStatusEntity } from '@entities/order-status.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
@@ -22,6 +23,7 @@ import { Action } from '@enums/action.enum';
 import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { Folder } from '@enums/folder.enum';
 import { OrderReturnRequestStatus } from '@enums/order-return-request-status.enum';
+import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { TransactionSyncOneCStatus } from '@enums/transaction-sync-one-c-status.enum';
 
@@ -276,6 +278,12 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     );
 
     await this.updateProductsStockOnReturn(data.queryRunner, request.id);
+
+    await data.queryRunner.manager.save(OrderStatusEntity, {
+      status: OrderStatus.Refunded,
+      comment: 'Замовлення поністю або частково повернено клієнтом',
+      order: { id: request.returnRequest!.order.id },
+    });
 
     const perItemDeduction = new Decimal(
       data.approveRequestDto.returnRequest.deduction,
