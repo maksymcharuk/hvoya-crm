@@ -18,6 +18,14 @@
   }
 }
 
+.striped-list {
+  .striped-list__item {
+    &.highlight {
+      border: 1px solid var(--primary-color);
+    }
+  }
+}
+
 .statuses-history {
   border: 1px solid var(--surface-300);
   max-height: 400px;
