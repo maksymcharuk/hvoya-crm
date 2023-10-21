@@ -13,7 +13,6 @@ import {
   OrderCreateFormGroup,
 } from '@shared/interfaces/dto/create-order.dto';
 import { Cart, CartItem } from '@shared/interfaces/entities/cart.entity';
-import { ProductPackageSize } from '@shared/interfaces/entities/product.entity';
 import { OrderCreateResponseError } from '@shared/interfaces/responses/order-create-error.response';
 import { AccountService } from '@shared/services/account.service';
 import { OrdersService } from '@shared/services/orders.service';
@@ -40,17 +39,6 @@ export class OrderCreateComponent implements OnInit {
     { label: 'Склад - Двері', value: DeliveryType.WarehouseDoor },
   ];
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
-  totalDimensions$ = this.cart$.pipe(
-    map((cart) => {
-      return cart?.items.reduce((acc, item) => {
-        acc.width += item.product.properties.packageSize.width * item.quantity;
-        acc.height +=
-          item.product.properties.packageSize.height * item.quantity;
-        acc.depth += item.product.properties.packageSize.depth * item.quantity;
-        return acc;
-      }, new ProductPackageSize());
-    }),
-  );
   totalWeight$ = this.cart$.pipe(
     map((cart) => {
       return cart?.items.reduce((acc, item) => {

@@ -54,12 +54,6 @@
             <h5>Деталі замовлення</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
-                <div class="striped-list__item-key">Загальні габарити</div>
-                <div class="striped-list__item-value">
-                  {{ totalDimensions$ | async | productPackageSize }}
-                </div>
-              </li>
-              <li class="striped-list__item">
                 <div class="striped-list__item-key">Загальна вага</div>
                 <div class="striped-list__item-value">
                   {{ totalWeight$ | async | productWeight }}
