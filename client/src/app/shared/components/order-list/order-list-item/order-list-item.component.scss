@@ -1,0 +1,9 @@
+.pi-exclamation-triangle {
+  &.danger {
+    color: #f44336;
+  }
+
+  &.warning {
+    color: #ff9800;
+  }
+}

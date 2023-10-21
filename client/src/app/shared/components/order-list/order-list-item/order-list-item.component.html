@@ -32,9 +32,18 @@
 </td>
 <td>
   <span class="p-column-title">Статус доставки</span>
-  <app-order-delivery-status-badge
-    [status]="order.delivery.status"
-  ></app-order-delivery-status-badge>
+  <div class="flex align-items-center">
+    <app-order-delivery-status-badge
+      [status]="order.delivery.status"
+    ></app-order-delivery-status-badge>
+    <i
+      *ngIf="getDeliveryWarningData(order) as data"
+      class="pi pi-exclamation-triangle ml-3"
+      [ngClass]="data.iconClass"
+      [pTooltip]="data.text"
+      tooltipPosition="right"
+    ></i>
+  </div>
 </td>
 <td>
   <span class="p-column-title" data-cy="order-list-item-amount">Номер ТТН</span>
