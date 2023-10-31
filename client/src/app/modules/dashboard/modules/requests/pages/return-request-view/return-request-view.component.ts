@@ -8,7 +8,6 @@ import { ActivatedRoute } from '@angular/router';
 
 import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
-import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestsService } from '@shared/services/requests.service';
 import { alphanumeric } from '@shared/validators/alphanumeric.validator';
@@ -32,7 +31,7 @@ export class ReturnRequestViewComponent {
       [Validators.required, alphanumeric({ allowSpaces: true })],
     ],
     waybill: [''],
-  }) as UpdateWaybillFormGroup;
+  });
 
   get waybillControl(): AbstractControl {
     return this.updateWaybillForm.controls.waybill;

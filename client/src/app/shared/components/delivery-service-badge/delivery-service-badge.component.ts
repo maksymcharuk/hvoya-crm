@@ -13,6 +13,10 @@ export class DeliveryServiceBadgeComponent {
   @Input() withText = false;
 
   deliveryServiceLogoMapping = {
+    [DeliveryService.SelfPickup]: {
+      full: 'assets/images/delivery-services/self-pickup-full-logo.png',
+      short: 'assets/images/delivery-services/self-pickup-short-logo.png',
+    },
     [DeliveryService.NovaPoshta]: {
       full: 'assets/images/delivery-services/nova-poshta-full-logo.png',
       short: 'assets/images/delivery-services/nova-poshta-short-logo.png',

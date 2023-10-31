@@ -14,22 +14,32 @@ import {
   COMMENT_REQUIRED_ORDER_STATUSES,
   MANUAL_ORDER_STATUSES,
 } from '@constants/order.constants';
+import { DeliveryService } from '@enums/delivery-service.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 
 import { CreateOrderDto } from './create-order.dto';
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {
-  @IsNotEmpty({ message: 'Необхідно вказати номер ТТН' })
+  @IsOptional()
+  @ValidateIf(
+    (o) =>
+      o.deliveryService && o.deliveryService !== DeliveryService.SelfPickup,
+  )
   @Transform(({ value }) => value?.replaceAll(' ', ''))
   @IsAlphanumeric(undefined, {
     message: 'Номер ТТН повинен містити лише літери та цифри',
   })
-  override trackingId: string;
+  override trackingId?: string;
+
+  @ValidateIf((o) => o.trackingId)
+  @IsEnum(DeliveryService)
+  @IsNotEmpty({ message: 'Необхідно вказати службу доставки' })
+  override deliveryService?: DeliveryService;
 
   @IsOptional()
   @IsEnum(OrderStatus)
   @IsIn(MANUAL_ORDER_STATUSES, {
-    message: 'Вручну можна змінити статус лише на "Скасовано"',
+    message: 'Вручну можна змінити статус лише на "Скасовано" або "Виконано"',
   })
   orderStatus?: OrderStatus;
 

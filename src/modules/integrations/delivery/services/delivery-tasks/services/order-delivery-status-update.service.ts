@@ -54,6 +54,9 @@ export class OrderDeliveryStatusUpdateService extends DeliveryStatusUpdateServic
           OrderStatus.Refused,
         ],
       })
+      .andWhere('delivery.deliveryService != :selfPickup', {
+        selfPickup: DeliveryService.SelfPickup,
+      })
       .getMany();
   }
 

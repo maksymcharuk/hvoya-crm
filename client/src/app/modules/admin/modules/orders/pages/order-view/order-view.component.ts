@@ -24,6 +24,7 @@ import {
   MANUAL_ORDER_STATUSES,
   WAYBILL_ACCEPTABLE_FILE_FORMATS,
 } from '@shared/constants/order.constants';
+import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { OrderUpdateFormGroup } from '@shared/interfaces/dto/update-order.dto';
 import { UpdateWaybillFormGroup } from '@shared/interfaces/dto/update-waybill.dto';
 import { Order } from '@shared/interfaces/entities/order.entity';
@@ -55,14 +56,15 @@ export class OrderViewComponent implements OnDestroy {
   showWaybillViewDialog = false;
   showOrderStatusDialog = false;
   isNoteSaving = false;
+  deliveryServices = Object.values(DeliveryService);
+  DeliveryService = DeliveryService;
+  isSelfPickup = false;
 
-  updateWaybillForm = this.formBuilder.group({
-    trackingId: [
-      '',
-      [Validators.required, alphanumeric({ allowSpaces: true })],
-    ],
-    waybill: [''],
-  }) as UpdateWaybillFormGroup;
+  trackingIdValidators = [
+    Validators.required,
+    alphanumeric({ allowSpaces: true }),
+  ];
+  waybillValidators = [Validators.required];
 
   orderNoteForm = this.formBuilder.group({
     managerNote: [''],
@@ -72,14 +74,28 @@ export class OrderViewComponent implements OnDestroy {
     return this.orderNoteForm.controls.managerNote!;
   }
 
-  updateOrderStatusForm = this.formBuilder.group({
-    orderStatus: ['', Validators.required],
-    orderStatusComment: [''],
-  }) as OrderUpdateFormGroup;
+  updateWaybillForm = this.formBuilder.group({
+    trackingId: ['', this.trackingIdValidators],
+    deliveryService: [DeliveryService.SelfPickup, Validators.required],
+    waybill: ['', this.waybillValidators],
+  }) as UpdateWaybillFormGroup;
+
+  get deliveryServiceControl(): AbstractControl {
+    return this.updateWaybillForm.controls.deliveryService!;
+  }
 
   get waybillControl(): AbstractControl {
     return this.updateWaybillForm.controls.waybill;
   }
+
+  get trackingIdControl(): AbstractControl {
+    return this.updateWaybillForm.controls.trackingId;
+  }
+
+  updateOrderStatusForm = this.formBuilder.group({
+    orderStatus: ['', Validators.required],
+    orderStatusComment: [''],
+  }) as OrderUpdateFormGroup;
 
   get orderStatusControl(): AbstractControl {
     return this.updateOrderStatusForm.controls.orderStatus!;
@@ -107,6 +123,7 @@ export class OrderViewComponent implements OnDestroy {
       }
       this.updateWaybillForm.patchValue({
         trackingId: order.delivery.trackingId,
+        deliveryService: order.delivery.deliveryService,
       });
       this.updateOrderStatusForm.patchValue({
         orderStatus: order.currentStatus.status,
@@ -161,6 +178,23 @@ export class OrderViewComponent implements OnDestroy {
         formData.append('managerNote', note);
         this.updateOrderNote(formData);
       });
+
+    this.deliveryServiceControl?.valueChanges.subscribe((value) => {
+      if (value === DeliveryService.SelfPickup) {
+        this.isSelfPickup = true;
+        this.trackingIdControl?.clearValidators();
+        this.trackingIdControl?.disable();
+        this.waybillControl?.clearValidators();
+        this.waybillControl?.disable();
+      } else {
+        this.isSelfPickup = false;
+        this.trackingIdControl?.setValidators(this.trackingIdValidators);
+        this.trackingIdControl?.enable();
+        this.waybillControl?.setValidators(this.waybillValidators);
+        this.waybillControl?.enable();
+      }
+      this.trackingIdControl?.updateValueAndValidity();
+    });
   }
 
   ngOnDestroy(): void {
@@ -187,6 +221,10 @@ export class OrderViewComponent implements OnDestroy {
       'trackingId',
       this.updateWaybillForm.get('trackingId')?.value,
     );
+    formData.append(
+      'deliveryService',
+      this.updateWaybillForm.get('deliveryService')?.value,
+    );
     formData.append('waybill', this.updateWaybillForm.get('waybill')?.value);
 
     this.waybillSubmitting$.next(true);
@@ -195,8 +233,8 @@ export class OrderViewComponent implements OnDestroy {
       .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((order: Order) => {
         this.order$.next(order);
-        this.waybillUpload.clear();
-        this.waybillControl.reset();
+        this.waybillUpload?.clear();
+        this.waybillControl?.reset();
         this.messageService.add({
           severity: 'success',
           detail: 'Дані доставки успішно оновлено',

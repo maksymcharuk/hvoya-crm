@@ -214,7 +214,7 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div> -->
-                <div class="field col-12">
+                <div *ngIf="!isSelfPickup" class="field col-12">
                   <label for="tracking-id">Номер ТТН:</label>
                   <input
                     id="tracking-id"
@@ -236,7 +236,7 @@
                 </div>
               </div>
             </div>
-            <div class="formgrid grid">
+            <div *ngIf="!isSelfPickup" class="formgrid grid">
               <div class="field col-12">
                 <label>Маркування (PDF):</label>
                 <p-fileUpload

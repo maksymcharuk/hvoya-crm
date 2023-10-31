@@ -31,7 +31,9 @@ import { alphanumeric } from '@shared/validators/alphanumeric.validator';
   styleUrls: ['./return-request-create.component.scss'],
 })
 export class ReturnRequestCreateComponent {
-  deliveryServices = Object.keys(DeliveryService);
+  deliveryServices = Object.values(DeliveryService).filter(
+    (value) => value !== DeliveryService.SelfPickup,
+  );
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   imageFormats = IMAGE_ACCEPTABLE_FILE_FORMATS;
   submitting = false;

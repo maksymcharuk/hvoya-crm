@@ -1,15 +1,22 @@
 import { Transform } from 'class-transformer';
-import { IsAlphanumeric, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsAlphanumeric,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  ValidateIf,
+} from 'class-validator';
 
 import { DeliveryService } from '@enums/delivery-service.enum';
 
 export class CreateOrderDto {
+  @ValidateIf((o) => o.deliveryService !== DeliveryService.SelfPickup)
   @IsNotEmpty({ message: 'Необхідно вказати номер ТТН' })
   @Transform(({ value }) => value?.replaceAll(' ', ''))
   @IsAlphanumeric(undefined, {
     message: 'Номер ТТН повинен містити лише літери та цифри',
   })
-  trackingId: string;
+  trackingId: string | undefined;
 
   @IsEnum(DeliveryService)
   @IsNotEmpty({ message: 'Необхідно вказати службу доставки' })
