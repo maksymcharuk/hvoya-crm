@@ -2,5 +2,6 @@ import { SHARED_PAYMENT_TRANSACTION_READ_FIELDS } from '../shared/payment-transa
 
 export const ANY_ADMIN_PAYMENT_TRANSACTION_READ_FIELDS = [
   ...SHARED_PAYMENT_TRANSACTION_READ_FIELDS,
+  'id',
   'syncOneCStatus',
 ];
