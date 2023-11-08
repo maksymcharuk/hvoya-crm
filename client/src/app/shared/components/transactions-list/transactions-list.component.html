@@ -83,15 +83,23 @@
   </ng-template>
   <ng-template pTemplate="body" let-transaction>
     <tr class="p-selectable-row">
-      <td
-        data-cy="transaction-amount"
-        [class.text-green-600]="+transaction.amount > 0"
-        [class.text-red-600]="+transaction.amount < 0"
-        [class.text-yellow-600]="
-          transaction.status === transactionStatus.Pending
-        "
-      >
-        {{ transaction.amount | currency }}
+      <td>
+        <div
+          data-cy="transaction-amount"
+          [class.text-green-600]="+transaction.amount > 0"
+          [class.text-red-600]="+transaction.amount < 0"
+          [class.text-yellow-600]="
+            transaction.status === transactionStatus.Pending
+          "
+        >
+          {{ transaction.amount | currency }}
+        </div>
+        <small
+          *ngIf="transaction.status === transactionStatus.Success"
+          class="text-600"
+        >
+          {{ transaction.netBalance | currency }}
+        </small>
       </td>
       <td>{{ transaction.status | transactionStatus }}</td>
       <td *ngIf="currentUser?.isAnyAdmin">

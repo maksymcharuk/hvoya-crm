@@ -41,6 +41,15 @@ export class PaymentTransactionEntity extends BaseEntity {
   })
   syncOneCStatus: TransactionSyncOneCStatus;
 
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0.0,
+    transformer: new DecimalTransformer(),
+  })
+  netBalance: Decimal;
+
   @ManyToOne(() => OrderEntity, (order) => order.paymentTransactions)
   order: OrderEntity;
 

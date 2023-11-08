@@ -74,13 +74,23 @@
           </ng-template>
           <ng-template pTemplate="body" let-transaction>
             <tr>
-              <td
-                data-cy="widget-transaction-amount"
-                [class.text-green-600]="+transaction.amount > 0"
-                [class.text-red-600]="+transaction.amount < 0"
-                [class.text-yellow-600]="transaction.status === 'Pending'"
-              >
-                {{ transaction.amount | currency }}
+              <td>
+                <div
+                  data-cy="transaction-amount"
+                  [class.text-green-600]="+transaction.amount > 0"
+                  [class.text-red-600]="+transaction.amount < 0"
+                  [class.text-yellow-600]="
+                    transaction.status === TransactionStatus.Pending
+                  "
+                >
+                  {{ transaction.amount | currency }}
+                </div>
+                <small
+                  *ngIf="transaction.status === TransactionStatus.Success"
+                  class="text-600"
+                >
+                  {{ transaction.netBalance | currency }}
+                </small>
               </td>
               <td>{{ transaction.status | transactionStatus }}</td>
               <td>{{ transaction.createdAt | date : 'short' }}</td>

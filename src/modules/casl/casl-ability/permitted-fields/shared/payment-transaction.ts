@@ -4,6 +4,7 @@ import { SHARED_ORDER_READ_FIELDS } from './order';
 
 export const SHARED_PAYMENT_TRANSACTION_READ_FIELDS = [
   'amount',
+  'netBalance',
   'status',
   'orderReturnRequest',
   'fundsWithdrawalRequest',

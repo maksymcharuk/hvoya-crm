@@ -67,6 +67,7 @@ export class BalanceService {
 
     const paymentTransaction = await manager.create(PaymentTransactionEntity, {
       amount,
+      netBalance: balance.amount.plus(amount),
     });
 
     if (orderId) {
@@ -75,22 +76,15 @@ export class BalanceService {
 
     await manager.save(PaymentTransactionEntity, paymentTransaction);
 
-    if (amount.isNegative()) {
-      if (balance.amount.lessThan(amount.neg())) {
-        throw new HttpException('Недостатньо коштів на балансі.', 400);
-      }
-      await manager.save(BalanceEntity, {
-        id: balance.id,
-        amount: balance.amount.minus(amount.neg()),
-        paymentTransactions: [...paymentTransactions, paymentTransaction],
-      });
-    } else {
-      await manager.save(BalanceEntity, {
-        id: balance.id,
-        amount: balance.amount.plus(amount),
-        paymentTransactions: [...paymentTransactions, paymentTransaction],
-      });
+    if (amount.isNegative() && balance.amount.lessThan(amount.neg())) {
+      throw new HttpException('Недостатньо коштів на балансі.', 400);
     }
+
+    await manager.save(BalanceEntity, {
+      id: balance.id,
+      amount: balance.amount.plus(amount),
+      paymentTransactions: [...paymentTransactions, paymentTransaction],
+    });
 
     // TODO: investigate why last transaction is missing in the balance
     // in case of order cretion, but it is present during addign funds operation

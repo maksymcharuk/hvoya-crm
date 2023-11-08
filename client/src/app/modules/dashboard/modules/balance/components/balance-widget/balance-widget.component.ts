@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 
 import { environment } from '@environment/environment';
 import { RequestType } from '@shared/enums/request-type.enum';
+import { TransactionStatus } from '@shared/enums/transaction-status.enum';
 import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
 import { PageOptions } from '@shared/interfaces/page-options.interface';
 import { AccountService } from '@shared/services/account.service';
@@ -29,6 +30,7 @@ export class BalanceWidgetComponent {
   currentUser = this.userService.getUser();
   rows = 3;
   RequestType = RequestType;
+  TransactionStatus = TransactionStatus;
 
   constructor(
     private userBalance: UserBalanceService,
