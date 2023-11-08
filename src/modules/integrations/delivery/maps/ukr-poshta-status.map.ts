@@ -15,17 +15,12 @@ export const UkrPoshtaStatusMap: { [key in DeliveryStatus]: string[] } = {
     'прямує до точки видачі',
     'з сортувального центру',
   ],
-  [DeliveryStatus.Arrived]: [
-    'у відділенні',
-    'прибуло',
-    'очікує приймання',
-    'у точці видачі',
-  ],
+  [DeliveryStatus.Arrived]: ['у відділенні', 'прибуло', 'у точці видачі'],
   [DeliveryStatus.Received]: ['вручено'],
   [DeliveryStatus.Returned]: ['поверн'],
   [DeliveryStatus.Declined]: ['відмовлено', 'скасовано', 'відмова'],
   [DeliveryStatus.Unspecified]: [],
-  [DeliveryStatus.Pending]: [],
+  [DeliveryStatus.Pending]: ['створено онлайн'],
 };
 
 export const getStatus: GetStatusFn = (status: string): DeliveryStatus => {

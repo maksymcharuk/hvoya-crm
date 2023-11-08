@@ -8,6 +8,7 @@ import { Order } from './order.entity';
 
 export class PaymentTransaction extends BaseEntity {
   amount: number;
+  netBalance: number;
   order: Order | null;
   orderReturnRequest: OrderReturnRequest | null;
   fundsWithdrawalRequest: FundsWithdrawalRequest | null;
@@ -17,6 +18,7 @@ export class PaymentTransaction extends BaseEntity {
   constructor(data?: PaymentTransaction) {
     super(data);
     this.amount = data?.amount || 0;
+    this.netBalance = data?.netBalance || 0;
     this.order = data?.order ? new Order(data.order) : null;
     this.orderReturnRequest = data?.orderReturnRequest
       ? new OrderReturnRequest(data.orderReturnRequest)
