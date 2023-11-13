@@ -59,6 +59,9 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
 
     await data.queryRunner.manager.save(PaymentTransactionEntity, {
       amount: data.createRequestDto.fundsWithdrawalRequest.amount.neg(),
+      netBalance: balance.amount.plus(
+        data.createRequestDto.fundsWithdrawalRequest.amount.neg(),
+      ),
       status: TransactionStatus.Success,
       balance: { id: balance.id },
       fundsWithdrawalRequest: { id: fundsWithdrawalRequest.id },
@@ -201,6 +204,7 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
 
       await data.queryRunner.manager.save(PaymentTransactionEntity, {
         amount: request.fundsWithdrawalRequest!.amount,
+        netBalance: balance.amount.plus(request.fundsWithdrawalRequest!.amount),
         status: TransactionStatus.Success,
         balance: { id: balance.id },
         fundsWithdrawalRequest: { id: request.fundsWithdrawalRequest!.id },

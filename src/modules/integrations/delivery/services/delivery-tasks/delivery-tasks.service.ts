@@ -11,7 +11,7 @@ export class DeliveryTasksService {
     private readonly returnRequestDeliveryStatusUpdateService: ReturnRequestDeliveryStatusUpdateService,
   ) {}
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async updateStatuses() {
     await this.orderDeliveryStatusUpdateService.updateStatuses();
     await this.returnRequestDeliveryStatusUpdateService.updateStatuses();

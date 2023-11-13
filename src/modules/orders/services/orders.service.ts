@@ -574,6 +574,7 @@ export class OrdersService {
     });
     const transaction = await manager.save(PaymentTransactionEntity, {
       amount: order.total,
+      netBalance: balance.amount.plus(order.total),
       status: TransactionStatus.Success,
       syncOneCStatus: TransactionSyncOneCStatus.Success,
       balance,
