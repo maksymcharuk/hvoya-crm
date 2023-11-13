@@ -477,6 +477,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       PaymentTransactionEntity,
       {
         amount: total,
+        netBalance: balance.amount.plus(total),
         status: TransactionStatus.Success,
         syncOneCStatus: TransactionSyncOneCStatus.Success,
         balance,

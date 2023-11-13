@@ -107,7 +107,12 @@ export class PaymentApiService {
       });
       const transaction = await queryRunner.manager.save(
         PaymentTransactionEntity,
-        { bankTransactionId, balance: user.balance, amount: +amount },
+        {
+          bankTransactionId,
+          balance: user.balance,
+          amount: +amount,
+          netBalance: user.balance.amount.plus(+amount),
+        },
       );
       await queryRunner.commitTransaction();
       return Promise.resolve(

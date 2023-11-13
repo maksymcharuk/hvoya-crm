@@ -7,7 +7,7 @@ import { OneCSyncService } from '../one-c-sync/one-c-sync.service';
 export class OneCTasksService {
   constructor(private readonly oneCSyncService: OneCSyncService) {}
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async syncProducts() {
     return this.oneCSyncService.syncProducts();
   }
