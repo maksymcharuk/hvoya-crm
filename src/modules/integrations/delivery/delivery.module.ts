@@ -18,5 +18,6 @@ import { UkrPoshtaApiService } from './services/ukr-poshta-api/ukr-poshta-api.se
     OrderDeliveryStatusUpdateService,
     ReturnRequestDeliveryStatusUpdateService,
   ],
+  exports: [DeliveryServiceFactory],
 })
 export class DeliveryModule {}

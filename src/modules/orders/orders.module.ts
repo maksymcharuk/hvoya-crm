@@ -13,6 +13,7 @@ import { CartModule } from '@modules/cart/cart.module';
 import { CaslModule } from '@modules/casl/casl.module';
 import { CloudinaryModule } from '@modules/cloudinary/cloudinary.module';
 import { FilesModule } from '@modules/files/files.module';
+import { DeliveryModule } from '@modules/integrations/delivery/delivery.module';
 import { OneCClientModule } from '@modules/integrations/one-c/one-c-client/one-c-client.module';
 
 import { OrdersController } from './orders.controller';
@@ -34,6 +35,7 @@ import { OrdersService } from './services/orders.service';
     FilesModule,
     BalanceModule,
     OneCClientModule,
+    DeliveryModule,
   ],
   controllers: [OrdersController],
   providers: [OrdersService],
