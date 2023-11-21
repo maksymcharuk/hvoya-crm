@@ -294,8 +294,8 @@ export class OrdersService {
           // deliveryType: createOrderDto.deliveryType,
           // city: createOrderDto.city,
           // postOffice: createOrderDto.postOffice,
-          status: deliveryStatus.status,
-          rawStatus: deliveryStatus.rawStatus,
+          status: deliveryStatus?.status,
+          rawStatus: deliveryStatus?.rawStatus,
           waybill: waybillScan,
         },
       );
@@ -798,7 +798,7 @@ export class OrdersService {
   private async getOrderDeliveryStatus(
     deliveryServiceName: DeliveryService,
     trackingId: string,
-  ): Promise<DeliveryServiceRawStatus> {
+  ): Promise<DeliveryServiceRawStatus | undefined> {
     const deliveryService =
       this.deliveryServiceFactory.getDeliveryService(deliveryServiceName);
 
@@ -812,7 +812,7 @@ export class OrdersService {
       })
     ).statuses[0];
 
-    if (!deliveryStatus) {
+    if (deliveryServiceName !== DeliveryService.UkrPoshta && !deliveryStatus) {
       throw new BadRequestException('Вказаний номер ТТН не є дійсним');
     }
 
@@ -822,13 +822,13 @@ export class OrdersService {
   private async validateDeliveryStatus(
     deliveryServiceName: DeliveryService,
     trackingId: string,
-  ): Promise<DeliveryServiceRawStatus> {
+  ): Promise<DeliveryServiceRawStatus | undefined> {
     const deliveryStatus = await this.getOrderDeliveryStatus(
       deliveryServiceName,
       trackingId,
     );
 
-    if (deliveryStatus.status === DeliveryStatus.Received) {
+    if (deliveryStatus && deliveryStatus.status === DeliveryStatus.Received) {
       throw new BadRequestException(
         'Відправлення по вказаному номеру ТТН вже отримано',
       );

@@ -41,7 +41,7 @@ export class OrderListComponent implements OnDestroy {
   @ViewChild('ordersTable') ordersTable!: Table;
 
   loading = true;
-  rows = 20;
+  rows = 50;
   customers$ = this.userService
     .getUsers(
       new PageOptions({
