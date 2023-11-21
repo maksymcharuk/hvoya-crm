@@ -139,7 +139,12 @@
                   ></app-delivery-service-badge>
                 </div>
               </li>
-              <li class="striped-list__item">
+              <li
+                *ngIf="
+                  order.delivery.deliveryService !== DeliveryService.SelfPickup
+                "
+                class="striped-list__item"
+              >
                 <div class="striped-list__item-key">Статус доставки</div>
                 <div class="striped-list__item-value">
                   <div class="py-2 mr-5">
@@ -165,7 +170,12 @@
                   {{ order.delivery.trackingId }}
                 </div>
               </li>
-              <li class="striped-list__item">
+              <li
+                *ngIf="
+                  order.delivery.deliveryService !== DeliveryService.SelfPickup
+                "
+                class="striped-list__item"
+              >
                 <div class="striped-list__item-key">Маркування (PDF)</div>
                 <div class="striped-list__item-value">
                   <ng-container
@@ -210,6 +220,37 @@
                   <div class="p-fluid">
                     <div class="formgrid grid">
                       <div class="field col-12">
+                        <label for="delivery-service">Служба доставки:</label>
+                        <p-dropdown
+                          id="delivery-service"
+                          [options]="deliveryServices"
+                          formControlName="deliveryService"
+                        >
+                          <ng-template let-selected pTemplate="selectedItem">
+                            <app-delivery-service-badge
+                              *ngIf="selected as deliveryService"
+                              mode="short"
+                              [withText]="true"
+                              [deliveryService]="deliveryService"
+                            ></app-delivery-service-badge>
+                          </ng-template>
+                          <ng-template let-option pTemplate="item">
+                            <app-delivery-service-badge
+                              *ngIf="option as deliveryService"
+                              mode="short"
+                              [withText]="true"
+                              [deliveryService]="deliveryService"
+                            ></app-delivery-service-badge>
+                          </ng-template>
+                        </p-dropdown>
+                        <app-form-control-error-message
+                          [formGroup]="updateWaybillForm"
+                          controlName="deliveryService"
+                          errorType="required"
+                          errorMessage="Це є обов'язковим полем"
+                        ></app-form-control-error-message>
+                      </div>
+                      <div *ngIf="!isSelfPickup" class="field col-12">
                         <label for="tracking-id">Номер ТТН:</label>
                         <input
                           id="tracking-id"
@@ -231,7 +272,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="formgrid grid">
+                  <div *ngIf="!isSelfPickup" class="formgrid grid">
                     <div class="field col-12">
                       <label for="tracking-id">Файл маркування:</label>
                       <p-fileUpload
@@ -245,12 +286,18 @@
                         (uploadHandler)="onFileUpload($event)"
                       >
                       </p-fileUpload>
+                      <app-form-control-error-message
+                        [formGroup]="updateWaybillForm"
+                        controlName="waybill"
+                        errorType="required"
+                        errorMessage="Це є обов'язковим полем"
+                      ></app-form-control-error-message>
                     </div>
                   </div>
                   <button
                     (click)="updateWaybill()"
                     pButton
-                    label="Оновини дані ТТН"
+                    label="Оновини дані доставки"
                     [disabled]="waybillSubmitting$ | async"
                   ></button>
                 </form>

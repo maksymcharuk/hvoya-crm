@@ -18,9 +18,15 @@ export class RecalculateBalance1698778036926 implements MigrationInterface {
       transactionsToRevertIds,
     );
 
-    const balances = await queryRunner.manager.find(BalanceEntity, {
-      relations: ['paymentTransactions'],
-    });
+    const balances = await queryRunner.manager
+      .createQueryBuilder(BalanceEntity, 'balance')
+      .leftJoin('balance.paymentTransactions', 'paymentTransactions')
+      .addSelect([
+        'balance.amount',
+        'paymentTransactions.amount',
+        'paymentTransactions.status',
+      ])
+      .getMany();
 
     // recalculating balance amount based on payment transactions
     for (let balance of balances) {

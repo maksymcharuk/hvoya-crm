@@ -225,6 +225,7 @@ export class OrdersService {
   ): Promise<OrderEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
     let waybillScan: FileEntity | undefined;
+    let deliveryStatus: DeliveryServiceRawStatus | undefined;
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -248,15 +249,21 @@ export class OrdersService {
         );
       }
 
-      const deliveryStatus = await this.validateDeliveryStatus(
-        createOrderDto.deliveryService,
-        createOrderDto.trackingId,
-      );
+      if (createOrderDto.trackingId) {
+        deliveryStatus = await this.validateDeliveryStatus(
+          createOrderDto.deliveryService,
+          createOrderDto.trackingId,
+        );
+      }
 
       if (waybill) {
         waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
           folder: Folder.OrderFiles,
         });
+      } else if (
+        createOrderDto.deliveryService !== DeliveryService.SelfPickup
+      ) {
+        throw new BadRequestException('Необхідно завантажити файл маркування');
       }
 
       let order = await queryRunner.manager.save(OrderEntity, {
@@ -411,13 +418,6 @@ export class OrdersService {
     try {
       const order = await this.getOrderWhere({ number: orderNumber });
 
-      if (updateOrderDto?.trackingId && order.delivery.deliveryService) {
-        deliveryStatus = await this.getOrderDeliveryStatus(
-          order.delivery.deliveryService,
-          updateOrderDto.trackingId,
-        );
-      }
-
       if (waybill) {
         waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
           folder: Folder.OrderFiles,
@@ -432,11 +432,19 @@ export class OrdersService {
       }
 
       if (updateOrderDto) {
+        if (updateOrderDto.trackingId && updateOrderDto.deliveryService) {
+          deliveryStatus = await this.getOrderDeliveryStatus(
+            updateOrderDto.deliveryService,
+            updateOrderDto.trackingId,
+          );
+        }
+
         await queryRunner.manager.update(
           OrderDeliveryEntity,
           order.delivery.id,
           {
             trackingId: updateOrderDto.trackingId,
+            deliveryService: updateOrderDto.deliveryService,
             status: deliveryStatus?.status,
             rawStatus: deliveryStatus?.rawStatus,
             // NOTE: Keep this for a waybill generation logic in future
@@ -528,13 +536,14 @@ export class OrdersService {
         );
       }
 
-      if (updateOrderByCustomerDto.trackingId) {
-        if (order.delivery.deliveryService) {
-          deliveryStatus = await this.validateDeliveryStatus(
-            order.delivery.deliveryService,
-            updateOrderByCustomerDto.trackingId,
-          );
-        }
+      if (
+        updateOrderByCustomerDto.trackingId &&
+        updateOrderByCustomerDto.deliveryService
+      ) {
+        deliveryStatus = await this.validateDeliveryStatus(
+          updateOrderByCustomerDto.deliveryService,
+          updateOrderByCustomerDto.trackingId,
+        );
 
         if (waybill) {
           waybillScan = await this.filesService.uploadFile(
@@ -544,12 +553,21 @@ export class OrdersService {
               folder: Folder.OrderFiles,
             },
           );
+        } else if (
+          updateOrderByCustomerDto.deliveryService !==
+          DeliveryService.SelfPickup
+        ) {
+          throw new BadRequestException(
+            'Необхідно завантажити файл маркування',
+          );
         }
+
         await queryRunner.manager.update(
           OrderDeliveryEntity,
           order.delivery.id,
           {
             trackingId: updateOrderByCustomerDto.trackingId,
+            deliveryService: updateOrderByCustomerDto.deliveryService,
             waybill: waybillScan,
             status: deliveryStatus?.status,
             rawStatus: deliveryStatus?.rawStatus,
@@ -799,6 +817,10 @@ export class OrdersService {
     deliveryServiceName: DeliveryService,
     trackingId: string,
   ): Promise<DeliveryServiceRawStatus | undefined> {
+    if (deliveryServiceName === DeliveryService.SelfPickup) {
+      return;
+    }
+
     const deliveryService =
       this.deliveryServiceFactory.getDeliveryService(deliveryServiceName);
 

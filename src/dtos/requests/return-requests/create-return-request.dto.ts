@@ -3,6 +3,7 @@ import {
   IsAlphanumeric,
   IsEnum,
   IsNotEmpty,
+  IsNotIn,
   ValidateNested,
 } from 'class-validator';
 
@@ -25,6 +26,9 @@ export class CreateReturnRequestDto {
   trackingId: string;
 
   @IsEnum(DeliveryService)
+  @IsNotIn([DeliveryService.SelfPickup], {
+    message: 'Самовивіз не підтримується',
+  })
   @IsNotEmpty({ message: 'Необхідно вказати службу доставки' })
   deliveryService: DeliveryService;
 

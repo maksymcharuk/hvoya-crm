@@ -33,7 +33,8 @@ export class OrderCreateComponent implements OnInit {
   profile$ = this.accountService.profile$;
   balance$ = this.userBalanceService.balance$;
   submitting = false;
-  deliveryServices = Object.keys(DeliveryService);
+  isSelfPickup = false;
+  deliveryServices = Object.values(DeliveryService);
   deliveryTypes = [
     { label: 'Склад - Склад', value: DeliveryType.WarehouseWarehouse },
     { label: 'Склад - Двері', value: DeliveryType.WarehouseDoor },
@@ -47,6 +48,11 @@ export class OrderCreateComponent implements OnInit {
       }, 0);
     }),
   );
+  trackingIdValidators = [
+    Validators.required,
+    alphanumeric({ allowSpaces: true }),
+  ];
+  waybillValidators = [Validators.required];
 
   orderCreateForm = this.formBuilder.group({
     // NOTE: Keep this for a waybill generation logic in future
@@ -55,16 +61,13 @@ export class OrderCreateComponent implements OnInit {
     // lastName: ['', Validators.required],
     // middleName: ['', Validators.required],
     // phoneNumber: ['', Validators.required],
-    deliveryService: [this.deliveryServices[0], Validators.required],
-    trackingId: [
-      '',
-      [Validators.required, alphanumeric({ allowSpaces: true })],
-    ],
+    deliveryService: [DeliveryService.NovaPoshta, Validators.required],
+    trackingId: ['', this.trackingIdValidators],
     // NOTE: Keep this for a waybill generation logic in future
     // deliveryType: [this.deliveryTypes[0]?.value, Validators.required],
     // city: ['', Validators.required],
     // postOffice: ['', Validators.required],
-    waybill: ['', Validators.required],
+    waybill: ['', this.waybillValidators],
     customerNote: [''],
   }) as OrderCreateFormGroup;
 
@@ -74,6 +77,10 @@ export class OrderCreateComponent implements OnInit {
 
   get waybill() {
     return this.orderCreateForm.get('waybill');
+  }
+
+  get deliveryService() {
+    return this.orderCreateForm.get('deliveryService');
   }
 
   constructor(
@@ -99,6 +106,24 @@ export class OrderCreateComponent implements OnInit {
       this.trackingId?.patchValue(this.trackingId?.value.toUpperCase(), {
         emitEvent: false,
       });
+    });
+
+    this.deliveryService?.valueChanges.subscribe((value) => {
+      if (value === DeliveryService.SelfPickup) {
+        this.isSelfPickup = true;
+        this.trackingId?.clearValidators();
+        this.trackingId?.disable();
+        this.waybill?.clearValidators();
+        this.waybill?.disable();
+      } else {
+        this.isSelfPickup = false;
+        this.trackingId?.setValidators(this.trackingIdValidators);
+        this.trackingId?.enable();
+        this.waybill?.setValidators(this.waybillValidators);
+        this.waybill?.enable();
+      }
+      this.trackingId?.updateValueAndValidity();
+      this.waybill?.updateValueAndValidity();
     });
   }
 

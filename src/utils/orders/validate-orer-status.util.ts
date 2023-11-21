@@ -2,6 +2,7 @@ import { InternalServerErrorException } from '@nestjs/common';
 
 import {
   CANCELABLE_ORDER_STATUSES,
+  FULFILLABLE_ORDER_STATUSES,
   MANUAL_ORDER_STATUSES,
 } from '@constants/order.constants';
 import { OrderStatus } from '@enums/order-status.enum';
@@ -18,12 +19,20 @@ function canBeCancelled(currenStatus: OrderStatus, newStatus: OrderStatus) {
   return true;
 }
 
+function canBeFulfilled(currenStatus: OrderStatus, newStatus: OrderStatus) {
+  if (newStatus === OrderStatus.Fulfilled) {
+    return FULFILLABLE_ORDER_STATUSES.includes(currenStatus);
+  }
+  return true;
+}
+
 export function validateOrderStatus(
   currenStatus: OrderStatus,
   newStatus: OrderStatus,
 ) {
   switch (true) {
     case !canBeSetMannualy(newStatus):
+    case !canBeFulfilled(currenStatus, newStatus):
     case !canBeCancelled(currenStatus, newStatus):
       throw new InternalServerErrorException(
         `
