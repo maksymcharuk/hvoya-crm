@@ -1,6 +1,6 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-class Document {
+export class TrackingInfo {
   @IsString()
   trackingId: string;
 
@@ -12,5 +12,5 @@ class Document {
 export class GetDeliveryStatusesDto {
   @IsArray()
   @IsNotEmpty()
-  trackingInfo: Document[];
+  trackingInfo: TrackingInfo[];
 }

@@ -11,7 +11,12 @@ import {
   SelectQueryBuilder,
 } from 'typeorm';
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import {
@@ -33,6 +38,8 @@ import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
+import { DeliveryService } from '@enums/delivery-service.enum';
+import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
@@ -41,6 +48,7 @@ import { Role } from '@enums/role.enum';
 import { SortOrder } from '@enums/sort-order.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { TransactionSyncOneCStatus } from '@enums/transaction-sync-one-c-status.enum';
+import { DeliveryServiceRawStatus } from '@interfaces/delivery/get-delivery-statuses.response';
 import { SyncProduct } from '@interfaces/one-c';
 import { PageMeta } from '@interfaces/page-meta.interface';
 import { Page } from '@interfaces/page.interface';
@@ -49,6 +57,7 @@ import { sanitizeEntity } from '@utils/serialize-entity.util';
 
 import { BalanceService } from '@modules/balance/services/balance.service';
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
+import { DeliveryServiceFactory } from '@modules/integrations/delivery/factories/delivery-service/delivery-service.factory';
 import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
 
 import { CartService } from '../../cart/services/cart.service';
@@ -63,6 +72,7 @@ export class OrdersService {
     private oneCApiClientService: OneCApiClientService,
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
+    private deliveryServiceFactory: DeliveryServiceFactory,
   ) {}
 
   async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
@@ -238,6 +248,11 @@ export class OrdersService {
         );
       }
 
+      const deliveryStatus = await this.validateDeliveryStatus(
+        createOrderDto.deliveryService,
+        createOrderDto.trackingId,
+      );
+
       if (waybill) {
         waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
           folder: Folder.OrderFiles,
@@ -279,6 +294,8 @@ export class OrdersService {
           // deliveryType: createOrderDto.deliveryType,
           // city: createOrderDto.city,
           // postOffice: createOrderDto.postOffice,
+          status: deliveryStatus.status,
+          rawStatus: deliveryStatus.rawStatus,
           waybill: waybillScan,
         },
       );
@@ -387,11 +404,19 @@ export class OrdersService {
   ): Promise<OrderEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
     let waybillScan: FileEntity | undefined;
+    let deliveryStatus: DeliveryServiceRawStatus | undefined;
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
       const order = await this.getOrderWhere({ number: orderNumber });
+
+      if (updateOrderDto?.trackingId && order.delivery.deliveryService) {
+        deliveryStatus = await this.getOrderDeliveryStatus(
+          order.delivery.deliveryService,
+          updateOrderDto.trackingId,
+        );
+      }
 
       if (waybill) {
         waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
@@ -412,6 +437,8 @@ export class OrdersService {
           order.delivery.id,
           {
             trackingId: updateOrderDto.trackingId,
+            status: deliveryStatus?.status,
+            rawStatus: deliveryStatus?.rawStatus,
             // NOTE: Keep this for a waybill generation logic in future
             // firstName: updateOrderDto.firstName,
             // lastName: updateOrderDto.lastName,
@@ -481,6 +508,7 @@ export class OrdersService {
     const queryRunner = this.dataSource.createQueryRunner();
     let waybillScan: FileEntity | undefined;
     let order: OrderEntity;
+    let deliveryStatus: DeliveryServiceRawStatus | undefined;
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -501,6 +529,13 @@ export class OrdersService {
       }
 
       if (updateOrderByCustomerDto.trackingId) {
+        if (order.delivery.deliveryService) {
+          deliveryStatus = await this.validateDeliveryStatus(
+            order.delivery.deliveryService,
+            updateOrderByCustomerDto.trackingId,
+          );
+        }
+
         if (waybill) {
           waybillScan = await this.filesService.uploadFile(
             queryRunner,
@@ -516,6 +551,8 @@ export class OrdersService {
           {
             trackingId: updateOrderByCustomerDto.trackingId,
             waybill: waybillScan,
+            status: deliveryStatus?.status,
+            rawStatus: deliveryStatus?.rawStatus,
           },
         );
       }
@@ -756,6 +793,48 @@ export class OrdersService {
         stock: products.find((p) => p.sku === product.sku)!.stock,
       })),
     );
+  }
+
+  private async getOrderDeliveryStatus(
+    deliveryServiceName: DeliveryService,
+    trackingId: string,
+  ): Promise<DeliveryServiceRawStatus> {
+    const deliveryService =
+      this.deliveryServiceFactory.getDeliveryService(deliveryServiceName);
+
+    if (!deliveryService) {
+      throw new BadRequestException('Вказано невірну службу доставки');
+    }
+
+    const deliveryStatus = (
+      await deliveryService.getDeliveryStatuses({
+        trackingInfo: [{ trackingId: trackingId }],
+      })
+    ).statuses[0];
+
+    if (!deliveryStatus) {
+      throw new BadRequestException('Вказаний номер ТТН не є дійсним');
+    }
+
+    return deliveryStatus;
+  }
+
+  private async validateDeliveryStatus(
+    deliveryServiceName: DeliveryService,
+    trackingId: string,
+  ): Promise<DeliveryServiceRawStatus> {
+    const deliveryStatus = await this.getOrderDeliveryStatus(
+      deliveryServiceName,
+      trackingId,
+    );
+
+    if (deliveryStatus.status === DeliveryStatus.Received) {
+      throw new BadRequestException(
+        'Відправлення по вказаному номеру ТТН вже отримано',
+      );
+    }
+
+    return deliveryStatus;
   }
 
   private getOrderWhere(
