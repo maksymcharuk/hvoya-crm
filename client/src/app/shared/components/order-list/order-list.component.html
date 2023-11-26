@@ -59,6 +59,7 @@
       </th>
       <th>Статус</th>
       <th>Статус доставки</th>
+      <th>Служба доставки</th>
       <th>
         <div class="flex justify-content-between align-items-center">
           Номер ТТН
@@ -128,7 +129,7 @@
               [options]="orderDeliveryStatuses"
               (onChange)="filter($event.value)"
               [showClear]="true"
-              placeholder="Статус"
+              placeholder="Статус доставки"
               appendTo="body"
             >
               <ng-template let-option pTemplate="item">
@@ -141,6 +142,39 @@
                   [status]="item.label"
                 ></app-order-delivery-status-badge>
               </ng-template>
+            </p-dropdown>
+          </ng-template>
+        </p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter
+          field="deliveryService"
+          [showMenu]="false"
+          class="ml-auto"
+        >
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <p-dropdown
+              [ngModel]="value"
+              [options]="orderDeliveryServices"
+              (onChange)="filter($event.value)"
+              [showClear]="true"
+              placeholder="Служба доставки"
+              appendTo="body"
+            >
+              <ng-template let-option pTemplate="item">
+                <app-delivery-service-badge
+                  mode="short"
+                  [withText]="true"
+                  [deliveryService]="option.value"
+                ></app-delivery-service-badge>
+              </ng-template>
+              <ng-template let-item pTemplate="selectedItem">
+                <app-delivery-service-badge
+                  mode="short"
+                  [withText]="true"
+                  [deliveryService]="item.value"
+                ></app-delivery-service-badge
+              ></ng-template>
             </p-dropdown>
           </ng-template>
         </p-columnFilter>

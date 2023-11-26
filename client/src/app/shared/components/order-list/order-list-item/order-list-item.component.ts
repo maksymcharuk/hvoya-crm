@@ -48,7 +48,11 @@ export class OrderListItemComponent {
     const path = this.userService.getUser()?.isAnyAdmin
       ? '/admin'
       : '/dashboard';
-    this.router.navigate([`${path}/orders/${this.order.number}`]);
+
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([`${path}/orders/${this.order.number}`]),
+    );
+    window.open(url, '_blank');
 
     if (this.orderNotification) {
       this.notificationsService.checkNotification(this.orderNotification.id);

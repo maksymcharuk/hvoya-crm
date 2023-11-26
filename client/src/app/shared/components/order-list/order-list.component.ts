@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 
+import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { DeliveryStatus } from '@shared/enums/delivery-status.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Role } from '@shared/enums/role.enum';
@@ -21,6 +22,7 @@ import { User } from '@shared/interfaces/entities/user.entity';
 import { PageOptions } from '@shared/interfaces/page-options.interface';
 import { Page } from '@shared/interfaces/page.interface';
 import { UserService } from '@shared/services/user.service';
+import { enumToLabelValue } from '@shared/utils';
 import { getUniqueObjectsByKey } from '@shared/utils/get-unique-objects-by-key.util';
 
 @Component({
@@ -53,22 +55,9 @@ export class OrderListComponent implements OnDestroy {
   searchForm = this.fb.group({
     search: [''],
   });
-  orderStatuses = Object.entries(OrderStatus).map((key) => {
-    const [label, value] = key;
-
-    return {
-      value,
-      label,
-    };
-  });
-  orderDeliveryStatuses = Object.entries(DeliveryStatus).map((key) => {
-    const [label, value] = key;
-
-    return {
-      value,
-      label,
-    };
-  });
+  orderStatuses = enumToLabelValue(OrderStatus);
+  orderDeliveryStatuses = enumToLabelValue(DeliveryStatus);
+  orderDeliveryServices = enumToLabelValue(DeliveryService);
 
   get orders(): Page<Order> | null {
     return this.orderInternal;

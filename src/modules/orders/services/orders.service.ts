@@ -138,6 +138,12 @@ export class OrdersService {
       });
     }
 
+    if (pageOptionsDto.deliveryService) {
+      queryBuilder.andWhere('delivery.deliveryService = :deliveryService', {
+        deliveryService: pageOptionsDto.deliveryService,
+      });
+    }
+
     if (pageOptionsDto.customerIds) {
       queryBuilder.andWhere('order.customer IN (:...customersIds)', {
         customersIds: pageOptionsDto.customerIds,
@@ -887,6 +893,7 @@ export class OrdersService {
     if (number) {
       query.where('order.number = :number', { number });
     }
+
     const statusesSubQuery = query
       .subQuery()
       .select('id')

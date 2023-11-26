@@ -46,6 +46,14 @@
   </div>
 </td>
 <td>
+  <span class="p-column-title">Служба доставки</span>
+  <app-delivery-service-badge
+    mode="short"
+    [withText]="true"
+    [deliveryService]="order.delivery.deliveryService!"
+  ></app-delivery-service-badge>
+</td>
+<td>
   <span class="p-column-title" data-cy="order-list-item-amount">Номер ТТН</span>
   {{ order.delivery.trackingId }}
 </td>
