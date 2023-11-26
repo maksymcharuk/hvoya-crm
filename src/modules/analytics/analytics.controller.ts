@@ -19,7 +19,7 @@ import { AnalyticsService } from './services/analytics.service';
 
 @Controller('analytics')
 @UseInterceptors(CacheInterceptor)
-@CacheTTL(60 * 1000)
+@CacheTTL(3600) // 1 hour
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
