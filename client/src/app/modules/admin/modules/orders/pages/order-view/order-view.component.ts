@@ -13,6 +13,7 @@ import {
 
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
 import {
@@ -110,11 +111,13 @@ export class OrderViewComponent implements OnDestroy {
     private route: ActivatedRoute,
     private ordersService: OrdersService,
     private messageService: MessageService,
+    private title: Title,
   ) {
     this.orderNumber$.subscribe((orderNumber) => {
       this.ordersService.getOrder(orderNumber).subscribe((order) => {
         this.order$.next(order);
       });
+      this.title.setTitle(`Замовлення №${orderNumber}`);
     });
 
     this.order$.subscribe((order) => {
