@@ -52,7 +52,7 @@ import { DeliveryServiceRawStatus } from '@interfaces/delivery/get-delivery-stat
 import { SyncProduct } from '@interfaces/one-c';
 import { PageMeta } from '@interfaces/page-meta.interface';
 import { Page } from '@interfaces/page.interface';
-import { validateOrderStatus } from '@utils/orders/validate-orer-status.util';
+import { validateOrderStatusForAdmin } from '@utils/orders/validate-orer-status.util';
 import { sanitizeEntity } from '@utils/serialize-entity.util';
 
 import { BalanceService } from '@modules/balance/services/balance.service';
@@ -684,7 +684,7 @@ export class OrdersService {
       );
     }
 
-    validateOrderStatus(order.statuses[0]!.status, status);
+    validateOrderStatusForAdmin(order.statuses[0]!.status, status);
 
     const newStatus = await this.updateOrderStatusInternal(
       queryRunner,
@@ -772,7 +772,21 @@ export class OrdersService {
 
     if (newStatus.status === OrderStatus.Cancelled) {
       await this.updateBalanceAndStockOnCancel(queryRunner.manager, order);
-      await this.oneCApiClientService.cancel(order.id);
+
+      if (order.statuses[0]!.status === OrderStatus.Processing) {
+        await this.oneCApiClientService.return({
+          userId: order.customer.id,
+          orderId: order.id,
+          items: order.items.map((item) => ({
+            sku: item.product.sku,
+            quantity: item.quantity,
+            price: item.productProperties.price,
+          })),
+          createdAt: new Date(),
+        });
+      } else {
+        await this.oneCApiClientService.cancel(order.id);
+      }
     }
 
     return newStatus;

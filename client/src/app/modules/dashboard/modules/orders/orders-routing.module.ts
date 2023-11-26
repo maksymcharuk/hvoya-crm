@@ -9,6 +9,7 @@ const routes: Routes = [
   {
     path: '',
     component: OrderListComponent,
+    title: 'Список замовлень',
   },
   {
     path: 'checkout',
