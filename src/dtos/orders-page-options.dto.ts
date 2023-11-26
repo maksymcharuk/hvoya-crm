@@ -1,6 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsEnum, IsOptional } from 'class-validator';
 
+import { DeliveryService } from '@enums/delivery-service.enum';
 import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 
@@ -29,4 +30,8 @@ export class OrdersPageOptionsDto extends PageOptionsDto {
   @IsEnum(DeliveryStatus)
   @IsOptional()
   readonly deliveryStatus?: DeliveryStatus;
+
+  @IsEnum(DeliveryService)
+  @IsOptional()
+  readonly deliveryService?: DeliveryService;
 }

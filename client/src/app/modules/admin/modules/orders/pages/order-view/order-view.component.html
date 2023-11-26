@@ -24,9 +24,25 @@
   <div class="order-view grid">
     <div class="col-12">
       <div class="card order-view__content">
-        <h4 class="flex align-items-center">
-          <span>Замовлення №{{ order.number }}</span>
-        </h4>
+        <div class="flex align-items-center justify-content-between">
+          <div class="flex align-items-baseline">
+            <h4 class="mb-0">Замовлення №{{ order.number }}</h4>
+            <small class="ml-2 text-600">
+              {{ order.createdAt | date : 'short' }}
+            </small>
+          </div>
+          <p-button
+            *ngIf="
+              order.delivery.waybill?.url &&
+              order.delivery.deliveryService !== DeliveryService.SelfPickup
+            "
+            icon="pi pi-print"
+            label="Друк"
+            data-cy="order-waybill-view-button"
+            styleClass="ml-2"
+            (click)="showWaybillViewDialogHandler()"
+          ></p-button>
+        </div>
         <div class="my-5">
           <ul class="striped-list">
             <li class="striped-list__item">
@@ -63,6 +79,15 @@
                 </button>
               </div>
             </li>
+            <li
+              class="striped-list__item"
+              [class.highlight]="!!order.customerNote"
+            >
+              <div class="striped-list__item-key">Коментар до замовлення</div>
+              <div class="striped-list__item-value">
+                {{ order.customerNote || '—' }}
+              </div>
+            </li>
             <li class="striped-list__item">
               <div class="striped-list__item-key">Нотатка</div>
               <div class="striped-list__item-value">
@@ -74,28 +99,13 @@
                     [style]="{ height: '4px' }"
                   ></p-progressBar>
                   <textarea
-                    rows="5"
+                    rows="1"
                     cols="30"
                     pInputTextarea
                     [autoResize]="true"
                     formControlName="managerNote"
                   ></textarea>
                 </form>
-              </div>
-            </li>
-            <li
-              class="striped-list__item"
-              [class.highlight]="!!order.customerNote"
-            >
-              <div class="striped-list__item-key">Коментар до замовлення</div>
-              <div class="striped-list__item-value">
-                {{ order.customerNote || '—' }}
-              </div>
-            </li>
-            <li class="striped-list__item">
-              <div class="striped-list__item-key">Дата</div>
-              <div class="striped-list__item-value">
-                {{ order.createdAt | date : 'short' }}
               </div>
             </li>
           </ul>
@@ -120,8 +130,9 @@
                       order.customer.phoneNumber as phoneNumber;
                       else emptyPhoneNumber
                     "
-                    >{{ phoneNumber | phoneNumber }}</ng-container
                   >
+                    {{ phoneNumber | phoneNumber }}
+                  </ng-container>
                   <ng-template #emptyPhoneNumber>-</ng-template>
                 </div>
               </li>
@@ -183,7 +194,7 @@
                   >
                     <p-button
                       icon="pi pi-eye"
-                      label="Переглянути ТТН"
+                      label="Переглянути"
                       data-cy="order-waybill-view-button"
                       (click)="showWaybillViewDialogHandler()"
                     ></p-button>

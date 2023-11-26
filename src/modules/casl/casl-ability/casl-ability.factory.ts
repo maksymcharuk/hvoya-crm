@@ -8,7 +8,7 @@ import {
 import { Injectable } from '@nestjs/common';
 
 import {
-  CANCELABLE_ORDER_STATUSES,
+  USER_CANCELABLE_ORDER_STATUSES,
   USER_UPDATEABLE_ORDER_STATUSES,
 } from '@constants/order.constants';
 import { BalanceEntity } from '@entities/balance.entity';
@@ -293,7 +293,7 @@ export class CaslAbilityFactory {
     can(Action.Cancel, OrderEntity, {
       ['customer.id' as keyof OrderEntity]: currentUser.id,
       ['statuses.0.status' as keyof OrderEntity]: {
-        $in: CANCELABLE_ORDER_STATUSES,
+        $in: USER_CANCELABLE_ORDER_STATUSES,
       },
     });
     // Can read only his own orders

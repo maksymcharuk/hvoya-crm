@@ -36,6 +36,9 @@ export class NovaPoshtaApiService extends DeliveryApiService {
   async getDeliveryStatuses(
     getDeliveryStatusesDto: GetDeliveryStatusesDto,
   ): Promise<GetDeliveryStatusesResponse> {
+    // Nova Poshta API doesn't allow to get statuses for more than 100 tracking numbers
+    getDeliveryStatusesDto.trackingInfo =
+      getDeliveryStatusesDto.trackingInfo.slice(0, 100);
     const res = await this.getDeliveryStatusesInternal(getDeliveryStatusesDto);
     const statusesNewTrackingId = res.statuses.filter(
       (status) =>

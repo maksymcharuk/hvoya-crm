@@ -1,7 +1,7 @@
 import { InternalServerErrorException } from '@nestjs/common';
 
 import {
-  CANCELABLE_ORDER_STATUSES,
+  ADMIN_CANCELABLE_ORDER_STATUSES,
   FULFILLABLE_ORDER_STATUSES,
   MANUAL_ORDER_STATUSES,
 } from '@constants/order.constants';
@@ -14,7 +14,7 @@ function canBeSetMannualy(newStatus: OrderStatus) {
 
 function canBeCancelled(currenStatus: OrderStatus, newStatus: OrderStatus) {
   if (newStatus === OrderStatus.Cancelled) {
-    return CANCELABLE_ORDER_STATUSES.includes(currenStatus);
+    return ADMIN_CANCELABLE_ORDER_STATUSES.includes(currenStatus);
   }
   return true;
 }
@@ -26,7 +26,7 @@ function canBeFulfilled(currenStatus: OrderStatus, newStatus: OrderStatus) {
   return true;
 }
 
-export function validateOrderStatus(
+export function validateOrderStatusForAdmin(
   currenStatus: OrderStatus,
   newStatus: OrderStatus,
 ) {

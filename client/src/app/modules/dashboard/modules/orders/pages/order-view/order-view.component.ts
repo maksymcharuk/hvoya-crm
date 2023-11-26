@@ -16,6 +16,7 @@ import {
 
 import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
 import {
@@ -99,11 +100,13 @@ export class OrderViewComponent {
     private readonly userBalanceService: UserBalanceService,
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
+    private readonly title: Title,
   ) {
     this.orderNumber$.subscribe((orderNumber) => {
       this.ordersService.getOrder(orderNumber).subscribe((order) => {
         this.order$.next(order);
       });
+      this.title.setTitle(`Замовлення №${orderNumber}`);
     });
 
     this.order$.subscribe((order) => {

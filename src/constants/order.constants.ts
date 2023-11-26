@@ -3,8 +3,14 @@ import { OrderStatus } from '@enums/order-status.enum';
 
 // List of rules for manual order status change
 
-// Only Pending orders can be canceled
-export const CANCELABLE_ORDER_STATUSES = [OrderStatus.Pending];
+// Only Pending orders can be canceled by users
+export const USER_CANCELABLE_ORDER_STATUSES = [OrderStatus.Pending];
+
+// Only Pending and Processing orders can be canceled by admin
+export const ADMIN_CANCELABLE_ORDER_STATUSES = [
+  OrderStatus.Pending,
+  OrderStatus.Processing,
+];
 
 // Only Pending orders can be updated by users (e.g. wayblill or tracking number)
 export const USER_UPDATEABLE_ORDER_STATUSES = [OrderStatus.Pending];
