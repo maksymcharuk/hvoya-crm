@@ -57,6 +57,7 @@ export class OrderDeliveryStatusUpdateService extends DeliveryStatusUpdateServic
       .andWhere('delivery.deliveryService != :selfPickup', {
         selfPickup: DeliveryService.SelfPickup,
       })
+      .orderBy('order.createdAt', 'ASC')
       .getMany();
   }
 
