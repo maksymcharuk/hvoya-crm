@@ -18,10 +18,12 @@ const routes: Routes = [
       {
         path: 'profile',
         component: ProfileComponent,
+        title: 'Профіль - Hvoya CRM',
       },
       {
         path: 'settings',
         component: SettingsComponent,
+        title: 'Налаштування - Hvoya CRM',
       },
     ],
   },

@@ -106,7 +106,7 @@ export class OrderViewComponent {
       this.ordersService.getOrder(orderNumber).subscribe((order) => {
         this.order$.next(order);
       });
-      this.title.setTitle(`Замовлення №${orderNumber}`);
+      this.title.setTitle(`Замовлення №${orderNumber} - Hvoya CRM`);
     });
 
     this.order$.subscribe((order) => {

@@ -9,11 +9,12 @@ const routes: Routes = [
   {
     path: '',
     component: OrderListComponent,
-    title: 'Список замовлень',
+    title: 'Список замовлень - Hvoya CRM',
   },
   {
     path: 'checkout',
     component: OrderCreateComponent,
+    title: 'Оформлення замовлення - Hvoya CRM',
   },
   {
     path: ':number',

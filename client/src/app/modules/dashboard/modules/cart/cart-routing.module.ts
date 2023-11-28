@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: CartComponent,
+    title: 'Кошик - Hvoya CRM',
   },
 ];
 

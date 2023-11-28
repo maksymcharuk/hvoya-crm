@@ -8,7 +8,7 @@ const routes: Routes = [
   {
     path: '',
     component: OrderListComponent,
-    title: 'Список замовлень',
+    title: 'Список замовлень - Hvoya CRM',
   },
   {
     path: ':number',

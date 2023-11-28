@@ -925,7 +925,7 @@ export class OrdersService {
       .leftJoinAndSelect(
         'order.statuses',
         'statuses',
-        `statuses.id IN (${statusesSubQuery.getQuery()})`,
+        `statuses.id = ${statusesSubQuery.getQuery()}`,
       );
 
     return query;

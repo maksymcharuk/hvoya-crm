@@ -16,14 +16,17 @@ const routes: Routes = [
       {
         path: '',
         component: AdminProductListComponent,
+        title: 'Список товарів - Hvoya CRM',
       },
       {
         path: 'create',
         component: CreateProductComponent,
+        title: 'Створення товару - Hvoya CRM',
       },
       {
         path: 'edit',
         component: EditProductComponent,
+        title: 'Редагування товару - Hvoya CRM',
       },
       {
         path: 'attributes',
@@ -35,6 +38,7 @@ const routes: Routes = [
       {
         path: 'transfer',
         component: TransferComponent,
+        title: 'Імпорт/експорт товарів - Hvoya CRM',
       },
       {
         path: ':baseId/:variantId',

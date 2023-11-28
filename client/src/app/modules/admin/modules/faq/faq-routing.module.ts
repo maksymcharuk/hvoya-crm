@@ -9,6 +9,7 @@ const routes: Routes = [
   {
     path: '',
     component: FaqComponent,
+    title: 'Запитання та відповіді - Hvoya CRM',
     canDeactivate: [PendingChangesGuard],
   },
 ];

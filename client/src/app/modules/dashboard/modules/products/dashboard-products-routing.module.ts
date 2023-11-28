@@ -18,6 +18,7 @@ const routes: Routes = [
       {
         path: '',
         component: DashboardProductListComponent,
+        title: 'Список товарів - Hvoya CRM',
       },
       {
         path: ':baseId/:variantId',

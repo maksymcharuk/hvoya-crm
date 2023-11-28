@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path: 'transaction-history',
     component: TransactionHistoryComponent,
+    title: 'Історія транзакцій - Hvoya CRM',
   },
 ];
 
@@ -14,4 +15,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class BalanceRoutingModule { }
+export class BalanceRoutingModule {}

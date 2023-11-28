@@ -12,6 +12,7 @@ const routes: Routes = [
       {
         path: '',
         component: AdminDashboardComponent,
+        title: 'Головна - Hvoya CRM',
       },
       {
         path: 'account',
@@ -48,7 +49,7 @@ const routes: Routes = [
           import('./modules/requests/requests.module').then(
             (m) => m.RequestsModule,
           ),
-      }
+      },
     ],
   },
 ];
@@ -57,4 +58,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AdminRoutingModule { }
+export class AdminRoutingModule {}

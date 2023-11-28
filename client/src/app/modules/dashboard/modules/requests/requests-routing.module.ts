@@ -10,10 +10,12 @@ const routes: Routes = [
   {
     path: '',
     component: RequestListComponent,
+    title: 'Список запитів - Hvoya CRM',
   },
   {
     path: 'create',
     component: RequestCreateComponent,
+    title: 'Створення запиту - Hvoya CRM',
   },
   {
     path: 'return-requests/:number',
