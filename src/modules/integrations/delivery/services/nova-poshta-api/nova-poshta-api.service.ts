@@ -25,6 +25,7 @@ const NOVA_POSHTA_API_URL = 'https://api.novaposhta.ua/v2.0/json/';
 export class NovaPoshtaApiService extends DeliveryApiService {
   readonly apiKey = this.configService.get<string>('NOVA_POSHTA_API_KEY') ?? '';
   readonly apiUrl = NOVA_POSHTA_API_URL;
+  readonly CHUNK_SIZE = 100;
 
   constructor(
     private readonly configService: ConfigService,
@@ -37,10 +38,31 @@ export class NovaPoshtaApiService extends DeliveryApiService {
     getDeliveryStatusesDto: GetDeliveryStatusesDto,
   ): Promise<GetDeliveryStatusesResponse> {
     // Nova Poshta API doesn't allow to get statuses for more than 100 tracking numbers
-    getDeliveryStatusesDto.trackingInfo =
-      getDeliveryStatusesDto.trackingInfo.slice(0, 100);
-    const res = await this.getDeliveryStatusesInternal(getDeliveryStatusesDto);
-    const statusesNewTrackingId = res.statuses.filter(
+    // Split tracking numbers into chunks of 100, get statuses for each chunk and merge them
+    const response = (
+      await Promise.all(
+        getDeliveryStatusesDto.trackingInfo
+          .map((_trackingInfo, index) =>
+            index % this.CHUNK_SIZE === 0
+              ? getDeliveryStatusesDto.trackingInfo.slice(
+                  index,
+                  index + this.CHUNK_SIZE,
+                )
+              : null,
+          )
+          .filter((trackingInfo) => trackingInfo !== null)
+          .map((trackingInfo) =>
+            this.getDeliveryStatusesInternal({
+              trackingInfo: trackingInfo!,
+            }),
+          ),
+      )
+    ).reduce((acc, res) => {
+      acc.statuses = [...acc.statuses, ...res.statuses];
+      return acc;
+    }, new GetDeliveryStatusesResponse());
+
+    const statusesNewTrackingId = response.statuses.filter(
       (status) =>
         // If a parcel was declined, we don't need to get statuses for the new tracking number
         status.newTrackingId && status.status !== DeliveryStatus.Declined,
@@ -58,7 +80,7 @@ export class NovaPoshtaApiService extends DeliveryApiService {
       });
 
       return new GetDeliveryStatusesResponse({
-        statuses: res.statuses.map((status) => {
+        statuses: response.statuses.map((status) => {
           const newTrackingIdStatus = statuses.statuses.find(
             (s) => s.trackingId === status.newTrackingId,
           );
@@ -72,7 +94,7 @@ export class NovaPoshtaApiService extends DeliveryApiService {
       });
     }
 
-    return res;
+    return response;
   }
 
   private getDeliveryStatusesInternal(

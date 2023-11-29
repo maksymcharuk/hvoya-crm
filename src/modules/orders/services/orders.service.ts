@@ -774,17 +774,24 @@ export class OrdersService {
       await this.updateBalanceAndStockOnCancel(queryRunner.manager, order);
 
       if (order.statuses[0]!.status === OrderStatus.Processing) {
-        await this.oneCApiClientService.return({
-          userId: order.customer.id,
-          orderId: order.id,
-          items: order.items.map((item) => ({
-            sku: item.product.sku,
-            quantity: item.quantity,
-            price: item.productProperties.price,
-          })),
-          createdAt: new Date(),
-        });
+        // NOTE: If order was in processing status, then we need to return products to 1C
+        try {
+          await this.oneCApiClientService.return({
+            userId: order.customer.id,
+            orderId: order.id,
+            items: order.items.map((item) => ({
+              sku: item.product.sku,
+              quantity: item.quantity,
+              price: item.productProperties.price,
+            })),
+            createdAt: new Date(),
+          });
+        } catch (error) {
+          // NOTE: If 1C return failed, then we try to cancel order in 1C
+          await this.oneCApiClientService.cancel(order.id);
+        }
       } else {
+        // NOTE: If order was not in processing status, then we try to cancel order in 1C
         await this.oneCApiClientService.cancel(order.id);
       }
     }
