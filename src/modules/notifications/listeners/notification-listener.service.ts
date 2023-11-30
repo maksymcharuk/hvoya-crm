@@ -35,15 +35,17 @@ export class NotificationListenerService {
     this.sendNotificationToAdmins(payload);
   }
 
-  @OnEvent(NotificationEvent.OrderUpdated)
-  async handleOrderUpdatedEvent(payload: NotificationCreatedEvent) {
-    this.sendNotificationToUser(payload);
-  }
+  // TODO: think how we can utilize this event
+  // @OnEvent(NotificationEvent.OrderUpdated)
+  // async handleOrderUpdatedEvent(payload: NotificationCreatedEvent) {
+  //   this.sendNotificationToUser(payload);
+  // }
 
-  @OnEvent(NotificationEvent.OrderCancelled)
-  async handleOrderCancelledEvent(payload: NotificationCreatedEvent) {
-    this.sendNotificationToAdmins(payload);
-  }
+  // TODO: think how we can utilize this event
+  // @OnEvent(NotificationEvent.OrderCancelled)
+  // async handleOrderCancelledEvent(payload: NotificationCreatedEvent) {
+  //   this.sendNotificationToAdmins(payload);
+  // }
 
   @OnEvent(NotificationEvent.RequestCreated)
   async handleRequestCreatedEvent(payload: NotificationCreatedEvent) {

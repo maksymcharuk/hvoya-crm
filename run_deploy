@@ -1,6 +1,7 @@
 #!/bin/sh
 ssh charuk@167.99.145.25 <<EOF
  cd ~/hvoya-crm
+ npm run db:backup
  git checkout .
  git pull
  cd ~/hvoya-crm/client
