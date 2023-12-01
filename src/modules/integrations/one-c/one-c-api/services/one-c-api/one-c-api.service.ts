@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+import { COMPLETED_ORDER_STATUSES } from '@constants/order.constants';
 import { OrderStatusEntity } from '@entities/order-status.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { NotificationEvent } from '@enums/notification-event.enum';
@@ -46,7 +47,15 @@ export class OneCApiService {
     const orderStatus = order.statuses[0]!;
 
     if (orderStatus.status === updateOrderData.status) {
-      return;
+      throw new InternalServerErrorException(
+        'Неможливо змінити статус на той самий',
+      );
+    }
+
+    if (COMPLETED_ORDER_STATUSES.includes(orderStatus.status)) {
+      throw new InternalServerErrorException(
+        'Неможливо змінити статус виконаного замовлення',
+      );
     }
 
     const queryRunner = this.dataSource.createQueryRunner();

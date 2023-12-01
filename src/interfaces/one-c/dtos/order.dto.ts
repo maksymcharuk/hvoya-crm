@@ -12,8 +12,8 @@ export interface OrderDtoData {
   number?: string;
   total?: Decimal;
   status?: OrderStatus;
-  items: ProductData[];
-  createdAt: Date; // '2023-05-29T14:06:07'
+  items?: ProductData[];
+  createdAt?: Date; // '2023-05-29T14:06:07'
   description?: string;
 }
 
@@ -35,8 +35,10 @@ export class Order {
     this.order_number = data.number;
     this.order_amount = data.total?.toNumber();
     this.order_status = getOrderStatusName(data.status);
-    this.list_products = data.items.map((item) => new Product(item));
-    this.date = data.createdAt.toISOString();
+    this.list_products = data.items
+      ? data.items.map((item) => new Product(item))
+      : [];
+    this.date = data.createdAt?.toISOString() || '';
     this.description = data.description || '';
   }
 }

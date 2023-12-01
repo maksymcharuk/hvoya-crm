@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+import { COMPLETED_ORDER_STATUSES } from '@constants/order.constants';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderStatusEntity } from '@entities/order-status.entity';
 import { OrderEntity } from '@entities/order.entity';
@@ -10,7 +11,6 @@ import { DeliveryService } from '@enums/delivery-service.enum';
 import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
-import { OrderStatus } from '@enums/order-status.enum';
 import { DeliveryServiceRawStatus } from '@interfaces/delivery/get-delivery-statuses.response';
 
 import { DeliveryServiceFactory } from '@modules/integrations/delivery/factories/delivery-service/delivery-service.factory';
@@ -47,12 +47,7 @@ export class OrderDeliveryStatusUpdateService extends DeliveryStatusUpdateServic
         return `status.createdAt = (${subQuery})`;
       })
       .andWhere('status.status NOT IN (:...completedStatuses)', {
-        completedStatuses: [
-          OrderStatus.Cancelled,
-          OrderStatus.Fulfilled,
-          OrderStatus.Refunded,
-          OrderStatus.Refused,
-        ],
+        completedStatuses: COMPLETED_ORDER_STATUSES,
       })
       .andWhere('delivery.deliveryService != :selfPickup', {
         selfPickup: DeliveryService.SelfPickup,

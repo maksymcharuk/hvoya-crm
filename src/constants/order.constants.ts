@@ -12,6 +12,14 @@ export const ADMIN_CANCELABLE_ORDER_STATUSES = [
   OrderStatus.Processing,
 ];
 
+// Order statuses that are considered completed
+export const COMPLETED_ORDER_STATUSES = [
+  OrderStatus.Cancelled,
+  OrderStatus.Fulfilled,
+  OrderStatus.Refunded,
+  OrderStatus.Refused,
+];
+
 // Only Pending orders can be updated by users (e.g. wayblill or tracking number)
 export const USER_UPDATEABLE_ORDER_STATUSES = [OrderStatus.Pending];
 
