@@ -377,20 +377,7 @@ export class OrdersService {
 
       await this.cartService.clearCart(userId, queryRunner.manager);
 
-      await this.oneCApiClientService.order({
-        userId: userId,
-        id: order.id,
-        total: this.calculateTotal(order.items),
-        number: order.number!,
-        status: status.status,
-        items: order.items.map((item) => ({
-          sku: item.product.sku,
-          quantity: item.quantity,
-          price: item.productProperties.price,
-        })),
-        description: order.customerNote,
-        createdAt: order.createdAt,
-      });
+      await this.upsertOrderToOneC(userId, order, status.status);
 
       this.eventEmitter.emit(NotificationEvent.OrderCreated, {
         data: order,
@@ -494,12 +481,11 @@ export class OrdersService {
           );
         }
 
-        await this.oneCApiClientService.order({
-          userId: order.customer.id,
-          id: order.id,
-          status: updateOrderDto.orderStatus,
-          description: order.customerNote,
-        });
+        await this.upsertOrderToOneC(
+          order.customer.id,
+          order,
+          updateOrderDto.orderStatus,
+        );
       }
 
       await queryRunner.commitTransaction();
@@ -811,6 +797,27 @@ export class OrdersService {
     }
 
     return newStatus;
+  }
+
+  private async upsertOrderToOneC(
+    userId: string,
+    order: OrderEntity,
+    newStatus?: OrderStatus,
+  ) {
+    return this.oneCApiClientService.order({
+      userId: userId,
+      id: order.id,
+      total: this.calculateTotal(order.items),
+      number: order.number!,
+      status: newStatus,
+      items: order.items.map((item) => ({
+        sku: item.product.sku,
+        quantity: item.quantity,
+        price: item.productProperties.price,
+      })),
+      description: order.customerNote,
+      createdAt: order.createdAt,
+    });
   }
 
   private async syncProductsStock(products: SyncProduct[]): Promise<void> {
