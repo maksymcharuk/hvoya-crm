@@ -1,7 +1,7 @@
 import { MessageService } from 'primeng/api';
-import { BehaviorSubject, finalize } from 'rxjs';
+import { BehaviorSubject, Subject, finalize, takeUntil } from 'rxjs';
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Role } from '@shared/enums/role.enum';
@@ -14,7 +14,8 @@ import { UserService } from '@shared/services/user.service';
   templateUrl: './users-list-page.component.html',
   styleUrls: ['./users-list-page.component.scss'],
 })
-export class UsersListPageComponent {
+export class UsersListPageComponent implements OnDestroy {
+  destroyed$ = new Subject<void>();
   users$ = new BehaviorSubject<Page<User> | null>(null);
   showAdminInvitationDialog = false;
   adminInvitationLoading = false;
@@ -35,10 +36,18 @@ export class UsersListPageComponent {
     });
   }
 
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
   loadUsers(pageOptions: PageOptions) {
-    this.userService.getUsers(pageOptions).subscribe((orders) => {
-      this.users$.next(orders);
-    });
+    this.userService
+      .getUsers(pageOptions)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((orders) => {
+        this.users$.next(orders);
+      });
   }
 
   openAdminInvitationDialog() {

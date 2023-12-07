@@ -1,6 +1,6 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 
 import { OrderReturnRequest } from '@shared/interfaces/entities/order-return-request.entity';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
@@ -12,7 +12,8 @@ import { RequestsService } from '@shared/services/requests.service';
   templateUrl: './request-list.component.html',
   styleUrls: ['./request-list.component.scss'],
 })
-export class RequestListComponent {
+export class RequestListComponent implements OnDestroy {
+  destroyed$ = new Subject<void>();
   pageRequests$ = new BehaviorSubject<Page<RequestEntity> | null>(null);
 
   readonly returnRequestEntity = OrderReturnRequest;
@@ -20,8 +21,16 @@ export class RequestListComponent {
   constructor(private requestsService: RequestsService) {}
 
   loadOrders(pageOptions: PageOptions) {
-    this.requestsService.getRequests(pageOptions).subscribe((requests) => {
-      this.pageRequests$.next(requests);
-    });
+    this.requestsService
+      .getRequests(pageOptions)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((requests) => {
+        this.pageRequests$.next(requests);
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }
