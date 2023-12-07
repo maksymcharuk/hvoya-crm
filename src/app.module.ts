@@ -69,7 +69,7 @@ import { UsersModule } from './modules/users/users.module';
     AnalyticsModule,
     CacheModule.register({
       isGlobal: true,
-      ttl: 20, // seconds
+      ttl: 20 * 1000, // 20 seconds
       max: 20, // maximum number of items in cache
     }),
     RequestsModule,

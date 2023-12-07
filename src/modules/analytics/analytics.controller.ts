@@ -1,4 +1,4 @@
-import { CacheInterceptor } from '@nestjs/cache-manager';
+import { CacheInterceptor, CacheKey } from '@nestjs/cache-manager';
 import {
   CacheTTL,
   Controller,
@@ -19,12 +19,13 @@ import { AnalyticsService } from './services/analytics.service';
 
 @Controller('analytics')
 @UseInterceptors(CacheInterceptor)
-@CacheTTL(3600) // 1 hour
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
   @Get('admins')
+  @CacheTTL(60 * 60 * 1000) // 1 hour
+  @CacheKey('analytics-admins')
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, 'AdminAalytics'),
   )

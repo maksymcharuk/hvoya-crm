@@ -47,7 +47,7 @@ export class ProductListComponent implements OnDestroy {
       return value;
     }, []),
   );
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroyed$ = new Subject<void>();
 
   // sortOptions = [
   //   {
@@ -105,17 +105,20 @@ export class ProductListComponent implements OnDestroy {
   showMoreLoader = false;
 
   constructor(
-    private productSizesService: ProductSizesService,
-    private productColorsService: ProductColorsService,
+    private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private productsService: ProductsService,
-    private cartService: CartService,
     private messageService: MessageService,
-    private fb: FormBuilder,
+    private cartService: CartService,
+    private productsService: ProductsService,
+    private productSizesService: ProductSizesService,
+    private productColorsService: ProductColorsService,
   ) {
     this.route.queryParams.subscribe((params: any) => {
-      this.productsService.getFilteredProducts(params, this.page).subscribe();
+      this.productsService
+        .getFilteredProducts(params, this.page)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe();
       this.lastQueryParams = params;
 
       // this.setSelectedSortOption(params);
@@ -124,9 +127,11 @@ export class ProductListComponent implements OnDestroy {
       this.setInStockValue(params.inStockOnly);
     });
 
-    this.productList$.pipe(takeUntil(this.destroy$), skip(1)).subscribe(() => {
-      this.showSkeletonLoading = false;
-    });
+    this.productList$
+      .pipe(takeUntil(this.destroyed$), skip(1))
+      .subscribe(() => {
+        this.showSkeletonLoading = false;
+      });
 
     // this.sortControl.valueChanges
     //   .pipe(debounceTime(400), distinctUntilChanged())
@@ -134,25 +139,37 @@ export class ProductListComponent implements OnDestroy {
     //     this.onSortChange(value);
     //   });
     this.filtersControl.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(400), distinctUntilChanged())
+      .pipe(
+        takeUntil(this.destroyed$),
+        debounceTime(400),
+        distinctUntilChanged(),
+      )
       .subscribe((value) => {
         this.onFilter(value);
       });
     this.searchControl.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(400), distinctUntilChanged())
+      .pipe(
+        takeUntil(this.destroyed$),
+        debounceTime(400),
+        distinctUntilChanged(),
+      )
       .subscribe((value) => {
         this.onSearchFilter(value);
       });
     this.stockControl.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(400), distinctUntilChanged())
+      .pipe(
+        takeUntil(this.destroyed$),
+        debounceTime(400),
+        distinctUntilChanged(),
+      )
       .subscribe((value) => {
         this.onStockFilter(value);
       });
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   onAddToCart(productVariant: ProductVariant) {

@@ -33,7 +33,7 @@ export class AdminComponent {
           icon: 'pi pi-fw pi-shopping-cart',
           items: [
             {
-              label: 'Список продуктів',
+              label: 'Список товарів',
               icon: 'pi pi-fw pi-book',
               routerLink: ['products'],
             },

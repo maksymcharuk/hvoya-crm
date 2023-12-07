@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { Observable, finalize, share } from 'rxjs';
+import { Observable, combineLatest, finalize, mergeMap, of, share } from 'rxjs';
 
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
@@ -12,10 +12,11 @@ import {
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { RequestType } from '@shared/enums/request-type.enum';
 import { Order } from '@shared/interfaces/entities/order.entity';
-import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { OrdersService } from '@shared/services/orders.service';
 import { RequestsService } from '@shared/services/requests.service';
 import { UserService } from '@shared/services/user.service';
+
+import { UserBalanceService } from '../../../balance/services/user-balance.service';
 
 @Component({
   selector: 'app-funds-withdrawal-request-create',
@@ -48,9 +49,10 @@ export class FundsWithdrawalRequestCreateComponent {
   }
 
   constructor(
-    private formBuilder: FormBuilder,
-    private ordersService: OrdersService,
-    private requestsService: RequestsService,
+    private readonly formBuilder: FormBuilder,
+    private readonly ordersService: OrdersService,
+    private readonly requestsService: RequestsService,
+    private readonly userBalanceService: UserBalanceService,
     private readonly messageService: MessageService,
     private readonly router: Router,
     private readonly userService: UserService,
@@ -84,8 +86,16 @@ export class FundsWithdrawalRequestCreateComponent {
 
     this.requestsService
       .createRequest(formData)
-      .pipe(finalize(() => (this.submitting = false)))
-      .subscribe((request: RequestEntity) => {
+      .pipe(
+        finalize(() => (this.submitting = false)),
+        mergeMap((request) => {
+          return combineLatest([
+            of(request),
+            this.userBalanceService.getUserBalance(),
+          ]);
+        }),
+      )
+      .subscribe(([request]) => {
         this.messageService.add({
           severity: 'success',
           summary: 'Запит створено',
