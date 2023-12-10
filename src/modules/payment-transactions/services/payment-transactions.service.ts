@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { PaymentTransactionsPageOptionsDto } from '@dtos/payment-transactions-page-options.dto';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { UserEntity } from '@entities/user.entity';
+import { Action } from '@enums/action.enum';
 import { Role } from '@enums/role.enum';
 import { SortOrder } from '@enums/sort-order.enum';
 import { PageMeta } from '@interfaces/page-meta.interface';
@@ -54,9 +55,12 @@ export class PaymentTransactionsService {
     }
 
     if (pageOptionsDto.searchQuery) {
-      queryBuilder.andWhere('paymentTransaction.amount LIKE :searchQuery', {
-        searchQuery: `%${pageOptionsDto.searchQuery}%`,
-      });
+      queryBuilder.andWhere(
+        'CAST(paymentTransaction.amount AS TEXT) LIKE :searchQuery',
+        {
+          searchQuery: `%${pageOptionsDto.searchQuery}%`,
+        },
+      );
     }
 
     if (pageOptionsDto.orderBy) {
@@ -68,18 +72,35 @@ export class PaymentTransactionsService {
       queryBuilder.orderBy(`paymentTransaction.createdAt`, SortOrder.DESC);
     }
 
-    queryBuilder.skip(pageOptionsDto.skip).take(pageOptionsDto.take);
+    if (pageOptionsDto.take !== 0) {
+      queryBuilder.take(pageOptionsDto.take);
+    }
+
+    queryBuilder.skip(pageOptionsDto.skip);
 
     const itemCount = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
 
-    const paymentTransactions: PaymentTransactionEntity[] = entities.map(
-      (paymentTransaction) => sanitizeEntity(ability, paymentTransaction),
-    );
+    const paymentTransactions: PaymentTransactionEntity[] = entities
+      .filter((paymentTransaction) =>
+        ability.can(Action.Read, paymentTransaction),
+      )
+      .map((paymentTransaction) => sanitizeEntity(ability, paymentTransaction));
 
     const pageMetaDto = new PageMeta({ itemCount, pageOptionsDto });
 
     return new Page(paymentTransactions, pageMetaDto);
+  }
+
+  async getExportedPaymentTransactionsXlsx(
+    currentUserId: string,
+    userId?: string,
+  ) {
+    return await this.getPaymentTransactions(
+      currentUserId,
+      new PaymentTransactionsPageOptionsDto({ take: 0 }),
+      userId,
+    );
   }
 
   private getPaymentTransactionQuery(
