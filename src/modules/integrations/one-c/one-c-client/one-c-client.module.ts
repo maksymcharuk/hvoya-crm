@@ -1,5 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OrderItemEntity } from '@entities/order-item.entity';
@@ -23,7 +23,7 @@ import { OneCTasksService } from './services/one-c-tasks/one-c-tasks.service';
       PaymentTransactionEntity,
     ]),
   ],
-  providers: [OneCApiClientService, OneCSyncService, OneCTasksService],
+  providers: [Logger, OneCApiClientService, OneCSyncService, OneCTasksService],
   exports: [OneCApiClientService, OneCSyncService],
 })
 export class OneCClientModule {}

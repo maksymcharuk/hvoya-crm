@@ -2,7 +2,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { Observable, catchError, firstValueFrom, map } from 'rxjs';
 
 import { HttpService } from '@nestjs/axios';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import config from '@root/config';
@@ -46,6 +46,7 @@ export class OneCApiClientService {
   constructor(
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
+    private readonly logger: Logger,
   ) {}
 
   counterparty(data: CounterpartyDtoData): Promise<void> {
@@ -213,7 +214,12 @@ export class OneCApiClientService {
     return firstValueFrom(
       apiCall.pipe(
         catchError((error: AxiosError) => {
-          console.log(error);
+          this.logger.error({
+            context: 'OneCApiClientService',
+            message: error.message,
+            stack: error.stack,
+            details: error.response?.data,
+          });
 
           throw new HttpException(
             {

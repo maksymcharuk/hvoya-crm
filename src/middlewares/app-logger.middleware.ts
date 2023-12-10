@@ -11,12 +11,18 @@ export class AppLoggerMiddleware implements NestMiddleware {
     const userAgent = request.get('user-agent') || '';
 
     response.on('close', () => {
-      const { statusCode } = response;
+      const { statusCode, statusMessage } = response;
       const contentLength = response.get('content-length');
 
-      this.logger.log({
-        message: `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
-      });
+      if (statusCode >= 400) {
+        this.logger.error({
+          message: `${method} ${url} ${statusCode} (${statusMessage}) ${contentLength} - ${userAgent} ${ip}`,
+        });
+      } else {
+        this.logger.log({
+          message: `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip}`,
+        });
+      }
     });
 
     next();
