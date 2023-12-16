@@ -87,6 +87,15 @@ export class UserService {
       );
   }
 
+  exportUserPaymentTransactionsXls(userId: string): Observable<any> {
+    return this.http.get(
+      `${environment.apiUrl}/users/${userId}/payment-transactions/export-xls`,
+      {
+        responseType: 'blob',
+      },
+    );
+  }
+
   getAdminUsers(userId: string, pageOptions?: PageOptions) {
     let params = new HttpParams({ fromObject: pageOptions?.toParams() });
 

@@ -1,6 +1,6 @@
-import { LazyLoadEvent } from 'primeng/api';
+import { LazyLoadEvent, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { Subject, catchError, debounceTime, switchMap, takeUntil } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -12,13 +12,15 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
+import { FileFormat } from '@shared/enums/file-format.enum';
 import { TransactionStatus } from '@shared/enums/transaction-status.enum';
 import { TransactionSyncOneCStatus } from '@shared/enums/transaction-sync-one-c-status.enum';
 import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
 import { PageOptions } from '@shared/interfaces/page-options.interface';
 import { Page } from '@shared/interfaces/page.interface';
+import { DownloadService } from '@shared/services/download.service';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
@@ -46,6 +48,7 @@ export class TransactionsListComponent implements OnDestroy {
   transactionStatus = TransactionStatus;
   transactionSyncOneCStatus = TransactionSyncOneCStatus;
   loading = true;
+  exporting$ = new Subject<boolean>();
   currentUser = this.userService.getUser();
   rows = 20;
 
@@ -63,7 +66,10 @@ export class TransactionsListComponent implements OnDestroy {
   constructor(
     private fb: FormBuilder,
     private readonly router: Router,
+    private readonly route: ActivatedRoute,
     private readonly userService: UserService,
+    private readonly downloadService: DownloadService,
+    private readonly messageService: MessageService,
   ) {
     this.searchControl?.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
@@ -75,6 +81,41 @@ export class TransactionsListComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  exportExcel() {
+    const userId =
+      this.route.snapshot.paramMap.get('id') || this.currentUser?.id;
+    this.exporting$.next(true);
+
+    return this.userService
+      .exportUserPaymentTransactionsXls(userId as string)
+      .pipe(
+        switchMap((data) => {
+          return this.downloadService.downloadBlob(
+            data,
+            'Hvoya_CRM_Список_транзакцій.xlsx',
+            FileFormat.XLSX,
+          );
+        }),
+        takeUntil(this.destroy$),
+        catchError((err) => {
+          this.exporting$.next(false);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Помилка',
+            detail: 'Не вдалося експортувати транзакції',
+          });
+          throw err;
+        }),
+      )
+      .subscribe(() => {
+        this.exporting$.next(false);
+        this.messageService.add({
+          severity: 'success',
+          detail: 'Файл зі списоком транзакцій експортовано',
+        });
+      });
   }
 
   navigateToEntity(transaction: PaymentTransaction) {

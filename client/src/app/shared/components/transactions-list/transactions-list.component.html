@@ -26,16 +26,28 @@
   </ng-template>
   <ng-template pTemplate="caption">
     <div class="table-header flex justify-content-between align-items-center">
-      Список транзакцій
-      <form [formGroup]="searchForm" class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input
-          pInputText
-          formControlName="search"
-          type="text"
-          placeholder="Пошук"
-        />
-      </form>
+      <div>Список транзакцій</div>
+      <div>
+        <button
+          type="button"
+          pButton
+          [disabled]="exporting$ | async"
+          icon="pi pi-file-excel"
+          (click)="exportExcel()"
+          class="p-button-success mr-2"
+          pTooltip="Експорт Excel файлу"
+          tooltipPosition="bottom"
+        ></button>
+        <form [formGroup]="searchForm" class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            formControlName="search"
+            type="text"
+            placeholder="Сума транзакції"
+          />
+        </form>
+      </div>
     </div>
   </ng-template>
   <ng-template pTemplate="header">

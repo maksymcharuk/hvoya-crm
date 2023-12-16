@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserEntity } from '@entities/user.entity';
 
+import { ExportModule } from '@modules/export/export.module';
 import { OneCClientModule } from '@modules/integrations/one-c/one-c-client/one-c-client.module';
 import { MailModule } from '@modules/mail/mail.module';
 import { OrdersModule } from '@modules/orders/orders.module';
@@ -20,6 +21,7 @@ import { UsersController } from './users.controller';
     MailModule,
     OrdersModule,
     PaymentTransactionsModule,
+    ExportModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

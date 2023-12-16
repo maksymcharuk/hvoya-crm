@@ -1,3 +1,5 @@
+import { Response } from 'express';
+
 import {
   Body,
   Controller,
@@ -6,6 +8,7 @@ import {
   Param,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 
@@ -16,9 +19,14 @@ import { PaymentTransactionsPageOptionsDto } from '@dtos/payment-transactions-pa
 import { SendAdminInvitationDto } from '@dtos/send-admin-invitation.dto';
 import { UpdateUserByAdminDto } from '@dtos/update-user-by-admin.dto';
 import { UsersPageOptionsDto } from '@dtos/users-page-options.dto';
+import { OrderEntity } from '@entities/order.entity';
+import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
+import { getTransactionTypeLocaleString } from '@utils/get-transaction-type-locale-string.util';
+import { transactionStatusToLocaleString } from '@utils/transaction-status-to-locale-string.util';
 
+import { ExportService } from '@modules/export/services/export.service';
 import { OrdersService } from '@modules/orders/services/orders.service';
 import { PaymentTransactionsService } from '@modules/payment-transactions/services/payment-transactions.service';
 
@@ -35,6 +43,7 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly ordersService: OrdersService,
     private readonly paymentTransactionsService: PaymentTransactionsService,
+    private readonly exportService: ExportService,
   ) {}
 
   @Get(':id')
@@ -52,7 +61,7 @@ export class UsersController {
   }
 
   @Get(':id/orders')
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, OrderEntity))
   async getUserOrders(
     @User('id') currentUserId: string,
     @Param('id') userId: string,
@@ -66,7 +75,9 @@ export class UsersController {
   }
 
   @Get(':id/payment-transactions')
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, UserEntity))
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, PaymentTransactionEntity),
+  )
   async getUserPaymentTransactions(
     @User('id') currentUserId: string,
     @Param('id') userId: string,
@@ -77,6 +88,47 @@ export class UsersController {
       currentUserId,
       paymentTransactionsPageOptionsDto,
       userId,
+    );
+  }
+
+  @Get(':id/payment-transactions/export-xls')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, PaymentTransactionEntity),
+  )
+  async exportPaymentTransactionsXls(
+    @User('id') currentUserId: string,
+    @Param('id') userId: string,
+    @Res() res: Response,
+  ) {
+    const paymentTransactions =
+      await this.paymentTransactionsService.getExportedPaymentTransactionsXlsx(
+        currentUserId,
+        userId,
+      );
+
+    this.exportService.exportExcel(
+      {
+        filename: 'hvoya-transactions',
+        sheetName: 'Список транзакцій',
+        columns: [
+          'Дата',
+          'Сума транзакції',
+          'Поточний баланс',
+          'Тип',
+          'Статус',
+        ],
+        data: paymentTransactions.data.map((paymentTransaction) => [
+          paymentTransaction.createdAt.toLocaleString('uk-UA', {
+            timeZone: 'Europe/Kiev',
+          }),
+          paymentTransaction.amount.toNumber(),
+          paymentTransaction.netBalance.toNumber(),
+          getTransactionTypeLocaleString(paymentTransaction),
+          transactionStatusToLocaleString(paymentTransaction.status),
+        ]),
+        columnWidths: [25, 20, 20, 35, 15],
+      },
+      res,
     );
   }
 

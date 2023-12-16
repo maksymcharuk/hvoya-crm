@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
 import { User } from '@decorators/user.decorator';
-import { OrdersPageOptionsDto } from '@dtos/orders-page-options.dto';
+import { PaymentTransactionsPageOptionsDto } from '@dtos/payment-transactions-page-options.dto';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
 import { Action } from '@enums/action.enum';
 import { Page } from '@interfaces/page.interface';
@@ -21,13 +21,14 @@ export class PaymentTransactionsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, PaymentTransactionEntity),
   )
-  async getOrders(
+  async getPaymentTransactions(
     @User('id') userId: string,
-    @Query() ordersPageOptionsDto: OrdersPageOptionsDto,
+    @Query()
+    paymentTransactionsPageOptionsDto: PaymentTransactionsPageOptionsDto,
   ): Promise<Page<PaymentTransactionEntity>> {
     return this.paymentTransactionsService.getPaymentTransactions(
       userId,
-      ordersPageOptionsDto,
+      paymentTransactionsPageOptionsDto,
     );
   }
 }
