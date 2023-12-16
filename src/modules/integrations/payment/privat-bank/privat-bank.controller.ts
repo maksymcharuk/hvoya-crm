@@ -50,12 +50,9 @@ export class PrivatBankController {
         case Action.Pay:
           const xmlPay = body as PayRequest;
           xmlData = await this.paymentApiService.pay(
-            xmlPay.transfer.data[0].payerinfo[0].$.billIdentifier,
-            xmlPay.transfer.data[0].$.id,
             xmlPay.transfer.data[0].companyinfo
               ? xmlPay.transfer.data[0].companyinfo[0].checkreference[0]
               : null,
-            xmlPay.transfer.data[0].totalsum[0],
           );
           break;
         case Action.Cancel:

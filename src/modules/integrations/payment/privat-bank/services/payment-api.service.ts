@@ -133,10 +133,7 @@ export class PaymentApiService {
   }
 
   async pay(
-    accountNumber: string,
-    bankTransactionId: string,
     transactionId: string | null,
-    amount: string,
   ): Promise<PayResponse | ErrorResponse> {
     if (!transactionId) {
       return Promise.resolve(
@@ -152,20 +149,11 @@ export class PaymentApiService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const user = await queryRunner.manager.findOneOrFail(UserEntity, {
-        where: { accountNumber },
-      });
       const transaction = await queryRunner.manager.findOneOrFail(
         PaymentTransactionEntity,
         { where: { id: transactionId } },
       );
-      await this.balanceService.addFundsBanking(
-        queryRunner.manager,
-        user.id,
-        +amount,
-        bankTransactionId,
-        transaction,
-      );
+      await this.balanceService.fulfillTransaction(transaction.id);
       await queryRunner.commitTransaction();
       return Promise.resolve(
         new PayResponse({
