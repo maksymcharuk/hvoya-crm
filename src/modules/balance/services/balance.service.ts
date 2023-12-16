@@ -146,72 +146,44 @@ export class BalanceService {
     }
   }
 
-  async addFundsBanking(
-    manager: EntityManager,
-    userId: string,
-    amount: number,
-    bankTransactionId: string,
-    paymentTransaction: PaymentTransactionEntity,
-  ) {
-    const balance = await manager.findOneOrFail(BalanceEntity, {
-      where: { owner: { id: userId } },
-    });
+  async fulfillTransaction(transactionId: string) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    const manager = queryRunner.manager;
 
-    const paymentTransactions = await manager.find(PaymentTransactionEntity, {
-      where: { balance: { id: balance.id } },
-      order: {
-        createdAt: 'DESC',
-      },
-    });
-
-    const transaction = await manager.save(PaymentTransactionEntity, {
-      ...paymentTransaction,
-      bankTransactionId,
-      amount: new Decimal(amount),
-    });
-
-    await manager.save(BalanceEntity, {
-      id: balance.id,
-      paymentTransactions: [...paymentTransactions, transaction],
-    });
-
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      await this.addFundsAndSyncOneC(
-        manager,
-        transaction.id,
-        transaction.amount,
+      const transaction = await manager.findOneOrFail(
+        PaymentTransactionEntity,
+        {
+          where: { id: transactionId },
+          relations: ['balance', 'balance.owner'],
+        },
       );
-    } catch (error) {
+      await manager.save(BalanceEntity, {
+        id: transaction.balance.id,
+        amount: transaction.balance.amount.plus(transaction.amount),
+      });
       await manager.save(PaymentTransactionEntity, {
-        id: paymentTransaction.id,
+        id: transaction.id,
+        status: TransactionStatus.Success,
+        syncOneCStatus: TransactionSyncOneCStatus.Success,
+      });
+      await this.oneCService.depositFunds({
+        userId: transaction.balance.owner.id,
+        amount: transaction.amount.toNumber(),
+        createdAt: transaction.createdAt,
+      });
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      await this.dataSource.manager.save(PaymentTransactionEntity, {
+        id: transactionId,
         syncOneCStatus: TransactionSyncOneCStatus.Failed,
       });
+    } finally {
+      await queryRunner.release();
     }
-  }
-
-  async addFundsAndSyncOneC(
-    manager: EntityManager,
-    transactionId: string,
-    amount: Decimal,
-  ) {
-    const transaction = await manager.findOneOrFail(PaymentTransactionEntity, {
-      where: { id: transactionId },
-      relations: ['balance', 'balance.owner'],
-    });
-    await manager.save(BalanceEntity, {
-      id: transaction.balance.id,
-      amount: transaction.balance.amount.plus(amount),
-    });
-    await manager.save(PaymentTransactionEntity, {
-      id: transaction.id,
-      status: TransactionStatus.Success,
-      syncOneCStatus: TransactionSyncOneCStatus.Success,
-    });
-    await this.oneCService.depositFunds({
-      userId: transaction.balance.owner.id,
-      amount: amount.toNumber(),
-      createdAt: transaction.createdAt,
-    });
   }
 
   async cancelTransactionBanking(

@@ -16,7 +16,7 @@ export class BalanceTasksService {
     private readonly balanceService: BalanceService,
   ) {}
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async syncTransactions() {
     const notSyncedTransactions = await this.dataSource.manager.find(
       PaymentTransactionEntity,
@@ -33,25 +33,13 @@ export class BalanceTasksService {
     }
 
     for (const transaction of notSyncedTransactions) {
-      const queryRunner = this.dataSource.createQueryRunner();
-
-      await queryRunner.connect();
-      await queryRunner.startTransaction();
       try {
-        await this.balanceService.addFundsAndSyncOneC(
-          queryRunner.manager,
-          transaction.id,
-          transaction.amount,
-        );
-        await queryRunner.commitTransaction();
+        await this.balanceService.fulfillTransaction(transaction.id);
       } catch (error) {
-        await queryRunner.rollbackTransaction();
         this.logger.error('Error while syncing transaction with 1C', {
           transaction: { id: transaction.id },
           error,
         });
-      } finally {
-        await queryRunner.release();
       }
     }
   }
