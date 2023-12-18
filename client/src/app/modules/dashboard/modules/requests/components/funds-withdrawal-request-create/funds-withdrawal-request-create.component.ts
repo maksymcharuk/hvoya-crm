@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { Observable, combineLatest, finalize, mergeMap, of, share } from 'rxjs';
+import { combineLatest, finalize, mergeMap, of } from 'rxjs';
 
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
@@ -11,8 +11,6 @@ import {
 } from '@shared/constants/order.constants';
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { RequestType } from '@shared/enums/request-type.enum';
-import { Order } from '@shared/interfaces/entities/order.entity';
-import { OrdersService } from '@shared/services/orders.service';
 import { RequestsService } from '@shared/services/requests.service';
 import { UserService } from '@shared/services/user.service';
 
@@ -28,9 +26,6 @@ export class FundsWithdrawalRequestCreateComponent {
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   imageFormats = IMAGE_ACCEPTABLE_FILE_FORMATS;
   submitting = false;
-  orders$: Observable<Order[]> = this.ordersService
-    .getOrdersForReturnRequest()
-    .pipe(share());
 
   fundsWithdrawalRequestForm = this.formBuilder.nonNullable.group({
     amount: this.formBuilder.nonNullable.control<number>(0, [
@@ -50,7 +45,6 @@ export class FundsWithdrawalRequestCreateComponent {
 
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly ordersService: OrdersService,
     private readonly requestsService: RequestsService,
     private readonly userBalanceService: UserBalanceService,
     private readonly messageService: MessageService,

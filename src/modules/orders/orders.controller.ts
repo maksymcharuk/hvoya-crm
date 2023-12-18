@@ -42,8 +42,8 @@ export class OrdersController {
   )
   async getOrdersForReturnRequest(
     @User('id') userId: string,
-  ): Promise<OrderEntity[]> {
-    return this.ordersService.getOrdersForReturnRequest(userId);
+  ): Promise<string[]> {
+    return this.ordersService.getOrderNumberListForReturnRequest(userId);
   }
 
   @Get()
