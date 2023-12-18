@@ -41,6 +41,7 @@ import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
+import { Role } from '@enums/role.enum';
 import { SortOrder } from '@enums/sort-order.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { TransactionSyncOneCStatus } from '@enums/transaction-sync-one-c-status.enum';
@@ -107,7 +108,7 @@ export class OrdersService {
 
     if (userId) {
       queryBuilder.andWhere('order.customer = :userId', { userId });
-    } else {
+    } else if (user.role === Role.User) {
       queryBuilder.andWhere('order.customer = :currentUserId', {
         currentUserId,
       });
