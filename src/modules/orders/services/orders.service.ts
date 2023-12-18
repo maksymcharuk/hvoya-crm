@@ -1,12 +1,10 @@
 import Decimal from 'decimal.js';
 import { FilesService } from 'src/modules/files/services/files.service';
 import {
-  And,
   DataSource,
   EntityManager,
   FindOptionsWhere,
   In,
-  Not,
   QueryRunner,
   SelectQueryBuilder,
 } from 'typeorm';
@@ -31,7 +29,6 @@ import { BalanceEntity } from '@entities/balance.entity';
 import { FileEntity } from '@entities/file.entity';
 import { OrderDeliveryEntity } from '@entities/order-delivery.entity';
 import { OrderItemEntity } from '@entities/order-item.entity';
-import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { OrderStatusEntity } from '@entities/order-status.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
@@ -44,7 +41,6 @@ import { Folder } from '@enums/folder.enum';
 import { NotificationEvent } from '@enums/notification-event.enum';
 import { NotificationType } from '@enums/notification-type.enum';
 import { OrderStatus } from '@enums/order-status.enum';
-import { Role } from '@enums/role.enum';
 import { SortOrder } from '@enums/sort-order.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { TransactionSyncOneCStatus } from '@enums/transaction-sync-one-c-status.enum';
@@ -111,7 +107,7 @@ export class OrdersService {
 
     if (userId) {
       queryBuilder.andWhere('order.customer = :userId', { userId });
-    } else if (user.role === Role.User) {
+    } else {
       queryBuilder.andWhere('order.customer = :currentUserId', {
         currentUserId,
       });
@@ -152,7 +148,7 @@ export class OrdersService {
 
     if (pageOptionsDto.searchQuery) {
       queryBuilder.andWhere(
-        'LOWER(order.number) LIKE LOWER(:searchQuery) OR LOWER(delivery.trackingId) LIKE LOWER(:searchQuery)',
+        '(LOWER(order.number) LIKE LOWER(:searchQuery) OR LOWER(delivery.trackingId) LIKE LOWER(:searchQuery))',
         {
           searchQuery: `%${pageOptionsDto.searchQuery}%`,
         },
@@ -182,46 +178,36 @@ export class OrdersService {
     return new Page(orders, pageMetaDto);
   }
 
-  async getOrdersForReturnRequest(userId: string): Promise<OrderEntity[]> {
-    const manager = this.dataSource.createEntityManager();
-    const user = await manager.findOneOrFail(UserEntity, {
-      where: { id: userId },
-    });
+  async getOrderNumberListForReturnRequest(userId: string): Promise<string[]> {
+    const query = this.dataSource.createQueryBuilder(OrderEntity, 'order');
 
-    const ability = this.caslAbilityFactory.createForUser(user);
+    const statusesSubQuery = query
+      .subQuery()
+      .select('id')
+      .from(OrderStatusEntity, 'orderStatus')
+      .where('orderStatus.order = order.id')
+      .orderBy('orderStatus.createdAt', SortOrder.DESC)
+      .limit(1);
 
-    let statuses = await manager.find(OrderStatusEntity, {
-      where: {
-        status: In(RETURNABLE_ORDER_STATUSES),
-      },
-      relations: ['order'],
-    });
+    query
+      .leftJoinAndSelect('order.customer', 'customer')
+      .leftJoinAndSelect(
+        'order.statuses',
+        'statuses',
+        `statuses.id = ${statusesSubQuery.getQuery()}`,
+      )
+      .leftJoinAndSelect('order.returnRequest', 'returnRequest')
+      .where('customer.id = :userId', { userId })
+      .andWhere('statuses.status IN (:...returnableOrderStatuses)', {
+        returnableOrderStatuses: RETURNABLE_ORDER_STATUSES,
+      })
+      .andWhere('returnRequest.id IS NULL')
+      .select(['order.number'])
+      .orderBy('order.createdAt', SortOrder.DESC);
 
-    let requests = await manager.find(OrderReturnRequestEntity, {
-      relations: ['order'],
-    });
+    const orders = await query.getMany();
 
-    let orders = await this.dataSource.manager.find(OrderEntity, {
-      where: {
-        id: And(
-          In(statuses.map((status) => status.order.id)),
-          Not(In(requests.map((request) => request.order.id))),
-        ),
-      },
-      relations: [
-        'items',
-        'items.product.properties',
-        'items.productProperties.images',
-        'customer',
-      ],
-      order: {
-        createdAt: 'DESC',
-      },
-    });
-
-    return orders
-      .filter((order) => ability.can(Action.Read, order))
-      .map((order) => sanitizeEntity(ability, order));
+    return orders.map((order) => order.number!);
   }
 
   async createOrder(

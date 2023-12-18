@@ -1,7 +1,15 @@
 import { MessageService } from 'primeng/api';
-import { Observable, finalize, share } from 'rxjs';
+import { Dropdown } from 'primeng/dropdown';
+import {
+  BehaviorSubject,
+  Observable,
+  filter,
+  finalize,
+  share,
+  switchMap,
+} from 'rxjs';
 
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -31,19 +39,22 @@ import { alphanumeric } from '@shared/validators/alphanumeric.validator';
   styleUrls: ['./return-request-create.component.scss'],
 })
 export class ReturnRequestCreateComponent {
+  @ViewChild('orderNumberDropdown') orderNumberDropdown?: Dropdown;
+
   deliveryServices = Object.values(DeliveryService).filter(
     (value) => value !== DeliveryService.SelfPickup,
   );
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   imageFormats = IMAGE_ACCEPTABLE_FILE_FORMATS;
   submitting = false;
-  orders$: Observable<Order[]> = this.ordersService
-    .getOrdersForReturnRequest()
+  orderNumberList$: Observable<string[]> = this.ordersService
+    .getOrderNumberListForReturnRequest()
     .pipe(share());
+  order$ = new BehaviorSubject<Order | null>(null);
 
   returnRequestForm = this.formBuilder.nonNullable.group({
-    order: this.formBuilder.nonNullable.control<Order | null>(
-      null,
+    orderNumber: this.formBuilder.nonNullable.control<string>(
+      '',
       Validators.required,
     ),
     trackingId: this.formBuilder.nonNullable.control<string>('', [
@@ -67,8 +78,8 @@ export class ReturnRequestCreateComponent {
     ),
   });
 
-  get orderControl(): AbstractControl {
-    return this.returnRequestForm.controls.order;
+  get orderNumberControl(): AbstractControl<string> {
+    return this.returnRequestForm.controls.orderNumber;
   }
 
   get requestedItems(): FormArray<FormControl<RequestItemUIEntity>> {
@@ -92,12 +103,32 @@ export class ReturnRequestCreateComponent {
     private readonly userService: UserService,
     private readonly route: ActivatedRoute,
   ) {
-    this.orders$.subscribe((orders) => {
-      this.setOrder(orders, this.route.snapshot.queryParams['orderNumber']);
+    this.orderNumberList$.subscribe((orders) => {
+      this.setOrderNumber(
+        orders,
+        this.route.snapshot.queryParams['orderNumber'],
+      );
     });
-    this.orderControl.valueChanges.subscribe((order) => {
-      this.onOrderChange(order);
+    this.orderNumberControl.valueChanges
+      .pipe(switchMap((value) => this.ordersService.getOrder(value)))
+      .pipe(
+        share(),
+        finalize(() => (this.submitting = false)),
+      )
+      .subscribe(this.order$);
+
+    this.order$.pipe(filter((order) => !!order)).subscribe((order) => {
+      this.onOrderChange(order!);
     });
+  }
+
+  ngAfterViewInit(): void {
+    // TODO: remove this hack and update primeng version
+    if (this.orderNumberDropdown) {
+      (this.orderNumberDropdown.filterBy as any) = {
+        split: (_: any) => [(item: any) => item],
+      };
+    }
   }
 
   onSubmit() {
@@ -118,7 +149,7 @@ export class ReturnRequestCreateComponent {
         trackingId: formValue.trackingId,
         deliveryService: formValue.deliveryService,
         requestedItems: formValue.requestedItems,
-        orderNumber: formValue.order!.number,
+        orderNumber: formValue.orderNumber,
       },
       waybill: formValue.waybill,
       customerImages: formValue.customerImages,
@@ -191,14 +222,16 @@ export class ReturnRequestCreateComponent {
     this.customerImagesControl.updateValueAndValidity();
   }
 
-  private setOrder(orders: Order[], orderNumber?: number) {
+  private setOrderNumber(orderNumberList: string[], orderNumber?: string) {
     if (!orderNumber) {
       return;
     }
 
-    const order = orders.find((o) => o.number === orderNumber);
+    const orderNumberFound = orderNumberList.find(
+      (number) => number === orderNumber,
+    );
 
-    if (!order) {
+    if (!orderNumberFound) {
       this.messageService.add({
         severity: 'error',
         summary: 'Помилка',
@@ -208,6 +241,6 @@ export class ReturnRequestCreateComponent {
       return;
     }
 
-    this.orderControl.patchValue(order);
+    this.orderNumberControl.patchValue(orderNumberFound);
   }
 }

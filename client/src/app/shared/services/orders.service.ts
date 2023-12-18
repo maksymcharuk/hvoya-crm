@@ -56,10 +56,10 @@ export class OrdersService {
       );
   }
 
-  getOrdersForReturnRequest(): Observable<Order[]> {
-    return this.http
-      .get<Order[]>(`${environment.apiUrl}/orders/return-requests`)
-      .pipe(map((orders) => orders.map((order) => new Order(order))));
+  getOrderNumberListForReturnRequest(): Observable<string[]> {
+    return this.http.get<string[]>(
+      `${environment.apiUrl}/orders/return-requests`,
+    );
   }
 
   getOrder(number: string): Observable<Order> {

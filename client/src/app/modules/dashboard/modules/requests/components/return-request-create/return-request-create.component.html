@@ -4,12 +4,11 @@
       <div class="field col-12">
         <label for="orders">Замовлення:</label>
         <p-dropdown
+          #orderNumberDropdown
           id="orders"
-          filterBy="number"
           placeholder="Виберіть замовлення для повернення"
-          optionLabel="number"
-          formControlName="order"
-          [options]="(orders$ | async) || []"
+          formControlName="orderNumber"
+          [options]="(orderNumberList$ | async) || []"
           [showClear]="true"
           [filter]="true"
         ></p-dropdown>
@@ -38,7 +37,7 @@
     </div>
   </div>
 
-  <ng-container *ngIf="orderControl.value">
+  <ng-container *ngIf="orderNumberControl.value">
     <div class="p-fluid">
       <div class="grid">
         <div class="col-6">
