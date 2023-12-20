@@ -93,7 +93,7 @@
                 </small>
               </td>
               <td>{{ transaction.status | transactionStatus }}</td>
-              <td>{{ transaction.createdAt | date : 'short' }}</td>
+              <td>{{ transaction.updatedAt | date : 'short' }}</td>
               <td
                 *ngIf="
                   transaction.order ||

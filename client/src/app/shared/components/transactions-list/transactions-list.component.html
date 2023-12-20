@@ -65,10 +65,10 @@
           <i class="pi pi-sync mr-1"></i>1С
         </div>
       </th>
-      <th class="w-4" pSortableColumn="createdAt">
+      <th class="w-4" pSortableColumn="updatedAt">
         <div class="flex justify-content-between align-items-center">
           Дата
-          <p-sortIcon field="createdAt"></p-sortIcon>
+          <p-sortIcon field="updatedAt"></p-sortIcon>
         </div>
       </th>
       <th class="w-1"></th>
@@ -78,7 +78,7 @@
       <th></th>
       <th *ngIf="currentUser?.isAnyAdmin"></th>
       <th>
-        <p-columnFilter type="date" field="createdAt" [showMenu]="false">
+        <p-columnFilter type="date" field="updatedAt" [showMenu]="false">
           <ng-template pTemplate="filter" let-filter="filterCallback">
             <p-calendar
               (onSelect)="filter($event)"
@@ -126,7 +126,7 @@
           {{ transaction.syncOneCStatus | transactionSyncOneCStatus }}
         </span>
       </td>
-      <td>{{ transaction.createdAt | date : 'short' }}</td>
+      <td>{{ transaction.updatedAt | date : 'short' }}</td>
       <td
         *ngIf="
           transaction.order ||

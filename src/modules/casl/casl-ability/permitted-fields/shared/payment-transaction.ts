@@ -9,6 +9,7 @@ export const SHARED_PAYMENT_TRANSACTION_READ_FIELDS = [
   'orderReturnRequest',
   'fundsWithdrawalRequest',
   'createdAt',
+  'updatedAt',
   ...combine('order', SHARED_ORDER_READ_FIELDS),
   ...combine('balance', SHARED_BALANCE_READ_FIELDS),
 ];
