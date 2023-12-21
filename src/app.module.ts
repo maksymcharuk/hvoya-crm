@@ -15,6 +15,7 @@ import { WSocketModule } from '@gateways/websocket/websocket.module';
 
 import { JwTokenModule } from '@modules/jw-token/jw-token.module';
 import { PaymentTransactionsModule } from '@modules/payment-transactions/payment-transactions.module';
+import { PostsModule } from '@modules/posts/posts.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -74,6 +75,7 @@ import { UsersModule } from './modules/users/users.module';
     }),
     RequestsModule,
     PaymentTransactionsModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [

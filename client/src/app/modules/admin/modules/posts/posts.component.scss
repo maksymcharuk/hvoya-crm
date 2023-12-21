@@ -1,0 +1,26 @@
+.post-preview-block {
+  width: 260px;
+  border: 2px solid var(--primary-color);
+  padding: 1rem;
+  font-size: 0.95rem;
+  margin-top: 0.1rem;
+
+  small {
+    display: inline-block;
+    color: var(--surface-600);
+    margin-top: 0.5rem;
+  }
+}
+
+:host ::ng-deep {
+  .post-preview-block {
+    * {
+      line-height: 1;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+}

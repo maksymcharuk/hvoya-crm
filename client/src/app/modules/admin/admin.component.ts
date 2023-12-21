@@ -81,18 +81,15 @@ export class AdminComponent {
           badge: '',
           title: REQUEST_NOTIFICATION as any,
         },
-        // {
-        //   label: 'Запити',
-        //   icon: 'pi pi-fw pi-envelope',
-        // },
-        // {
-        //   label: 'Улюблені',
-        //   icon: 'pi pi-fw pi-heart',
-        // },
         {
           label: 'Запитання та відповіді',
           icon: 'pi pi-fw pi-question-circle',
           routerLink: ['faq'],
+        },
+        {
+          label: 'Новини',
+          icon: 'pi pi-volume-down',
+          routerLink: ['posts'],
         },
       ],
     },

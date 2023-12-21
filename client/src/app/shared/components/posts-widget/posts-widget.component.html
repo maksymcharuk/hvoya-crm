@@ -1,0 +1,16 @@
+<ng-container *ngIf="postsPage$ | async as postsPage">
+  <div *ngIf="postsPage.data.length > 0" class="posts-widget">
+    <h5 class="posts-widget__title">Новини</h5>
+    <div class="posts-widget__list">
+      <div *ngFor="let post of postsPage.data" class="post">
+        <div class="post__body" [innerHTML]="post.body | safeHtml"></div>
+        <small>
+          {{ post.updatedAt | date : 'short' }}
+          <ng-container *ngIf="!post.isPublished">
+            <span class="text-red-500">(Не опубліковано)</span>
+          </ng-container>
+        </small>
+      </div>
+    </div>
+  </div>
+</ng-container>

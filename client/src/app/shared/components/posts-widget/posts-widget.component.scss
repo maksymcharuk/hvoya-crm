@@ -1,0 +1,40 @@
+.posts-widget {
+  border: 2px solid var(--primary-color);
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+
+  &__title {
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  &__list {
+    overflow: auto;
+  }
+}
+
+.post {
+  font-size: 0.95rem;
+
+  & + & {
+    margin-top: 1rem;
+  }
+
+  small {
+    display: inline-block;
+    color: var(--surface-600);
+    margin-top: 0.5rem;
+  }
+}
+
+:host ::ng-deep {
+  .post {
+    &__body {
+      * {
+        line-height: 1;
+      }
+    }
+  }
+}

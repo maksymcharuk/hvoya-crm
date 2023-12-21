@@ -109,7 +109,7 @@ export class UserEntity extends BaseEntity {
   @OneToMany(() => UserEntity, (user) => user.manager)
   managedUsers: UserEntity[];
 
-  @OneToMany(() => RequestEntity, (requests) => requests.customer)
+  @OneToMany(() => RequestEntity, (request) => request.customer)
   requests: RequestEntity[];
 
   async validatePassword(password: string): Promise<boolean> {

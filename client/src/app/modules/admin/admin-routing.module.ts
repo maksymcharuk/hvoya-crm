@@ -50,6 +50,11 @@ const routes: Routes = [
             (m) => m.RequestsModule,
           ),
       },
+      {
+        path: 'posts',
+        loadChildren: () =>
+          import('./modules/posts/posts.module').then((m) => m.PostsModule),
+      },
     ],
   },
 ];
