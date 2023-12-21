@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
@@ -11,6 +11,8 @@ import {
   USER_NOTIFICATION,
 } from '@shared/constants/notification.constants';
 import { NotificationEntity } from '@shared/interfaces/entities/notification.entity';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
+import { Page } from '@shared/interfaces/page.interface';
 
 @Injectable()
 export class NotificationsService {
@@ -53,20 +55,28 @@ export class NotificationsService {
   );
 
   constructor(private readonly http: HttpClient) {
-    this.getNotifications().subscribe((notifications) => {
-      this.notifications$.next(notifications);
-    });
+    // TODO: revamp notifications
+    this.getNotifications(new PageOptions({ rows: 200 })).subscribe(
+      (notifications) => {
+        this.notifications$.next(notifications.data);
+      },
+    );
   }
 
-  getNotifications() {
+  getNotifications(pageOptions: PageOptions) {
+    let params = new HttpParams({ fromObject: pageOptions.toParams() });
+
     return this.http
-      .get<NotificationEntity[]>(`${environment.apiUrl}/notifications`)
+      .get<Page<NotificationEntity>>(`${environment.apiUrl}/notifications`, {
+        params,
+      })
       .pipe(
-        map((notificationsList) =>
-          notificationsList.map(
+        map((page) => ({
+          data: page.data.map(
             (notification) => new NotificationEntity(notification),
           ),
-        ),
+          meta: page.meta,
+        })),
       );
   }
 

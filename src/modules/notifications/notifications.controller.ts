@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 
 import { User } from '@decorators/user.decorator';
+import { NotificationsPageOptionsDto } from '@dtos/notifications-page-options.dto';
 import { NotificationEntity } from '@entities/notification.entity';
 import { Action } from '@enums/action.enum';
+import { Page } from '@interfaces/page.interface';
 
 import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '../casl/casl-ability/casl-ability.factory';
@@ -19,8 +21,11 @@ export class NotificationsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, NotificationEntity),
   )
-  getAll(@User('id') userId: string): Promise<NotificationEntity[]> {
-    return this.notificationService.getAll(userId);
+  getAll(
+    @User('id') userId: string,
+    @Query() pageOptionsDto: NotificationsPageOptionsDto,
+  ): Promise<Page<NotificationEntity>> {
+    return this.notificationService.getAll(userId, pageOptionsDto);
   }
 
   @Post()
@@ -30,7 +35,7 @@ export class NotificationsController {
   check(
     @User('id') userId: string,
     @Body('id') id: string,
-  ): Promise<NotificationEntity[]> {
+  ): Promise<Page<NotificationEntity>> {
     return this.notificationService.check(id, userId);
   }
 }
