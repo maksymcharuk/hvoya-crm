@@ -19,6 +19,7 @@ import { NotificationEntity } from '@entities/notification.entity';
 import { OrderReturnRequestEntity } from '@entities/order-return-request.entity';
 import { OrderEntity } from '@entities/order.entity';
 import { PaymentTransactionEntity } from '@entities/payment-transaction.entity';
+import { PostEntity } from '@entities/post.entity';
 import { ProductBaseEntity } from '@entities/product-base.entity';
 import { ProductCategoryEntity } from '@entities/product-category.entity';
 import { ProductColorEntity } from '@entities/product-color.entity';
@@ -35,6 +36,7 @@ import { Role } from '@enums/role.enum';
 import { ADMIN_ORDER_READ_FIELDS } from './permitted-fields/admin/order';
 import { ADMIN_USER_READ_FIELDS } from './permitted-fields/admin/user';
 import { ANY_ADMIN_PAYMENT_TRANSACTION_READ_FIELDS } from './permitted-fields/any-admin/payment-transaction';
+import { ANY_ADMIN_POST_READ_FIELDS } from './permitted-fields/any-admin/post';
 import { ANY_ADMIN_REQUEST_READ_FIELDS } from './permitted-fields/any-admin/request';
 import { SUPER_ADMIN_ORDER_READ_FIELDS } from './permitted-fields/super-admin/order';
 import {
@@ -44,6 +46,7 @@ import {
 import { USER_BALANCE_READ_FIELDS } from './permitted-fields/user/balance';
 import { USER_ORDER_READ_FIELDS } from './permitted-fields/user/order';
 import { USER_PAYMENT_TRANSACTION_READ_FIELDS } from './permitted-fields/user/payment-transaction';
+import { USER_POST_READ_FIELDS } from './permitted-fields/user/post';
 import { USER_REQUEST_READ_FIELDS } from './permitted-fields/user/request';
 import { USER_USER_READ_FIELDS } from './permitted-fields/user/user';
 
@@ -65,6 +68,7 @@ type Subjects =
       | typeof RequestEntity
       | typeof OrderReturnRequestEntity
       | typeof FundsWithdrawRequestEntity
+      | typeof PostEntity
     >
   | 'AdminAalytics'
   | 'PersonalAnalytics'
@@ -149,6 +153,11 @@ export class CaslAbilityFactory {
       PaymentTransactionEntity,
       ANY_ADMIN_PAYMENT_TRANSACTION_READ_FIELDS,
     );
+    // -------------------------------------------------------------------------
+
+    // Posts
+    // -------------------------------------------------------------------------
+    can(Action.Read, PostEntity, ANY_ADMIN_POST_READ_FIELDS);
     // -------------------------------------------------------------------------
   }
 
@@ -242,6 +251,12 @@ export class CaslAbilityFactory {
     // Analytics
     // -------------------------------------------------------------------------
     can(Action.Read, 'AdminAalytics');
+
+    // Posts
+    // -------------------------------------------------------------------------
+    can(Action.Read, PostEntity, ANY_ADMIN_POST_READ_FIELDS);
+    can([Action.Create, Action.Update, Action.Delete], PostEntity);
+    // -------------------------------------------------------------------------
   }
 
   // User
@@ -356,6 +371,13 @@ export class CaslAbilityFactory {
         ['balance.owner.id' as keyof PaymentTransactionEntity]: currentUser.id,
       },
     );
+    // -------------------------------------------------------------------------
+
+    // Posts
+    // -------------------------------------------------------------------------
+    can(Action.Read, PostEntity, USER_POST_READ_FIELDS, {
+      isPublished: true,
+    });
     // -------------------------------------------------------------------------
   }
 }

@@ -118,7 +118,7 @@ export class UsersController {
           'Статус',
         ],
         data: paymentTransactions.data.map((paymentTransaction) => [
-          paymentTransaction.createdAt.toLocaleString('uk-UA', {
+          paymentTransaction.updatedAt.toLocaleString('uk-UA', {
             timeZone: 'Europe/Kiev',
           }),
           paymentTransaction.amount.toNumber(),

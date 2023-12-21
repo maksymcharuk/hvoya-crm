@@ -8,6 +8,7 @@ import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
 import { Role } from '@enums/role.enum';
 import { SortOrder } from '@enums/sort-order.enum';
+import { TransactionStatus } from '@enums/transaction-status.enum';
 import { PageMeta } from '@interfaces/page-meta.interface';
 import { Page } from '@interfaces/page.interface';
 import { sanitizeEntity } from '@utils/serialize-entity.util';
@@ -45,13 +46,19 @@ export class PaymentTransactionsService {
       });
     }
 
-    if (pageOptionsDto.createdAt) {
-      const startDate = new Date(pageOptionsDto.createdAt);
-      const endDate = new Date(pageOptionsDto.createdAt);
+    if (pageOptionsDto.updatedAt) {
+      const startDate = new Date(pageOptionsDto.updatedAt);
+      const endDate = new Date(pageOptionsDto.updatedAt);
       endDate.setHours(23, 59, 59, 999);
       queryBuilder
-        .andWhere('paymentTransaction.createdAt >= :startDate', { startDate })
-        .andWhere('paymentTransaction.createdAt <= :endDate', { endDate });
+        .andWhere('paymentTransaction.updatedAt >= :startDate', { startDate })
+        .andWhere('paymentTransaction.updatedAt <= :endDate', { endDate });
+    }
+
+    if (pageOptionsDto.status) {
+      queryBuilder.andWhere('paymentTransaction.status = :status', {
+        status: pageOptionsDto.status,
+      });
     }
 
     if (pageOptionsDto.searchQuery) {
@@ -69,7 +76,7 @@ export class PaymentTransactionsService {
         pageOptionsDto.order,
       );
     } else {
-      queryBuilder.orderBy(`paymentTransaction.createdAt`, SortOrder.DESC);
+      queryBuilder.orderBy(`paymentTransaction.updatedAt`, SortOrder.DESC);
     }
 
     if (pageOptionsDto.take !== 0) {
@@ -98,7 +105,10 @@ export class PaymentTransactionsService {
   ) {
     return await this.getPaymentTransactions(
       currentUserId,
-      new PaymentTransactionsPageOptionsDto({ take: 0 }),
+      new PaymentTransactionsPageOptionsDto({
+        take: 0,
+        status: TransactionStatus.Success,
+      }),
       userId,
     );
   }

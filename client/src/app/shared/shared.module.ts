@@ -42,6 +42,7 @@ import { OrderListComponent } from './components/order-list/order-list.component
 import { OrderStatusBadgeComponent } from './components/order-status-badge/order-status-badge.component';
 import { OrderViewItemComponent } from './components/order-view-item/order-view-item.component';
 import { OrdersChartComponent } from './components/orders-chart/orders-chart.component';
+import { PostsWidgetComponent } from './components/posts-widget/posts-widget.component';
 import { ProductColorBadgeComponent } from './components/product-color-badge/product-color-badge.component';
 import { ProductItemComponent } from './components/product-item/product-item.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
@@ -125,6 +126,7 @@ const COMPONENTS = [
   ReturnRequestOrderItemComponent,
   ReturnRequestItemListComponent,
   RequestTypeBadgeComponent,
+  PostsWidgetComponent,
 ];
 
 const PRIMENG_MODULES = [

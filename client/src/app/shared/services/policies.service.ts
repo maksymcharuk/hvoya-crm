@@ -24,6 +24,7 @@ import { Faq } from '@shared/interfaces/entities/faq.entity';
 import { FundsWithdrawalRequest } from '@shared/interfaces/entities/funds-withdrawal-request.entity';
 import { OrderReturnRequest } from '@shared/interfaces/entities/order-return-request.entity';
 import { Order } from '@shared/interfaces/entities/order.entity';
+import { Post } from '@shared/interfaces/entities/post.entity';
 import { User } from '@shared/interfaces/entities/user.entity';
 import { AdminPage } from '@shared/interfaces/pages/admin-page.entity';
 import { DashboardPage } from '@shared/interfaces/pages/dashboard-page.entity';
@@ -92,6 +93,7 @@ export class PoliciesService {
             fundsWithdrawalRequest.status ===
             FundsWithdrawalRequestStatus.Pending,
         );
+        can(['read', 'create', 'update', 'delete'], Post);
         break;
       case Role.Admin:
         can('visit', AdminPage);
@@ -107,6 +109,7 @@ export class PoliciesService {
           (orderReturnRequest: OrderReturnRequest) =>
             orderReturnRequest.status === OrderReturnRequestStatus.Pending,
         );
+        can(['read', 'create', 'update', 'delete'], Post);
         break;
       case Role.User:
         can('visit', DashboardPage);
@@ -130,6 +133,7 @@ export class PoliciesService {
           (orderReturnRequest: OrderReturnRequest) =>
             orderReturnRequest.status === OrderReturnRequestStatus.Pending,
         );
+        can('read', Post);
         break;
     }
 

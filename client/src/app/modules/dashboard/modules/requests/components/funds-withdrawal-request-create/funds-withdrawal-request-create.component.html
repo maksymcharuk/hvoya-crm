@@ -26,7 +26,7 @@
       </app-form-control-error-message>
     </div>
     <div class="field col-6">
-      <label for="customerComment">Коментар:</label>
+      <label for="customerComment">Реквізити:</label>
       <textarea
         id="customerComment"
         rows="5"
@@ -35,6 +35,12 @@
         [autoResize]="true"
         formControlName="customerComment"
       ></textarea>
+      <app-form-control-error-message
+        [formGroup]="fundsWithdrawalRequestForm"
+        controlName="customerComment"
+        errorType="required"
+        errorMessage="Необхідно вказати реквізити"
+      ></app-form-control-error-message>
     </div>
     <div class="flex justify-content-end w-full">
       <div class="col-3">

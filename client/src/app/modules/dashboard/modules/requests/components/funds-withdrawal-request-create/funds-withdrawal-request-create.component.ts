@@ -32,7 +32,9 @@ export class FundsWithdrawalRequestCreateComponent {
       Validators.required,
       Validators.min(1),
     ]),
-    customerComment: this.formBuilder.nonNullable.control<string>(''),
+    customerComment: this.formBuilder.nonNullable.control<string>('', [
+      Validators.required,
+    ]),
     requestType: this.formBuilder.nonNullable.control<RequestType>(
       RequestType.FundsWithdrawal,
       Validators.required,

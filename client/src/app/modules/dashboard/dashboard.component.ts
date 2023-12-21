@@ -1,3 +1,5 @@
+import { map } from 'rxjs';
+
 import { Component } from '@angular/core';
 
 import { ICONS } from '@shared/constants/base.constants';
@@ -5,9 +7,11 @@ import {
   ORDER_NOTIFICATIONS,
   REQUEST_NOTIFICATION,
 } from '@shared/constants/notification.constants';
+import { PageOptions } from '@shared/interfaces/page-options.interface';
 import { AccountService } from '@shared/services/account.service';
 import { AuthService } from '@shared/services/auth.service';
 import { NotificationsService } from '@shared/services/notifications.service';
+import { PostsService } from '@shared/services/posts.service';
 import { WebSocketGatewayService } from '@shared/services/websocket-gateway.service';
 
 import { UserBalanceService } from './modules/balance/services/user-balance.service';
@@ -29,15 +33,14 @@ export class DashboardComponent {
   cartItemsNumber$ = this.cartService.cartItemsNumber$;
   notificationsNumber$ = this.notificationsService.notificationsNumber$;
   balance$ = this.userBalance.balance$;
+  posts$ = this.postsService
+    .getAll(new PageOptions({ rows: 5 }))
+    .pipe(map((page) => page.data));
+
   sidebarMenuItems = [
     {
       label: '',
       items: [
-        // {
-        //   label: 'Головна',
-        //   icon: 'pi pi-fw pi-home',
-        //   routerLink: ['/'],
-        // },
         {
           label: 'Товари',
           icon: 'pi pi-fw pi-shopping-cart',
@@ -57,10 +60,6 @@ export class DashboardComponent {
           badge: '',
           title: REQUEST_NOTIFICATION as any,
         },
-        // {
-        //   label: 'Улюблені',
-        //   icon: 'pi pi-fw pi-heart',
-        // },
         {
           label: 'Запитання та відповіді',
           icon: 'pi pi-fw pi-question-circle',
@@ -76,6 +75,7 @@ export class DashboardComponent {
     private authService: AuthService,
     private notificationsService: NotificationsService,
     private webSocketGatewayService: WebSocketGatewayService,
+    private readonly postsService: PostsService,
   ) {
     // TODO: find a way to remove this but keep initialization of webSocketGatewayService
     console.log(this.webSocketGatewayService);

@@ -1,0 +1,134 @@
+<div class="card">
+  <div class="flex align-items-center justify-content-between mb-5">
+    <h4 class="mb-0">Новини</h4>
+    <div>
+      <p-button
+        *ngIf="'create' | able : postEntity"
+        label="Додати"
+        icon="pi pi-plus"
+        (onClick)="openNew()"
+      ></p-button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="postPage$ | async as postPage">
+    <ng-container *ngIf="postPage.data.length > 0; else noPosts">
+      <div class="mb-5">
+        <div>Всього новин: {{ postPage.meta.itemCount }}</div>
+        <div>Користувачам буде відображатися 5 останніх новин</div>
+        <div>
+          Щоб побачити зміни новин у боковій панелі перезавантажте сторінку
+        </div>
+      </div>
+
+      <div
+        *ngFor="let post of postPage.data"
+        class="mb-5 pb-2 border-bottom-1 border-300"
+      >
+        <div class="flex justify-content-between">
+          <div>
+            <div class="mb-2">
+              <small *ngIf="!post.isPublished" class="block text-red-500">
+                Не опубліковано
+              </small>
+              <small class="block">
+                Створено: {{ post.createdAt | date : 'short' }} -
+                {{ post.createdBy?.fullName }}
+              </small>
+              <small class="block">
+                Оновлено: {{ post.updatedAt | date : 'short' }} -
+                {{ post.updatedBy?.fullName }}
+              </small>
+            </div>
+            <div [innerHTML]="post.body | safeHtml"></div>
+          </div>
+          <div class="flex ml-2">
+            <p-button icon="pi pi-pencil" (click)="editPost(post)"></p-button>
+            <p-button
+              class="ml-2"
+              icon="pi pi-trash"
+              styleClass="p-button-danger"
+              (click)="confirmToggle(post)"
+            ></p-button>
+          </div>
+        </div>
+      </div>
+      <p-paginator
+        (onPageChange)="onPageChange($event)"
+        [first]="first"
+        [rows]="rows"
+        [totalRecords]="postPage.meta.itemCount"
+      ></p-paginator>
+    </ng-container>
+
+    <ng-template #noPosts>
+      <div class="text-center">Новини відсутні</div>
+    </ng-template>
+  </ng-container>
+</div>
+
+<p-dialog
+  *ngIf="('create' | able : postEntity) || ('update' | able : postEntity)"
+  [(visible)]="postDialog"
+  [modal]="true"
+  header="Новина"
+  styleClass="p-fluid"
+  [style]="{ width: '700px', maxWidth: '90%' }"
+>
+  <ng-template pTemplate="content">
+    <div class="field">
+      <p-checkbox
+        [(ngModel)]="post.isPublished"
+        [binary]="true"
+        inputId="binary"
+        label="Опублікувати"
+      ></p-checkbox>
+    </div>
+    <div class="field">
+      <div class="flex">
+        <div>
+          <label for="body">Контент:</label>
+          <p-editor
+            [autofocus]="true"
+            id="body"
+            name="body"
+            placeholder="Опишіть новину"
+            [(ngModel)]="post.body"
+            [style]="{ height: '320px' }"
+          ></p-editor>
+        </div>
+        <div class="ml-3">
+          <label>Перегляд:</label>
+          <div class="post-preview-block">
+            <div *ngIf="post.body" [innerHTML]="post.body | safeHtml"></div>
+            <small>
+              {{ currentDate | date : 'short' }}
+              <ng-container *ngIf="!post.isPublished">
+                <span class="text-red-500">(Не опубліковано)</span>
+              </ng-container>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Відмінити"
+      icon="pi pi-times"
+      styleClass="p-button-outlined p-button-secondary"
+      (onClick)="hideDialog()"
+    ></p-button>
+    <p-button
+      label="Зберегти"
+      icon="pi pi-check"
+      (onClick)="savePost()"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog
+  rejectButtonStyleClass="p-button-outlined p-button-secondary"
+  header="Ви справді хочете видалити цю новину?"
+></p-confirmDialog>
