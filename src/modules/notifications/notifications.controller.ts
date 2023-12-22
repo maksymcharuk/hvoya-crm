@@ -35,7 +35,8 @@ export class NotificationsController {
   check(
     @User('id') userId: string,
     @Body('id') id: string,
+    @Query() pageOptionsDto: NotificationsPageOptionsDto,
   ): Promise<Page<NotificationEntity>> {
-    return this.notificationService.check(id, userId);
+    return this.notificationService.check(id, userId, pageOptionsDto);
   }
 }
