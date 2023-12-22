@@ -26,11 +26,16 @@ export class NotificationService {
     const query = this.dataSource
       .createQueryBuilder(NotificationEntity, 'notification')
       .where('notification.user = :userId', { userId })
-      .orderBy('notification.createdAt', SortOrder.DESC)
-      .skip(pageOptionsDto.skip)
-      .take(pageOptionsDto.take);
+      .andWhere('notification.checked = :checked', { checked: false })
+      .orderBy('notification.createdAt', SortOrder.DESC);
 
-    query.skip(pageOptionsDto.skip).take(pageOptionsDto.take);
+    if (pageOptionsDto.skip !== undefined) {
+      query.skip(pageOptionsDto.skip);
+    }
+
+    if (pageOptionsDto.take !== undefined) {
+      query.take(pageOptionsDto.take);
+    }
 
     const itemCount = await query.getCount();
     let { entities } = await query.getRawAndEntities();
@@ -58,12 +63,16 @@ export class NotificationService {
     return notification;
   }
 
-  async check(id: string, userId: string): Promise<Page<NotificationEntity>> {
+  async check(
+    id: string,
+    userId: string,
+    pageOptionsDto: NotificationsPageOptionsDto,
+  ): Promise<Page<NotificationEntity>> {
     await this.dataSource.manager.update(
       NotificationEntity,
       { id },
       { checked: true },
     );
-    return this.getAll(userId, new NotificationsPageOptionsDto({ take: 10 }));
+    return this.getAll(userId, pageOptionsDto);
   }
 }

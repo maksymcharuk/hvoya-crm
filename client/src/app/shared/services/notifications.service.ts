@@ -56,7 +56,7 @@ export class NotificationsService {
 
   constructor(private readonly http: HttpClient) {
     // TODO: revamp notifications
-    this.getNotifications(new PageOptions({ rows: 200 })).subscribe(
+    this.getNotifications(new PageOptions({ rows: 0 })).subscribe(
       (notifications) => {
         this.notifications$.next(notifications.data);
       },
@@ -80,19 +80,32 @@ export class NotificationsService {
       );
   }
 
-  checkNotification(id: string) {
+  checkNotification(id: string, pageOptions?: PageOptions) {
+    if (!pageOptions) {
+      pageOptions = new PageOptions({ rows: 0 });
+    }
+
+    let params = new HttpParams({ fromObject: pageOptions.toParams() });
+
     const response = this.http
-      .post<NotificationEntity[]>(`${environment.apiUrl}/notifications`, { id })
+      .post<Page<NotificationEntity>>(
+        `${environment.apiUrl}/notifications`,
+        {
+          id,
+        },
+        { params },
+      )
       .pipe(
-        map((notificationsList) =>
-          notificationsList.map(
+        map((page) => ({
+          data: page.data.map(
             (notification) => new NotificationEntity(notification),
           ),
-        ),
+          meta: page.meta,
+        })),
       );
 
     response.subscribe((notifications) => {
-      this.notifications$.next(notifications);
+      this.notifications$.next(notifications.data);
     });
 
     return response;
