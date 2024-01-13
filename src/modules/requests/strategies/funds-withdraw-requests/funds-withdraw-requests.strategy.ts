@@ -30,7 +30,7 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
     private readonly caslAbilityFactory: CaslAbilityFactory,
     private readonly filesService: FilesService,
     private readonly oneCApiClientService: OneCApiClientService,
-  ) {}
+  ) { }
 
   async createRequest(data: CreateRequestStrategyDto): Promise<RequestEntity> {
     const balance = await data.queryRunner.manager.findOneOrFail(
@@ -121,6 +121,9 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
         data.document,
         {
           folder: Folder.FundsWithdrawRequestFiles,
+          resource_type: 'auto',
+          use_filename: true,
+          public_id: new Date().getTime() + data.document.originalname
         },
       );
 
@@ -191,6 +194,9 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
           data.document,
           {
             folder: Folder.FundsWithdrawRequestFiles,
+            resource_type: 'auto',
+            use_filename: true,
+            public_id: new Date().getTime() + data.document.originalname
           },
         );
       }
