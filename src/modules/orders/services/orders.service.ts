@@ -70,7 +70,7 @@ export class OrdersService {
     private caslAbilityFactory: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,
     private deliveryServiceFactory: DeliveryServiceFactory,
-  ) { }
+  ) {}
 
   async getOrder(userId: string, orderNumber: string): Promise<OrderEntity> {
     const manager = this.dataSource.createEntityManager();
@@ -250,12 +250,13 @@ export class OrdersService {
       }
 
       if (waybill) {
-        waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
-          folder: Folder.OrderFiles,
-          resource_type: 'auto',
-          use_filename: true,
-          public_id: new Date().getTime() + waybill.originalname,
-        });
+        waybillScan = await this.filesService.uploadAutoFile(
+          queryRunner,
+          waybill,
+          {
+            folder: Folder.OrderFiles,
+          },
+        );
       } else if (
         createOrderDto.deliveryService !== DeliveryService.SelfPickup
       ) {
@@ -415,12 +416,13 @@ export class OrdersService {
       const order = await this.getOrderWhere({ number: orderNumber });
 
       if (waybill) {
-        waybillScan = await this.filesService.uploadFile(queryRunner, waybill, {
-          folder: Folder.OrderFiles,
-          resource_type: 'auto',
-          use_filename: true,
-          public_id: new Date().getTime() + waybill.originalname,
-        });
+        waybillScan = await this.filesService.uploadAutoFile(
+          queryRunner,
+          waybill,
+          {
+            folder: Folder.OrderFiles,
+          },
+        );
         await queryRunner.manager.update(
           OrderDeliveryEntity,
           order.delivery.id,
@@ -545,14 +547,11 @@ export class OrdersService {
         );
 
         if (waybill) {
-          waybillScan = await this.filesService.uploadFile(
+          waybillScan = await this.filesService.uploadAutoFile(
             queryRunner,
             waybill,
             {
               folder: Folder.OrderFiles,
-              resource_type: 'auto',
-              use_filename: true,
-              public_id: new Date().getTime() + waybill.originalname,
             },
           );
         } else if (

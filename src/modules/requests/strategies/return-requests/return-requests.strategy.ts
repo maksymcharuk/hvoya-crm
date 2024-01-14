@@ -42,7 +42,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     private readonly caslAbilityFactory: CaslAbilityFactory,
     private readonly filesService: FilesService,
     private readonly oneCApiClientService: OneCApiClientService,
-  ) { }
+  ) {}
 
   async createRequest(data: CreateRequestStrategyDto): Promise<RequestEntity> {
     let waybillFile!: FileEntity;
@@ -74,14 +74,11 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       }
 
       if (data.document) {
-        waybillFile = await this.filesService.uploadFile(
+        waybillFile = await this.filesService.uploadAutoFile(
           data.queryRunner,
           data.document,
           {
             folder: Folder.ReturnRequestFiles,
-            resource_type: 'auto',
-            use_filename: true,
-            public_id: new Date().getTime() + data.document.originalname,
           },
         );
       }
@@ -400,14 +397,11 @@ export class ReturnRequestsStrategy implements RequestStrategy {
 
       if (data.updateRequestByCustomerDto.returnRequest.trackingId) {
         if (data.document) {
-          waybillScan = await this.filesService.uploadFile(
+          waybillScan = await this.filesService.uploadAutoFile(
             data.queryRunner,
             data.document,
             {
               folder: Folder.OrderFiles,
-              resource_type: 'auto',
-              use_filename: true,
-              public_id: new Date().getTime() + data.document.originalname,
             },
           );
         }

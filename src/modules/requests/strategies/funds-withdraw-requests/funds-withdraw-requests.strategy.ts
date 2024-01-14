@@ -30,7 +30,7 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
     private readonly caslAbilityFactory: CaslAbilityFactory,
     private readonly filesService: FilesService,
     private readonly oneCApiClientService: OneCApiClientService,
-  ) { }
+  ) {}
 
   async createRequest(data: CreateRequestStrategyDto): Promise<RequestEntity> {
     const balance = await data.queryRunner.manager.findOneOrFail(
@@ -116,14 +116,11 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
         );
       }
 
-      fundsWithdrawalReceipt = await this.filesService.uploadFile(
+      fundsWithdrawalReceipt = await this.filesService.uploadAutoFile(
         data.queryRunner,
         data.document,
         {
           folder: Folder.FundsWithdrawRequestFiles,
-          resource_type: 'auto',
-          use_filename: true,
-          public_id: new Date().getTime() + data.document.originalname
         },
       );
 
@@ -189,14 +186,11 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
       }
 
       if (data.document) {
-        document = await this.filesService.uploadFile(
+        document = await this.filesService.uploadAutoFile(
           data.queryRunner,
           data.document,
           {
             folder: Folder.FundsWithdrawRequestFiles,
-            resource_type: 'auto',
-            use_filename: true,
-            public_id: new Date().getTime() + data.document.originalname
           },
         );
       }
