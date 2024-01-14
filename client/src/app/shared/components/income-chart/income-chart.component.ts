@@ -1,14 +1,15 @@
+import { CurrencyPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 import { OrderStatus } from '@shared/enums/order-status.enum';
 import { Order } from '@shared/interfaces/entities/order.entity';
 
 @Component({
-  selector: 'app-orders-chart',
-  templateUrl: './orders-chart.component.html',
-  styleUrls: ['./orders-chart.component.scss'],
+  selector: 'app-income-chart',
+  templateUrl: './income-chart.component.html',
+  styleUrls: ['./income-chart.component.scss'],
 })
-export class OrdersChartComponent {
+export class IncomeChartComponent {
   private ordersInternal!: Order[];
   loading = true;
 
@@ -40,6 +41,8 @@ export class OrdersChartComponent {
     red500: this.documentStyle.getPropertyValue('--red-500'),
   };
 
+  constructor(private readonly currencyPipe: CurrencyPipe) {}
+
   private setup() {
     this.data = this.getData();
     this.options = this.getOptions();
@@ -66,30 +69,36 @@ export class OrdersChartComponent {
       return acc;
     }, {} as { [key: string]: Order[] });
 
-    // get orders count by month map to labels array
-    const ongoingOrFulfiledOrdersCountByMonth = labels.map((label) => {
+    // Get orders sum by month map to labels array
+    const ongoingOrFulfiledOrdersSumByMonth = labels.map((label) => {
       const orders = ordersByMonth[label];
       if (!orders) {
         return 0;
       }
-      return orders.filter(
-        (order) =>
-          ![OrderStatus.Cancelled, OrderStatus.Refunded].includes(
-            order.currentStatus.status,
-          ),
-      ).length;
+      return orders
+        .filter(
+          (order) =>
+            ![
+              OrderStatus.Cancelled,
+              OrderStatus.Refunded,
+              OrderStatus.Refused,
+            ].includes(order.currentStatus.status),
+        )
+        .reduce((acc, order) => acc + order.total!, 0);
     });
 
-    const canceledOrRefundOrdersCountByMonth = labels.map((label) => {
+    const refundOrdersSumByMonth = labels.map((label) => {
       const orders = ordersByMonth[label];
       if (!orders) {
         return 0;
       }
-      return orders.filter((order) =>
-        [OrderStatus.Cancelled, OrderStatus.Refunded].includes(
-          order.currentStatus.status,
-        ),
-      ).length;
+      return orders
+        .filter((order) =>
+          [OrderStatus.Refunded, OrderStatus.Refused].includes(
+            order.currentStatus.status,
+          ),
+        )
+        .reduce((acc, order) => acc + order.total!, 0);
     });
 
     return {
@@ -97,15 +106,15 @@ export class OrdersChartComponent {
       datasets: [
         {
           type: 'bar',
-          label: 'Поточні та виконані замовлення',
+          label: 'Сума по поточним та виконаним замовленням',
           backgroundColor: this.colors.surface500,
-          data: ongoingOrFulfiledOrdersCountByMonth,
+          data: ongoingOrFulfiledOrdersSumByMonth,
         },
         {
           type: 'bar',
-          label: 'Скасовані та повернуті замовлення',
+          label: 'Сума по поверненням та відмовам',
           backgroundColor: this.colors.red500,
-          data: canceledOrRefundOrdersCountByMonth,
+          data: refundOrdersSumByMonth,
         },
       ],
     };
@@ -119,6 +128,24 @@ export class OrdersChartComponent {
         tooltip: {
           mode: 'index',
           intersect: false,
+          callbacks: {
+            label: (context: any) => {
+              let label = context.dataset.label || '';
+
+              if (label) {
+                label += ': ';
+              }
+              if (context.parsed.y !== null) {
+                label += this.currencyPipe.transform(
+                  context.parsed.y,
+                  undefined,
+                  undefined,
+                  '1.0-0',
+                );
+              }
+              return label;
+            },
+          },
         },
         legend: {
           labels: {
@@ -141,6 +168,14 @@ export class OrdersChartComponent {
           stacked: true,
           ticks: {
             color: this.colors.textColorSecondary,
+            callback: (value: number) => {
+              return this.currencyPipe.transform(
+                value,
+                undefined,
+                undefined,
+                '1.0-0',
+              );
+            },
           },
           grid: {
             color: this.colors.surfaceBorder,

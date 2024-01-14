@@ -22,7 +22,11 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
-import { CommonModule, registerLocaleData } from '@angular/common';
+import {
+  CommonModule,
+  CurrencyPipe,
+  registerLocaleData,
+} from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import localeUk from '@angular/common/locales/uk';
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
@@ -35,6 +39,7 @@ import { FaqItemComponent } from './components/faq-item/faq-item.component';
 import { FaqListComponent } from './components/faq-list/faq-list.component';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 import { ImageComponentComponent } from './components/image-component/image-component.component';
+import { IncomeChartComponent } from './components/income-chart/income-chart.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { OrderDeliveryStatusBadgeComponent } from './components/order-delivery-status-badge/order-delivery-status-badge.component';
 import { OrderListItemComponent } from './components/order-list/order-list-item/order-list-item.component';
@@ -127,6 +132,7 @@ const COMPONENTS = [
   ReturnRequestItemListComponent,
   RequestTypeBadgeComponent,
   PostsWidgetComponent,
+  IncomeChartComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -154,6 +160,8 @@ const PRIMENG_MODULES = [
   InputNumberModule,
 ];
 
+const NG_PIPES = [CurrencyPipe];
+
 @NgModule({
   declarations: [...COMPONENTS, ...PIPES],
   imports: [
@@ -167,6 +175,7 @@ const PRIMENG_MODULES = [
     ...PRIMENG_MODULES,
   ],
   providers: [
+    ...NG_PIPES,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpExceptionInterceptor,

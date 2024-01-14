@@ -87,7 +87,7 @@ export class Order extends BaseEntity {
     this.statuses =
       data?.statuses?.map((status) => new OrderStatus(status)) || [];
     this.number = data?.number || 0;
-    this.total = data?.total;
+    this.total = Number(data?.total);
     this.customer = new User(data?.customer);
     this.customerNote = data?.customerNote;
     this.managerNote = data?.managerNote;
