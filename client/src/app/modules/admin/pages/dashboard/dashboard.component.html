@@ -10,6 +10,16 @@
 
   <div class="col-12">
     <div class="card">
+      <h5>Загальна сума замовленнь по місяцях</h5>
+      <app-income-chart
+        [orders]="(analytics$ | async)?.ordersData!"
+      ></app-income-chart>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card">
+      <h5>Кількість замовлень по місяцях</h5>
       <app-orders-chart
         [orders]="(analytics$ | async)?.ordersData!"
       ></app-orders-chart>
