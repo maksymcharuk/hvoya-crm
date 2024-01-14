@@ -11,6 +11,21 @@ import { CloudinaryService } from '@modules/cloudinary/services/cloudinary.servi
 export class FilesService {
   constructor(private cloudinaryService: CloudinaryService) {}
 
+  async uploadAutoFile(
+    queryRunner: QueryRunner,
+    file: Express.Multer.File,
+    customOptions?: UploadApiOptions,
+  ): Promise<FileEntity> {
+    const options: UploadApiOptions = {
+      resource_type: 'auto',
+      use_filename: true,
+      public_id: `${new Date().getTime()}-${file.originalname}`,
+      ...customOptions,
+    };
+
+    return this.uploadFile(queryRunner, file, options);
+  }
+
   async uploadFile(
     queryRunner: QueryRunner,
     file: Express.Multer.File,

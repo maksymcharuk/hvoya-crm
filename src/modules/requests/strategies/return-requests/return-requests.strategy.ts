@@ -74,7 +74,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       }
 
       if (data.document) {
-        waybillFile = await this.filesService.uploadFile(
+        waybillFile = await this.filesService.uploadAutoFile(
           data.queryRunner,
           data.document,
           {
@@ -397,7 +397,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
 
       if (data.updateRequestByCustomerDto.returnRequest.trackingId) {
         if (data.document) {
-          waybillScan = await this.filesService.uploadFile(
+          waybillScan = await this.filesService.uploadAutoFile(
             data.queryRunner,
             data.document,
             {

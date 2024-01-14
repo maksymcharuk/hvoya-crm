@@ -116,7 +116,7 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
         );
       }
 
-      fundsWithdrawalReceipt = await this.filesService.uploadFile(
+      fundsWithdrawalReceipt = await this.filesService.uploadAutoFile(
         data.queryRunner,
         data.document,
         {
@@ -186,7 +186,7 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
       }
 
       if (data.document) {
-        document = await this.filesService.uploadFile(
+        document = await this.filesService.uploadAutoFile(
           data.queryRunner,
           data.document,
           {
