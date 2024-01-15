@@ -1,16 +1,19 @@
+import { ActionsSubject, Store } from '@ngrx/store';
 import {
   ConfirmationService,
   LazyLoadEvent,
   MessageService,
 } from 'primeng/api';
-import { BehaviorSubject } from 'rxjs';
 
 import { Component } from '@angular/core';
 
 import { Post } from '@shared/interfaces/entities/post.entity';
 import { PageOptions } from '@shared/interfaces/page-options.interface';
-import { Page } from '@shared/interfaces/page.interface';
 import { PostsService } from '@shared/services/posts.service';
+
+import { deletePost, deletePostSuccess, getPosts } from './state/post.actions';
+import { PostState } from './state/post.reducer';
+import { selectPostsPage } from './state/post.selectors';
 
 @Component({
   selector: 'app-post',
@@ -18,7 +21,7 @@ import { PostsService } from '@shared/services/posts.service';
   styleUrls: ['./posts.component.scss'],
 })
 export class PostsComponent {
-  postPage$ = new BehaviorSubject<Page<Post> | null>(null);
+  postPage$ = this.store.select(selectPostsPage);
   postDialog!: boolean;
   post!: Post;
   submitted!: boolean;
@@ -32,8 +35,22 @@ export class PostsComponent {
     private readonly postsService: PostsService,
     private readonly confirmationService: ConfirmationService,
     private readonly messageService: MessageService,
+    private readonly store: Store<PostState>,
+    private readonly actions$: ActionsSubject,
   ) {
     this.updatePosts();
+    this.actions$.subscribe((action) => {
+      if (action.type === deletePostSuccess.type) {
+        this.store.dispatch(
+          getPosts({
+            pageOptions: new PageOptions({
+              rows: this.rows,
+              first: this.first,
+            }),
+          }),
+        );
+      }
+    });
   }
 
   confirmToggle(post: Post) {
@@ -93,25 +110,18 @@ export class PostsComponent {
   }
 
   deletePost(post: Post) {
-    this.postsService.delete(post.id).subscribe(() => {
-      this.updatePosts();
-      this.messageService.add({
-        severity: 'success',
-        detail: 'Новину видалено',
-      });
-    });
+    this.store.dispatch(
+      deletePost({
+        id: post.id,
+      }),
+    );
   }
 
   updatePosts() {
-    this.postsService
-      .getAll(
-        new PageOptions({
-          rows: this.rows,
-          first: this.first,
-        }),
-      )
-      .subscribe((postPage) => {
-        this.postPage$.next(postPage);
-      });
+    this.store.dispatch(
+      getPosts({
+        pageOptions: new PageOptions({ rows: this.rows, first: this.first }),
+      }),
+    );
   }
 }
