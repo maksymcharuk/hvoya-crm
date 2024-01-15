@@ -14,8 +14,8 @@ import { SharedModule } from '@shared/shared.module';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
-import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
 import { UsersRatingComponent } from './components/users-rating/users-rating.component';
+import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [AdminComponent, AdminDashboardComponent, UsersRatingComponent],

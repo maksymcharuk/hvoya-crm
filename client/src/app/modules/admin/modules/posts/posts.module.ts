@@ -1,3 +1,5 @@
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -17,6 +19,8 @@ import { SharedModule } from '@shared/shared.module';
 
 import { PostsRoutingModule } from './posts-routing.module';
 import { PostsComponent } from './posts.component';
+import { PostEffects } from './state/post.effects';
+import { postsFeature } from './state/post.reducer';
 
 @NgModule({
   declarations: [PostsComponent],
@@ -34,6 +38,8 @@ import { PostsComponent } from './posts.component';
     CheckboxModule,
     PaginatorModule,
     ConfirmDialogModule,
+    StoreModule.forFeature(postsFeature),
+    EffectsModule.forFeature([PostEffects]),
   ],
   providers: [ConfirmationService],
 })
