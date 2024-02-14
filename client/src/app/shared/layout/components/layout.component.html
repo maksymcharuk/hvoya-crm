@@ -3,7 +3,7 @@
     <ng-content select="[topbar-menu]"></ng-content>
   </app-topbar>
   <div class="layout-sidebar">
-    <app-sidebar class="layout-sidebar-inner" [menuItems]="sidebarMenuItems">
+    <app-sidebar [menuItems]="sidebarMenuItems">
       <ng-content select="[sidebar-appendix]"></ng-content>
     </app-sidebar>
   </div>

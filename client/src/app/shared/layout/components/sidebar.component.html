@@ -1,13 +1,16 @@
-<div *ngIf="profile$ | async as profile" class="user-info">
-  <h5 class="user-info__name">
-    {{ profile.lastName }} {{ profile.firstName }}
-  </h5>
-  <div class="user-info__number" *ngIf="currentUser?.isUser">
-    Номер договору: {{ profile.accountNumber }}
+<div class="sidebar">
+  <div class="sidebar__main">
+    <div *ngIf="profile$ | async as profile" class="user-info">
+      <h5 class="user-info__name">
+        {{ profile.lastName }} {{ profile.firstName }}
+      </h5>
+      <div class="user-info__number" *ngIf="currentUser?.isUser">
+        Номер договору: {{ profile.accountNumber }}
+      </div>
+    </div>
+    <app-menu [menuItems]="menuItems"></app-menu>
   </div>
-</div>
-<app-menu [menuItems]="menuItems"></app-menu>
-
-<div #sidebarappendix class="layout-sidebar-appendix">
-  <ng-content></ng-content>
+  <div #sidebarappendix class="sidebar__appendix">
+    <ng-content></ng-content>
+  </div>
 </div>
