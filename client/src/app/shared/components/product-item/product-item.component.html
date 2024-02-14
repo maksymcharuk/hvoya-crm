@@ -1,20 +1,11 @@
 <div class="card flex flex-column w-full">
-  <div
-    class="wrapper mb-3"
-    *ngIf="
-      selectedColorId !== undefined && selectedImage;
-      else imageWrapperSkeleton
-    "
-  >
-    <a [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]">
+  <div class="wrapper mb-3">
+    <a [routerLink]="product.id.toString()">
       <app-image-component
         class="wrapper__img"
-        [image]="selectedImage"
+        [image]="primaryImageUrl"
       ></app-image-component>
-      <div
-        *ngIf="selectedVariant?.properties?.isPublished === false"
-        class="overlay"
-      >
+      <div *ngIf="product?.properties?.isPublished === false" class="overlay">
         <p-tag
           class="published-tag"
           severity="danger"
@@ -22,22 +13,10 @@
         ></p-tag>
       </div>
     </a>
-    <div class="colors my-2">
-      <p-selectButton
-        [options]="colors"
-        [(ngModel)]="selectedColorId"
-        (onChange)="onVariantChange($event, 'color')"
-        optionValue="id"
-      >
-        <ng-template let-color>
-          <app-product-color-badge [color]="color"></app-product-color-badge>
-        </ng-template>
-      </p-selectButton>
-    </div>
     <app-stock-badge
-      *ngIf="selectedVariant?.stock !== undefined"
+      *ngIf="product?.stock !== undefined"
       class="stock-badge"
-      [value]="selectedVariant!.stock"
+      [value]="product!.stock"
     ></app-stock-badge>
   </div>
   <ng-template #imageWrapperSkeleton>
@@ -45,12 +24,12 @@
   </ng-template>
   <div class="flex-grow-1 my-2">
     <a
-      *ngIf="selectedVariant?.properties?.name; else productNameSkeleton"
-      [routerLink]="[product.id?.toString(), selectedVariant?.id?.toString()]"
+      *ngIf="product?.properties?.name; else productNameSkeleton"
+      [routerLink]="product.id.toString()"
       class="text-900 font-medium text-xl"
       data-cy="product-name"
     >
-      {{ selectedVariant?.properties?.name }}
+      {{ product.properties.name }}
     </a>
   </div>
   <ng-template #productNameSkeleton>
@@ -58,39 +37,21 @@
   </ng-template>
   <div class="my-3 flex justify-content-between">
     <span
-      *ngIf="selectedVariant?.properties?.price; else priceSkeleton"
+      *ngIf="product?.properties?.price; else priceSkeleton"
       class="font-bold text-900"
       data-cy="product-price"
-      >{{ selectedVariant?.properties?.price | currency }}</span
+      >{{ product.properties.price | currency }}</span
     >
     <span
-      *ngIf="selectedVariant?.sku; else skuSkeleton"
+      *ngIf="product?.sku; else skuSkeleton"
       class="text-600 text-base overflow-hidden w-6rem"
-      >{{ selectedVariant?.sku }}</span
+      >{{ product.sku }}</span
     >
   </div>
   <ng-template #priceSkeleton>
     <p-skeleton height="2rem" width="100%"></p-skeleton>
   </ng-template>
   <ng-template #skuSkeleton>
-    <p-skeleton height="2rem" width="100%"></p-skeleton>
-  </ng-template>
-  <div class="my-3">
-    <p-selectButton
-      *ngIf="selectedSizeId !== undefined; else sizeSkeleton"
-      [options]="sizes"
-      [(ngModel)]="selectedSizeId"
-      (onChange)="onVariantChange($event, 'size')"
-      optionValue="id"
-    >
-      <ng-template let-size>
-        <span class="w-full text-center">
-          {{ size | productSize : 'short' }}
-        </span>
-      </ng-template>
-    </p-selectButton>
-  </div>
-  <ng-template #sizeSkeleton>
     <p-skeleton height="2rem" width="100%"></p-skeleton>
   </ng-template>
   <button
@@ -102,7 +63,7 @@
     iconPos="left"
     label="Додати в кошик"
     data-cy="product-add-to-cart-button"
-    [disabled]="!selectedVariant?.stock"
+    [disabled]="!product.stock"
     (click)="onAddToCart()"
   ></button>
 </div>

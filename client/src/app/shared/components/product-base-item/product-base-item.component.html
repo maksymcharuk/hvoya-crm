@@ -1,0 +1,26 @@
+<div class="card flex flex-column w-full">
+  <div class="wrapper mb-3">
+    <a [routerLink]="[product.id?.toString()]">
+      <app-image-component
+        class="wrapper__img"
+        [image]="primaryImageUrl"
+      ></app-image-component>
+    </a>
+  </div>
+  <ng-template #imageWrapperSkeleton>
+    <p-skeleton height="15rem" width="100%"></p-skeleton>
+  </ng-template>
+  <div class="flex-grow-1 my-2">
+    <a
+      *ngIf="product.name; else productNameSkeleton"
+      [routerLink]="[product.id?.toString(), product.id?.toString()]"
+      class="text-900 font-medium text-xl"
+      data-cy="product-name"
+    >
+      {{ product.name }}
+    </a>
+  </div>
+  <ng-template #productNameSkeleton>
+    <p-skeleton height="2rem" width="100%"></p-skeleton>
+  </ng-template>
+</div>

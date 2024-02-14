@@ -21,6 +21,7 @@ import { AdminProductsRoutingModule } from './admin-products-routing.module';
 import { AdminProductsComponent } from './admin-products.component';
 import { ProductStateChangesComponent } from './components/product-state-changes/product-state-changes.component';
 import { UpsertProductFormComponent } from './components/upsert-product-form/upsert-product-form.component';
+import { AdminProductBaseListComponent } from './pages/admin-product-base-list/admin-product-base-list.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { CreateProductComponent } from './pages/create-product/create-product.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
@@ -37,6 +38,7 @@ import { ViewProductComponent } from './pages/view-product/view-product.componen
     UpsertProductFormComponent,
     ViewProductComponent,
     TransferComponent,
+    AdminProductBaseListComponent,
   ],
   imports: [
     CommonModule,

@@ -18,6 +18,7 @@ import { Page } from '@shared/interfaces/page.interface';
 export class ProductsService {
   constructor(private http: HttpClient) {}
 
+  productBase$ = new BehaviorSubject<ProductBase | null>(null);
   productsList$ = new BehaviorSubject<ProductBase[]>([]);
 
   createProduct(product: FormData): Observable<ProductVariant> {
@@ -59,7 +60,10 @@ export class ProductsService {
   getProduct(id: string): Observable<ProductBase> {
     return this.http
       .get<ProductBase>(`${environment.apiUrl}/products/${id}`)
-      .pipe(map((product) => new ProductBase(product)));
+      .pipe(
+        map((product) => new ProductBase(product)),
+        tap((product) => this.productBase$.next(product)),
+      );
   }
 
   editProduct(product: FormData): Observable<ProductVariant> {

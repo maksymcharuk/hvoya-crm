@@ -1,111 +1,45 @@
-<ng-container>
-  <form
-    [formGroup]="filtersForm"
-    class="flex mb-3 justify-content-between card p-3"
-  >
-    <!-- <p-dropdown
-      formControlName="sort"
-      placeholder="Сортування"
-      optionValue="value"
-      styleClass="mb-2 md:mb-0"
-      [options]="sortOptions"
-    ></p-dropdown> -->
-    <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
-      <input
-        pInputText
-        formControlName="search"
-        type="text"
-        placeholder="Назва товару або артикул"
-        class="w-16rem"
-      />
-    </span>
-    <div class="flex align-items-start">
-      <div class="flex align-items-center h-full">
-        <p-inputSwitch
-          formControlName="stock"
-          class="flex"
-          inputId="stock"
-        ></p-inputSwitch>
-        <label class="ml-2" for="stock">Тільки в наявності</label>
+<div class="grid -mt-3 -ml-3 -mr-3">
+  <ng-template #loading>
+    <ng-container *ngFor="let _ of [].constructor(10)">
+      <div class="col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
+        <div class="card">
+          <div class="skeleton-wrapper mb-3">
+            <p-skeleton
+              width="100%"
+              styleClass="skeleton-wrapper-img"
+            ></p-skeleton>
+          </div>
+          <p-skeleton width="100%" height="20px"></p-skeleton>
+          <div class="my-2">
+            <p-skeleton width="100%" height="25px"></p-skeleton>
+          </div>
+          <div class="my-4 flex justify-content-between">
+            <p-skeleton width="5rem" height="16px"></p-skeleton>
+            <p-skeleton width="5rem" height="16px"></p-skeleton>
+          </div>
+          <p-skeleton width="100%" height="39px"></p-skeleton>
+        </div>
       </div>
-      <p-multiSelect
-        formControlName="filters"
-        defaultLabel="Виберіть фільтри"
-        display="chip"
-        dataKey="uuid"
-        optionLabel="label"
-        [options]="(filterOptions$ | async) || []"
-        [group]="true"
-        class="ml-4"
-      >
-        <ng-template let-filter pTemplate="group">
-          <div class="flex align-items-center">
-            <span>{{ filter.label }}</span>
-          </div>
-        </ng-template>
-      </p-multiSelect>
-    </div>
-  </form>
-</ng-container>
-
-<div
-  infinite-scroll
-  [infiniteScrollDistance]="2"
-  [infiniteScrollThrottle]="1000"
-  (scrolled)="onScroll()"
->
-  <div class="grid -mt-3 -ml-3 -mr-3">
-    <ng-template #loading>
-      <ng-container *ngFor="let _ of [].constructor(10)">
-        <div class="col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
-          <div class="card">
-            <div class="skeleton-wrapper mb-3">
-              <p-skeleton
-                width="100%"
-                styleClass="skeleton-wrapper-img"
-              ></p-skeleton>
-            </div>
-            <p-skeleton width="100%" height="20px"></p-skeleton>
-            <div class="my-2">
-              <p-skeleton width="100%" height="25px"></p-skeleton>
-            </div>
-            <div class="my-4 flex justify-content-between">
-              <p-skeleton width="5rem" height="16px"></p-skeleton>
-              <p-skeleton width="5rem" height="16px"></p-skeleton>
-            </div>
-            <p-skeleton width="100%" height="39px"></p-skeleton>
-          </div>
+    </ng-container>
+  </ng-template>
+  <ng-container *ngIf="products$ | async as products; else loading">
+    <ng-container *ngIf="products.length > 0; else noProductsFound">
+      <ng-container *ngFor="let product of products">
+        <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
+          <app-product-item
+            class="flex"
+            data-cy="product-item"
+            [product]="product"
+            [hideAddToCartButton]="hideAddToCartButton"
+            (addToCart)="onAddToCart($event)"
+          ></app-product-item>
         </div>
       </ng-container>
-    </ng-template>
-    <ng-container *ngIf="productList$ | async as products">
-      <ng-container *ngIf="!showSkeletonLoading; else loading">
-        <ng-container *ngIf="products.length > 0; else noProductsFound">
-          <ng-container *ngFor="let product of products">
-            <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
-              <app-product-item
-                class="flex"
-                data-cy="product-item"
-                [product]="product"
-                [hideAddToCartButton]="hideAddToCartButton"
-                (addToCart)="onAddToCart($event)"
-              ></app-product-item>
-            </div>
-          </ng-container>
-        </ng-container>
-        <ng-template #noProductsFound>
-          <div class="col-12 my-5 text-center">
-            За вашим запитом нічого не знайдено. Спробуйте змінити параметри.
-          </div>
-        </ng-template>
-      </ng-container>
     </ng-container>
-  </div>
-  <div
-    [class.hidden]="!showMoreLoader"
-    class="flex justify-content-center py-2"
-  >
-    <p-progressSpinner styleClass="w-4rem h-4rem"></p-progressSpinner>
-  </div>
+    <ng-template #noProductsFound>
+      <div class="col-12 my-5 text-center">
+        За вашим запитом нічого не знайдено. Спробуйте змінити параметри.
+      </div>
+    </ng-template>
+  </ng-container>
 </div>
