@@ -1,0 +1,68 @@
+.wrapper {
+  position: relative;
+  height: 0;
+  /* Formula is: (height / width * 100%) */
+  padding-top: calc(360 / 360 * 100%);
+}
+
+.wrapper__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.stock-badge {
+  background-color: var(--surface-0);
+  color: var(--surface-700);
+  padding: 0.2rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+:host {
+  width: 100%;
+}
+
+:host ::ng-deep {
+  .p-selectbutton {
+    display: flex;
+
+    .p-button {
+      flex: 1 1 auto;
+      padding: 0.25rem;
+    }
+  }
+
+  .colors {
+    position: absolute;
+    left: 0.25rem;
+    bottom: 0.25rem;
+
+    .p-selectbutton {
+      display: flex;
+      flex-direction: column;
+
+      .p-button {
+        border: 0;
+        border-radius: 50% !important;
+        flex: none;
+        padding: 0.3rem;
+      }
+    }
+  }
+}

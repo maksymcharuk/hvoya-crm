@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AdminProductsComponent } from './admin-products.component';
+import { AdminProductBaseListComponent } from './pages/admin-product-base-list/admin-product-base-list.component';
 import { AdminProductListComponent } from './pages/admin-product-list/admin-product-list.component';
 import { CreateProductComponent } from './pages/create-product/create-product.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
@@ -15,7 +16,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: AdminProductListComponent,
+        component: AdminProductBaseListComponent,
         title: 'Список товарів - Hvoya CRM',
       },
       {
@@ -39,6 +40,11 @@ const routes: Routes = [
         path: 'transfer',
         component: TransferComponent,
         title: 'Імпорт/експорт товарів - Hvoya CRM',
+      },
+      {
+        path: ':baseId',
+        component: AdminProductListComponent,
+        title: 'Список товарів - Hvoya CRM',
       },
       {
         path: ':baseId/:variantId',

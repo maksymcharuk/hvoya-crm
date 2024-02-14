@@ -1,1 +1,17 @@
-<app-product-list [hideAddToCartButton]="true"></app-product-list>
+<div class="grid">
+  <div class="col-12">
+    <div class="flex align-items-center">
+      <p-button
+        routerLink=".."
+        label="Назад"
+        icon="pi pi-arrow-left"
+      ></p-button>
+      <h4 class="ml-3 my-0">
+        {{ (productBase$ | async)?.name }}
+      </h4>
+    </div>
+  </div>
+  <div class="col-12">
+    <app-product-list [hideAddToCartButton]="true"></app-product-list>
+  </div>
+</div>

@@ -53,3 +53,22 @@
     }
   }
 }
+
+.breadcrumbs {
+  display: flex;
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+
+  &__item {
+    & + & {
+      margin-left: 0.5rem;
+    }
+
+    &:last-child {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+}

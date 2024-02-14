@@ -1,8 +1,10 @@
-<div class="grid">
+<div *ngIf="product$ | async as product" class="grid">
+  <div class="col-12">
+    <p-button routerLink=".." label="Назад" icon="pi pi-arrow-left"></p-button>
+  </div>
   <div class="col-12">
     <div class="card">
       <app-product-view
-        *ngIf="product$ | async as product"
         [product]="product"
         [selectedVariantId]="selectedVariantId"
         (addToCart)="addToCart($event)"
