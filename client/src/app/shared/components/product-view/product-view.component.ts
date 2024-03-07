@@ -13,8 +13,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import {
   ProductBase,
-  ProductColor,
-  ProductSize,
   ProductVariant,
 } from '@shared/interfaces/entities/product.entity';
 
@@ -35,12 +33,6 @@ export class ProductViewComponent implements OnInit {
   variants: ProductVariant[] = [];
   selectedVariant: ProductVariant | undefined;
 
-  sizes: ProductSize[] = [];
-  selectedSizeId: string | undefined;
-
-  colors: ProductColor[] = [];
-  selectedColorId: string | undefined;
-
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
@@ -52,6 +44,12 @@ export class ProductViewComponent implements OnInit {
     this.selectedVariant = this.variants.find(
       (variant) => variant.id === this.selectedVariantId,
     );
+
+    console.log('== ProductViewComponent ==');
+    console.log('this.selectedVariantId', this.selectedVariantId);
+    console.log('this.variants', this.variants);
+    console.log('this.selectedVariant', this.selectedVariant);
+    console.log('==========================');
 
     if (!this.selectedVariant) {
       this.router.navigate(['../../'], {
