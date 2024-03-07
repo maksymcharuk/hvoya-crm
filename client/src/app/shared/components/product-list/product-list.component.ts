@@ -32,7 +32,25 @@ export class ProductListComponent implements OnDestroy {
     private messageService: MessageService,
     private cartService: CartService,
     private productsService: ProductsService,
-  ) {}
+  ) {
+    this.route.params.pipe(takeUntil(this.destroyed$)).subscribe((params) => {
+      console.log('=== ProductListComponent ===');
+      console.log("params['baseId']", params['baseId']);
+      console.log('============================');
+    });
+    this.productsService.productBase$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((productBase) => {
+        console.log('=== ProductListComponent ===');
+        console.log('productBase', productBase);
+        console.log('============================');
+      });
+    this.products$.subscribe((products) => {
+      console.log('=== ProductListComponent ===');
+      console.log('products', products);
+      console.log('============================');
+    });
+  }
 
   ngOnDestroy(): void {
     this.destroyed$.next();

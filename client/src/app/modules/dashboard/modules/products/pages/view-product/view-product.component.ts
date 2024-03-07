@@ -31,6 +31,11 @@ export class ViewProductComponent {
     this.route.params.subscribe((params) => {
       this.selectedVariantId = params['variantId'];
       this.product$ = this.productsService.getProduct(params['baseId']);
+
+      console.log('=== ViewProductComponent ===');
+      console.log("params['variantId']", params['variantId']);
+      console.log("params['baseId']", params['baseId']);
+      console.log('============================');
     });
   }
 

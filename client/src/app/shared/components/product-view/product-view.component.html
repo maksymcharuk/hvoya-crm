@@ -1,8 +1,8 @@
-<div class="grid" data-cy="product-view-page">
+<div *ngIf="selectedVariant" class="grid" data-cy="product-view-page">
   <div class="col-12 lg:col-6 relative">
     <p-galleria
       #galleria
-      *ngIf="selectedVariant?.properties?.images as images"
+      *ngIf="selectedVariant.properties?.images as images"
       [value]="images || null"
       [showItemNavigators]="images.length > 1"
       [showThumbnailNavigators]="images.length > 3"
@@ -19,7 +19,7 @@
       </ng-template>
     </p-galleria>
     <p-tag
-      *ngIf="selectedVariant?.properties?.isPublished === false"
+      *ngIf="selectedVariant.properties?.isPublished === false"
       class="published-tag"
       severity="danger"
       value="Не опублікований"
@@ -43,35 +43,39 @@
     </ol>
     <div class="flex align-items-center justify-content-between mb-4">
       <span class="text-xl font-medium text-900">{{
-        selectedVariant?.properties?.name
+        selectedVariant.properties.name
       }}</span
       ><span class="text-xl font-medium text-900 ml-6">{{
-        selectedVariant?.properties?.price | currency
+        selectedVariant.properties.price | currency
       }}</span>
     </div>
     <p
       class="p-0 mt-0 mb-5 line-height-3 text-700"
-      [innerHTML]="selectedVariant?.properties?.description"
+      [innerHTML]="selectedVariant.properties.description"
     ></p>
     <div class="font-bold text-900 mb-3">
-      Артикул: <span class="text-600">{{ selectedVariant?.sku }}</span>
+      Артикул: <span class="text-600">{{ selectedVariant.sku }}</span>
     </div>
     <div class="font-bold text-900 mb-3">Колір</div>
-    <div class="flex align-items-center mb-5">
-      <app-product-color-badge
-        [color]="selectedVariant?.properties?.color!"
-        size="28px"
-      ></app-product-color-badge>
-    </div>
-    <div class="mb-3 flex align-items-center justify-content-between">
-      <span class="font-bold text-900">Розмір</span>
-    </div>
-    <div class="flex align-items-center mb-5">
-      {{ selectedVariant?.properties?.size! | productSize : 'short' }}
-    </div>
+    <ng-container *ngIf="selectedVariant.properties?.color as color">
+      <div class="flex align-items-center mb-5">
+        <app-product-color-badge
+          [color]="color"
+          size="28px"
+        ></app-product-color-badge>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="selectedVariant.properties?.size as size">
+      <div class="mb-3 flex align-items-center justify-content-between">
+        <span class="font-bold text-900">Розмір</span>
+      </div>
+      <div class="flex align-items-center mb-5">
+        {{ size | productSize : 'short' }}
+      </div>
+    </ng-container>
     <!-- Габарити -->
     <div class="flex">
-      <div *ngIf="selectedVariant?.properties?.packageSize as packageSize">
+      <div *ngIf="selectedVariant.properties?.packageSize as packageSize">
         <div class="mb-3 flex align-items-center justify-content-between">
           <span class="font-bold text-900">Габарити</span>
         </div>
@@ -80,7 +84,7 @@
         </div>
       </div>
       <!-- Вага -->
-      <div *ngIf="selectedVariant?.properties?.weight as weight" class="ml-6">
+      <div *ngIf="selectedVariant.properties?.weight as weight" class="ml-6">
         <div class="mb-3 flex align-items-center justify-content-between">
           <span class="font-bold text-900">Вага</span>
         </div>
@@ -94,10 +98,9 @@
       <span class="font-bold text-900">Наявність</span>
     </div>
     <div class="flex align-items-center mb-5">
-      <app-stock-badge
-        *ngIf="selectedVariant?.stock !== undefined"
-        [value]="selectedVariant!.stock"
-      ></app-stock-badge>
+      <ng-container *ngIf="selectedVariant.stock !== undefined">
+        <app-stock-badge [value]="selectedVariant.stock"></app-stock-badge>
+      </ng-container>
     </div>
     <button
       *ngIf="!hideAddToCartButton"
@@ -105,7 +108,7 @@
       icon="pi pi-shopping-cart"
       label="Додати в кошик"
       class="p-element p-ripple w-full mb-5 p-button p-component"
-      [disabled]="!selectedVariant?.stock"
+      [disabled]="!selectedVariant.stock"
       (click)="onAddToCart()"
     ></button>
   </div>
