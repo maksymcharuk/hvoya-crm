@@ -1,6 +1,12 @@
 <div class="card flex flex-column w-full">
   <div class="wrapper mb-3">
-    <a [routerLink]="product.id.toString()">
+    <a
+      [routerLink]="
+        baseProductId
+          ? [baseProductId, product.id.toString()]
+          : product.id.toString()
+      "
+    >
       <app-image-component
         class="wrapper__img"
         [image]="primaryImageUrl"
@@ -25,7 +31,11 @@
   <div class="flex-grow-1 my-2">
     <a
       *ngIf="product?.properties?.name; else productNameSkeleton"
-      [routerLink]="product.id.toString()"
+      [routerLink]="
+        baseProductId
+          ? [baseProductId, product.id.toString()]
+          : product.id.toString()
+      "
       class="text-900 font-medium text-xl"
       data-cy="product-name"
     >

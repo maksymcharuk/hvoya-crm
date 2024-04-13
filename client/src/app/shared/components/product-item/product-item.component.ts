@@ -11,6 +11,7 @@ export class ProductItemComponent implements OnInit {
   @Input() product!: ProductVariant;
   @Input() hideAddToCartButton = false;
   @Input() previewImages: string[] = [];
+  @Input() baseProductId = '';
 
   @Output() addToCart = new EventEmitter<ProductVariant>();
 

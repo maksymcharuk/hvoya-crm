@@ -4,7 +4,6 @@ import { Subject, combineLatest, map, switchMap, take, takeUntil } from 'rxjs';
 import { Component, Input, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-// import { SortOrder } from '@shared/enums/sort-order.enum';
 import { CartItem } from '@shared/interfaces/entities/cart.entity';
 import { ProductVariant } from '@shared/interfaces/entities/product.entity';
 import { ProductsService } from '@shared/services/products.service';
@@ -32,25 +31,7 @@ export class ProductListComponent implements OnDestroy {
     private messageService: MessageService,
     private cartService: CartService,
     private productsService: ProductsService,
-  ) {
-    this.route.params.pipe(takeUntil(this.destroyed$)).subscribe((params) => {
-      console.log('=== ProductListComponent ===');
-      console.log("params['baseId']", params['baseId']);
-      console.log('============================');
-    });
-    this.productsService.productBase$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((productBase) => {
-        console.log('=== ProductListComponent ===');
-        console.log('productBase', productBase);
-        console.log('============================');
-      });
-    this.products$.subscribe((products) => {
-      console.log('=== ProductListComponent ===');
-      console.log('products', products);
-      console.log('============================');
-    });
-  }
+  ) {}
 
   ngOnDestroy(): void {
     this.destroyed$.next();
