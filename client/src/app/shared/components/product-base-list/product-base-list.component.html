@@ -82,15 +82,31 @@
     <ng-container *ngIf="productList$ | async as products">
       <ng-container *ngIf="!showSkeletonLoading; else loading">
         <ng-container *ngIf="products.length > 0; else noProductsFound">
-          <ng-container *ngFor="let product of products">
-            <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
-              <app-product-base-item
-                class="flex"
-                data-cy="product-item"
-                [product]="product"
-              />
-            </div>
+          <ng-container *ngIf="filtersActivated$ | async; else basicProducts">
+            <ng-container *ngFor="let product of productVariantList$ | async">
+              <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
+                <app-product-item
+                  class="flex"
+                  data-cy="product-item"
+                  [baseProductId]="product.baseProduct.id"
+                  [product]="product"
+                  [hideAddToCartButton]="hideAddToCartButton"
+                  (addToCart)="onAddToCart($event)"
+                />
+              </div>
+            </ng-container>
           </ng-container>
+          <ng-template #basicProducts>
+            <ng-container *ngFor="let product of products">
+              <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
+                <app-product-base-item
+                  class="flex"
+                  data-cy="product-item"
+                  [product]="product"
+                />
+              </div>
+            </ng-container>
+          </ng-template>
         </ng-container>
         <ng-template #noProductsFound>
           <div class="col-12 my-5 text-center">

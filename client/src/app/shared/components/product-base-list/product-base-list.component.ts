@@ -14,7 +14,7 @@ import {
   zip,
 } from 'rxjs';
 
-import { Component, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
@@ -37,6 +37,8 @@ import { CartService } from '../../../modules/dashboard/modules/cart/services/ca
   styleUrls: ['./product-base-list.component.scss'],
 })
 export class ProductBaseListComponent implements OnDestroy {
+  @Input() hideAddToCartButton = false;
+
   productList$ = this.productsService.productsList$.pipe(
     scan((acc: ProductBase[], value: ProductBase[]) => {
       if (this.page > 1) {
@@ -45,6 +47,20 @@ export class ProductBaseListComponent implements OnDestroy {
       return value;
     }, []),
   );
+  productVariantList$ = this.productList$.pipe(
+    map((products) =>
+      products.reduce((acc, product) => {
+        product.variants.forEach((variant) => {
+          variant.baseProduct.id = product.id;
+        });
+        return acc.concat(product.variants);
+      }, [] as ProductVariant[]),
+    ),
+  );
+  filtersActivated$ = this.route.queryParams.pipe(
+    map((params) => Object.keys(params).length > 0),
+  );
+
   private readonly destroyed$ = new Subject<void>();
 
   // sortOptions = [

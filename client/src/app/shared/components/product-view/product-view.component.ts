@@ -45,12 +45,6 @@ export class ProductViewComponent implements OnInit {
       (variant) => variant.id === this.selectedVariantId,
     );
 
-    console.log('== ProductViewComponent ==');
-    console.log('this.selectedVariantId', this.selectedVariantId);
-    console.log('this.variants', this.variants);
-    console.log('this.selectedVariant', this.selectedVariant);
-    console.log('==========================');
-
     if (!this.selectedVariant) {
       this.router.navigate(['../../'], {
         relativeTo: this.route,
