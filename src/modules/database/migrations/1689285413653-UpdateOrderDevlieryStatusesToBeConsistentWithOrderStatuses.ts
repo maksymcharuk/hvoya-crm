@@ -11,6 +11,15 @@ export class UpdateOrderDevlieryStatusesToBeConsistentWithOrderStatuses168928541
   public async up(queryRunner: QueryRunner): Promise<void> {
     // update orders delivery status to match order status
     const orders = await queryRunner.manager.find(OrderEntity, {
+      select: {
+        id: true,
+        delivery: {
+          id: true,
+        },
+        statuses: {
+          status: true,
+        },
+      },
       relations: ['statuses', 'delivery'],
       order: {
         statuses: {

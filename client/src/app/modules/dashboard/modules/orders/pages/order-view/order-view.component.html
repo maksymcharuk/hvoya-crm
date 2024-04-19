@@ -29,7 +29,7 @@
             <span>Замовлення №{{ order.number }}</span>
             <app-order-status-badge
               class="ml-5"
-              [status]="order.currentStatus.status"
+              [status]="order.currentStatus"
             ></app-order-status-badge>
           </h4>
           <p-button

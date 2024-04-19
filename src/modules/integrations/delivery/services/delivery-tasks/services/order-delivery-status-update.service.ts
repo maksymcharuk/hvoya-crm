@@ -32,21 +32,10 @@ export class OrderDeliveryStatusUpdateService extends DeliveryStatusUpdateServic
     // Get all orders where the latest status is not completed
     return this.manager
       .createQueryBuilder(OrderEntity, 'order')
-      .leftJoinAndSelect('order.statuses', 'status')
+      .leftJoinAndSelect('order.statuses', 'statuses')
       .leftJoinAndSelect('order.delivery', 'delivery')
       .leftJoinAndSelect('order.customer', 'customer')
-      .where((qb) => {
-        const subQuery = qb
-          .subQuery()
-          .from(OrderStatusEntity, 'status')
-          .select('MAX(status.createdAt)', 'maxCreatedAt')
-          .where('status.orderId = order.id')
-          .groupBy('status.orderId')
-          .getQuery();
-
-        return `status.createdAt = (${subQuery})`;
-      })
-      .andWhere('status.status NOT IN (:...completedStatuses)', {
+      .andWhere('order.currentStatus NOT IN (:...completedStatuses)', {
         completedStatuses: COMPLETED_ORDER_STATUSES,
       })
       .andWhere('delivery.deliveryService != :selfPickup', {
@@ -95,9 +84,15 @@ export class OrderDeliveryStatusUpdateService extends DeliveryStatusUpdateServic
     DeliveryStatusesToOrderStatuses.forEach(async (value, key) => {
       if (key.includes(currentDeliveryStatus)) {
         // Create new status only if it is not the same as the latest one
-        if (order.statuses[order.statuses.length - 1]?.status === value) {
+
+        if (order.currentStatus === value) {
           return;
         }
+
+        await this.manager.save(OrderEntity, {
+          id: order.id,
+          currentStatus: value,
+        });
 
         const newStatus = await this.manager.save(OrderStatusEntity, {
           status: value,

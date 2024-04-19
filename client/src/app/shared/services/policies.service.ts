@@ -78,7 +78,7 @@ export class PoliciesService {
         can('update', User, (user: User) => user.role !== Role.SuperAdmin);
         can(['create', 'update'], Faq);
         can('update', Order, (order: Order) =>
-          UPDATABLE_ORDER_STATUSES.includes(order.currentStatus.status),
+          UPDATABLE_ORDER_STATUSES.includes(order.currentStatus),
         );
         can(
           ['approve', 'update'],
@@ -101,7 +101,7 @@ export class PoliciesService {
         can('update', User, (user: User) => user.role === Role.User);
         can(['create', 'update'], Faq);
         can('update', Order, (order: Order) =>
-          UPDATABLE_ORDER_STATUSES.includes(order.currentStatus.status),
+          UPDATABLE_ORDER_STATUSES.includes(order.currentStatus),
         );
         can(
           ['approve', 'update'],
@@ -117,14 +117,14 @@ export class PoliciesService {
         can(
           ['update', 'cancel'],
           Order,
-          (order: Order) => order.currentStatus.status === OrderStatus.Pending,
+          (order: Order) => order.currentStatus === OrderStatus.Pending,
         );
         can(
           'return',
           Order,
           (order: Order) =>
             !order.returnRequest &&
-            RETURNABLE_ORDER_STATUSES.includes(order.currentStatus.status),
+            RETURNABLE_ORDER_STATUSES.includes(order.currentStatus),
         );
         can('create', OrderReturnRequest);
         can(

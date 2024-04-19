@@ -1,5 +1,5 @@
 #!/bin/sh
-ssh charuk@167.99.145.25 <<EOF
+ssh charuk@164.90.184.112 <<EOF
  cd ~/hvoya-crm
  npm run db:backup
  git checkout .

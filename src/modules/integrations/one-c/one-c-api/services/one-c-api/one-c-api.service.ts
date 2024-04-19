@@ -63,6 +63,11 @@ export class OneCApiService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
+      await queryRunner.manager.save(OrderEntity, {
+        id: order.id,
+        currentStatus: updateOrderData.status,
+      });
+
       const newStatus = await queryRunner.manager.save(OrderStatusEntity, {
         status: updateOrderData.status,
         comment: 'Оновлено автоматично з 1С',

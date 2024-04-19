@@ -75,7 +75,7 @@ export class OrdersChartComponent {
       return orders.filter(
         (order) =>
           ![OrderStatus.Cancelled, OrderStatus.Refunded].includes(
-            order.currentStatus.status,
+            order.currentStatus,
           ),
       ).length;
     });
@@ -87,7 +87,7 @@ export class OrdersChartComponent {
       }
       return orders.filter((order) =>
         [OrderStatus.Cancelled, OrderStatus.Refunded].includes(
-          order.currentStatus.status,
+          order.currentStatus,
         ),
       ).length;
     });

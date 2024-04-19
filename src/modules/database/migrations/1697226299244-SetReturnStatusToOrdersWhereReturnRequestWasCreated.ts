@@ -12,6 +12,11 @@ export class SetReturnStatusToOrdersWhereReturnRequestWasCreated1697226299244
       OrderReturnRequestEntity,
       {
         relations: ['order'],
+        select: {
+          order: {
+            id: true,
+          },
+        },
       },
     );
 
