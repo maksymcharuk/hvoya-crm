@@ -79,7 +79,9 @@
                     <div class="flex">
                       <div class="mb-1 mr-2">Новий статус:</div>
                       <app-order-status-badge
-                        [status]="notification.data.currentStatus.status"
+                        [status]="
+                          notification.data.latestStatusFromHistory.status
+                        "
                       ></app-order-status-badge>
                     </div>
                   </ng-template>
@@ -110,7 +112,9 @@
                       Замовлення
                       <app-order-status-badge
                         class="ml-2"
-                        [status]="notification.data.currentStatus.status"
+                        [status]="
+                          notification.data.latestStatusFromHistory.status
+                        "
                       ></app-order-status-badge>
                     </div>
                     Замовник: {{ notification.data.customer.fullName }}

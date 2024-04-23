@@ -129,7 +129,7 @@ export class OrderViewComponent implements OnDestroy {
         deliveryService: order.delivery.deliveryService,
       });
       this.updateOrderStatusForm.patchValue({
-        orderStatus: order.currentStatus.status,
+        orderStatus: order.currentStatus,
       });
       this.orderNoteForm.patchValue(
         {

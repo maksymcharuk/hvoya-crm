@@ -82,7 +82,7 @@ export class IncomeChartComponent {
               OrderStatus.Cancelled,
               OrderStatus.Refunded,
               OrderStatus.Refused,
-            ].includes(order.currentStatus.status),
+            ].includes(order.currentStatus),
         )
         .reduce((acc, order) => acc + order.total!, 0);
     });
@@ -95,7 +95,7 @@ export class IncomeChartComponent {
       return orders
         .filter((order) =>
           [OrderStatus.Refunded, OrderStatus.Refused].includes(
-            order.currentStatus.status,
+            order.currentStatus,
           ),
         )
         .reduce((acc, order) => acc + order.total!, 0);

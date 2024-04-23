@@ -55,6 +55,7 @@ import { sanitizeEntity } from '@utils/serialize-entity.util';
 import { BalanceService } from '@modules/balance/services/balance.service';
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 import { DeliveryServiceFactory } from '@modules/integrations/delivery/factories/delivery-service/delivery-service.factory';
+import { DeliveryStatusesToOrderStatuses } from '@modules/integrations/delivery/maps/delivery-statuses.map';
 import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
 
 import { CartService } from '../../cart/services/cart.service';
@@ -124,7 +125,7 @@ export class OrdersService {
     }
 
     if (pageOptionsDto.status) {
-      queryBuilder.andWhere('statuses.status = :status', {
+      queryBuilder.andWhere('order.currentStatus = :status', {
         status: pageOptionsDto.status,
       });
     }
@@ -182,24 +183,12 @@ export class OrdersService {
   async getOrderNumberListForReturnRequest(userId: string): Promise<string[]> {
     const query = this.dataSource.createQueryBuilder(OrderEntity, 'order');
 
-    const statusesSubQuery = query
-      .subQuery()
-      .select('id')
-      .from(OrderStatusEntity, 'orderStatus')
-      .where('orderStatus.order = order.id')
-      .orderBy('orderStatus.createdAt', SortOrder.DESC)
-      .limit(1);
-
     query
       .leftJoinAndSelect('order.customer', 'customer')
-      .leftJoinAndSelect(
-        'order.statuses',
-        'statuses',
-        `statuses.id = ${statusesSubQuery.getQuery()}`,
-      )
+      .leftJoinAndSelect('order.statuses', 'statuses')
       .leftJoinAndSelect('order.returnRequest', 'returnRequest')
       .where('customer.id = :userId', { userId })
-      .andWhere('statuses.status IN (:...returnableOrderStatuses)', {
+      .andWhere('order.currentStatus IN (:...returnableOrderStatuses)', {
         returnableOrderStatuses: RETURNABLE_ORDER_STATUSES,
       })
       .andWhere('returnRequest.id IS NULL')
@@ -219,6 +208,7 @@ export class OrdersService {
     const queryRunner = this.dataSource.createQueryRunner();
     let waybillScan: FileEntity | undefined;
     let deliveryStatus: DeliveryServiceRawStatus | undefined;
+    let currentStatus: OrderStatus | undefined;
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -263,13 +253,23 @@ export class OrdersService {
         throw new BadRequestException('Необхідно завантажити файл маркування');
       }
 
+      DeliveryStatusesToOrderStatuses.forEach(async (value, key) => {
+        if (deliveryStatus && deliveryStatus.status) {
+          if (key.includes(deliveryStatus.status)) {
+            currentStatus = value;
+          }
+        }
+      });
+
       let order = await queryRunner.manager.save(OrderEntity, {
         customer: { id: userId },
         customerNote: createOrderDto.customerNote,
+        currentStatus,
       });
 
       const status = await queryRunner.manager.save(OrderStatusEntity, {
         order: { id: order.id },
+        status: currentStatus,
       });
 
       const orderItems = await queryRunner.manager.save(
@@ -672,7 +672,7 @@ export class OrdersService {
   ): Promise<void> {
     const order = await this.getOrderWhere({ id: orderId });
 
-    if (status === order.statuses[0]!.status) {
+    if (status === order.currentStatus) {
       throw new HttpException(
         'Статус замовлення не може бути змінений на попередній.',
         HttpStatus.BAD_REQUEST,
@@ -756,6 +756,11 @@ export class OrdersService {
     status: OrderStatus,
     comment?: string,
   ): Promise<OrderStatusEntity> {
+    await queryRunner.manager.save(OrderEntity, {
+      id: order.id,
+      currentStatus: status,
+    });
+
     const newStatus = await queryRunner.manager.save(OrderStatusEntity, {
       status: status,
       comment: comment,
@@ -910,25 +915,12 @@ export class OrdersService {
       query.where('order.number = :number', { number });
     }
 
-    const statusesSubQuery = query
-      .subQuery()
-      .select('id')
-      .from(OrderStatusEntity, 'orderStatus')
-      .where('orderStatus.order = order.id')
-      .orderBy('orderStatus.createdAt', SortOrder.DESC)
-      .limit(1);
-
     query
       .leftJoinAndSelect('order.items', 'items')
       .leftJoinAndSelect('items.productProperties', 'productProperties')
       .leftJoinAndSelect('productProperties.images', 'images')
       .leftJoinAndSelect('order.delivery', 'delivery')
-      .leftJoinAndSelect('order.customer', 'customer')
-      .leftJoinAndSelect(
-        'order.statuses',
-        'statuses',
-        `statuses.id = ${statusesSubQuery.getQuery()}`,
-      );
+      .leftJoinAndSelect('order.customer', 'customer');
 
     return query;
   }

@@ -52,20 +52,23 @@
                   <div class="flex align-items-center mb-1">
                     <span class="mr-3">
                       <u>
-                        {{ order.currentStatus.createdAt | date : 'short' }}
+                        {{
+                          order.latestStatusFromHistory.createdAt
+                            | date : 'short'
+                        }}
                       </u>
                     </span>
                     <app-order-status-badge
                       data-cy="order-status-current"
-                      [status]="order.currentStatus.status"
+                      [status]="order.latestStatusFromHistory.status"
                     ></app-order-status-badge>
                   </div>
-                  <div *ngIf="order.currentStatus.comment">
-                    <b>Коментар:</b> {{ order.currentStatus.comment }}
+                  <div *ngIf="order.latestStatusFromHistory.comment">
+                    <b>Коментар:</b> {{ order.latestStatusFromHistory.comment }}
                   </div>
-                  <div *ngIf="order.currentStatus.createdBy">
+                  <div *ngIf="order.latestStatusFromHistory.createdBy">
                     <b>Оновлено:</b>
-                    {{ order.currentStatus.createdBy.fullName }}
+                    {{ order.latestStatusFromHistory.createdBy.fullName }}
                   </div>
                 </div>
                 <button

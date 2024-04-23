@@ -8,6 +8,7 @@ import {
   OneToOne,
 } from 'typeorm';
 
+import { OrderStatus } from '../enums/order-status.enum';
 import { DecimalTransformer } from '../transformers/decimal.transformer';
 import { BaseEntity } from './base.entity';
 import { OrderDeliveryEntity } from './order-delivery.entity';
@@ -41,6 +42,13 @@ export class OrderEntity extends BaseEntity {
 
   @Column({ default: '' })
   managerNote: string;
+
+  @Column({
+    type: 'enum',
+    enum: OrderStatus,
+    default: OrderStatus.Pending,
+  })
+  currentStatus: OrderStatus;
 
   @OneToMany(() => OrderStatusEntity, (status) => status.order)
   statuses: OrderStatusEntity[];

@@ -68,6 +68,7 @@ export class OrderStatus extends BaseEntity {
 export class Order extends BaseEntity {
   items: OrderItem[];
   delivery: OrderDelivery;
+  currentStatus: OrderStatusEnum;
   statuses: OrderStatus[];
   number: number;
   total?: number;
@@ -76,7 +77,7 @@ export class Order extends BaseEntity {
   managerNote?: string;
   returnRequest?: OrderReturnRequest | null;
 
-  get currentStatus(): OrderStatus {
+  get latestStatusFromHistory(): OrderStatus {
     return this.statuses.length ? this.statuses[0]! : new OrderStatus();
   }
 
@@ -84,6 +85,7 @@ export class Order extends BaseEntity {
     super(data);
     this.items = data?.items?.map((item) => new OrderItem(item)) || [];
     this.delivery = new OrderDelivery(data?.delivery);
+    this.currentStatus = data?.currentStatus || OrderStatusEnum.Pending;
     this.statuses =
       data?.statuses?.map((status) => new OrderStatus(status)) || [];
     this.number = data?.number || 0;

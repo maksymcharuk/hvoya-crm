@@ -279,6 +279,11 @@ export class ReturnRequestsStrategy implements RequestStrategy {
 
     await this.updateProductsStockOnReturn(data.queryRunner, request.id);
 
+    await data.queryRunner.manager.save(OrderEntity, {
+      id: request.returnRequest!.order.id,
+      currentStatus: OrderStatus.Refunded,
+    });
+
     await data.queryRunner.manager.save(OrderStatusEntity, {
       status: OrderStatus.Refunded,
       comment: 'Замовлення поністю або частково повернено клієнтом',
