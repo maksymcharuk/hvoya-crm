@@ -21,7 +21,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserFreezeInterceptor } from './interceptors/user-freeze/user-freeze.interceptor';
 import { AppLoggerMiddleware } from './middlewares/app-logger.middleware';
-// import { HttpsRedirectMiddleware } from './middlewares/https-redirect.middleware';
+import { HttpsRedirectMiddleware } from './middlewares/https-redirect.middleware';
 import { AccountModule } from './modules/account/account.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { BalanceModule } from './modules/balance/balance.module';
@@ -90,6 +90,6 @@ import { UsersModule } from './modules/users/users.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer.apply(AppLoggerMiddleware).forRoutes('*');
-    // consumer.apply(HttpsRedirectMiddleware).forRoutes('*');
+    consumer.apply(HttpsRedirectMiddleware).forRoutes('*');
   }
 }
