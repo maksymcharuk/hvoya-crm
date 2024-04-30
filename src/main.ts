@@ -3,6 +3,7 @@ import * as express from 'express';
 import * as rateLimit from 'express-rate-limit';
 import * as xmlparser from 'express-xml-bodyparser';
 import helmet from 'helmet';
+import * as http from 'http';
 import * as https from 'https';
 import * as newrelic from 'newrelic';
 import * as nocache from 'nocache';
@@ -70,14 +71,13 @@ async function bootstrap() {
 
   await app.init();
 
-  httpsServer.listen(process.env['PORT'] || '3000');
+  http.createServer(server).listen(process.env['PORT'] || 80);
+  httpsServer.listen(process.env['HTTPS_PORT'] || 443);
 }
 
 bootstrap()
   .then(() => {
-    logger.log(
-      `Application listening on port ${process.env['PORT'] || '3000'}`,
-    );
+    logger.log(`Application listening on port ${process.env['PORT'] || '80'}`);
   })
   .catch((error) => {
     logger.error(error);
