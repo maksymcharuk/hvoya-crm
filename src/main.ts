@@ -71,13 +71,15 @@ async function bootstrap() {
 
   await app.init();
 
-  http.createServer(server).listen(process.env['PORT'] || 80);
+  http.createServer(server).listen(process.env['PORT'] || 8080);
   httpsServer.listen(process.env['HTTPS_PORT'] || 443);
 }
 
 bootstrap()
   .then(() => {
-    logger.log(`Application listening on port ${process.env['PORT'] || '80'}`);
+    logger.log(
+      `Application listening on port ${process.env['PORT'] || '8080'}`,
+    );
   })
   .catch((error) => {
     logger.error(error);

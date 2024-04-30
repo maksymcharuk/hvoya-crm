@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class HttpsRedirectMiddleware implements NestMiddleware {
-  private readonly httpsPort = this.configService.get('HTTPS_PORT');
+  private readonly httpsPort = this.configService.get('HTTPS_PORT', 443);
 
   constructor(private readonly configService: ConfigService) {}
 
