@@ -9,6 +9,7 @@ import {
 } from '../../../interfaces/normalized-products-data.interface';
 import {
   PromCategoryXml,
+  PromOfferParamXml,
   PromOfferXml,
   PromProductsXml,
 } from '../../../interfaces/prom-products-xml.interface';
@@ -99,9 +100,15 @@ export class PromProductsNormalizationServiceXml
     return baseProducts;
   }
 
-  private getWeight(params: PromOfferXml['param']): number | undefined {
-    const weightParam = params.find((param: PromOfferXml['param'][0]) =>
-      param.$.name.includes('Вес'),
+  private getWeight(
+    params: PromOfferParamXml[] | undefined,
+  ): number | undefined {
+    if (!params) {
+      return;
+    }
+
+    const weightParam = params.find(
+      (param: PromOfferParamXml) => param && param.$.name.includes('Вес'),
     );
 
     if (!weightParam) {
@@ -145,11 +152,15 @@ export class PromProductsNormalizationServiceXml
   // 2. Some products use height instead of diameter
   // 3. None of the products have package dimensions
   private getDimension(
-    param: PromOfferXml['param'],
+    params: PromOfferParamXml[] | undefined,
     key: string,
     matchFull: boolean = false,
   ): number {
-    const dimensionParam = param.find((param: PromOfferXml['param'][0]) =>
+    if (!params) {
+      return 0;
+    }
+
+    const dimensionParam = params.find((param: PromOfferParamXml) =>
       matchFull ? param.$.name === key : param.$.name.includes(key),
     );
 
@@ -175,8 +186,12 @@ export class PromProductsNormalizationServiceXml
   private getColorBaseOnRawColor(
     offer: PromOfferXml,
   ): ProductColor | undefined {
+    if (!offer.param) {
+      return;
+    }
+
     const rawColor = offer.param
-      .find((param: PromOfferXml['param'][0]) => param.$.name.includes('Цвет'))
+      .find((param: PromOfferParamXml) => param.$.name.includes('Цвет'))
       ?._.trim();
 
     if (!rawColor) {

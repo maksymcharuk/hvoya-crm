@@ -34,7 +34,7 @@ export interface PromOfferXml {
   description: string[]; // string
   description_ua: string[]; // string
   sales_notes: string[]; // string
-  param: PromOfferParamXml[];
+  param: PromOfferParamXml[] | undefined;
 }
 
 export interface PromProductsXml {
