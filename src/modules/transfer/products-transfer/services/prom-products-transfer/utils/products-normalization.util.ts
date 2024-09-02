@@ -4,7 +4,7 @@ import { skuColorsMap } from '@modules/transfer/products-transfer/maps/sku-color
 export function getDataBaseOnSku(sku: string) {
   const skuParts = sku.split('/');
   const color = skuParts[skuParts.length - 1];
-  const size = skuParts[skuParts.length - 2];
+  const size = skuParts[1];
   const skuWithoutColorAndSize = skuParts.slice(0, -2).join('-');
 
   return {
