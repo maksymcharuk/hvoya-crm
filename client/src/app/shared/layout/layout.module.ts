@@ -8,7 +8,7 @@ import { RippleModule } from 'primeng/ripple';
 import { SidebarModule } from 'primeng/sidebar';
 
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -23,31 +23,25 @@ import { SidebarComponent } from './components/sidebar.component';
 import { TopBarComponent } from './components/topbar.component';
 import { ConfigModule } from './config/config.module';
 
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    RouterModule,
-    FormsModule,
-    InputTextModule,
-    SidebarModule,
-    BadgeModule,
-    RadioButtonModule,
-    InputSwitchModule,
-    RippleModule,
-    OverlayPanelModule,
-    ButtonModule,
-    SharedModule,
-    ConfigModule,
-  ],
-  declarations: [
-    MenuitemComponent,
-    TopBarComponent,
-    FooterComponent,
-    MenuComponent,
-    SidebarComponent,
-    LayoutComponent,
-  ],
-  exports: [LayoutComponent],
-})
+@NgModule({ declarations: [
+        MenuitemComponent,
+        TopBarComponent,
+        FooterComponent,
+        MenuComponent,
+        SidebarComponent,
+        LayoutComponent,
+    ],
+    exports: [LayoutComponent], imports: [CommonModule,
+        RouterModule,
+        FormsModule,
+        InputTextModule,
+        SidebarModule,
+        BadgeModule,
+        RadioButtonModule,
+        InputSwitchModule,
+        RippleModule,
+        OverlayPanelModule,
+        ButtonModule,
+        SharedModule,
+        ConfigModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class LayoutModule {}

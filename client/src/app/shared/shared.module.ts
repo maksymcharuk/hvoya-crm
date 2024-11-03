@@ -27,7 +27,7 @@ import {
   CurrencyPipe,
   registerLocaleData,
 } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import localeUk from '@angular/common/locales/uk';
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -166,33 +166,27 @@ const PRIMENG_MODULES = [
 
 const NG_PIPES = [CurrencyPipe];
 
-@NgModule({
-  declarations: [...COMPONENTS, ...PIPES],
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
-    AbilityModule,
-    InfiniteScrollModule,
-    ...PRIMENG_MODULES,
-  ],
-  providers: [
-    ...NG_PIPES,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: HttpExceptionInterceptor,
-      multi: true,
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true,
-    },
-    { provide: LOCALE_ID, useValue: 'uk' },
-    { provide: DEFAULT_CURRENCY_CODE, useValue: 'UAH' },
-  ],
-  exports: [...COMPONENTS, ...PIPES],
-})
+@NgModule({ declarations: [...COMPONENTS, ...PIPES],
+    exports: [...COMPONENTS, ...PIPES], imports: [CommonModule,
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        AbilityModule,
+        InfiniteScrollModule,
+        ...PRIMENG_MODULES], providers: [
+        ...NG_PIPES,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpExceptionInterceptor,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        },
+        { provide: LOCALE_ID, useValue: 'uk' },
+        { provide: DEFAULT_CURRENCY_CODE, useValue: 'UAH' },
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class SharedModule {}
