@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-import { CanDeactivate } from '@angular/router';
+
 
 export interface ComponentCanDeactivate {
   canDeactivate: () => boolean | Observable<boolean>;
@@ -9,7 +9,7 @@ export interface ComponentCanDeactivate {
 
 @Injectable({ providedIn: 'root' })
 export class PendingChangesGuard
-  implements CanDeactivate<ComponentCanDeactivate>
+  
 {
   canDeactivate(
     component: ComponentCanDeactivate,
