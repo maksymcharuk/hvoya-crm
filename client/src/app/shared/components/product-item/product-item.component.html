@@ -3,8 +3,8 @@
     <a
       [routerLink]="
         baseProductId
-          ? [baseProductId, product.id.toString()]
-          : product.id.toString()
+          ? [baseProductId, product.id?.toString()]
+          : product.id?.toString()
       "
     >
       <app-image-component

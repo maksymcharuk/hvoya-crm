@@ -243,9 +243,9 @@
               placeholder="Виберіть розмір"
               data-cy="product-size"
             >
-              <ng-template let-size pTemplate="selectedItem">
+              <!-- <ng-template let-size pTemplate="selectedItem">
                 {{ size | productSize }}
-              </ng-template>
+              </ng-template> -->
               <ng-template let-size pTemplate="item">
                 {{ size | productSize }}
               </ng-template>
@@ -261,6 +261,7 @@
           <div class="field col-4">
             <label for="productVariantColorId">Колір</label>
             <p-dropdown
+              #colorDropdown
               [options]="colors"
               formControlName="productVariantColorId"
               [showClear]="true"
@@ -269,15 +270,15 @@
               placeholder="Виберіть колір"
               data-cy="product-color"
             >
-              <ng-template let-color pTemplate="selectedItem">
+              <!-- <ng-template pTemplate="selectedItem">
                 <div class="flex align-items-center">
                   <app-product-color-badge
                     class="mr-2"
-                    [color]="color"
+                    [color]="colorDropdown.selectedOption.value"
                   ></app-product-color-badge>
                   <div>{{ color.name }}</div>
                 </div>
-              </ng-template>
+              </ng-template> -->
               <ng-template let-color pTemplate="item">
                 <div class="flex align-items-center">
                   <app-product-color-badge

@@ -1,5 +1,4 @@
-import { LazyLoadEvent } from 'primeng/api';
-import { Table } from 'primeng/table';
+import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { Subject, debounceTime, map, takeUntil } from 'rxjs';
 
 import {
@@ -99,7 +98,7 @@ export class OrderListComponent implements OnDestroy {
     );
   }
 
-  onLazyLoad(event: LazyLoadEvent) {
+  onLazyLoad(event: TableLazyLoadEvent) {
     this.loading = true;
     if (this.orders) {
       this.orders.data = [];
