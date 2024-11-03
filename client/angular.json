@@ -84,13 +84,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "hvoya-crm:build:production"
+              "buildTarget": "hvoya-crm:build:production"
             },
             "development": {
-              "browserTarget": "hvoya-crm:build:development"
+              "buildTarget": "hvoya-crm:build:development"
             },
             "test": {
-              "browserTarget": "hvoya-crm:build:test"
+              "buildTarget": "hvoya-crm:build:test"
             }
           },
           "defaultConfiguration": "development"
@@ -98,7 +98,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "hvoya-crm:build"
+            "buildTarget": "hvoya-crm:build"
           }
         },
         "test": {
