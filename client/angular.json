@@ -30,16 +30,12 @@
               "base": "../dist/client"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "polyfills": ["src/polyfills.ts", "@angular/localize/init"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/assets", "src/.well-known"],
             "styles": ["src/styles.scss"],
-            "scripts": [
-              "./node_modules/quill/dist/quill.js"
-            ],
+            "scripts": ["./node_modules/quill/dist/quill.js"],
             "browser": "src/main.ts"
           },
           "configurations": {

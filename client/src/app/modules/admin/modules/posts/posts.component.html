@@ -76,41 +76,47 @@
   [style]="{ width: '700px', maxWidth: '90%' }"
 >
   <ng-template pTemplate="content">
-    <div class="field">
-      <p-checkbox
-        [(ngModel)]="post.isPublished"
-        [binary]="true"
-        inputId="binary"
-        label="Опублікувати"
-      ></p-checkbox>
-    </div>
-    <div class="field">
-      <div class="flex">
-        <div>
-          <label for="body">Контент:</label>
-          <p-editor
-            [autofocus]="true"
-            id="body"
-            name="body"
-            placeholder="Опишіть новину"
-            [(ngModel)]="post.body"
-            [style]="{ height: '320px' }"
-          ></p-editor>
-        </div>
-        <div class="ml-3">
-          <label>Перегляд:</label>
-          <div class="post-preview-block">
-            <div *ngIf="post.body" [innerHTML]="post.body | safeHtml"></div>
-            <small>
-              {{ currentDate | date : 'short' }}
-              <ng-container *ngIf="!post.isPublished">
-                <span class="text-red-500">(Не опубліковано)</span>
-              </ng-container>
-            </small>
+    <form [formGroup]="postForm">
+      <div class="field">
+        <p-checkbox
+          formControlName="isPublished"
+          [binary]="true"
+          inputId="binary"
+          label="Опублікувати"
+        ></p-checkbox>
+      </div>
+      <div class="field">
+        <div class="flex">
+          <div>
+            <label for="body">Контент:</label>
+            <p-editor
+              [autofocus]="true"
+              id="body"
+              name="body"
+              placeholder="Опишіть новину"
+              formControlName="body"
+              [style]="{ height: '320px' }"
+            ></p-editor>
           </div>
+          @if (post$ | async; as post) {
+          <div class="ml-3">
+            <label>Перегляд:</label>
+            <div class="post-preview-block">
+              @if (post.body) {
+              <div [innerHTML]="post.body | safeHtml"></div>
+              }
+              <small>
+                {{ currentDate | date : 'short' }}
+                @if (!post.isPublished) {
+                <span class="text-red-500">(Не опубліковано)</span>
+                }
+              </small>
+            </div>
+          </div>
+          }
         </div>
       </div>
-    </div>
+    </form>
   </ng-template>
 
   <ng-template pTemplate="footer">

@@ -5,7 +5,8 @@ import {
 } from 'primeng/api';
 import { BehaviorSubject } from 'rxjs';
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 
 import { Post } from '@shared/interfaces/entities/post.entity';
 import { PageOptions } from '@shared/interfaces/page-options.interface';
@@ -18,15 +19,23 @@ import { PostsService } from '@shared/services/posts.service';
   styleUrls: ['./posts.component.scss'],
 })
 export class PostsComponent {
+  private readonly formBuilder: FormBuilder = inject(FormBuilder);
+
   postPage$ = new BehaviorSubject<Page<Post> | null>(null);
   postDialog!: boolean;
-  post!: Post;
-  submitted!: boolean;
   postEntity = Post;
   currentDate = new Date();
 
   first = 0;
   rows = 5;
+
+  postForm = this.formBuilder.nonNullable.group({
+    id: [''],
+    body: ['', Validators.required],
+    isPublished: [false],
+  });
+
+  post$ = this.postForm.valueChanges;
 
   constructor(
     private readonly postsService: PostsService,
@@ -45,19 +54,18 @@ export class PostsComponent {
   }
 
   openNew() {
-    this.post = { isPublished: true } as Post;
-    this.submitted = false;
     this.postDialog = true;
   }
 
   editPost(post: Post) {
-    this.post = { ...post };
     this.postDialog = true;
+    setTimeout(() => {
+      this.postForm.patchValue(post);
+    });
   }
 
   hideDialog() {
     this.postDialog = false;
-    this.submitted = false;
   }
 
   onPageChange(event: LazyLoadEvent) {
@@ -68,10 +76,14 @@ export class PostsComponent {
   }
 
   savePost() {
-    this.submitted = true;
+    const post = {
+      id: this.postForm.value.id ?? '',
+      body: this.postForm.value.body ?? '',
+      isPublished: this.postForm.value.isPublished ?? false,
+    };
 
-    if (this.post.id) {
-      this.postsService.update(this.post.id, this.post).subscribe(() => {
+    if (post.id) {
+      this.postsService.update(post.id, post).subscribe(() => {
         this.updatePosts();
         this.messageService.add({
           severity: 'success',
@@ -79,7 +91,7 @@ export class PostsComponent {
         });
       });
     } else {
-      this.postsService.create(this.post).subscribe(() => {
+      this.postsService.create(post).subscribe(() => {
         this.updatePosts();
         this.messageService.add({
           severity: 'success',
@@ -89,7 +101,6 @@ export class PostsComponent {
     }
 
     this.postDialog = false;
-    this.post = {} as Post;
   }
 
   deletePost(post: Post) {

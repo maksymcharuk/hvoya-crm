@@ -1,12 +1,6 @@
 <div class="card flex flex-column w-full">
   <div class="wrapper mb-3">
-    <a
-      [routerLink]="
-        baseProductId
-          ? [baseProductId, product.id?.toString()]
-          : product.id?.toString()
-      "
-    >
+    <a [routerLink]="baseProductId ? [baseProductId, product.id] : product.id">
       <app-image-component
         class="wrapper__img"
         [image]="primaryImageUrl"

@@ -16,13 +16,13 @@
     color: var(--primary-color);
     font-weight: bold;
     font-size: 1rem;
-    padding: $padding $padding $padding / 2;
+    padding: $padding $padding calc($padding / 2);
     margin-bottom: 0;
   }
 
   &__list {
     overflow: auto;
-    padding: $padding / 2 $padding $padding;
+    padding: calc($padding / 2) $padding $padding;
   }
 }
 

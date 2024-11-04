@@ -108,10 +108,9 @@
                   [status]="option.label"
                 ></app-order-status-badge>
               </ng-template>
-              <ng-template pTemplate="selectedItem">
+              <ng-template let-status pTemplate="selectedItem">
                 <app-order-status-badge
-                  *ngIf="value"
-                  [status]="value"
+                  [status]="status.value"
                 ></app-order-status-badge>
               </ng-template>
             </p-dropdown>
@@ -138,10 +137,9 @@
                   [status]="option.label"
                 ></app-order-delivery-status-badge>
               </ng-template>
-              <ng-template pTemplate="selectedItem">
+              <ng-template let-deliveryStatus pTemplate="selectedItem">
                 <app-order-delivery-status-badge
-                  *ngIf="value"
-                  [status]="value"
+                  [status]="deliveryStatus.value"
                 ></app-order-delivery-status-badge>
               </ng-template>
             </p-dropdown>
@@ -170,12 +168,11 @@
                   [deliveryService]="option.value"
                 ></app-delivery-service-badge>
               </ng-template>
-              <ng-template pTemplate="selectedItem">
+              <ng-template let-deliveryService pTemplate="selectedItem">
                 <app-delivery-service-badge
-                  *ngIf="value"
                   mode="short"
                   [withText]="true"
-                  [deliveryService]="value"
+                  [deliveryService]="deliveryService.value"
                 ></app-delivery-service-badge
               ></ng-template>
             </p-dropdown>
