@@ -34,6 +34,7 @@ import { RequestStrategy } from '@modules/requests/core/request-strategy.interfa
 import { ApproveRequestStrategyDto } from '@modules/requests/interfaces/approve-request-strategy.dto';
 import { CreateRequestStrategyDto } from '@modules/requests/interfaces/create-request-strategy.dto';
 import { RejectRequestStrategyDto } from '@modules/requests/interfaces/reject-request-strategy.dto';
+import { RestoreRequestStrategyDto } from '@modules/requests/interfaces/restore-request-strategy.dto';
 import { UpdateRequestByCustomerStrategyDto } from '@modules/requests/interfaces/update-request-by-customer.strategy.dto';
 
 @Injectable()
@@ -428,6 +429,44 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       }
       throw new BadRequestException(error.message);
     }
+  }
+
+  async restoreRequest(
+    data: RestoreRequestStrategyDto,
+  ): Promise<RequestEntity> {
+    let request: RequestEntity;
+    const user = await data.queryRunner.manager.findOneOrFail(UserEntity, {
+      where: { id: data.userId },
+    });
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    request = await data.queryRunner.manager.findOneOrFail(RequestEntity, {
+      relations: ['returnRequest', 'customer'],
+      where: { number: data.requestNumber },
+    });
+
+    if (
+      ability.cannot(Action.Restore, request) ||
+      ability.cannot(Action.Restore, request.returnRequest!)
+    ) {
+      throw new ForbiddenException(
+        'У вас немає прав для оновлення цього запиту або запит вже був закритий',
+      );
+    }
+
+    if (request.returnRequest!.status === OrderReturnRequestStatus.Approved) {
+      throw new BadRequestException(
+        'Неможливо відновити запит на повернення товару який вже було схвалено',
+      );
+    }
+
+    await data.queryRunner.manager.save(OrderReturnRequestEntity, {
+      id: request.returnRequest!.id,
+      status: OrderReturnRequestStatus.Pending,
+    });
+
+    return request;
   }
 
   private calculateTotal(orderItems: OrderReturnRequestItemEntity[]): Decimal {

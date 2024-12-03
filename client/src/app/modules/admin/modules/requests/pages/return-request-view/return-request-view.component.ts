@@ -197,6 +197,23 @@ export class ReturnRequestViewComponent implements OnInit {
       });
   }
 
+  restoreRequest() {
+    this.confirmationService.confirm({
+      accept: () => {
+        this.requestsService
+          .restoreRequest(this.requestNumber)
+          .subscribe((request) => {
+            this.request$.next(request);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Запит відновлено',
+              detail: 'Запит успішно відновлено',
+            });
+          });
+      },
+    });
+  }
+
   deductionMax(control: AbstractControl): ValidationErrors | null {
     const deduction: number = control.get('deduction')?.value;
     const approvedItems: OrderReturnRequestItemEntity[] =

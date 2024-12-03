@@ -228,4 +228,15 @@ export class RequestsController {
       images: files.images!,
     });
   }
+
+  @Put(':number/restore')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Restore, RequestEntity),
+  )
+  async restoreRequest(
+    @User('id') userId: string,
+    @Param('number') requestNumber: string,
+  ): Promise<RequestEntity> {
+    return this.requestService.restoreRequest({ userId, requestNumber });
+  }
 }

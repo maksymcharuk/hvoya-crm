@@ -27,6 +27,7 @@ import { RequestContext } from './core/request-context';
 import { ApproveRequestContextDto } from './interfaces/approve-request-strategy.dto';
 import { CreateRequestContextDto } from './interfaces/create-request-strategy.dto';
 import { RejectRequestContextDto } from './interfaces/reject-request-strategy.dto';
+import { RestoreRequestContextDto } from './interfaces/restore-request-strategy.dto';
 import { UpdateRequestByCustomerContextDto } from './interfaces/update-request-by-customer.strategy.dto';
 import { FundsWithdrawRequestsStrategy } from './strategies/funds-withdraw-requests/funds-withdraw-requests.strategy';
 import { ReturnRequestsStrategy } from './strategies/return-requests/return-requests.strategy';
@@ -174,16 +175,7 @@ export class RequestsService {
   }
 
   async createRequest(data: CreateRequestContextDto): Promise<RequestEntity> {
-    switch (data.createRequestDto.requestType) {
-      case RequestType.Return:
-        this.requestContext.setStrategy(this.returnRequestsStrategy);
-        break;
-      case RequestType.FundsWithdrawal:
-        this.requestContext.setStrategy(this.fundsWithdrawalRequestsStrategy);
-        break;
-      default:
-        throw new BadRequestException('Невідомий тип запиту');
-    }
+    this.setStrategy(data.createRequestDto.requestType);
 
     const r = await this.requestContext.createRequest(data);
 
@@ -202,16 +194,7 @@ export class RequestsService {
       where: { number: data.requestNumber },
     });
 
-    switch (r.requestType) {
-      case RequestType.Return:
-        this.requestContext.setStrategy(this.returnRequestsStrategy);
-        break;
-      case RequestType.FundsWithdrawal:
-        this.requestContext.setStrategy(this.fundsWithdrawalRequestsStrategy);
-        break;
-      default:
-        throw new BadRequestException('Невідомий тип запиту');
-    }
+    this.setStrategy(r.requestType);
 
     await this.requestContext.approveRequest(data);
 
@@ -231,16 +214,7 @@ export class RequestsService {
       where: { number: data.requestNumber },
     });
 
-    switch (r.requestType) {
-      case RequestType.Return:
-        this.requestContext.setStrategy(this.returnRequestsStrategy);
-        break;
-      case RequestType.FundsWithdrawal:
-        this.requestContext.setStrategy(this.fundsWithdrawalRequestsStrategy);
-        break;
-      default:
-        throw new BadRequestException('Невідомий тип запиту');
-    }
+    this.setStrategy(r.requestType);
 
     await this.requestContext.rejectRequest(data);
 
@@ -262,17 +236,23 @@ export class RequestsService {
       where: { number: data.requestNumber },
     });
 
-    switch (request.requestType) {
-      case RequestType.Return:
-        this.requestContext.setStrategy(this.returnRequestsStrategy);
-        break;
-      default:
-        throw new BadRequestException('Невідомий тип запиту');
-    }
+    this.setStrategy(request.requestType);
 
     await this.requestContext.updateRequestByCustomer(data);
 
     return this.getRequest(data.userId, request.number!);
+  }
+
+  async restoreRequest(data: RestoreRequestContextDto): Promise<RequestEntity> {
+    let r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
+      where: { number: data.requestNumber },
+    });
+
+    this.setStrategy(r.requestType);
+
+    await this.requestContext.restoreRequest(data);
+
+    return this.getRequest(data.userId, r.number!);
   }
 
   private getRequestQuery(number?: string): SelectQueryBuilder<RequestEntity> {
@@ -292,5 +272,18 @@ export class RequestsService {
       .leftJoinAndSelect('request.customer', 'customer');
 
     return query;
+  }
+
+  private setStrategy(requestType: RequestType) {
+    switch (requestType) {
+      case RequestType.Return:
+        this.requestContext.setStrategy(this.returnRequestsStrategy);
+        break;
+      case RequestType.FundsWithdrawal:
+        this.requestContext.setStrategy(this.fundsWithdrawalRequestsStrategy);
+        break;
+      default:
+        throw new BadRequestException('Невідомий тип запиту');
+    }
   }
 }

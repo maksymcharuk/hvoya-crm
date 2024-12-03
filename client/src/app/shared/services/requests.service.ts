@@ -79,4 +79,13 @@ export class RequestsService {
       )
       .pipe(map((request) => new RequestEntity(request)));
   }
+
+  restoreRequest(requestNumber: number): Observable<RequestEntity> {
+    return this.http
+      .put<RequestEntity>(
+        `${environment.apiUrl}/requests/${requestNumber}/restore`,
+        {},
+      )
+      .pipe(map((request) => new RequestEntity(request)));
+  }
 }

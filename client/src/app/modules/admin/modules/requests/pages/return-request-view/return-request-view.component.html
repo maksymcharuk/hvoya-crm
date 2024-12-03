@@ -199,9 +199,28 @@
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Статус</div>
                 <div class="striped-list__item-value">
-                  <app-request-status-badge
-                    [status]="request.returnRequest!.status!"
-                  ></app-request-status-badge>
+                  <div class="flex align-items-center">
+                    <app-request-status-badge
+                      [status]="request.returnRequest!.status!"
+                    ></app-request-status-badge>
+
+                    @if(request.returnRequest!.status === 'Declined') {
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-undo"
+                      label="Відновити"
+                      class="p-button-success ml-3"
+                      (click)="restoreRequest()"
+                    ></button>
+
+                    <p-confirmDialog
+                      rejectButtonStyleClass="p-button-outlined p-button-secondary"
+                      acceptButtonStyleClass="p-button-success"
+                      header="Ви справді хочете відновити цей запит?"
+                    ></p-confirmDialog>
+                    }
+                  </div>
                 </div>
               </li>
               <li class="striped-list__item">

@@ -135,6 +135,9 @@ export class CaslAbilityFactory {
         status: { $ne: OrderReturnRequestStatus.Pending },
       },
     );
+    cannot(Action.Restore, OrderReturnRequestEntity, {
+      status: { $ne: OrderReturnRequestStatus.Declined },
+    });
     cannot(Action.Create, FundsWithdrawRequestEntity);
     cannot(
       [Action.Update, Action.Approve, Action.Decline],
@@ -222,6 +225,9 @@ export class CaslAbilityFactory {
         status: OrderReturnRequestStatus.Pending,
       },
     );
+    can(Action.Restore, OrderReturnRequestEntity, {
+      status: OrderReturnRequestStatus.Declined,
+    });
     can(Action.Read, FundsWithdrawRequestEntity);
     can(
       [Action.Update, Action.Approve, Action.Decline],
