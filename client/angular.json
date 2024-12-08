@@ -27,19 +27,15 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": {
-              "base": "../dist/client"
+              "base": "../dist/client/browser"
             },
             "index": "src/index.html",
-            "polyfills": [
-              "src/polyfills.ts"
-            ],
+            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/assets", "src/.well-known"],
             "styles": ["src/styles.scss"],
-            "scripts": [
-              "./node_modules/quill/dist/quill.js"
-            ],
+            "scripts": ["./node_modules/quill/dist/quill.js"],
             "browser": "src/main.ts"
           },
           "configurations": {
