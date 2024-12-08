@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
+import { FileUploadHandlerEvent } from 'primeng/fileupload';
 import { BehaviorSubject, Subject, finalize, takeUntil } from 'rxjs';
 
 import { Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
@@ -465,7 +465,7 @@ export class UpsertProductFormComponent implements OnInit, OnDestroy {
     this.productForm.get('productCategoryGroup')?.updateValueAndValidity();
   }
 
-  onUpload(event: FileUpload) {
+  onUpload(event: FileUploadHandlerEvent) {
     if (this.productImagesControl) {
       this.productImagesControl?.patchValue(event.files);
       this.makeFilesSrcList(event.files);

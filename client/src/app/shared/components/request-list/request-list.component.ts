@@ -1,5 +1,4 @@
-import { LazyLoadEvent } from 'primeng/api';
-import { Table } from 'primeng/table';
+import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 
 import {
@@ -89,7 +88,7 @@ export class RequestListComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  onLazyLoad(event: LazyLoadEvent) {
+  onLazyLoad(event: TableLazyLoadEvent) {
     this.loading = true;
     if (this.requests) {
       this.requests.data = [];

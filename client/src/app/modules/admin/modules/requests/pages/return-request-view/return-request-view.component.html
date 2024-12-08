@@ -199,9 +199,31 @@
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Статус</div>
                 <div class="striped-list__item-value">
-                  <app-request-status-badge
-                    [status]="request.returnRequest!.status!"
-                  ></app-request-status-badge>
+                  <div class="flex align-items-center">
+                    <app-request-status-badge
+                      [status]="request.returnRequest!.status!"
+                    ></app-request-status-badge>
+
+                    @if(request.returnRequest!.status === 'Declined') {
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-undo"
+                      label="Відновити"
+                      size="small"
+                      [text]="true"
+                      [plain]="true"
+                      class="p-button-success ml-3"
+                      (click)="restoreRequest()"
+                    ></button>
+
+                    <p-confirmDialog
+                      rejectButtonStyleClass="p-button-outlined p-button-secondary"
+                      acceptButtonStyleClass="p-button-success"
+                      header="Ви справді хочете відновити цей запит?"
+                    ></p-confirmDialog>
+                    }
+                  </div>
                 </div>
               </li>
               <li class="striped-list__item">
@@ -267,7 +289,10 @@
                   </div>
                 </div>
               </li>
-              <li class="striped-list__item">
+              <li
+                *ngIf="!('update' | able : request.returnRequest)"
+                class="striped-list__item"
+              >
                 <div class="striped-list__item-key">Номер ТТН</div>
                 <div class="striped-list__item-value">
                   {{ request.returnRequest!.delivery.trackingId }}
@@ -311,6 +336,96 @@
                     <span>—</span>
                   </ng-template>
                 </div>
+              </li>
+              <li
+                *ngIf="'update' | able : request.returnRequest"
+                class="striped-list__item"
+              >
+                <div class="striped-list__item-key"></div>
+                <form
+                  [formGroup]="updateDeliveryForm"
+                  class="striped-list__item-value"
+                >
+                  <div class="p-fluid">
+                    <div class="formgrid grid">
+                      <div class="field col-12">
+                        <label for="delivery-service">Служба доставки:</label>
+                        <p-dropdown
+                          id="delivery-service"
+                          [options]="deliveryServices"
+                          formControlName="deliveryService"
+                        >
+                          <ng-template let-selected pTemplate="selectedItem">
+                            <app-delivery-service-badge
+                              *ngIf="selected as deliveryService"
+                              mode="short"
+                              [withText]="true"
+                              [deliveryService]="deliveryService"
+                            ></app-delivery-service-badge>
+                          </ng-template>
+                          <ng-template let-option pTemplate="item">
+                            <app-delivery-service-badge
+                              *ngIf="option as deliveryService"
+                              mode="short"
+                              [withText]="true"
+                              [deliveryService]="deliveryService"
+                            ></app-delivery-service-badge>
+                          </ng-template>
+                        </p-dropdown>
+                        <app-form-control-error-message
+                          [formGroup]="updateDeliveryForm"
+                          controlName="deliveryService"
+                          errorType="required"
+                          errorMessage="Це є обов'язковим полем"
+                        ></app-form-control-error-message>
+                      </div>
+                      <div class="field col-12">
+                        <label for="tracking-id">Номер ТТН:</label>
+                        <input
+                          pInputText
+                          id="tracking-id"
+                          autocomplete="off"
+                          formControlName="trackingId"
+                        />
+                        <app-form-control-error-message
+                          [formGroup]="updateDeliveryForm"
+                          controlName="trackingId"
+                          errorType="required"
+                          errorMessage="Потрібно ввести номер ТТН"
+                        ></app-form-control-error-message>
+                        <app-form-control-error-message
+                          [formGroup]="updateDeliveryForm"
+                          controlName="trackingId"
+                          errorType="alphanumeric"
+                          errorMessage="Номер ТТН повинен містити тільки літери та цифри"
+                        ></app-form-control-error-message>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="formgrid grid">
+                    <div class="field col-12">
+                      <label for="tracking-id">Експрес-накладна:</label>
+                      <p-fileUpload
+                        #waybillUpload
+                        data-cy="order-waybill-upload"
+                        [accept]="fileFormats"
+                        [customUpload]="true"
+                        [auto]="true"
+                        [maxFileSize]="1000000"
+                        [disabled]="(waybillSubmitting$ | async)!"
+                        (uploadHandler)="onWaybillUpload($event)"
+                        (onRemove)="onWaybillRemove()"
+                      >
+                      </p-fileUpload>
+                    </div>
+                  </div>
+                  <button
+                    (click)="updateWaybill()"
+                    pButton
+                    label="Оновини дані доставки"
+                    [disabled]="waybillSubmitting$ | async"
+                  ></button>
+                </form>
               </li>
             </ul>
           </div>

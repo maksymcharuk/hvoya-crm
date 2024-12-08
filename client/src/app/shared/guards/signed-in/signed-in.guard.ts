@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { StorageService } from '@shared/services/storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SignedInGuard implements CanActivate {
+export class SignedInGuard  {
   constructor(private storageService: StorageService, private router: Router) {}
 
   canActivate(): boolean {

@@ -13,6 +13,7 @@ export enum Action {
   // Requests
   Approve = 'approve',
   Decline = 'decline',
+  Restore = 'restore',
   // Super
   SuperUpdate = 'superUpdate',
 }

@@ -24,17 +24,23 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "../dist/client",
+            "outputPath": {
+              "base": "../dist/client"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["src/assets", "src/.well-known"],
             "styles": ["src/styles.scss"],
-            "scripts": ["./node_modules/quill/dist/quill.js"]
+            "scripts": [
+              "./node_modules/quill/dist/quill.js"
+            ],
+            "browser": "src/main.ts"
           },
           "configurations": {
             "production": {
@@ -59,17 +65,13 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
             },
             "test": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -84,13 +86,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "hvoya-crm:build:production"
+              "buildTarget": "hvoya-crm:build:production"
             },
             "development": {
-              "browserTarget": "hvoya-crm:build:development"
+              "buildTarget": "hvoya-crm:build:development"
             },
             "test": {
-              "browserTarget": "hvoya-crm:build:test"
+              "buildTarget": "hvoya-crm:build:test"
             }
           },
           "defaultConfiguration": "development"
@@ -98,7 +100,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "hvoya-crm:build"
+            "buildTarget": "hvoya-crm:build"
           }
         },
         "test": {

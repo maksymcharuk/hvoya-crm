@@ -7,6 +7,7 @@ import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
+import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestsService } from '@shared/services/requests.service';
@@ -24,8 +25,12 @@ export class ReturnRequestViewComponent {
   fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   waybillSubmitting$ = new BehaviorSubject<boolean>(false);
   returnRequestStatus = OrderReturnRequestStatus;
+  deliveryServices = Object.values(DeliveryService).filter(
+    (value) => value !== DeliveryService.SelfPickup,
+  );
 
-  updateWaybillForm = this.formBuilder.group({
+  updateDeliveryForm = this.formBuilder.group({
+    deliveryService: [DeliveryService.NovaPoshta, Validators.required],
     trackingId: [
       '',
       [Validators.required, alphanumeric({ allowSpaces: true })],
@@ -34,7 +39,7 @@ export class ReturnRequestViewComponent {
   });
 
   get waybillControl(): AbstractControl {
-    return this.updateWaybillForm.controls.waybill;
+    return this.updateDeliveryForm.controls.waybill;
   }
 
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
@@ -48,7 +53,8 @@ export class ReturnRequestViewComponent {
     this.requestNumber$.subscribe((requestNumber) => {
       this.requestsService.getRequest(requestNumber).subscribe((request) => {
         this.request$.next(request);
-        this.updateWaybillForm.patchValue({
+        this.updateDeliveryForm.patchValue({
+          deliveryService: request.returnRequest!.delivery.deliveryService,
           trackingId: request.returnRequest!.delivery.trackingId,
         });
       });
@@ -56,8 +62,8 @@ export class ReturnRequestViewComponent {
 
     this.waybillSubmitting$.subscribe((submitting) => {
       submitting
-        ? this.updateWaybillForm.disable()
-        : this.updateWaybillForm.enable();
+        ? this.updateDeliveryForm.disable()
+        : this.updateDeliveryForm.enable();
     });
   }
 
@@ -74,16 +80,17 @@ export class ReturnRequestViewComponent {
   }
 
   updateWaybill() {
-    if (!this.updateWaybillForm.valid) {
-      this.updateWaybillForm.markAllAsTouched();
+    if (!this.updateDeliveryForm.valid) {
+      this.updateDeliveryForm.markAllAsTouched();
       return;
     }
 
-    const formValue = this.updateWaybillForm.value;
+    const formValue = this.updateDeliveryForm.value;
     const formData = new FormData();
 
     const value = {
       returnRequest: {
+        deliveryService: formValue.deliveryService,
         trackingId: formValue.trackingId,
       },
       waybill: formValue.waybill,
@@ -94,7 +101,7 @@ export class ReturnRequestViewComponent {
 
     this.waybillSubmitting$.next(true);
     this.requestsService
-      .requestUpdateByCustomer(this.route.snapshot.params['number'], formData)
+      .requestUpdate(this.route.snapshot.params['number'], formData)
       .pipe(finalize(() => this.waybillSubmitting$.next(false)))
       .subscribe((request: RequestEntity) => {
         this.request$.next(request);

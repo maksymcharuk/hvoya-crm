@@ -18,7 +18,7 @@ import { RequestsPageOptionsDto } from '@dtos/requests-page-options.dto';
 import { ApproveRequestDto } from '@dtos/requests/approve-request.dto';
 import { CreateRequestDto } from '@dtos/requests/create-request.dto';
 import { RejectRequestDto } from '@dtos/requests/reject-request.dto';
-import { UpdateRequestByCustomerDto } from '@dtos/requests/update-request-by-customer.dto';
+import { UpdateRequestDto } from '@dtos/requests/update-request.dto';
 import { RequestEntity } from '@entities/request.entity';
 import { Action } from '@enums/action.enum';
 import { Page } from '@interfaces/page.interface';
@@ -194,7 +194,7 @@ export class RequestsController {
     });
   }
 
-  @Put(':number/update-by-customer')
+  @Put(':number')
   @UseInterceptors(
     FileFieldsInterceptor(
       uploadFilesConfig.uploadFields,
@@ -204,10 +204,10 @@ export class RequestsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Update, RequestEntity),
   )
-  async updateRequestByCustomer(
+  async updateRequest(
     @User('id') userId: string,
     @Param('number') requestNumber: string,
-    @Body() updateRequestByCustomerDto: UpdateRequestByCustomerDto,
+    @Body() updateRequestDto: UpdateRequestDto,
     @UploadedFiles()
     files: {
       documents?: Express.Multer.File[];
@@ -220,12 +220,23 @@ export class RequestsController {
       [document] = files.documents;
     }
 
-    return this.requestService.updateRequestByCustomer({
+    return this.requestService.updateRequest({
       userId,
       requestNumber,
-      updateRequestByCustomerDto,
+      updateRequestDto,
       document,
       images: files.images!,
     });
+  }
+
+  @Put(':number/restore')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Restore, RequestEntity),
+  )
+  async restoreRequest(
+    @User('id') userId: string,
+    @Param('number') requestNumber: string,
+  ): Promise<RequestEntity> {
+    return this.requestService.restoreRequest({ userId, requestNumber });
   }
 }

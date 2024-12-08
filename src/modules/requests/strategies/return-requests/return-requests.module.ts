@@ -8,6 +8,7 @@ import { UserEntity } from '@entities/user.entity';
 
 import { CaslModule } from '@modules/casl/casl.module';
 import { FilesModule } from '@modules/files/files.module';
+import { DeliveryModule } from '@modules/integrations/delivery/delivery.module';
 import { OneCClientModule } from '@modules/integrations/one-c/one-c-client/one-c-client.module';
 
 import { ReturnRequestsStrategy } from './return-requests.strategy';
@@ -23,6 +24,7 @@ import { ReturnRequestsStrategy } from './return-requests.strategy';
     FilesModule,
     CaslModule,
     OneCClientModule,
+    DeliveryModule,
   ],
   providers: [ReturnRequestsStrategy],
   exports: [ReturnRequestsStrategy],

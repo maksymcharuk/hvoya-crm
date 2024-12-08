@@ -1,5 +1,5 @@
-import { LazyLoadEvent, MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
+import { MessageService } from 'primeng/api';
+import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { Subject, catchError, debounceTime, switchMap, takeUntil } from 'rxjs';
 
 import {
@@ -141,7 +141,7 @@ export class TransactionsListComponent implements OnDestroy {
     this.router.navigate([path, ...entityPath]);
   }
 
-  onLazyLoad(event: LazyLoadEvent) {
+  onLazyLoad(event: TableLazyLoadEvent) {
     this.loading = true;
     if (this.paymentTransactions) {
       this.paymentTransactions.data = [];

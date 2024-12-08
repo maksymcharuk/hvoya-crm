@@ -8,7 +8,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -27,34 +27,28 @@ import { SignUpConfirmationComponent } from './sign-up-confirmation/sign-up-conf
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { AdminSignUpComponent } from './admin-sign-up/admin-sign-up.component';
 
-@NgModule({
-  declarations: [
-    SignInComponent,
-    SignUpComponent,
-    SignUpConfirmationComponent,
-    ConfirmEmailComponent,
-    ResetPasswordComponent,
-    ForgotPasswordComponent,
-    ForgotPasswordConfirmationComponent,
-    FreezedComponent,
-    ResetPasswordConfirmationComponent,
-    AdminSignUpComponent,
-  ],
-  imports: [
-    HttpClientModule,
-    AuthRoutingModule,
-    CommonModule,
-    InputTextModule,
-    ReactiveFormsModule,
-    PasswordModule,
-    ButtonModule,
-    DividerModule,
-    InputMaskModule,
-    InputTextareaModule,
-    SharedModule,
-    ProgressBarModule,
-    TooltipModule,
-  ],
-  exports: [RouterModule],
-})
+@NgModule({ declarations: [
+        SignInComponent,
+        SignUpComponent,
+        SignUpConfirmationComponent,
+        ConfirmEmailComponent,
+        ResetPasswordComponent,
+        ForgotPasswordComponent,
+        ForgotPasswordConfirmationComponent,
+        FreezedComponent,
+        ResetPasswordConfirmationComponent,
+        AdminSignUpComponent,
+    ],
+    exports: [RouterModule], imports: [AuthRoutingModule,
+        CommonModule,
+        InputTextModule,
+        ReactiveFormsModule,
+        PasswordModule,
+        ButtonModule,
+        DividerModule,
+        InputMaskModule,
+        InputTextareaModule,
+        SharedModule,
+        ProgressBarModule,
+        TooltipModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AuthModule {}

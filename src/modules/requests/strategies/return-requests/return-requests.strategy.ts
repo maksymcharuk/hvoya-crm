@@ -20,21 +20,25 @@ import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { RequestEntity } from '@entities/request.entity';
 import { UserEntity } from '@entities/user.entity';
 import { Action } from '@enums/action.enum';
+import { DeliveryService } from '@enums/delivery-service.enum';
 import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { Folder } from '@enums/folder.enum';
 import { OrderReturnRequestStatus } from '@enums/order-return-request-status.enum';
 import { OrderStatus } from '@enums/order-status.enum';
 import { TransactionStatus } from '@enums/transaction-status.enum';
 import { TransactionSyncOneCStatus } from '@enums/transaction-sync-one-c-status.enum';
+import { DeliveryServiceRawStatus } from '@interfaces/delivery/get-delivery-statuses.response';
 
 import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
 import { FilesService } from '@modules/files/services/files.service';
+import { DeliveryServiceFactory } from '@modules/integrations/delivery/factories/delivery-service/delivery-service.factory';
 import { OneCApiClientService } from '@modules/integrations/one-c/one-c-client/services/one-c-api-client/one-c-api-client.service';
 import { RequestStrategy } from '@modules/requests/core/request-strategy.interface';
 import { ApproveRequestStrategyDto } from '@modules/requests/interfaces/approve-request-strategy.dto';
 import { CreateRequestStrategyDto } from '@modules/requests/interfaces/create-request-strategy.dto';
 import { RejectRequestStrategyDto } from '@modules/requests/interfaces/reject-request-strategy.dto';
-import { UpdateRequestByCustomerStrategyDto } from '@modules/requests/interfaces/update-request-by-customer.strategy.dto';
+import { RestoreRequestStrategyDto } from '@modules/requests/interfaces/restore-request-strategy.dto';
+import { UpdateRequestStrategyDto } from '@modules/requests/interfaces/update-request.strategy.dto';
 
 @Injectable()
 export class ReturnRequestsStrategy implements RequestStrategy {
@@ -42,6 +46,7 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     private readonly caslAbilityFactory: CaslAbilityFactory,
     private readonly filesService: FilesService,
     private readonly oneCApiClientService: OneCApiClientService,
+    private readonly deliveryServiceFactory: DeliveryServiceFactory,
   ) {}
 
   async createRequest(data: CreateRequestStrategyDto): Promise<RequestEntity> {
@@ -371,25 +376,22 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     return request;
   }
 
-  async updateRequestByCustomer(
-    data: UpdateRequestByCustomerStrategyDto,
-  ): Promise<RequestEntity> {
+  async updateRequest(data: UpdateRequestStrategyDto): Promise<RequestEntity> {
     let waybillScan: FileEntity | undefined;
+    const { queryRunner, userId, requestNumber, document, updateRequestDto } =
+      data;
 
     try {
-      const user = await data.queryRunner.manager.findOneOrFail(UserEntity, {
-        where: { id: data.userId },
+      const user = await queryRunner.manager.findOneOrFail(UserEntity, {
+        where: { id: userId },
       });
 
       const ability = this.caslAbilityFactory.createForUser(user);
 
-      const request = await data.queryRunner.manager.findOneOrFail(
-        RequestEntity,
-        {
-          relations: ['returnRequest', 'customer', 'returnRequest.delivery'],
-          where: { number: data.requestNumber },
-        },
-      );
+      const request = await queryRunner.manager.findOneOrFail(RequestEntity, {
+        relations: ['returnRequest', 'customer', 'returnRequest.delivery'],
+        where: { number: requestNumber },
+      });
 
       if (
         ability.cannot(Action.Update, request) ||
@@ -400,26 +402,37 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         );
       }
 
-      if (data.updateRequestByCustomerDto.returnRequest.trackingId) {
-        if (data.document) {
-          waybillScan = await this.filesService.uploadAutoFile(
-            data.queryRunner,
-            data.document,
-            {
-              folder: Folder.OrderFiles,
-            },
-          );
-        }
-        await data.queryRunner.manager.update(
-          OrderReturnDeliveryEntity,
-          request.returnRequest!.delivery.id,
+      if (document) {
+        waybillScan = await this.filesService.uploadAutoFile(
+          queryRunner,
+          document,
           {
-            trackingId:
-              data.updateRequestByCustomerDto.returnRequest.trackingId,
-            waybill: waybillScan,
+            folder: Folder.OrderFiles,
           },
         );
       }
+
+      const { deliveryService, trackingId } = updateRequestDto.returnRequest;
+      let deliveryStatus;
+
+      if (deliveryService && trackingId) {
+        deliveryStatus = await this.getRequestDeliveryStatus(
+          deliveryService,
+          trackingId,
+        );
+      }
+
+      await queryRunner.manager.update(
+        OrderReturnDeliveryEntity,
+        request.returnRequest!.delivery.id,
+        {
+          status: deliveryStatus?.status,
+          rawStatus: deliveryStatus?.rawStatus,
+          deliveryService,
+          trackingId,
+          waybill: waybillScan,
+        },
+      );
 
       return request;
     } catch (error) {
@@ -428,6 +441,44 @@ export class ReturnRequestsStrategy implements RequestStrategy {
       }
       throw new BadRequestException(error.message);
     }
+  }
+
+  async restoreRequest(
+    data: RestoreRequestStrategyDto,
+  ): Promise<RequestEntity> {
+    let request: RequestEntity;
+    const user = await data.queryRunner.manager.findOneOrFail(UserEntity, {
+      where: { id: data.userId },
+    });
+
+    const ability = this.caslAbilityFactory.createForUser(user);
+
+    request = await data.queryRunner.manager.findOneOrFail(RequestEntity, {
+      relations: ['returnRequest', 'customer'],
+      where: { number: data.requestNumber },
+    });
+
+    if (
+      ability.cannot(Action.Restore, request) ||
+      ability.cannot(Action.Restore, request.returnRequest!)
+    ) {
+      throw new ForbiddenException(
+        'У вас немає прав для оновлення цього запиту або запит вже був закритий',
+      );
+    }
+
+    if (request.returnRequest!.status === OrderReturnRequestStatus.Approved) {
+      throw new BadRequestException(
+        'Неможливо відновити запит на повернення товару який вже було схвалено',
+      );
+    }
+
+    await data.queryRunner.manager.save(OrderReturnRequestEntity, {
+      id: request.returnRequest!.id,
+      status: OrderReturnRequestStatus.Pending,
+    });
+
+    return request;
   }
 
   private calculateTotal(orderItems: OrderReturnRequestItemEntity[]): Decimal {
@@ -528,5 +579,33 @@ export class ReturnRequestsStrategy implements RequestStrategy {
     });
 
     await queryRunner.manager.save(ProductVariantEntity, productsToUpdate);
+  }
+
+  private async getRequestDeliveryStatus(
+    deliveryServiceName: DeliveryService,
+    trackingId: string,
+  ): Promise<DeliveryServiceRawStatus | undefined> {
+    if (deliveryServiceName === DeliveryService.SelfPickup) {
+      return;
+    }
+
+    const deliveryService =
+      this.deliveryServiceFactory.getDeliveryService(deliveryServiceName);
+
+    if (!deliveryService) {
+      throw new BadRequestException('Вказано невірну службу доставки');
+    }
+
+    const deliveryStatus = (
+      await deliveryService.getDeliveryStatuses({
+        trackingInfo: [{ trackingId: trackingId }],
+      })
+    ).statuses[0];
+
+    if (deliveryServiceName !== DeliveryService.UkrPoshta && !deliveryStatus) {
+      throw new BadRequestException('Вказаний номер ТТН не є дійсним');
+    }
+
+    return deliveryStatus;
   }
 }

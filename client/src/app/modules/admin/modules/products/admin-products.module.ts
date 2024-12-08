@@ -11,7 +11,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -28,35 +28,29 @@ import { EditProductComponent } from './pages/edit-product/edit-product.componen
 import { TransferComponent } from './pages/transfer/transfer.component';
 import { ViewProductComponent } from './pages/view-product/view-product.component';
 
-@NgModule({
-  declarations: [
-    AdminProductsComponent,
-    AdminProductListComponent,
-    CreateProductComponent,
-    EditProductComponent,
-    ProductStateChangesComponent,
-    UpsertProductFormComponent,
-    ViewProductComponent,
-    TransferComponent,
-    AdminProductBaseListComponent,
-  ],
-  imports: [
-    CommonModule,
-    AdminProductsRoutingModule,
-    SharedModule,
-    TabViewModule,
-    ButtonModule,
-    InputTextModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    InputTextareaModule,
-    FileUploadModule,
-    HttpClientModule,
-    InputNumberModule,
-    EditorModule,
-    TooltipModule,
-    SelectButtonModule,
-    CheckboxModule,
-  ],
-})
+@NgModule({ declarations: [
+        AdminProductsComponent,
+        AdminProductListComponent,
+        CreateProductComponent,
+        EditProductComponent,
+        ProductStateChangesComponent,
+        UpsertProductFormComponent,
+        ViewProductComponent,
+        TransferComponent,
+        AdminProductBaseListComponent,
+    ], imports: [CommonModule,
+        AdminProductsRoutingModule,
+        SharedModule,
+        TabViewModule,
+        ButtonModule,
+        InputTextModule,
+        ReactiveFormsModule,
+        DropdownModule,
+        InputTextareaModule,
+        FileUploadModule,
+        InputNumberModule,
+        EditorModule,
+        TooltipModule,
+        SelectButtonModule,
+        CheckboxModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AdminProductsModule {}

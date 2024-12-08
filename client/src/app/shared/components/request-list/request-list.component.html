@@ -97,9 +97,10 @@
                   [type]="option.label"
                 ></app-request-type-badge>
               </ng-template>
-              <ng-template let-item pTemplate="selectedItem">
+              <ng-template pTemplate="selectedItem">
                 <app-request-type-badge
-                  [type]="item.label"
+                  *ngIf="value"
+                  [type]="value"
                 ></app-request-type-badge>
               </ng-template>
             </p-dropdown>
@@ -126,9 +127,10 @@
                   [status]="option.label"
                 ></app-request-status-badge>
               </ng-template>
-              <ng-template let-item pTemplate="selectedItem">
+              <ng-template pTemplate="selectedItem">
                 <app-request-status-badge
-                  [status]="item.label"
+                  *ngIf="value"
+                  [status]="value"
                 ></app-request-status-badge>
               </ng-template>
             </p-dropdown>
@@ -155,9 +157,10 @@
                   [status]="option.label"
                 ></app-return-request-delivery-status-badge>
               </ng-template>
-              <ng-template let-item pTemplate="selectedItem">
+              <ng-template pTemplate="selectedItem">
                 <app-return-request-delivery-status-badge
-                  [status]="item.label"
+                  *ngIf="value"
+                  [status]="value"
                 ></app-return-request-delivery-status-badge>
               </ng-template>
             </p-dropdown>
