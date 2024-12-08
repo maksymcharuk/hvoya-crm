@@ -13,12 +13,17 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { IMAGE_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
+import {
+  IMAGE_ACCEPTABLE_FILE_FORMATS,
+  WAYBILL_ACCEPTABLE_FILE_FORMATS,
+} from '@shared/constants/order.constants';
+import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { RequestAction } from '@shared/enums/request-action.enum';
 import { OrderReturnRequestItemEntity } from '@shared/interfaces/entities/order-return-request.entity';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestItemUIEntity } from '@shared/interfaces/ui-entities/request-item.ui-entity';
 import { RequestsService } from '@shared/services/requests.service';
+import { alphanumeric } from '@shared/validators/alphanumeric.validator';
 
 const CONFIRM_MESSAGE =
   'Ви справді хочете підтвердити цей запит на повернення?';
@@ -37,9 +42,14 @@ export class ReturnRequestViewComponent implements OnInit {
   requestedItems: OrderReturnRequestItemEntity[] = [];
   submitting = false;
   imageFormats = IMAGE_ACCEPTABLE_FILE_FORMATS;
+  fileFormats = WAYBILL_ACCEPTABLE_FILE_FORMATS;
   confirmRejectHeader = '';
   acceptButtonStyleClass = '';
   action = RequestAction;
+  waybillSubmitting$ = new BehaviorSubject<boolean>(false);
+  deliveryServices = Object.values(DeliveryService).filter(
+    (value) => value !== DeliveryService.SelfPickup,
+  );
 
   returnRequestForm = this.formBuilder.nonNullable.group(
     {
@@ -69,6 +79,19 @@ export class ReturnRequestViewComponent implements OnInit {
     return this.returnRequestForm.controls.managerImages;
   }
 
+  updateDeliveryForm = this.formBuilder.group({
+    deliveryService: [DeliveryService.NovaPoshta, Validators.required],
+    trackingId: [
+      '',
+      [Validators.required, alphanumeric({ allowSpaces: true })],
+    ],
+    waybill: [''],
+  });
+
+  get waybillControl(): AbstractControl {
+    return this.updateDeliveryForm.controls.waybill;
+  }
+
   @ViewChild('waybillUpload') waybillUpload!: FileUpload;
 
   constructor(
@@ -90,7 +113,17 @@ export class ReturnRequestViewComponent implements OnInit {
             this.formBuilder.control(new RequestItemUIEntity(item)),
           );
         });
+        this.updateDeliveryForm.patchValue({
+          deliveryService: request.returnRequest!.delivery.deliveryService,
+          trackingId: request.returnRequest!.delivery.trackingId,
+        });
       });
+
+    this.waybillSubmitting$.subscribe((submitting) => {
+      submitting
+        ? this.updateDeliveryForm.disable()
+        : this.updateDeliveryForm.enable();
+    });
   }
 
   ngOnInit(): void {
@@ -268,5 +301,48 @@ export class ReturnRequestViewComponent implements OnInit {
         }
       },
     });
+  }
+
+  onWaybillUpload(event: any) {
+    this.waybillControl.patchValue(event.files[0]);
+  }
+
+  onWaybillRemove() {
+    this.waybillControl.patchValue(null);
+  }
+
+  updateWaybill() {
+    if (!this.updateDeliveryForm.valid) {
+      this.updateDeliveryForm.markAllAsTouched();
+      return;
+    }
+
+    const formValue = this.updateDeliveryForm.value;
+    const formData = new FormData();
+
+    const value = {
+      returnRequest: {
+        deliveryService: formValue.deliveryService,
+        trackingId: formValue.trackingId,
+      },
+      waybill: formValue.waybill,
+    };
+
+    formData.append('returnRequest', JSON.stringify(value.returnRequest));
+    formData.append('documents', value.waybill!);
+
+    this.waybillSubmitting$.next(true);
+    this.requestsService
+      .requestUpdate(this.route.snapshot.params['number'], formData)
+      .pipe(finalize(() => this.waybillSubmitting$.next(false)))
+      .subscribe((request: RequestEntity) => {
+        this.request$.next(request);
+        this.waybillUpload.clear();
+        this.waybillControl.reset();
+        this.messageService.add({
+          severity: 'success',
+          detail: 'Дані доставки успішно оновлено',
+        });
+      });
   }
 }

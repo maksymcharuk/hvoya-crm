@@ -23,7 +23,7 @@ import { ApproveRequestStrategyDto } from '@modules/requests/interfaces/approve-
 import { CreateRequestStrategyDto } from '@modules/requests/interfaces/create-request-strategy.dto';
 import { RejectRequestStrategyDto } from '@modules/requests/interfaces/reject-request-strategy.dto';
 import { RestoreRequestStrategyDto } from '@modules/requests/interfaces/restore-request-strategy.dto';
-import { UpdateRequestByCustomerContextDto } from '@modules/requests/interfaces/update-request-by-customer.strategy.dto';
+import { UpdateRequestContextDto } from '@modules/requests/interfaces/update-request.strategy.dto';
 
 @Injectable()
 export class FundsWithdrawRequestsStrategy implements RequestStrategy {
@@ -239,9 +239,7 @@ export class FundsWithdrawRequestsStrategy implements RequestStrategy {
     }
   }
 
-  async updateRequestByCustomer(
-    _data: UpdateRequestByCustomerContextDto,
-  ): Promise<RequestEntity> {
+  async updateRequest(_data: UpdateRequestContextDto): Promise<RequestEntity> {
     throw new BadRequestException('Запит даного типу не може бути оновлений');
   }
 

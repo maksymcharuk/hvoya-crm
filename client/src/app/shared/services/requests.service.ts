@@ -44,13 +44,13 @@ export class RequestsService {
       .pipe(map((request) => new RequestEntity(request)));
   }
 
-  requestUpdateByCustomer(
+  requestUpdate(
     requestNumber: string,
     requestUpdateFormData: FormData,
   ): Observable<RequestEntity> {
     return this.http
       .put<RequestEntity>(
-        `${environment.apiUrl}/requests/${requestNumber}/update-by-customer`,
+        `${environment.apiUrl}/requests/${requestNumber}`,
         requestUpdateFormData,
       )
       .pipe(map((request) => new RequestEntity(request)));

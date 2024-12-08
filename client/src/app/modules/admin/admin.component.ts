@@ -26,7 +26,7 @@ export class AdminComponent {
         {
           label: 'Головна',
           icon: 'pi pi-fw pi-home',
-          routerLink: ['/'],
+          routerLink: ['main'],
         },
         {
           label: 'Товари',

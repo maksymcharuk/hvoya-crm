@@ -8,7 +8,7 @@ import { ApproveRequestContextDto } from '../interfaces/approve-request-strategy
 import { CreateRequestContextDto } from '../interfaces/create-request-strategy.dto';
 import { RejectRequestContextDto } from '../interfaces/reject-request-strategy.dto';
 import { RestoreRequestContextDto } from '../interfaces/restore-request-strategy.dto';
-import { UpdateRequestByCustomerContextDto } from '../interfaces/update-request-by-customer.strategy.dto';
+import { UpdateRequestContextDto } from '../interfaces/update-request.strategy.dto';
 import { RequestStrategy } from './request-strategy.interface';
 
 /**
@@ -110,15 +110,15 @@ export class RequestContext {
     }
   }
 
-  public async updateRequestByCustomer(
-    data: UpdateRequestByCustomerContextDto,
+  public async updateRequest(
+    data: UpdateRequestContextDto,
   ): Promise<RequestEntity> {
     const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const request = await this.strategy.updateRequestByCustomer({
+      const request = await this.strategy.updateRequest({
         ...data,
         queryRunner,
       });

@@ -3,9 +3,11 @@ import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { SkeletonModule } from 'primeng/skeleton';
 
@@ -36,11 +38,13 @@ import { RequestsRoutingModule } from './requests-routing.module';
     NgxDocViewerModule,
     DialogModule,
     ButtonModule,
+    DropdownModule,
     InputNumberModule,
     SkeletonModule,
     AbilityModule,
     InputTextareaModule,
     ImageModule,
+    InputTextModule,
     FileUploadModule,
     ConfirmDialogModule,
   ],
