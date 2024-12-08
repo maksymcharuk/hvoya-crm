@@ -41,7 +41,7 @@ import { UsersModule } from './modules/users/users.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
+      rootPath: join(__dirname, '..', 'client/browser'),
     }),
     ConfigModule.forRoot({
       envFilePath: process.env['NODE_ENV']
