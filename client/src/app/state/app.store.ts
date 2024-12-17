@@ -1,4 +1,4 @@
-import { PostState } from '../modules/admin/modules/posts/state/post.reducer';
+import { PostState } from '../shared/state/posts/post.reducer';
 
 export interface AppStore {
   posts: PostState;

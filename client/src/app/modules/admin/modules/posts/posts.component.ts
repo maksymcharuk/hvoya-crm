@@ -11,9 +11,13 @@ import { Post } from '@shared/interfaces/entities/post.entity';
 import { PageOptions } from '@shared/interfaces/page-options.interface';
 import { PostsService } from '@shared/services/posts.service';
 
-import { deletePost, deletePostSuccess, getPosts } from './state/post.actions';
-import { PostState } from './state/post.reducer';
-import { selectPostsPage } from './state/post.selectors';
+import {
+  deletePost,
+  deletePostSuccess,
+  getPosts,
+} from '../../../../shared/state/posts/post.actions';
+import { PostState } from '../../../../shared/state/posts/post.reducer';
+import { selectPostsPage } from '../../../../shared/state/posts/post.selectors';
 
 @Component({
   selector: 'app-post',

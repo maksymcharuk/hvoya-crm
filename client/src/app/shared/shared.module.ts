@@ -1,3 +1,5 @@
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
@@ -27,7 +29,11 @@ import {
   CurrencyPipe,
   registerLocaleData,
 } from '@angular/common';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import localeUk from '@angular/common/locales/uk';
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -84,6 +90,8 @@ import {
   TransactionSyncOneCStatusPipe,
   TruncatePipe,
 } from './pipes';
+import { PostEffects } from './state/posts/post.effects';
+import { postsFeature } from './state/posts/post.reducer';
 
 registerLocaleData(localeUk);
 
@@ -166,27 +174,35 @@ const PRIMENG_MODULES = [
 
 const NG_PIPES = [CurrencyPipe];
 
-@NgModule({ declarations: [...COMPONENTS, ...PIPES],
-    exports: [...COMPONENTS, ...PIPES], imports: [CommonModule,
-        RouterModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AbilityModule,
-        InfiniteScrollModule,
-        ...PRIMENG_MODULES], providers: [
-        ...NG_PIPES,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HttpExceptionInterceptor,
-            multi: true,
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthInterceptor,
-            multi: true,
-        },
-        { provide: LOCALE_ID, useValue: 'uk' },
-        { provide: DEFAULT_CURRENCY_CODE, useValue: 'UAH' },
-        provideHttpClient(withInterceptorsFromDi()),
-    ] })
+@NgModule({
+  declarations: [...COMPONENTS, ...PIPES],
+  exports: [...COMPONENTS, ...PIPES],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AbilityModule,
+    InfiniteScrollModule,
+    StoreModule.forFeature(postsFeature),
+    EffectsModule.forFeature([PostEffects]),
+    ...PRIMENG_MODULES,
+  ],
+  providers: [
+    ...NG_PIPES,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpExceptionInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    { provide: LOCALE_ID, useValue: 'uk' },
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'UAH' },
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
+})
 export class SharedModule {}
