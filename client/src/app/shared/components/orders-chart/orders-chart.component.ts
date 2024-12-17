@@ -47,11 +47,21 @@ export class OrdersChartComponent {
 
   private getData() {
     const now = new Date();
-    // get last 6 mounth and map it to array of strings
-    const labels = Array.from(Array(6).keys())
+    // get last 15 mounth and map it to array of strings
+    const labels = Array.from(Array(15).keys())
       .map((i) => {
         const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
         return date.toLocaleString('uk', { month: 'long' });
+      })
+      .reverse();
+
+    // get last 15 ${month + year} and map it to array of strings
+    const dataKeys = Array.from(Array(15).keys())
+      .map((i) => {
+        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const month = date.toLocaleString('uk', { month: 'long' });
+        const year = date.getFullYear();
+        return `${month} ${year}`;
       })
       .reverse();
 
@@ -59,16 +69,20 @@ export class OrdersChartComponent {
     const ordersByMonth = this.orders.reduce((acc, order) => {
       const date = new Date(order.createdAt);
       const month = date.toLocaleString('uk', { month: 'long' });
-      if (!acc[month]) {
-        acc[month] = [];
+      const year = date.getFullYear();
+      const key = `${month} ${year}`;
+
+      if (!acc[key]) {
+        acc[key] = [];
       }
-      acc[month]?.push(order);
+      acc[key].push(order);
+
       return acc;
     }, {} as { [key: string]: Order[] });
 
     // get orders count by month map to labels array
-    const ongoingOrFulfiledOrdersCountByMonth = labels.map((label) => {
-      const orders = ordersByMonth[label];
+    const ongoingOrFulfiledOrdersCountByMonth = dataKeys.map((key) => {
+      const orders = ordersByMonth[key];
       if (!orders) {
         return 0;
       }
@@ -80,8 +94,8 @@ export class OrdersChartComponent {
       ).length;
     });
 
-    const canceledOrRefundOrdersCountByMonth = labels.map((label) => {
-      const orders = ordersByMonth[label];
+    const canceledOrRefundOrdersCountByMonth = dataKeys.map((key) => {
+      const orders = ordersByMonth[key];
       if (!orders) {
         return 0;
       }

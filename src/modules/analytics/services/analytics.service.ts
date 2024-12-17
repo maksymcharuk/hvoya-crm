@@ -40,14 +40,7 @@ export class AnalyticsService {
   private async getUsersData(ability: AppAbility) {
     const users = await this.dataSource.manager.find(UserEntity, {
       where: { role: Role.User },
-      relations: ['balance', 'orders', 'orders.statuses'],
-      order: {
-        orders: {
-          statuses: {
-            createdAt: 'DESC',
-          },
-        },
-      },
+      relations: ['balance', 'orders'],
     });
 
     return users
@@ -74,20 +67,13 @@ export class AnalyticsService {
   }
 
   private async getOrdersData(ability: AppAbility) {
-    const orders = await this.dataSource.manager.find(OrderEntity, {
-      relations: ['statuses'],
-      order: {
-        statuses: {
-          createdAt: 'DESC',
-        },
-      },
-    });
+    const orders = await this.dataSource.manager.find(OrderEntity);
     return orders.map((order) => sanitizeEntity<OrderEntity>(ability, order));
   }
 
   private byFulfieldAndActiveOrders(order: OrderEntity) {
     return ![OrderStatus.Cancelled, OrderStatus.Refunded].includes(
-      order.statuses[0]!.status,
+      order.currentStatus,
     );
   }
 
