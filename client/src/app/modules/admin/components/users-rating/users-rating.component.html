@@ -1,22 +1,91 @@
 <p-table
-  *ngIf="!loading; else skeleton"
   #usersTable
-  dataKey="user.id"
+  dataKey="id"
   currentPageReportTemplate="Показано {first} до {last} з {totalRecords} користувачів"
-  [value]="data"
+  sortField="netWorth"
+  [value]="(userDataPage$ | async)?.data || []"
   [rowHover]="true"
+  [loading]="loading$ | async"
+  [totalRecords]="(userDataPage$ | async)?.meta?.itemCount || 0"
+  [sortOrder]="-1"
   [rows]="rows"
   [showCurrentPageReport]="true"
-  [paginator]="data.length > rows"
-  [filterDelay]="0"
-  rowGroupMode="subheader"
+  [paginator]="true"
+  [lazy]="true"
+  (onLazyLoad)="onLazyLoad($event)"
 >
+  <ng-template pTemplate="loadingicon"></ng-template>
+  <ng-template pTemplate="loadingbody">
+    <ng-container *ngFor="let _ of [].constructor(rows)">
+      <tr>
+        <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="40px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="170px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
+      </tr>
+    </ng-container>
+  </ng-template>
+  <ng-template pTemplate="caption">
+    <div class="table-header flex justify-content-between align-items-center">
+      Дропшипери
+      <form class="p-fluid formgrid grid" [formGroup]="filtersForm">
+        <div class="col">
+          <div class="field">
+            <label for="dateRange">Тип:</label>
+            <p-dropdown
+              [options]="dateRangeTypeOptions"
+              formControlName="dateRangeType"
+              optionValue="value"
+            ></p-dropdown>
+            <app-form-control-error-message
+              [formGroup]="filtersForm"
+              controlName="dateRangeType"
+            />
+          </div>
+        </div>
+        @switch (dateRangeType$ | async) { @case ('year') {
+        <div class="col">
+          <div class="field">
+            <label for="year">Рік:</label>
+            <p-dropdown
+              [options]="yearOptions"
+              formControlName="year"
+              optionValue="value"
+            ></p-dropdown>
+            <app-form-control-error-message
+              [formGroup]="filtersForm"
+              controlName="year"
+            />
+          </div>
+        </div>
+        } @case ('custom') {
+        <div class="col">
+          <div class="field">
+            <label for="range">Період:</label>
+            <p-calendar
+              formControlName="range"
+              selectionMode="range"
+              appendTo="body"
+              placeholder="Період"
+            ></p-calendar>
+            <!-- (onSelect)="filter($event)"
+              (onClear)="filter($event)" -->
+            <app-form-control-error-message
+              [formGroup]="filtersForm"
+              controlName="from"
+            />
+          </div>
+        </div>
+        } @default {} }
+      </form>
+    </div>
+  </ng-template>
   <ng-template pTemplate="header">
     <tr>
-      <th pSortableColumn="fullName">
+      <th pSortableColumn="lastName">
         <div class="flex justify-content-between align-items-center">
           ПІБ
-          <p-sortIcon field="fullName"></p-sortIcon>
+          <p-sortIcon field="lastName"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="ordersCount">
@@ -25,16 +94,10 @@
           <p-sortIcon field="ordersCount"></p-sortIcon>
         </div>
       </th>
-      <th pSortableColumn="ordersTotal">
+      <th pSortableColumn="ordersTotalSum">
         <div class="flex justify-content-between align-items-center">
           Сума по замовленнях
-          <p-sortIcon field="ordersTotal"></p-sortIcon>
-        </div>
-      </th>
-      <th pSortableColumn="maxOrder.total">
-        <div class="flex justify-content-between align-items-center">
-          Найбільше замовлення
-          <p-sortIcon field="maxOrder.total"></p-sortIcon>
+          <p-sortIcon field="ordersTotalSum"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="netWorth">
@@ -46,13 +109,14 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-userData>
+    @if (!(loading$ | async)) {
     <tr
       class="p-selectable-row"
-      [routerLink]="['/admin', 'users', userData.user.id]"
+      [routerLink]="['/admin', 'users', userData.id]"
     >
       <td>
         <span class="p-column-title">ПІБ</span>
-        {{ userData.user.fullName }}
+        {{ userData.lastName }} {{ userData.firstName }}
       </td>
       <td>
         <span class="p-column-title">К-ть замовлень</span>
@@ -60,25 +124,14 @@
       </td>
       <td>
         <span class="p-column-title">Сума по замовленнях</span>
-        {{ userData.ordersTotal | currency }}
-      </td>
-      <td>
-        <span class="p-column-title">Найбільше замовлення</span>
-        <ng-container *ngIf="userData.maxOrder.total as total">
-          <a
-            [routerLink]="['/admin', 'orders', userData.maxOrder.number]"
-            class="p-1"
-          >
-            {{ userData.maxOrder.total | currency }}
-          </a>
-        </ng-container>
-        <ng-container *ngIf="!userData.maxOrder.total">-</ng-container>
+        {{ userData.ordersTotalSum | currency }}
       </td>
       <td>
         <span class="p-column-title">Капітал</span>
         {{ userData.netWorth | currency }}
       </td>
     </tr>
+    }
   </ng-template>
   <ng-template pTemplate="emptymessage">
     <tr>
@@ -86,31 +139,3 @@
     </tr>
   </ng-template>
 </p-table>
-
-<ng-template #skeleton>
-  <div class="p-4 border-bottom-1 border-300">
-    <div class="flex justify-content-between align-items-center">
-      <p-skeleton height="16px" width="85px"></p-skeleton>
-    </div>
-  </div>
-  <div class="p-4 border-bottom-1 border-300">
-    <div class="flex justify-content-between align-items-center">
-      <p-skeleton height="28px" width="28px"></p-skeleton>
-      <p-skeleton height="28px" width="85px"></p-skeleton>
-      <p-skeleton height="28px" width="175px"></p-skeleton>
-      <p-skeleton height="28px" width="175px"></p-skeleton>
-      <p-skeleton height="28px" width="175px"></p-skeleton>
-    </div>
-  </div>
-  <ng-container *ngFor="let _ of [].constructor(rows)">
-    <div class="p-4 border-bottom-1 border-300">
-      <div class="flex justify-content-between align-items-center">
-        <p-skeleton height="28px" width="28px"></p-skeleton>
-        <p-skeleton height="28px" width="85px"></p-skeleton>
-        <p-skeleton height="16px" width="98px"></p-skeleton>
-        <p-skeleton height="19px" width="86px"></p-skeleton>
-        <p-skeleton height="16px" width="55px"></p-skeleton>
-      </div>
-    </div>
-  </ng-container>
-</ng-template>

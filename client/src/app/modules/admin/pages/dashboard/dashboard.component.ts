@@ -1,4 +1,4 @@
-import { Subject, share, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { Component, OnDestroy } from '@angular/core';
 
@@ -11,9 +11,7 @@ import { AnalyticsService } from '@shared/services/analytics.service';
 })
 export class AdminDashboardComponent implements OnDestroy {
   destroyed$ = new Subject<void>();
-  analytics$ = this.analyticsService
-    .getAnalyticDataForAdmins()
-    .pipe(takeUntil(this.destroyed$), share());
+  orders$ = this.analyticsService.getOrders().pipe(takeUntil(this.destroyed$));
 
   constructor(private readonly analyticsService: AnalyticsService) {}
 

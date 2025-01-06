@@ -2,13 +2,11 @@
   <div class="col-12">
     <div class="card">
       <h5>Рейтинг дропшиперів</h5>
-      <app-users-rating
-        [data]="(analytics$ | async)?.usersData!"
-      ></app-users-rating>
+      <app-users-rating />
     </div>
   </div>
 
-  <div class="col-12">
+  <!-- <div class="col-12">
     <div class="card">
       <h5>Загальна сума замовленнь по місяцях</h5>
       <app-income-chart
@@ -24,5 +22,5 @@
         [orders]="(analytics$ | async)?.ordersData!"
       ></app-orders-chart>
     </div>
-  </div>
+  </div> -->
 </div>

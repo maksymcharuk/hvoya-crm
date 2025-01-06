@@ -1,14 +1,15 @@
-import { CacheInterceptor, CacheKey } from '@nestjs/cache-manager';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
-  CacheTTL,
   Controller,
   Get,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
-import { User } from '@decorators/user.decorator';
+import { UsersAnalyticsForAdminsPageOptionsDto } from '@dtos/users-analytics-for-admins-page-options.dto';
 import { Action } from '@enums/action.enum';
+import { Page } from '@interfaces/page.interface';
 
 import { JwtAuthGuard } from '@modules/auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '@modules/casl/casl-ability/casl-ability.factory';
@@ -16,6 +17,7 @@ import { CheckPolicies } from '@modules/casl/check-policies.decorator';
 import { PoliciesGuard } from '@modules/casl/policies.guard';
 
 import { AnalyticsService } from './services/analytics.service';
+import { UserData } from './types';
 
 @Controller('analytics')
 @UseInterceptors(CacheInterceptor)
@@ -23,13 +25,16 @@ import { AnalyticsService } from './services/analytics.service';
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
-  @Get('admins')
-  @CacheTTL(60 * 60 * 1000) // 1 hour
-  @CacheKey('analytics-admins')
+  @Get('admins/users')
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, 'AdminAalytics'),
   )
-  getAnalyticDataForAdmins(@User('id') currentUserId: string): Promise<any> {
-    return this.analyticsService.getAnalyticDataForAdmins(currentUserId);
+  getUsersForAdmins(
+    @Query()
+    usersAnalyticsForAdminsPageOptionsDto: UsersAnalyticsForAdminsPageOptionsDto,
+  ): Promise<Page<UserData>> {
+    return this.analyticsService.getUsersForAdmins(
+      usersAnalyticsForAdminsPageOptionsDto,
+    );
   }
 }
