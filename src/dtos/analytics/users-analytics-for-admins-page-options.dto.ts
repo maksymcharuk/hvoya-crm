@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsOptional, ValidateIf } from 'class-validator';
 
-import { PageOptionsDto } from './page-options.dto';
+import { PageOptionsDto } from '../page-options.dto';
 
 export class UsersAnalyticsForAdminsPageOptionsDto extends PageOptionsDto {
   @IsOptional()

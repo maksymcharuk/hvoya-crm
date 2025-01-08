@@ -1,21 +1,31 @@
-import { DataSource } from 'typeorm';
+import { Between, DataSource, In } from 'typeorm';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { UsersAnalyticsForAdminsPageOptionsDto } from '@dtos/users-analytics-for-admins-page-options.dto';
+import { OrdersAnalyticsForAdminsPageOptionsDto } from '@dtos/analytics/orders-analytics-for-admins-page-options.dto';
+import { UsersAnalyticsForAdminsPageOptionsDto } from '@dtos/analytics/users-analytics-for-admins-page-options.dto';
+import { OrderEntity } from '@entities/order.entity';
 import { UserEntity } from '@entities/user.entity';
 import { OrderStatus } from '@enums/order-status.enum';
 import { Role } from '@enums/role.enum';
 import { PageMeta } from '@interfaces/page-meta.interface';
 import { Page } from '@interfaces/page.interface';
+import { sanitizeEntity } from '@utils/serialize-entity.util';
 
-import { UserData } from '../types';
+import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
+import { UsersService } from '@modules/users/services/users.service';
+
+import { OrderData, UserData } from '../types';
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly usersService: UsersService,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
+  ) {}
 
-  async getUsersForAdmins(
+  async getUserDataForAdmins(
     pageOptionsDto: UsersAnalyticsForAdminsPageOptionsDto,
   ): Promise<Page<UserData>> {
     let query = this.dataSource.manager
@@ -78,47 +88,48 @@ export class AnalyticsService {
     return new Page(data, pageMetaDto);
   }
 
-  // private async getUsersData(ability: AppAbility) {
-  //   const users = await this.dataSource.manager.find(UserEntity, {
-  //     where: { role: Role.User },
-  //     relations: ['balance', 'orders'],
-  //   });
+  async getOrderDataForAdmins(
+    currentUserId: string,
+    pageOptionsDto: OrdersAnalyticsForAdminsPageOptionsDto,
+  ): Promise<OrderData> {
+    const user = await this.usersService.findById(currentUserId);
 
-  //   return users
-  //     .map((user) => {
-  //       const orders = user.orders.filter(this.byFulfieldAndActiveOrders);
-  //       const ordersTotal = orders.reduce(this.sumOrdersTotal, new Decimal(0));
-  //       const maxOrder = orders.reduce((acc, order) => {
-  //         if (!acc) return order;
-  //         if (order.total.greaterThan(acc.total)) {
-  //           return order;
-  //         }
-  //         return acc;
-  //       }, orders[0]);
+    if (!user) {
+      throw new NotFoundException('Користувача нe знайдено');
+    }
 
-  //       return {
-  //         user: sanitizeEntity<UserEntity>(ability, user),
-  //         ordersCount: orders.length,
-  //         ordersTotal: ordersTotal,
-  //         maxOrder: maxOrder && sanitizeEntity<OrderEntity>(ability, maxOrder),
-  //         netWorth: user.balance.amount.plus(ordersTotal),
-  //       };
-  //     })
-  //     .sort((a, b) => b.netWorth.minus(a.netWorth).toNumber());
-  // }
+    const ability = this.caslAbilityFactory.createForUser(user);
 
-  // private async getOrdersData(ability: AppAbility) {
-  //   const orders = await this.dataSource.manager.find(OrderEntity);
-  //   return orders.map((order) => sanitizeEntity<OrderEntity>(ability, order));
-  // }
+    console.log(pageOptionsDto);
 
-  // private byFulfieldAndActiveOrders(order: OrderEntity) {
-  //   return ![OrderStatus.Cancelled, OrderStatus.Refunded].includes(
-  //     order.currentStatus,
-  //   );
-  // }
+    const completedOrders = await this.dataSource.manager.find(OrderEntity, {
+      where: {
+        currentStatus: In([
+          OrderStatus.Fulfilled,
+          OrderStatus.Pending,
+          OrderStatus.Processing,
+        ]),
+        createdAt: Between(pageOptionsDto.range[0], pageOptionsDto.range[1]),
+      },
+    });
+    const failedOrders = await this.dataSource.manager.find(OrderEntity, {
+      where: {
+        currentStatus: In([
+          OrderStatus.Cancelled,
+          OrderStatus.Refunded,
+          OrderStatus.Refused,
+        ]),
+        createdAt: Between(pageOptionsDto.range[0], pageOptionsDto.range[1]),
+      },
+    });
 
-  // private sumOrdersTotal(acc: Decimal, order: OrderEntity) {
-  //   return acc.plus(order.total);
-  // }
+    return {
+      completedOrders: completedOrders.map((order) =>
+        sanitizeEntity<OrderEntity>(ability, order),
+      ),
+      failedOrders: failedOrders.map((order) =>
+        sanitizeEntity<OrderEntity>(ability, order),
+      ),
+    };
+  }
 }

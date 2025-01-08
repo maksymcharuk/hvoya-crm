@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '@environment/environment';
+import { OrderData } from '@shared/interfaces/analystics/order-data.interface';
 import { UserData } from '@shared/interfaces/analystics/user-data.interface';
 import { Order } from '@shared/interfaces/entities/order.entity';
 import { PageOptions } from '@shared/interfaces/page-options.interface';
@@ -30,9 +31,30 @@ export class AnalyticsService {
       );
   }
 
-  getOrders(): Observable<Order[]> {
+  getOrderDataForAdmins(options?: {
+    range?: [Date, Date] | null;
+  }): Observable<OrderData> {
+    let params = new HttpParams();
+
+    if (options) {
+      if (options.range) {
+        params = params
+          .set('range', options.range[0].toISOString())
+          .append('range', options.range[1].toISOString());
+      }
+    }
+
     return this.http
-      .get<Order[]>(`${environment.apiUrl}/analytics/admins/orders`)
-      .pipe(map((orders) => orders.map((orderData) => new Order(orderData))));
+      .get<OrderData>(`${environment.apiUrl}/analytics/admins/orders`, {
+        params,
+      })
+      .pipe(
+        map((response) => ({
+          completedOrders: response.completedOrders.map(
+            (order) => new Order(order),
+          ),
+          failedOrders: response.failedOrders.map((order) => new Order(order)),
+        })),
+      );
   }
 }

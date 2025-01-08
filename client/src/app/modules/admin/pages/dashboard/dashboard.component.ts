@@ -11,7 +11,9 @@ import { AnalyticsService } from '@shared/services/analytics.service';
 })
 export class AdminDashboardComponent implements OnDestroy {
   destroyed$ = new Subject<void>();
-  orders$ = this.analyticsService.getOrders().pipe(takeUntil(this.destroyed$));
+  orderData$ = this.analyticsService
+    .getOrderDataForAdmins()
+    .pipe(takeUntil(this.destroyed$));
 
   constructor(private readonly analyticsService: AnalyticsService) {}
 

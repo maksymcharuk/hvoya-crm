@@ -1,7 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { startWith } from 'rxjs';
 
-import { OrderStatus } from '@shared/enums/order-status.enum';
+import { Component } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+
+import { OrderData } from '@shared/interfaces/analystics/order-data.interface';
 import { Order } from '@shared/interfaces/entities/order.entity';
+import { AnalyticsService } from '@shared/services/analytics.service';
 
 @Component({
   selector: 'app-orders-chart',
@@ -9,23 +13,19 @@ import { Order } from '@shared/interfaces/entities/order.entity';
   styleUrls: ['./orders-chart.component.scss'],
 })
 export class OrdersChartComponent {
-  private ordersInternal!: Order[];
+  private readonly now = new Date();
+  private readonly yearAgo = new Date(
+    this.now.getFullYear() - 1,
+    this.now.getMonth(),
+    1,
+  );
+  private readonly defaultRange: [Date, Date] = [this.yearAgo, this.now];
+
   loading = true;
-
-  @Input() set orders(value: Order[]) {
-    if (!value) {
-      return;
-    }
-
-    this.ordersInternal = value;
-    this.loading = false;
-    this.setup();
-  }
-
-  get orders(): Order[] {
-    return this.ordersInternal;
-  }
-
+  orderData: OrderData = {
+    completedOrders: [],
+    failedOrders: [],
+  };
   data: any;
   options: any;
   documentStyle = getComputedStyle(document.documentElement);
@@ -40,15 +40,52 @@ export class OrdersChartComponent {
     red500: this.documentStyle.getPropertyValue('--red-500'),
   };
 
+  filtersForm = this.fb.group({
+    range: [this.defaultRange],
+  });
+
+  constructor(
+    private readonly analysticsService: AnalyticsService,
+    private readonly fb: FormBuilder,
+  ) {}
+
+  ngOnInit() {
+    this.filtersForm.valueChanges
+      .pipe(startWith(this.filtersForm.value))
+      .subscribe((value) => {
+        this.loading = true;
+        this.analysticsService
+          .getOrderDataForAdmins({ range: value.range })
+          .subscribe((orderData) => {
+            this.loading = false;
+            this.orderData = orderData;
+            this.setup();
+          });
+      });
+  }
+
   private setup() {
     this.data = this.getData();
     this.options = this.getOptions();
   }
 
   private getData() {
-    const now = new Date();
+    if (!this.filtersForm.value.range) {
+      return;
+    }
+
+    const mostRecentOrderDate = this.filtersForm.value.range[1];
+    const mostAncientOrderDate = this.filtersForm.value.range[0];
+
+    const now = this.filtersForm.value.range[1];
+    const months =
+      (mostRecentOrderDate.getFullYear() - mostAncientOrderDate.getFullYear()) *
+        12 +
+      mostRecentOrderDate.getMonth() -
+      mostAncientOrderDate.getMonth();
+
     // get last 15 mounth and map it to array of strings
-    const labels = Array.from(Array(15).keys())
+    const labels = Array.from(Array(months).keys())
       .map((i) => {
         const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
         return date.toLocaleString('uk', { month: 'long' });
@@ -65,45 +102,57 @@ export class OrdersChartComponent {
       })
       .reverse();
 
-    // group orders by month
-    const ordersByMonth = this.orders.reduce((acc, order) => {
-      const date = new Date(order.createdAt);
-      const month = date.toLocaleString('uk', { month: 'long' });
-      const year = date.getFullYear();
-      const key = `${month} ${year}`;
+    // group orders by month and year
+    const completedOrdersByMonth = this.orderData.completedOrders.reduce(
+      (acc, order) => {
+        const date = new Date(order.createdAt);
+        const month = date.toLocaleString('uk', { month: 'long' });
+        const year = date.getFullYear();
+        const key = `${month} ${year}`;
 
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(order);
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(order);
 
-      return acc;
-    }, {} as { [key: string]: Order[] });
+        return acc;
+      },
+      {} as Record<string, Order[]>,
+    );
 
-    // get orders count by month map to labels array
-    const ongoingOrFulfiledOrdersCountByMonth = dataKeys.map((key) => {
-      const orders = ordersByMonth[key];
+    // group orders by month and year
+    const failedOrdersByMonth = this.orderData.failedOrders.reduce(
+      (acc, order) => {
+        const date = new Date(order.createdAt);
+        const month = date.toLocaleString('uk', { month: 'long' });
+        const year = date.getFullYear();
+        const key = `${month} ${year}`;
+
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(order);
+
+        return acc;
+      },
+      {} as Record<string, Order[]>,
+    );
+
+    // Get orders sum by month map to labels array
+    const ongoingOrFulfiledOrdersSumByMonth = dataKeys.map((key) => {
+      const orders = completedOrdersByMonth[key];
       if (!orders) {
         return 0;
       }
-      return orders.filter(
-        (order) =>
-          ![OrderStatus.Cancelled, OrderStatus.Refunded].includes(
-            order.currentStatus,
-          ),
-      ).length;
+      return orders.length;
     });
 
-    const canceledOrRefundOrdersCountByMonth = dataKeys.map((key) => {
-      const orders = ordersByMonth[key];
+    const refundOrdersSumByMonth = dataKeys.map((key) => {
+      const orders = failedOrdersByMonth[key];
       if (!orders) {
         return 0;
       }
-      return orders.filter((order) =>
-        [OrderStatus.Cancelled, OrderStatus.Refunded].includes(
-          order.currentStatus,
-        ),
-      ).length;
+      return orders.length;
     });
 
     return {
@@ -111,15 +160,15 @@ export class OrdersChartComponent {
       datasets: [
         {
           type: 'bar',
-          label: 'Поточні та виконані замовлення',
+          label: 'Кількість поточних та виконаних замовленнь',
           backgroundColor: this.colors.surface500,
-          data: ongoingOrFulfiledOrdersCountByMonth,
+          data: ongoingOrFulfiledOrdersSumByMonth,
         },
         {
           type: 'bar',
-          label: 'Скасовані та повернуті замовлення',
+          label: 'Кількість повернень та відмов',
           backgroundColor: this.colors.red500,
-          data: canceledOrRefundOrdersCountByMonth,
+          data: refundOrdersSumByMonth,
         },
       ],
     };

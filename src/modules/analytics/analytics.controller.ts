@@ -7,7 +7,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { UsersAnalyticsForAdminsPageOptionsDto } from '@dtos/users-analytics-for-admins-page-options.dto';
+import { User } from '@decorators/user.decorator';
+import { OrdersAnalyticsForAdminsPageOptionsDto } from '@dtos/analytics/orders-analytics-for-admins-page-options.dto';
+import { UsersAnalyticsForAdminsPageOptionsDto } from '@dtos/analytics/users-analytics-for-admins-page-options.dto';
 import { Action } from '@enums/action.enum';
 import { Page } from '@interfaces/page.interface';
 
@@ -29,12 +31,27 @@ export class AnalyticsController {
   @CheckPolicies((ability: AppAbility) =>
     ability.can(Action.Read, 'AdminAalytics'),
   )
-  getUsersForAdmins(
+  getUserDataForAdmins(
     @Query()
     usersAnalyticsForAdminsPageOptionsDto: UsersAnalyticsForAdminsPageOptionsDto,
   ): Promise<Page<UserData>> {
-    return this.analyticsService.getUsersForAdmins(
+    return this.analyticsService.getUserDataForAdmins(
       usersAnalyticsForAdminsPageOptionsDto,
+    );
+  }
+
+  @Get('admins/orders')
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, 'AdminAalytics'),
+  )
+  getOrderDataForAdmins(
+    @User('id') currentUserId: string,
+    @Query()
+    ordersAnalyticsForAdminsPageOptionsDto: OrdersAnalyticsForAdminsPageOptionsDto,
+  ) {
+    return this.analyticsService.getOrderDataForAdmins(
+      currentUserId,
+      ordersAnalyticsForAdminsPageOptionsDto,
     );
   }
 }
