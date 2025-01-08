@@ -100,9 +100,8 @@ export class AnalyticsService {
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    console.log(pageOptionsDto);
-
     const completedOrders = await this.dataSource.manager.find(OrderEntity, {
+      select: ['id', 'total', 'createdAt'],
       where: {
         currentStatus: In([
           OrderStatus.Fulfilled,
@@ -113,6 +112,7 @@ export class AnalyticsService {
       },
     });
     const failedOrders = await this.dataSource.manager.find(OrderEntity, {
+      select: ['id', 'total', 'createdAt'],
       where: {
         currentStatus: In([
           OrderStatus.Cancelled,
