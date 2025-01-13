@@ -1,3 +1,24 @@
+<form
+  [formGroup]="filtersForm"
+  class="p-fluid formgrid grid justify-content-end"
+>
+  <div class="col-fixed">
+    <div class="field">
+      <label for="range">Період:</label>
+      <p-calendar
+        formControlName="range"
+        selectionMode="range"
+        appendTo="body"
+        placeholder="Період"
+      ></p-calendar>
+      <app-form-control-error-message
+        [formGroup]="filtersForm"
+        controlName="from"
+      />
+    </div>
+  </div>
+</form>
+
 <p-chart
   *ngIf="!loading; else skeleton"
   type="bar"

@@ -45,8 +45,8 @@ export class UsersListPageComponent implements OnDestroy {
     this.userService
       .getUsers(pageOptions)
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((orders) => {
-        this.users$.next(orders);
+      .subscribe((users) => {
+        this.users$.next(users);
       });
   }
 
