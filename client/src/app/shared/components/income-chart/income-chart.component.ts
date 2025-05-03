@@ -15,12 +15,12 @@ import { AnalyticsService } from '@shared/services/analytics.service';
 })
 export class IncomeChartComponent {
   private readonly now = new Date();
-  private readonly yearAgo = new Date(
+  private readonly yearAndHalfAgo = new Date(
     this.now.getFullYear() - 1,
     this.now.getMonth() - 5,
     1,
   );
-  private readonly defaultRange: [Date, Date] = [this.yearAgo, this.now];
+  private readonly defaultRange: [Date, Date] = [this.yearAndHalfAgo, this.now];
 
   loading = true;
   orderData: OrderData = {
@@ -79,7 +79,7 @@ export class IncomeChartComponent {
     const mostRecentOrderDate = this.filtersForm.value.range[1];
     const mostAncientOrderDate = this.filtersForm.value.range[0];
 
-    const now = this.filtersForm.value.range[1];
+    const startDate = this.filtersForm.value.range[0];
     const months =
       (mostRecentOrderDate.getFullYear() - mostAncientOrderDate.getFullYear()) *
         12 +
@@ -87,22 +87,26 @@ export class IncomeChartComponent {
       mostAncientOrderDate.getMonth();
 
     // get last 15 mounth and map it to array of strings
-    const labels = Array.from(Array(months).keys())
-      .map((i) => {
-        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        return date.toLocaleString('uk', { month: 'long' });
-      })
-      .reverse();
+    const labels = Array.from(Array(months).keys()).map((i) => {
+      const date = new Date(
+        startDate.getFullYear(),
+        startDate.getMonth() + i,
+        1,
+      );
+      return date.toLocaleString('uk', { month: 'long' });
+    });
 
     // get last 15 ${month + year} and map it to array of strings
-    const dataKeys = Array.from(Array(15).keys())
-      .map((i) => {
-        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const month = date.toLocaleString('uk', { month: 'long' });
-        const year = date.getFullYear();
-        return `${month} ${year}`;
-      })
-      .reverse();
+    const dataKeys = Array.from(Array(months).keys()).map((i) => {
+      const date = new Date(
+        startDate.getFullYear(),
+        startDate.getMonth() + i,
+        1,
+      );
+      const month = date.toLocaleString('uk', { month: 'long' });
+      const year = date.getFullYear();
+      return `${month} ${year}`;
+    });
 
     // group orders by month and year
     const completedOrdersByMonth = this.orderData.completedOrders.reduce(

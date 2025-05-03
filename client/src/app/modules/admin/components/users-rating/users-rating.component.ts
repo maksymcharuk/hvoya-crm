@@ -3,13 +3,17 @@ import { Table, TableLazyLoadEvent } from 'primeng/table';
 import {
   BehaviorSubject,
   Subject,
+  combineLatest,
+  filter,
   finalize,
+  map,
   shareReplay,
+  startWith,
   switchMap,
   takeUntil,
 } from 'rxjs';
 
-import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, ViewChild, inject } from '@angular/core';
 import { AbstractControl, FormBuilder } from '@angular/forms';
 
 import { PageOptions } from '@shared/interfaces/page-options.interface';
@@ -20,14 +24,14 @@ import { AnalyticsService } from '@shared/services/analytics.service';
   templateUrl: './users-rating.component.html',
   styleUrls: ['./users-rating.component.scss'],
 })
-export class UsersRatingComponent implements OnInit, OnDestroy {
+export class UsersRatingComponent implements OnDestroy {
   private readonly analyticsService = inject(AnalyticsService);
   private readonly formBuilder = inject(FormBuilder);
 
   @ViewChild('usersTable') usersTable!: Table;
 
   private readonly currentYear = new Date().getFullYear();
-  private tableMetadata: TableLazyLoadEvent = {};
+  private tableMetadata$ = new Subject<TableLazyLoadEvent>();
   private readonly destroyed$ = new Subject<void>();
 
   private readonly filtersFormValidator = (control: AbstractControl) => {
@@ -72,20 +76,14 @@ export class UsersRatingComponent implements OnInit, OnDestroy {
     this.filtersForm.controls.dateRangeType.valueChanges;
 
   loading$ = new BehaviorSubject<boolean>(true);
-  options$ = new Subject<PageOptions>();
-  userDataPage$ = this.options$.pipe(
-    switchMap((options) => {
-      this.loading$.next(true);
-      return this.analyticsService.getUserDataForAdmins(options).pipe(
-        takeUntil(this.destroyed$),
-        finalize(() => this.loading$.next(false)),
-      );
-    }),
-    shareReplay(1),
-  );
-
-  ngOnInit() {
-    this.filtersForm.valueChanges.subscribe((value) => {
+  options$ = combineLatest([
+    this.filtersForm.valueChanges.pipe(startWith(this.filtersForm.value)),
+    this.tableMetadata$,
+  ]).pipe(
+    takeUntil(this.destroyed$),
+    filter(() => this.filtersForm.valid),
+    map(([value, event]) => {
+      console.log('value', value);
       const filters: LazyLoadMeta['filters'] = {
         dateRangeType: {
           value: value.dateRangeType,
@@ -100,15 +98,21 @@ export class UsersRatingComponent implements OnInit, OnDestroy {
           matchMode: 'equals',
         },
       };
-      const pageOptions = new PageOptions({ ...this.tableMetadata, filters });
 
-      if (this.filtersForm.invalid) {
-        return;
-      }
+      return new PageOptions({ ...event, filters });
+    }),
+  );
 
-      this.options$.next(pageOptions);
-    });
-  }
+  userDataPage$ = this.options$.pipe(
+    switchMap((options) => {
+      this.loading$.next(true);
+      return this.analyticsService.getUserDataForAdmins(options).pipe(
+        takeUntil(this.destroyed$),
+        finalize(() => this.loading$.next(false)),
+      );
+    }),
+    shareReplay(1),
+  );
 
   ngOnDestroy() {
     this.destroyed$.next();
@@ -116,17 +120,7 @@ export class UsersRatingComponent implements OnInit, OnDestroy {
   }
 
   onLazyLoad(event: TableLazyLoadEvent) {
-    this.tableMetadata = event;
-    this.options$.next(new PageOptions(event));
+    console.log('event', event);
+    this.tableMetadata$.next(event);
   }
-
-  // private byFulfieldAndActiveOrders(order: Order) {
-  //   return ![OrderStatus.Cancelled, OrderStatus.Refunded].includes(
-  //     order.currentStatus,
-  //   );
-  // }
-
-  // private sumOrdersTotal(acc: number, order: Order) {
-  //   return (acc += order.total || 0);
-  // }
 }
