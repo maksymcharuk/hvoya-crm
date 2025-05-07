@@ -1,46 +1,69 @@
 <form [formGroup]="fundsWithdrawalRequestForm" (ngSubmit)="onSubmit()">
   <div class="p-fluid formgrid grid">
-    <div class="field col-6">
-      <label for="amount">Сума:</label>
-      <p-inputNumber
-        mode="decimal"
-        formControlName="amount"
-        currency="UAH"
-        mode="currency"
-        locale="uk-UA"
-        [min]="0"
-        [allowEmpty]="false"
-      ></p-inputNumber>
-      <app-form-control-error-message
-        [formGroup]="fundsWithdrawalRequestForm"
-        controlName="amount"
-        errorType="required"
-        errorMessage="Це є обов'язковим полем"
-      ></app-form-control-error-message>
-      <app-form-control-error-message
-        [formGroup]="fundsWithdrawalRequestForm"
-        controlName="amount"
-        errorType="min"
-        errorMessage="Сума не може бути меншою за 1"
-      >
-      </app-form-control-error-message>
+    <div class="col-6 field">
+      <label>Приклад реквізитів:</label>
+      <table class="example-table">
+        <tr>
+          <td>Отримувач</td>
+          <td>ФОП Петренко Петро Петрович</td>
+        </tr>
+        <tr>
+          <td>Банк</td>
+          <td>АТ КБ ПриватБанк</td>
+        </tr>
+        <tr>
+          <td>IBAN</td>
+          <td>UA000000000000000000000000000</td>
+        </tr>
+        <tr>
+          <td>ІПН / ЄДРПОУ</td>
+          <td>1234567890</td>
+        </tr>
+      </table>
     </div>
-    <div class="field col-6">
-      <label for="customerComment">Реквізити:</label>
-      <textarea
-        id="customerComment"
-        rows="5"
-        cols="30"
-        pInputTextarea
-        [autoResize]="true"
-        formControlName="customerComment"
-      ></textarea>
-      <app-form-control-error-message
-        [formGroup]="fundsWithdrawalRequestForm"
-        controlName="customerComment"
-        errorType="required"
-        errorMessage="Необхідно вказати реквізити"
-      ></app-form-control-error-message>
+    <div class="col-6">
+      <div class="field">
+        <label for="customerComment">Реквізити:</label>
+        <textarea
+          id="customerComment"
+          rows="5"
+          cols="30"
+          pInputTextarea
+          [autoResize]="true"
+          formControlName="customerComment"
+        ></textarea>
+        <app-form-control-error-message
+          [formGroup]="fundsWithdrawalRequestForm"
+          controlName="customerComment"
+          errorType="required"
+          errorMessage="Необхідно вказати реквізити"
+        ></app-form-control-error-message>
+      </div>
+      <div class="field">
+        <label for="amount">Сума:</label>
+        <p-inputNumber
+          mode="decimal"
+          formControlName="amount"
+          currency="UAH"
+          mode="currency"
+          locale="uk-UA"
+          [min]="0"
+          [allowEmpty]="false"
+        ></p-inputNumber>
+        <app-form-control-error-message
+          [formGroup]="fundsWithdrawalRequestForm"
+          controlName="amount"
+          errorType="required"
+          errorMessage="Це є обов'язковим полем"
+        ></app-form-control-error-message>
+        <app-form-control-error-message
+          [formGroup]="fundsWithdrawalRequestForm"
+          controlName="amount"
+          errorType="min"
+          errorMessage="Сума не може бути меншою за 1"
+        >
+        </app-form-control-error-message>
+      </div>
     </div>
     <div class="flex justify-content-end w-full">
       <div class="col-3">
