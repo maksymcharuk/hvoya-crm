@@ -294,10 +294,7 @@ export class ProductsCreationService {
     const manager = this.dataSource.createEntityManager();
     const productVariantExists = await manager
       .createQueryBuilder(ProductVariantEntity, 'productVariant')
-      .where(':externalId = ANY(productVariant.externalIds)', {
-        externalId: productVariant.externalId,
-      })
-      .orWhere('productVariant.sku = :sku', { sku: productVariant.sku })
+      .where('productVariant.sku = :sku', { sku: productVariant.sku })
       .leftJoinAndSelect('productVariant.properties', 'properties')
       .leftJoinAndSelect('properties.images', 'images')
       .leftJoinAndSelect('properties.color', 'color')
