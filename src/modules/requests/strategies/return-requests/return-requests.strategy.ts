@@ -97,9 +97,16 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         ),
       );
 
+      const deliveryStatus = await this.getRequestDeliveryStatus(
+        data.createRequestDto.returnRequest.deliveryService,
+        data.createRequestDto.returnRequest.trackingId,
+      );
+
       const requestDelivery = await data.queryRunner.manager.save(
         OrderReturnDeliveryEntity,
         {
+          status: deliveryStatus?.status,
+          rawStatus: deliveryStatus?.rawStatus,
           trackingId: data.createRequestDto.returnRequest.trackingId,
           deliveryService: data.createRequestDto.returnRequest.deliveryService,
           waybill: waybillFile,

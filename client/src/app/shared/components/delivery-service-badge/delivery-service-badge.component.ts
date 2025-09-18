@@ -25,6 +25,10 @@ export class DeliveryServiceBadgeComponent {
       full: 'assets/images/delivery-services/ukr-poshta-full-logo.png',
       short: 'assets/images/delivery-services/ukr-poshta-short-logo.png',
     },
+    [DeliveryService.MeestPoshta]: {
+      full: 'assets/images/delivery-services/meest-poshta-full-logo.png',
+      short: 'assets/images/delivery-services/meest-poshta-short-logo.png',
+    },
   };
 
   get deliveryServiceLogo(): string {

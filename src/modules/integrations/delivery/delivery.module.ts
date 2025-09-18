@@ -5,6 +5,7 @@ import { DeliveryServiceFactory } from './factories/delivery-service/delivery-se
 import { DeliveryTasksService } from './services/delivery-tasks/delivery-tasks.service';
 import { OrderDeliveryStatusUpdateService } from './services/delivery-tasks/services/order-delivery-status-update.service';
 import { ReturnRequestDeliveryStatusUpdateService } from './services/delivery-tasks/services/return-request-delivery-status-update.service';
+import { MeestPoshtaApiService } from './services/meest-poshta-api/meest-poshta-api.service';
 import { NovaPoshtaApiService } from './services/nova-poshta-api/nova-poshta-api.service';
 import { UkrPoshtaApiService } from './services/ukr-poshta-api/ukr-poshta-api.service';
 
@@ -13,6 +14,7 @@ import { UkrPoshtaApiService } from './services/ukr-poshta-api/ukr-poshta-api.se
   providers: [
     NovaPoshtaApiService,
     UkrPoshtaApiService,
+    MeestPoshtaApiService,
     DeliveryServiceFactory,
     DeliveryTasksService,
     OrderDeliveryStatusUpdateService,

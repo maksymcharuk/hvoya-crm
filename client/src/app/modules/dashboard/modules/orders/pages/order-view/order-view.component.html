@@ -268,27 +268,27 @@
                       ></app-form-control-error-message>
                     </div>
                   </div>
-                  <div *ngIf="!isSelfPickup" class="formgrid grid">
-                    <div class="field col-12 md:col-6">
-                      <label for="tracking-id">Файл маркування:</label>
-                      <p-fileUpload
-                        #waybillUpload
-                        data-cy="order-waybill-upload"
-                        [accept]="fileFormats"
-                        [customUpload]="true"
-                        [auto]="true"
-                        [maxFileSize]="1000000"
-                        [disabled]="(waybillSubmitting$ | async)!"
-                        (uploadHandler)="onFileUpload($event)"
-                      >
-                      </p-fileUpload>
-                      <app-form-control-error-message
-                        [formGroup]="updateWaybillForm"
-                        controlName="waybill"
-                        errorType="required"
-                        errorMessage="Це є обов'язковим полем"
-                      ></app-form-control-error-message>
-                    </div>
+                </div>
+                <div *ngIf="!isSelfPickup" class="formgrid grid">
+                  <div class="field col-12 md:col-6">
+                    <label for="tracking-id">Файл маркування:</label>
+                    <p-fileUpload
+                      #waybillUpload
+                      data-cy="order-waybill-upload"
+                      [accept]="fileFormats"
+                      [customUpload]="true"
+                      [auto]="true"
+                      [maxFileSize]="1000000"
+                      [disabled]="(waybillSubmitting$ | async)!"
+                      (uploadHandler)="onFileUpload($event)"
+                    >
+                    </p-fileUpload>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="waybill"
+                      errorType="required"
+                      errorMessage="Це є обов'язковим полем"
+                    ></app-form-control-error-message>
                   </div>
                 </div>
                 <button

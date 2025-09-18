@@ -83,7 +83,6 @@ export class UsersRatingComponent implements OnDestroy {
     takeUntil(this.destroyed$),
     filter(() => this.filtersForm.valid),
     map(([value, event]) => {
-      console.log('value', value);
       const filters: LazyLoadMeta['filters'] = {
         dateRangeType: {
           value: value.dateRangeType,
@@ -120,7 +119,6 @@ export class UsersRatingComponent implements OnDestroy {
   }
 
   onLazyLoad(event: TableLazyLoadEvent) {
-    console.log('event', event);
     this.tableMetadata$.next(event);
   }
 }
