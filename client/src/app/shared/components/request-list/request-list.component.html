@@ -12,6 +12,8 @@
   [showCurrentPageReport]="true"
   [paginator]="true"
   [sortOrder]="-1"
+  [scrollable]="true"
+  [scrollHeight]="adminView ? 'calc(100vh - 270px)' : 'calc(100vh - 323px)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>

@@ -12,6 +12,8 @@
   [showCurrentPageReport]="true"
   [paginator]="true"
   [sortOrder]="-1"
+  [scrollable]="true"
+  [scrollHeight]="'calc(100vh - 270px)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>
