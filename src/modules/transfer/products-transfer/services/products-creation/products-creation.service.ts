@@ -352,6 +352,7 @@ export class ProductsCreationService {
 
       return productVariantExists;
     }
+    console.log('Creating product variant:', productVariant.sku);
 
     properties = await manager.save(ProductPropertiesEntity, properties);
 
@@ -380,6 +381,8 @@ export class ProductsCreationService {
       .getOne();
 
     if (productBaseExists) {
+      console.log('Updating product base:', productBase.name);
+
       await manager.update(ProductBaseEntity, productBaseExists.id, {
         name: productBase.name,
         externalIds: Array.from(
@@ -398,6 +401,8 @@ export class ProductsCreationService {
 
       return productBaseExists;
     }
+
+    console.log('Creating product base:', productBase.name);
 
     const newProductBase = await manager.save(ProductBaseEntity, {
       name: productBase.name,

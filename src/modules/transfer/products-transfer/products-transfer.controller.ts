@@ -26,8 +26,8 @@ import { JwtAuthGuard } from '@modules/auth/jwt-auth/jwt-auth.guard';
 import { AppAbility } from '@modules/casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '@modules/casl/check-policies.decorator';
 import { PoliciesGuard } from '@modules/casl/policies.guard';
-import { OneCSyncService } from '@modules/integrations/one-c/one-c-client/services/one-c-sync/one-c-sync.service';
 
+// import { OneCSyncService } from '@modules/integrations/one-c/one-c-client/services/one-c-sync/one-c-sync.service';
 import { ImportProductsDto } from './dtos/import-products.dto';
 import { ProductsImportSource } from './enums/product-import-source.enum';
 import { PromProductsTransferService } from './services/prom-products-transfer/prom-products-transfer.service';
@@ -38,8 +38,8 @@ export class ProductsTransferController {
   constructor(
     private readonly httpService: HttpService,
     private readonly promProductsTransferService: PromProductsTransferService,
-    private readonly oneCSyncService: OneCSyncService,
-  ) {}
+  ) // private readonly oneCSyncService: OneCSyncService,
+  {}
 
   @Post('import')
   @CheckPolicies(
@@ -127,7 +127,7 @@ export class ProductsTransferController {
     switch (source) {
       case ProductsImportSource.Prom:
         response = await this.promProductsTransferService.import(result, type!);
-        await this.oneCSyncService.syncProducts();
+        // await this.oneCSyncService.syncProducts();
         return response;
       default:
         throw new HttpException(
