@@ -1,0 +1,33 @@
+<form
+  [formGroup]="filtersForm"
+  class="p-fluid formgrid grid justify-content-end"
+>
+  <div class="col-fixed">
+    <div class="field">
+      <label>Період:</label>
+      <p-calendar
+        formControlName="range"
+        selectionMode="range"
+        appendTo="body"
+        placeholder="Період"
+      ></p-calendar>
+    </div>
+  </div>
+</form>
+
+<p-chart
+  *ngIf="!loading; else skeleton"
+  type="bar"
+  [data]="data"
+  [options]="options"
+></p-chart>
+
+<ng-template #skeleton>
+  <div class="flex justify-content-between align-items-end">
+    <p-skeleton height="350px" class="skeleton"></p-skeleton>
+    <p-skeleton height="100px" class="skeleton"></p-skeleton>
+    <p-skeleton height="250px" class="skeleton"></p-skeleton>
+    <p-skeleton height="85px" class="skeleton"></p-skeleton>
+    <p-skeleton height="150px" class="skeleton"></p-skeleton>
+  </div>
+</ng-template>

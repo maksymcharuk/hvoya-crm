@@ -1,4 +1,5 @@
 <div class="grid">
+  <!-- Legacy Sections (Do Not Remove) -->
   <div class="col-12">
     <div class="card">
       <h5>Рейтинг дропшиперів</h5>
@@ -18,5 +19,47 @@
       <h5>Кількість замовлень по місяцях</h5>
       <app-orders-chart />
     </div>
+  </div>
+
+  <!-- New Analytics Sections -->
+  <div class="col-12">
+    <p-tabView>
+      <p-tabPanel header="Дропшипери" leftIcon="pi pi-list">
+        <div class="card">
+          <app-dropshippers-analytics />
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Замовлення" leftIcon="pi pi-shopping-cart">
+        <div class="grid">
+          <div class="col-12">
+            <div class="card">
+              <h5>Лійка конверсії замовлень</h5>
+              <app-orders-funnel-chart />
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="card">
+              <h5>Замовлення за статусом</h5>
+              <app-orders-status-chart />
+            </div>
+          </div>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel header="Продукти" leftIcon="pi pi-box">
+        <div class="grid">
+          <div class="col-12">
+            <div class="card">
+              <h5>Топ 10 продуктів за доходом</h5>
+              <app-top-products-chart />
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="card">
+              <app-products-analytics />
+            </div>
+          </div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
   </div>
 </div>

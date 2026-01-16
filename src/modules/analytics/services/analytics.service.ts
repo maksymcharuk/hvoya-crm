@@ -51,49 +51,40 @@ export class AnalyticsService {
   ): Promise<Page<UserData>> {
     let query = this.dataSource.manager
       .createQueryBuilder(UserEntity, 'user')
-      .select('user.id', 'id')
-      .addSelect('user.lastName', 'lastName')
-      .addSelect('user.firstName', 'firstName')
-      .addSelect('user.middleName', 'middleName')
-      .addSelect('COUNT(COALESCE(order.id, NULL))', 'ordersCount')
-      .addSelect('SUM(COALESCE(order.total, 0))', 'ordersTotalSum')
-      .addSelect('SUM(COALESCE(order.total, 0)) + balance.amount', 'netWorth');
-
-    const baseCondition = 'order.currentStatus NOT IN (:...excludedStatuses)';
-    if (pageOptionsDto.dateRangeType === 'custom' && pageOptionsDto.range) {
-      const [startDate, endDate] = pageOptionsDto.range;
-      query.leftJoin(
-        'user.orders',
-        'order',
-        `${baseCondition} AND order.createdAt BETWEEN :startDate AND :endDate`,
-        {
-          startDate,
-          endDate,
-        },
-      );
-    } else if (pageOptionsDto.dateRangeType === 'year') {
-      query.leftJoin(
-        'user.orders',
-        'order',
-        `${baseCondition} AND EXTRACT(YEAR FROM order.createdAt) = :year`,
-        { year: pageOptionsDto.year },
-      );
-    } else {
-      query.leftJoin('user.orders', 'order', baseCondition);
-    }
-
-    query
+      .select('"user"."id"', 'id')
+      .addSelect('"user"."lastName"', 'lastName')
+      .addSelect('"user"."firstName"', 'firstName')
+      .addSelect('"user"."middleName"', 'middleName')
+      .addSelect('COUNT(COALESCE("order"."id", NULL))', 'ordersCount')
+      .addSelect('SUM(COALESCE("order"."total", 0))', 'ordersTotalSum')
+      .addSelect(
+        'SUM(COALESCE("order"."total", 0)) + "balance"."amount"',
+        'netWorth',
+      )
+      .leftJoin('user.orders', 'order')
       .leftJoin('user.balance', 'balance')
-      .where('user.role = :role', { role: Role.User })
-      .groupBy('user.id')
-      .addGroupBy('balance.amount')
-      .setParameters({
+      .where('"user"."role" = :role', { role: Role.User })
+      .andWhere('"order"."currentStatus" NOT IN (:...excludedStatuses)', {
         excludedStatuses: [
           OrderStatus.Cancelled,
           OrderStatus.Refused,
           OrderStatus.Refunded,
         ],
       });
+
+    if (pageOptionsDto.dateRangeType === 'custom' && pageOptionsDto.range) {
+      const [startDate, endDate] = pageOptionsDto.range;
+      query.andWhere('"order"."createdAt" BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
+    } else if (pageOptionsDto.dateRangeType === 'year') {
+      query.andWhere('EXTRACT(YEAR FROM "order"."createdAt") = :year', {
+        year: pageOptionsDto.year,
+      });
+    }
+
+    query.groupBy('"user"."id"').addGroupBy('"balance"."amount"');
 
     if (pageOptionsDto.orderBy) {
       query.addOrderBy(`"${pageOptionsDto.orderBy}"`, pageOptionsDto.order);
@@ -167,37 +158,35 @@ export class AnalyticsService {
     // Get dropshippers with their order aggregations
     const dropshippersQuery = this.dataSource.manager
       .createQueryBuilder(UserEntity, 'user')
-      .select('user.id', 'dropshipperId')
-      .addSelect("CONCAT(user.firstName, ' ', user.lastName)", 'name')
-      .addSelect('user.email', 'email')
-      .addSelect('COUNT(DISTINCT order.id)', 'ordersCount')
-      .addSelect('COALESCE(SUM(order.total), 0)', 'totalRevenue')
+      .select('"user"."id"', 'dropshipperId')
+      .addSelect('CONCAT("user"."firstName", \' \', "user"."lastName")', 'name')
+      .addSelect('"user"."email"', 'email')
+      .addSelect('COUNT(DISTINCT "order"."id")', 'ordersCount')
+      .addSelect('COALESCE(SUM("order"."total"), 0)', 'totalRevenue')
       .addSelect(
-        'COALESCE(SUM(order.total), 0) / NULLIF(COUNT(DISTINCT order.id), 0)',
+        'COALESCE(SUM("order"."total"), 0) / NULLIF(COUNT(DISTINCT "order"."id"), 0)',
         'averageOrderValue',
       )
-      .addSelect('COALESCE(SUM(returnRequest.total), 0)', 'returnedAmount')
-      .addSelect('balance.amount', 'walletBalance')
-      .addSelect('MAX(order.createdAt)', 'lastOrderDate')
-      .addSelect('COALESCE(SUM(order.total), 0)', 'lifetimeValue')
-      .leftJoin(
-        'user.orders',
-        'order',
-        'order.currentStatus NOT IN (:...excludedStatuses) AND order.createdAt BETWEEN :fromDate AND :toDate',
-        {
-          excludedStatuses: [OrderStatus.Cancelled, OrderStatus.Refused],
-          fromDate,
-          toDate,
-        },
-      )
+      .addSelect('COALESCE(SUM("returnRequest"."total"), 0)', 'returnedAmount')
+      .addSelect('"balance"."amount"', 'walletBalance')
+      .addSelect('MAX("order"."createdAt")', 'lastOrderDate')
+      .addSelect('COALESCE(SUM("order"."total"), 0)', 'lifetimeValue')
+      .leftJoin('user.orders', 'order')
       .leftJoin('order.returnRequest', 'returnRequest')
       .leftJoin('user.balance', 'balance')
-      .where('user.role = :role', { role: Role.User })
-      .groupBy('user.id')
-      .addGroupBy('user.email')
-      .addGroupBy('user.firstName')
-      .addGroupBy('user.lastName')
-      .addGroupBy('balance.amount');
+      .where('"user"."role" = :role', { role: Role.User })
+      .andWhere('"order"."currentStatus" NOT IN (:...excludedStatuses)', {
+        excludedStatuses: [OrderStatus.Cancelled, OrderStatus.Refused],
+      })
+      .andWhere('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
+        fromDate,
+        toDate,
+      })
+      .groupBy('"user"."id"')
+      .addGroupBy('"user"."email"')
+      .addGroupBy('"user"."firstName"')
+      .addGroupBy('"user"."lastName"')
+      .addGroupBy('"balance"."amount"');
 
     // Apply sorting
     if (pageOptions.orderBy) {
@@ -212,20 +201,17 @@ export class AnalyticsService {
     // Get total count for pagination
     const countQuery = this.dataSource.manager
       .createQueryBuilder(UserEntity, 'user')
-      .select('COUNT(DISTINCT user.id)', 'count')
-      .leftJoin(
-        'user.orders',
-        'order',
-        'order.currentStatus NOT IN (:...excludedStatuses) AND order.createdAt BETWEEN :fromDate AND :toDate',
-        {
-          excludedStatuses: [OrderStatus.Cancelled, OrderStatus.Refused],
-          fromDate,
-          toDate,
-        },
-      )
+      .select('COUNT(DISTINCT "user"."id")', 'count')
+      .leftJoin('user.orders', 'order')
       .leftJoin('order.returnRequest', 'returnRequest')
-      .where('user.role = :role', { role: Role.User });
-
+      .where('"user"."role" = :role', { role: Role.User })
+      .andWhere('"order"."currentStatus" NOT IN (:...excludedStatuses)', {
+        excludedStatuses: [OrderStatus.Cancelled, OrderStatus.Refused],
+      })
+      .andWhere('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
+        fromDate,
+        toDate,
+      });
     const countResult = await countQuery.getRawOne<{ count: string }>();
     const itemCount = parseInt(countResult?.count ?? '0', 10) || 0;
 
@@ -288,35 +274,33 @@ export class AnalyticsService {
     // Get summary statistics
     const summaryData = await this.dataSource.manager
       .createQueryBuilder(OrderEntity, 'order')
-      .select('COUNT(order.id)', 'totalOrdersCount')
-      .addSelect('COALESCE(SUM(order.total), 0)', 'totalRevenue')
-      .addSelect('COALESCE(AVG(order.total), 0)', 'averageOrderValue')
+      .select('COUNT("order"."id")', 'totalOrdersCount')
+      .addSelect('COALESCE(SUM("order"."total"), 0)', 'totalRevenue')
+      .addSelect('COALESCE(AVG("order"."total"), 0)', 'averageOrderValue')
       .addSelect(
-        'COALESCE(EXTRACT(EPOCH FROM AVG(status.createdAt - order.createdAt)) / 3600, 0)',
+        'COALESCE(EXTRACT(EPOCH FROM AVG("status"."createdAt" - "order"."createdAt")) / 3600, 0)',
         'averageProcessingTime',
       )
-      .where('order.createdAt BETWEEN :fromDate AND :toDate', {
+      .leftJoin('order.statuses', 'status')
+      .where('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
         fromDate,
         toDate,
       })
-      .leftJoin(
-        'order.statuses',
-        'status',
-        'status.status = :processedStatus',
-        { processedStatus: OrderStatus.Fulfilled },
-      )
+      .andWhere('"status"."status" = :processedStatus', {
+        processedStatus: OrderStatus.Fulfilled,
+      })
       .getRawOne<any>();
 
     // Get counts by status
     const statusCounts = await this.dataSource.manager
       .createQueryBuilder(OrderEntity, 'order')
-      .select('order.currentStatus', 'status')
-      .addSelect('COUNT(order.id)', 'count')
-      .where('order.createdAt BETWEEN :fromDate AND :toDate', {
+      .select('"order"."currentStatus"', 'status')
+      .addSelect('COUNT("order"."id")', 'count')
+      .where('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
         fromDate,
         toDate,
       })
-      .groupBy('order.currentStatus')
+      .groupBy('"order"."currentStatus"')
       .getRawMany<any>();
 
     const statusMap = new Map(
@@ -366,24 +350,24 @@ export class AnalyticsService {
 
     const data = await this.dataSource.manager
       .createQueryBuilder(OrderEntity, 'order')
-      .select("TO_CHAR(order.createdAt, 'YYYY-MM')", 'month')
-      .addSelect('COUNT(order.id)', 'ordersCount')
-      .addSelect('COALESCE(SUM(order.total), 0)', 'totalAmount')
+      .select('TO_CHAR("order"."createdAt", \'YYYY-MM\')', 'month')
+      .addSelect('COUNT("order"."id")', 'ordersCount')
+      .addSelect('COALESCE(SUM("order"."total"), 0)', 'totalAmount')
       .addSelect(
-        'SUM(CASE WHEN order.currentStatus = :fulfilled THEN 1 ELSE 0 END)',
+        'SUM(CASE WHEN "order"."currentStatus" = :fulfilled THEN 1 ELSE 0 END)',
         'processedCount',
       )
       .addSelect(
-        'SUM(CASE WHEN order.returnRequest IS NOT NULL THEN 1 ELSE 0 END)',
+        'SUM(CASE WHEN "returnRequest"."id" IS NOT NULL THEN 1 ELSE 0 END)',
         'returnedCount',
       )
-      .addSelect('COALESCE(AVG(order.total), 0)', 'averageOrderValue')
-      .where('order.createdAt BETWEEN :fromDate AND :toDate', {
+      .addSelect('COALESCE(AVG("order"."total"), 0)', 'averageOrderValue')
+      .leftJoin('order.returnRequest', 'returnRequest')
+      .where('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
         fromDate,
         toDate,
       })
-      .leftJoin('order.returnRequest', 'returnRequest')
-      .groupBy("TO_CHAR(order.createdAt, 'YYYY-MM')")
+      .groupBy('TO_CHAR("order"."createdAt", \'YYYY-MM\')')
       .orderBy('month', 'ASC')
       .setParameters({ fulfilled: OrderStatus.Fulfilled })
       .getRawMany<any>();
@@ -411,8 +395,8 @@ export class AnalyticsService {
 
     const totalOrders = await this.dataSource.manager
       .createQueryBuilder(OrderEntity, 'order')
-      .select('COUNT(order.id)', 'count')
-      .where('order.createdAt BETWEEN :fromDate AND :toDate', {
+      .select('COUNT("order"."id")', 'count')
+      .where('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
         fromDate,
         toDate,
       })
@@ -422,14 +406,14 @@ export class AnalyticsService {
 
     const statusData = await this.dataSource.manager
       .createQueryBuilder(OrderEntity, 'order')
-      .select('order.currentStatus', 'status')
-      .addSelect('COUNT(order.id)', 'count')
-      .addSelect('COALESCE(SUM(order.total), 0)', 'totalRevenue')
-      .where('order.createdAt BETWEEN :fromDate AND :toDate', {
+      .select('"order"."currentStatus"', 'status')
+      .addSelect('COUNT("order"."id")', 'count')
+      .addSelect('COALESCE(SUM("order"."total"), 0)', 'totalRevenue')
+      .where('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
         fromDate,
         toDate,
       })
-      .groupBy('order.currentStatus')
+      .groupBy('"order"."currentStatus"')
       .setParameters({ fromDate, toDate })
       .getRawMany<any>();
 
@@ -447,6 +431,10 @@ export class AnalyticsService {
 
   /**
    * Get analytics for all products with sales metrics
+   *
+   * Correctly calculates price statistics by getting all ProductPropertiesEntity
+   * for each ProductVariantEntity. Each property represents a point in the product's
+   * price history, so we aggregate across all properties to get min/avg/max prices.
    */
   async getProductsAnalytics(
     query: any,
@@ -457,27 +445,85 @@ export class AnalyticsService {
       new Date(),
     ];
 
+    // Subquery to calculate price statistics from all properties for each variant
+    // This aggregates ALL ProductPropertiesEntity for each ProductVariantEntity
+    const priceStatsSubquery = this.dataSource.manager
+      .createQueryBuilder()
+      .select('"price"."productId"', 'variantId')
+      .addSelect('AVG("price"."price"::NUMERIC)', 'avgPrice')
+      .addSelect('MIN("price"."price"::NUMERIC)', 'minPrice')
+      .addSelect('MAX("price"."price"::NUMERIC)', 'maxPrice')
+      .addSelect('MAX("price"."name")', 'productName')
+      .addSelect('COUNT("price"."id")', 'propertyCount')
+      .from('product_properties', 'price')
+      .groupBy('"price"."productId"')
+      .getQuery();
+
+    // DEBUG: Log the subquery and its results
+    const priceStatsDebug = await this.dataSource.manager
+      .createQueryBuilder()
+      .select('"price"."productId"', 'variantId')
+      .addSelect('AVG("price"."price"::NUMERIC)', 'avgPrice')
+      .addSelect('MIN("price"."price"::NUMERIC)', 'minPrice')
+      .addSelect('MAX("price"."price"::NUMERIC)', 'maxPrice')
+      .addSelect('MAX("price"."name")', 'productName')
+      .addSelect('COUNT("price"."id")', 'propertyCount')
+      .addSelect(
+        'STRING_AGG(DISTINCT "price"."id"::text, \', \')',
+        'propertyIds',
+      )
+      .addSelect(
+        'STRING_AGG(DISTINCT "price"."price"::text, \', \')',
+        'priceValues',
+      )
+      .from('product_properties', 'price')
+      .groupBy('"price"."productId"')
+      .getRawMany<any>();
+
+    console.log('DEBUG - Price Stats Subquery Results:');
+    console.log('Total variants with properties:', priceStatsDebug.length);
+    priceStatsDebug.forEach((row) => {
+      console.log(`  Variant ID: ${row.variantId}`);
+      console.log(`    Product Name: ${row.productName}`);
+      console.log(`    Property Count: ${row.propertyCount}`);
+      console.log(
+        `    Avg Price: ${row.avgPrice}, Min: ${row.minPrice}, Max: ${row.maxPrice}`,
+      );
+      console.log(`    Price Values: ${row.priceValues}`);
+    });
+
     const productsQuery = this.dataSource.manager
       .createQueryBuilder(ProductVariantEntity, 'variant')
-      .select('variant.id', 'productId')
-      .addSelect('base.name', 'productName')
-      .addSelect('COALESCE(SUM(item.quantity), 0)', 'quantitySold')
-      .addSelect('COALESCE(SUM(order.total), 0)', 'totalRevenue')
-      .addSelect('COUNT(DISTINCT order.customer)', 'uniqueDropshippersCount')
-      .addSelect('COALESCE(AVG(properties.price), 0)', 'averagePrice')
-      .addSelect('COALESCE(MIN(properties.price), 0)', 'minPrice')
-      .addSelect('COALESCE(MAX(properties.price), 0)', 'maxPrice')
-      .leftJoin('variant.properties', 'properties')
-      .leftJoin('variant.baseProduct', 'base')
-      .leftJoin(OrderItemEntity, 'item', 'item.productId = variant.id')
-      .leftJoin(
-        'item.order',
-        'order',
-        'order.createdAt BETWEEN :fromDate AND :toDate AND order.currentStatus != :cancelled',
-        { fromDate, toDate, cancelled: OrderStatus.Cancelled },
+      .select('"variant"."id"', 'productId')
+      .addSelect('"priceStats"."productName"', 'productName')
+      .addSelect('COALESCE(SUM("item"."quantity"), 0)', 'quantitySold')
+      .addSelect('COALESCE(SUM("order"."total"), 0)', 'totalRevenue')
+      .addSelect(
+        'COUNT(DISTINCT "order"."customerId")',
+        'uniqueDropshippersCount',
       )
-      .groupBy('variant.id')
-      .addGroupBy('base.name');
+      .addSelect('COALESCE("priceStats"."avgPrice", 0)', 'averagePrice')
+      .addSelect('COALESCE("priceStats"."minPrice", 0)', 'minPrice')
+      .addSelect('COALESCE("priceStats"."maxPrice", 0)', 'maxPrice')
+      .leftJoin(
+        `(${priceStatsSubquery})`,
+        'priceStats',
+        '"priceStats"."variantId" = "variant"."id"',
+      )
+      .leftJoin(OrderItemEntity, 'item', '"item"."productId" = "variant"."id"')
+      .leftJoin(OrderEntity, 'order', '"order"."id" = "item"."orderId"')
+      .where('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
+        fromDate,
+        toDate,
+      })
+      .andWhere('"order"."currentStatus" != :cancelled', {
+        cancelled: OrderStatus.Cancelled,
+      })
+      .groupBy('"variant"."id"')
+      .addGroupBy('"priceStats"."productName"')
+      .addGroupBy('"priceStats"."avgPrice"')
+      .addGroupBy('"priceStats"."minPrice"')
+      .addGroupBy('"priceStats"."maxPrice"');
 
     // Apply sorting
     if (pageOptions.orderBy) {
@@ -489,17 +535,13 @@ export class AnalyticsService {
     // Get count
     const countQuery = this.dataSource.manager
       .createQueryBuilder(ProductVariantEntity, 'variant')
-      .select('COUNT(DISTINCT variant.id)', 'count')
-      .leftJoin('variant.properties', 'properties')
-      .leftJoin('variant.baseProduct', 'base')
-      .leftJoin(OrderItemEntity, 'item', 'item.productId = variant.id')
-      .leftJoin(
-        'item.order',
-        'order',
-        'order.createdAt BETWEEN :fromDate AND :toDate',
-        { fromDate, toDate },
-      )
-      .setParameters({ fromDate, toDate });
+      .select('COUNT(DISTINCT "variant"."id")', 'count')
+      .leftJoin(OrderItemEntity, 'item', '"item"."productId" = "variant"."id"')
+      .leftJoin(OrderEntity, 'order', '"order"."id" = "item"."orderId"')
+      .where('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
+        fromDate,
+        toDate,
+      });
 
     const countResult = await countQuery.getRawOne<{ count: string }>();
     const itemCount = parseInt(countResult?.count ?? '0', 10) || 0;
@@ -577,19 +619,19 @@ export class AnalyticsService {
     // Get timeline data - price and orders by date
     const timelineData = await this.dataSource.manager
       .createQueryBuilder(OrderItemEntity, 'item')
-      .select('DATE(order.createdAt)', 'date')
-      .addSelect('COALESCE(AVG(properties.price), 0)', 'price')
-      .addSelect('COALESCE(COUNT(item.id), 0)', 'ordersCount')
+      .select('DATE("order"."createdAt")', 'date')
+      .addSelect('COALESCE(AVG("properties"."price"), 0)', 'price')
+      .addSelect('COALESCE(COUNT("item"."id"), 0)', 'ordersCount')
       .leftJoin('item.order', 'order')
       .leftJoin('item.product', 'product')
       .leftJoin('item.productProperties', 'properties')
-      .where('item.product.id = :productId', { productId })
-      .andWhere('order.createdAt BETWEEN :fromDate AND :toDate', {
+      .where('"item"."productId" = :productId', { productId })
+      .andWhere('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
         fromDate,
         toDate,
       })
-      .groupBy('DATE(order.createdAt)')
-      .orderBy('DATE(order.createdAt)', 'ASC')
+      .groupBy('DATE("order"."createdAt")')
+      .orderBy('DATE("order"."createdAt")', 'ASC')
       .getRawMany<any>();
 
     return {
@@ -628,12 +670,13 @@ export class AnalyticsService {
   ): Promise<number> {
     const result = await this.dataSource.manager
       .createQueryBuilder(OrderEntity, 'order')
-      .select('COUNT(order.id)', 'count')
+      .select('COUNT("order"."id")', 'count')
       .leftJoin('order.returnRequest', 'returnRequest')
-      .where(
-        'order.createdAt BETWEEN :fromDate AND :toDate AND returnRequest.id IS NOT NULL',
-        { fromDate, toDate },
-      )
+      .where('"order"."createdAt" BETWEEN :fromDate AND :toDate', {
+        fromDate,
+        toDate,
+      })
+      .andWhere('"returnRequest"."id" IS NOT NULL')
       .getRawOne<{ count: string }>();
 
     return parseInt(result?.count ?? '0', 10) || 0;

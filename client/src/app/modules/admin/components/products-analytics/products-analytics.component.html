@@ -1,0 +1,121 @@
+<p-table
+  #productsTable
+  dataKey="productId"
+  currentPageReportTemplate="Показано {first} до {last} з {totalRecords} продуктів"
+  [value]="(productsPage$ | async)?.data || []"
+  [rowHover]="true"
+  [loading]="loading$ | async"
+  [totalRecords]="(productsPage$ | async)?.meta?.itemCount || 0"
+  [rows]="rows"
+  [showCurrentPageReport]="true"
+  [paginator]="true"
+  [lazy]="true"
+  (onLazyLoad)="onLazyLoad($event)"
+>
+  <ng-template pTemplate="loadingicon"></ng-template>
+  <ng-template pTemplate="loadingbody">
+    <ng-container *ngFor="let _ of [].constructor(rows)">
+      <tr>
+        <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
+      </tr>
+    </ng-container>
+  </ng-template>
+  <ng-template pTemplate="caption">
+    <div class="table-header flex justify-content-between align-items-center">
+      <h5 class="m-0">Аналітика продуктів</h5>
+      <form class="p-fluid formgrid grid" [formGroup]="filtersForm">
+        <div class="col">
+          <div class="field">
+            <label>Період:</label>
+            <p-calendar
+              formControlName="range"
+              selectionMode="range"
+              appendTo="body"
+              placeholder="Період"
+            ></p-calendar>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="productName">
+        <div class="flex justify-content-between align-items-center">
+          Назва продукту
+          <p-sortIcon field="productName"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="quantitySold">
+        <div class="flex justify-content-between align-items-center">
+          К-ть продано
+          <p-sortIcon field="quantitySold"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="totalRevenue">
+        <div class="flex justify-content-between align-items-center">
+          Загальний дохід
+          <p-sortIcon field="totalRevenue"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="uniqueDropshippersCount">
+        <div class="flex justify-content-between align-items-center">
+          Дропшипери
+          <p-sortIcon field="uniqueDropshippersCount"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="returnRate">
+        <div class="flex justify-content-between align-items-center">
+          % повернень
+          <p-sortIcon field="returnRate"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="averagePrice">
+        <div class="flex justify-content-between align-items-center">
+          Середня ціна
+          <p-sortIcon field="averagePrice"></p-sortIcon>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-product>
+    @if (!(loading$ | async)) {
+    <tr>
+      <td>
+        <span class="p-column-title">Назва продукту</span>
+        {{ product.productName }}
+      </td>
+      <td>
+        <span class="p-column-title">К-ть продано</span>
+        {{ product.quantitySold }}
+      </td>
+      <td>
+        <span class="p-column-title">Загальний дохід</span>
+        {{ formatCurrency(product.totalRevenue) }}
+      </td>
+      <td>
+        <span class="p-column-title">Дропшипери</span>
+        {{ product.uniqueDropshippersCount }}
+      </td>
+      <td>
+        <span class="p-column-title">% повернень</span>
+        {{ formatPercent(product.returnRate) }}
+      </td>
+      <td>
+        <span class="p-column-title">Середня ціна</span>
+        {{ formatCurrency(product.averagePrice) }}
+      </td>
+    </tr>
+    }
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6">Даних немає</td>
+    </tr>
+  </ng-template>
+</p-table>

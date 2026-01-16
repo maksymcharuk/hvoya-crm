@@ -1,0 +1,21 @@
+/* Products Analytics Table Styles */
+:host ::ng-deep {
+  .table-header {
+    h5 {
+      margin: 0;
+      flex: 1;
+    }
+
+    form {
+      flex: 0 0 auto;
+      max-width: 300px;
+    }
+  }
+
+  p-table {
+    .p-datatable-wrapper {
+      max-height: 600px;
+      overflow-y: auto;
+    }
+  }
+}

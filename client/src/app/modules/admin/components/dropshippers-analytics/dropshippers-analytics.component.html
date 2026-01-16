@@ -1,0 +1,134 @@
+<p-table
+  #dropshippersTable
+  dataKey="dropshipperId"
+  currentPageReportTemplate="Показано {first} до {last} з {totalRecords} дропшиперів"
+  [value]="(dropshippersPage$ | async)?.data || []"
+  [rowHover]="true"
+  [loading]="loading$ | async"
+  [totalRecords]="(dropshippersPage$ | async)?.meta?.itemCount || 0"
+  [rows]="rows"
+  [showCurrentPageReport]="true"
+  [paginator]="true"
+  [lazy]="true"
+  (onLazyLoad)="onLazyLoad($event)"
+>
+  <ng-template pTemplate="loadingicon"></ng-template>
+  <ng-template pTemplate="loadingbody">
+    <ng-container *ngFor="let _ of [].constructor(rows)">
+      <tr>
+        <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
+      </tr>
+    </ng-container>
+  </ng-template>
+  <ng-template pTemplate="caption">
+    <div class="table-header flex justify-content-between align-items-center">
+      <h5 class="m-0">Аналітика дропшиперів</h5>
+      <form class="p-fluid formgrid grid" [formGroup]="filtersForm">
+        <div class="col">
+          <div class="field">
+            <label>Період:</label>
+            <p-calendar
+              formControlName="range"
+              selectionMode="range"
+              appendTo="body"
+              placeholder="Період"
+            ></p-calendar>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="name">
+        <div class="flex justify-content-between align-items-center">
+          Ім'я
+          <p-sortIcon field="name"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="ordersCount">
+        <div class="flex justify-content-between align-items-center">
+          К-ть замовлень
+          <p-sortIcon field="ordersCount"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="totalRevenue">
+        <div class="flex justify-content-between align-items-center">
+          Загальний дохід
+          <p-sortIcon field="totalRevenue"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="averageOrderValue">
+        <div class="flex justify-content-between align-items-center">
+          Середня вартість замовлення
+          <p-sortIcon field="averageOrderValue"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="returnRate">
+        <div class="flex justify-content-between align-items-center">
+          % повернень
+          <p-sortIcon field="returnRate"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="walletBalance">
+        <div class="flex justify-content-between align-items-center">
+          Баланс гаманця
+          <p-sortIcon field="walletBalance"></p-sortIcon>
+        </div>
+      </th>
+      <th pSortableColumn="lastOrderDate">
+        <div class="flex justify-content-between align-items-center">
+          Останнє замовлення
+          <p-sortIcon field="lastOrderDate"></p-sortIcon>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-dropshipper>
+    @if (!(loading$ | async)) {
+    <tr>
+      <td>
+        <span class="p-column-title">Ім'я</span>
+        {{ dropshipper.name }}
+      </td>
+      <td>
+        <span class="p-column-title">К-ть замовлень</span>
+        {{ dropshipper.ordersCount }}
+      </td>
+      <td>
+        <span class="p-column-title">Загальний дохід</span>
+        {{ formatCurrency(dropshipper.totalRevenue) }}
+      </td>
+      <td>
+        <span class="p-column-title">Середня вартість замовлення</span>
+        {{ formatCurrency(dropshipper.averageOrderValue) }}
+      </td>
+      <td>
+        <span class="p-column-title">% повернень</span>
+        {{ formatPercent(dropshipper.returnRate) }}
+      </td>
+      <td>
+        <span class="p-column-title">Баланс гаманця</span>
+        {{ formatCurrency(dropshipper.walletBalance) }}
+      </td>
+      <td>
+        <span class="p-column-title">Останнє замовлення</span>
+        @if (dropshipper.lastOrderDate) {
+        {{ dropshipper.lastOrderDate | date : 'short' }}
+        } @else { — }
+      </td>
+    </tr>
+    }
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="7">Даних немає</td>
+    </tr>
+  </ng-template>
+</p-table>
