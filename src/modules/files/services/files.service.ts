@@ -19,7 +19,6 @@ export class FilesService {
     const options: UploadApiOptions = {
       resource_type: 'auto',
       use_filename: true,
-      async: true,
       public_id: `${new Date().getTime()}-${file.originalname}`,
       ...customOptions,
     };
