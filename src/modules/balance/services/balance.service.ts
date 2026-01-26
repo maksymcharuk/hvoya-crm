@@ -147,12 +147,24 @@ export class BalanceService {
   }
 
   async fulfillTransaction(transactionId: string) {
+    console.log(
+      '[BalanceService] fulfillTransaction() called with transactionId:',
+      transactionId,
+    );
     const queryRunner = this.dataSource.createQueryRunner();
     const manager = queryRunner.manager;
 
     await queryRunner.connect();
+    console.log(
+      '[BalanceService] fulfillTransaction() - QueryRunner connected',
+    );
     await queryRunner.startTransaction();
+    console.log('[BalanceService] fulfillTransaction() - Transaction started');
     try {
+      console.log(
+        '[BalanceService] fulfillTransaction() - Searching for payment transaction with id:',
+        transactionId,
+      );
       const transaction = await manager.findOneOrFail(
         PaymentTransactionEntity,
         {
@@ -160,29 +172,114 @@ export class BalanceService {
           relations: ['balance', 'balance.owner'],
         },
       );
+      console.log(
+        '[BalanceService] fulfillTransaction() - Payment transaction found:',
+        {
+          id: transaction.id,
+          amount: transaction.amount,
+          currentBalance: transaction.balance.amount,
+          userId: transaction.balance.owner.id,
+        },
+      );
+
+      console.log(
+        '[BalanceService] fulfillTransaction() - Updating balance from',
+        transaction.balance.amount,
+        'to',
+        transaction.balance.amount.plus(transaction.amount),
+      );
       await manager.save(BalanceEntity, {
         id: transaction.balance.id,
         amount: transaction.balance.amount.plus(transaction.amount),
       });
+      console.log(
+        '[BalanceService] fulfillTransaction() - Balance updated successfully',
+      );
+
+      console.log(
+        '[BalanceService] fulfillTransaction() - Updating transaction status to Success',
+      );
       await manager.save(PaymentTransactionEntity, {
         id: transaction.id,
         status: TransactionStatus.Success,
         syncOneCStatus: TransactionSyncOneCStatus.Success,
       });
-      await this.oneCService.depositFunds({
-        userId: transaction.balance.owner.id,
-        amount: transaction.amount.toNumber(),
-        createdAt: transaction.createdAt,
-      });
+      console.log(
+        '[BalanceService] fulfillTransaction() - Transaction status updated successfully',
+      );
+
+      // TODO: uncomment after OneC service is ready
+      // console.log('[BalanceService] fulfillTransaction() - Calling oneCService.depositFunds()');
+      // try {
+      //   await this.oneCService.depositFunds({
+      //     userId: transaction.balance.owner.id,
+      //     amount: transaction.amount.toNumber(),
+      //     createdAt: transaction.createdAt,
+      //   });
+      //   console.log('[BalanceService] fulfillTransaction() - oneCService.depositFunds() completed successfully');
+      // } catch (oneCErr) {
+      //   console.error('[BalanceService] fulfillTransaction() - oneCService.depositFunds() failed:', oneCErr instanceof Error ? oneCErr.message : String(oneCErr));
+      //   console.error('[BalanceService] fulfillTransaction() - Full error details:', oneCErr);
+      //   throw oneCErr;
+      // }
+
       await queryRunner.commitTransaction();
+      console.log(
+        '[BalanceService] fulfillTransaction() - Transaction committed successfully',
+      );
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-      await this.dataSource.manager.save(PaymentTransactionEntity, {
-        id: transactionId,
-        syncOneCStatus: TransactionSyncOneCStatus.Failed,
-      });
+      console.error(
+        '[BalanceService] fulfillTransaction() - Error occurred:',
+        error instanceof Error ? error.message : String(error),
+      );
+      console.error(
+        '[BalanceService] fulfillTransaction() - Full error details:',
+        error,
+      );
+      console.log(
+        '[BalanceService] fulfillTransaction() - Rolling back transaction',
+      );
+      try {
+        await queryRunner.rollbackTransaction();
+        console.log(
+          '[BalanceService] fulfillTransaction() - Transaction rolled back successfully',
+        );
+      } catch (rollbackErr) {
+        console.error(
+          '[BalanceService] fulfillTransaction() - Rollback failed:',
+          rollbackErr instanceof Error
+            ? rollbackErr.message
+            : String(rollbackErr),
+        );
+      }
+
+      console.log(
+        '[BalanceService] fulfillTransaction() - Updating transaction syncOneCStatus to Failed',
+      );
+      try {
+        await this.dataSource.manager.save(PaymentTransactionEntity, {
+          id: transactionId,
+          syncOneCStatus: TransactionSyncOneCStatus.Failed,
+        });
+        console.log(
+          '[BalanceService] fulfillTransaction() - Transaction status marked as Failed',
+        );
+      } catch (statusErr) {
+        console.error(
+          '[BalanceService] fulfillTransaction() - Failed to update transaction status:',
+          statusErr instanceof Error ? statusErr.message : String(statusErr),
+        );
+      }
+
+      console.error(
+        '[BalanceService] fulfillTransaction() - Re-throwing error to caller',
+      );
+      throw error;
     } finally {
       await queryRunner.release();
+      console.log(
+        '[BalanceService] fulfillTransaction() - QueryRunner released',
+      );
     }
   }
 
@@ -192,11 +289,33 @@ export class BalanceService {
     bankTransactionId: string,
     paymentTransaction: PaymentTransactionEntity,
   ) {
-    await manager.save(PaymentTransactionEntity, {
-      ...paymentTransaction,
+    console.log('[BalanceService] cancelTransactionBanking() called with:', {
+      amount,
       bankTransactionId,
-      amount: new Decimal(amount),
-      status: TransactionStatus.Cancelled,
+      transactionId: paymentTransaction.id,
     });
+    try {
+      const result = await manager.save(PaymentTransactionEntity, {
+        ...paymentTransaction,
+        bankTransactionId,
+        amount: new Decimal(amount),
+        status: TransactionStatus.Cancelled,
+      });
+      console.log(
+        '[BalanceService] cancelTransactionBanking() - Transaction cancelled successfully:',
+        { id: result.id, status: result.status },
+      );
+      return result;
+    } catch (err) {
+      console.error(
+        '[BalanceService] cancelTransactionBanking() - Error occurred:',
+        err instanceof Error ? err.message : String(err),
+      );
+      console.error(
+        '[BalanceService] cancelTransactionBanking() - Full error details:',
+        err,
+      );
+      throw err;
+    }
   }
 }
