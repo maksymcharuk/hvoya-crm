@@ -208,20 +208,29 @@ export class BalanceService {
         '[BalanceService] fulfillTransaction() - Transaction status updated successfully',
       );
 
-      // TODO: uncomment after OneC service is ready
-      // console.log('[BalanceService] fulfillTransaction() - Calling oneCService.depositFunds()');
-      // try {
-      //   await this.oneCService.depositFunds({
-      //     userId: transaction.balance.owner.id,
-      //     amount: transaction.amount.toNumber(),
-      //     createdAt: transaction.createdAt,
-      //   });
-      //   console.log('[BalanceService] fulfillTransaction() - oneCService.depositFunds() completed successfully');
-      // } catch (oneCErr) {
-      //   console.error('[BalanceService] fulfillTransaction() - oneCService.depositFunds() failed:', oneCErr instanceof Error ? oneCErr.message : String(oneCErr));
-      //   console.error('[BalanceService] fulfillTransaction() - Full error details:', oneCErr);
-      //   throw oneCErr;
-      // }
+      console.log(
+        '[BalanceService] fulfillTransaction() - Calling oneCService.depositFunds()',
+      );
+      try {
+        await this.oneCService.depositFunds({
+          userId: transaction.balance.owner.id,
+          amount: transaction.amount.toNumber(),
+          createdAt: transaction.createdAt,
+        });
+        console.log(
+          '[BalanceService] fulfillTransaction() - oneCService.depositFunds() completed successfully',
+        );
+      } catch (oneCErr) {
+        console.error(
+          '[BalanceService] fulfillTransaction() - oneCService.depositFunds() failed:',
+          oneCErr instanceof Error ? oneCErr.message : String(oneCErr),
+        );
+        console.error(
+          '[BalanceService] fulfillTransaction() - Full error details:',
+          oneCErr,
+        );
+        throw oneCErr;
+      }
 
       await queryRunner.commitTransaction();
       console.log(
