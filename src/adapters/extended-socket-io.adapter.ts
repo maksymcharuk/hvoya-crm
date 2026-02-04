@@ -1,4 +1,4 @@
-import * as https from 'https';
+import * as http from 'http';
 import * as io from 'socket.io';
 
 import { LoggerService } from '@nestjs/common';
@@ -8,7 +8,7 @@ export class ExtendedSocketIoAdapter extends IoAdapter {
   protected ioServer: io.Server;
 
   constructor(
-    protected server: https.Server,
+    protected server: http.Server,
     private readonly logger: LoggerService,
   ) {
     super();

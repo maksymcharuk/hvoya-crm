@@ -26,7 +26,7 @@ export default defineConfig({
   },
 
   env: {
-    API_BASE_URL: 'https://localhost:3001/api',
+    API_BASE_URL: 'http://localhost:3001/api',
     JWT_SECRET: 'secret',
   },
 });

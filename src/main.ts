@@ -4,7 +4,6 @@ import * as rateLimit from 'express-rate-limit';
 import * as xmlparser from 'express-xml-bodyparser';
 import helmet from 'helmet';
 import * as http from 'http';
-import * as https from 'https';
 import * as newrelic from 'newrelic';
 import * as nocache from 'nocache';
 
@@ -20,7 +19,7 @@ import { SetupService } from '@modules/setup/services/setup.service';
 import { AppModule } from './app.module';
 import config from './config';
 
-const { APP_ORIGIN, HTTPS_OPTIONS, LOGGER, isProduction } = config();
+const { APP_ORIGIN, LOGGER, isProduction } = config();
 
 const logger = LOGGER;
 
@@ -29,7 +28,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server), {
     logger,
   });
-  const httpsServer = https.createServer(HTTPS_OPTIONS, server);
+  const httpServer = http.createServer(server);
 
   const setupService = app.get(SetupService);
   await setupService.setup();
@@ -67,12 +66,11 @@ async function bootstrap() {
     }),
   );
   app.use(xmlparser());
-  app.useWebSocketAdapter(new ExtendedSocketIoAdapter(httpsServer, logger));
+  app.useWebSocketAdapter(new ExtendedSocketIoAdapter(httpServer, logger));
 
   await app.init();
 
-  http.createServer(server).listen(process.env['PORT'] || 8080);
-  httpsServer.listen(process.env['HTTPS_PORT'] || 443);
+  httpServer.listen(process.env['PORT'] || 8080);
 }
 
 bootstrap()

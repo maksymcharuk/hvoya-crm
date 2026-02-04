@@ -1,5 +1,4 @@
 import { config } from 'dotenv';
-import * as fs from 'fs';
 import {
   WinstonModule,
   utilities as nestWinstonModuleUtilities,
@@ -15,19 +14,6 @@ config({
 });
 
 export default () => {
-  // Configs
-  const HTTPS_OPTIONS = {
-    cert: process.env['CERT_PATH']
-      ? fs.readFileSync(process.env['CERT_PATH'])
-      : '',
-    key: process.env['KEY_PATH']
-      ? fs.readFileSync(process.env['KEY_PATH'])
-      : '',
-    ca: process.env['CA_PATH'] ? fs.readFileSync(process.env['CA_PATH']) : '',
-    requestCert: true,
-    rejectUnauthorized: false,
-  };
-
   // Constants
   const APP_ORIGIN = new Map([
     ['development', 'http://localhost:4200'],
@@ -70,7 +56,6 @@ export default () => {
 
   return {
     APP_ORIGIN,
-    HTTPS_OPTIONS,
     LOGGER,
     isProduction,
     isStaging,
