@@ -1,6 +1,5 @@
 import * as compression from 'compression';
 import * as express from 'express';
-import * as rateLimit from 'express-rate-limit';
 import * as xmlparser from 'express-xml-bodyparser';
 import helmet from 'helmet';
 import * as http from 'http';
@@ -38,12 +37,6 @@ async function bootstrap() {
     app.use(
       helmet({
         contentSecurityPolicy: false,
-      }),
-    );
-    app.use(
-      (rateLimit as any)({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 100, // limit each IP to 100 requests per windowMs
       }),
     );
     app.use(nocache());
