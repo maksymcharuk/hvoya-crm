@@ -27,6 +27,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server), {
     logger,
   });
+
+  server.set('trust proxy', 1);
+
   const httpServer = http.createServer(server);
 
   const setupService = app.get(SetupService);
