@@ -459,39 +459,6 @@ export class AnalyticsService {
       .groupBy('"price"."productId"')
       .getQuery();
 
-    // DEBUG: Log the subquery and its results
-    const priceStatsDebug = await this.dataSource.manager
-      .createQueryBuilder()
-      .select('"price"."productId"', 'variantId')
-      .addSelect('AVG("price"."price"::NUMERIC)', 'avgPrice')
-      .addSelect('MIN("price"."price"::NUMERIC)', 'minPrice')
-      .addSelect('MAX("price"."price"::NUMERIC)', 'maxPrice')
-      .addSelect('MAX("price"."name")', 'productName')
-      .addSelect('COUNT("price"."id")', 'propertyCount')
-      .addSelect(
-        'STRING_AGG(DISTINCT "price"."id"::text, \', \')',
-        'propertyIds',
-      )
-      .addSelect(
-        'STRING_AGG(DISTINCT "price"."price"::text, \', \')',
-        'priceValues',
-      )
-      .from('product_properties', 'price')
-      .groupBy('"price"."productId"')
-      .getRawMany<any>();
-
-    console.log('DEBUG - Price Stats Subquery Results:');
-    console.log('Total variants with properties:', priceStatsDebug.length);
-    priceStatsDebug.forEach((row) => {
-      console.log(`  Variant ID: ${row.variantId}`);
-      console.log(`    Product Name: ${row.productName}`);
-      console.log(`    Property Count: ${row.propertyCount}`);
-      console.log(
-        `    Avg Price: ${row.avgPrice}, Min: ${row.minPrice}, Max: ${row.maxPrice}`,
-      );
-      console.log(`    Price Values: ${row.priceValues}`);
-    });
-
     const productsQuery = this.dataSource.manager
       .createQueryBuilder(ProductVariantEntity, 'variant')
       .select('"variant"."id"', 'productId')
