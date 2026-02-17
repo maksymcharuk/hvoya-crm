@@ -316,6 +316,9 @@ export class ProductsCreationService {
       packageSize: await this.upsertProductPackageSize(
         productVariant.properties.size,
       ),
+      product: productVariantExists
+        ? { id: productVariantExists.id }
+        : undefined,
     });
 
     if (productVariantExists) {
@@ -337,6 +340,16 @@ export class ProductsCreationService {
         await manager.update(ProductVariantEntity, productVariantExists.id, {
           properties: { id: properties.id },
         });
+      }
+
+      if (productVariantExists.properties) {
+        await manager.update(
+          ProductPropertiesEntity,
+          productVariantExists.properties.id,
+          {
+            product: { id: productVariantExists.id },
+          },
+        );
       }
 
       await manager.update(ProductVariantEntity, productVariantExists.id, {
@@ -468,5 +481,20 @@ export class ProductsCreationService {
     }
 
     return packageSize.id === packageSizeExists.id;
+  }
+
+  // One-time backfill. Call manually when needed.
+  async backfillNullProductPropertiesLinks() {
+    const manager = this.dataSource.createEntityManager();
+
+    await manager.query(`
+      UPDATE product_properties pp
+      SET "productId" = pv.id
+      FROM product_variant pv
+      INNER JOIN product_properties pv_props
+        ON pv_props.id = pv."propertiesId"
+      WHERE pp."productId" IS NULL
+        AND pp.name = pv_props.name
+    `);
   }
 }
