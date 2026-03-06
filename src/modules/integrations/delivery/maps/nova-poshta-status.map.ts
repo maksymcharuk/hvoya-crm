@@ -2,19 +2,34 @@ import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { GetStatusFn } from '@interfaces/delivery';
 
 export const NovaPoshtaStatusMap: { [key in DeliveryStatus]: string[] } = {
-  [DeliveryStatus.Accepted]: ['прийнято', 'передано'],
+  [DeliveryStatus.Pending]: [
+    'оформив посилку',
+    'але ще не відправив',
+    'накладну',
+  ],
+  [DeliveryStatus.Accepted]: ['прийнята', 'прийнято', 'передано'],
   [DeliveryStatus.InTransit]: [
+    'виїхала',
     'відправлено',
     'прямує',
     'відправлення у',
     "видано кур'єру",
   ],
-  [DeliveryStatus.Arrived]: ['прибув', 'прибуло', 'у відділенні'],
+  [DeliveryStatus.Arrived]: [
+    'прибула',
+    'прибув',
+    'прибуло',
+    'у відділенні',
+    'у відділення',
+  ],
   [DeliveryStatus.Received]: ['отримано', 'видана'],
-  [DeliveryStatus.Returned]: ['повернуто', 'повернення'],
-  [DeliveryStatus.Declined]: ['відмовлено', 'відмова', 'відмовився'],
+  [DeliveryStatus.Declined]: ['відмовився', 'відмовлено', 'відмова'],
+  [DeliveryStatus.Returned]: [
+    'заявку на повернення',
+    'повернуто відправнику',
+    'повернення відправнику',
+  ],
   [DeliveryStatus.Unspecified]: [],
-  [DeliveryStatus.Pending]: ['накладну'],
 };
 
 export const getStatus: GetStatusFn = (status: string): DeliveryStatus => {

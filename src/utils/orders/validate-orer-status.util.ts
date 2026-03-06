@@ -4,6 +4,7 @@ import {
   ADMIN_CANCELABLE_ORDER_STATUSES,
   FULFILLABLE_ORDER_STATUSES,
   MANUAL_ORDER_STATUSES,
+  REFUSABLE_ORDER_STATUSES,
 } from '@constants/order.constants';
 import { OrderStatus } from '@enums/order-status.enum';
 import { getOrderStatusName } from '@interfaces/one-c';
@@ -26,6 +27,13 @@ function canBeFulfilled(currenStatus: OrderStatus, newStatus: OrderStatus) {
   return true;
 }
 
+function canBeRefused(currenStatus: OrderStatus, newStatus: OrderStatus) {
+  if (newStatus === OrderStatus.Refused) {
+    return REFUSABLE_ORDER_STATUSES.includes(currenStatus);
+  }
+  return true;
+}
+
 export function validateOrderStatusForAdmin(
   currenStatus: OrderStatus,
   newStatus: OrderStatus,
@@ -34,6 +42,7 @@ export function validateOrderStatusForAdmin(
     case !canBeSetMannualy(newStatus):
     case !canBeFulfilled(currenStatus, newStatus):
     case !canBeCancelled(currenStatus, newStatus):
+    case !canBeRefused(currenStatus, newStatus):
       throw new InternalServerErrorException(
         `
           Статус замовлення не може бути змінено з 

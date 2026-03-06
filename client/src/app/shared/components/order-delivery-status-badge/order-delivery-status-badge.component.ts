@@ -49,7 +49,7 @@ export class OrderDeliveryStatusBadgeComponent {
       case DeliveryStatus.Received:
         return 'Отримано';
       case DeliveryStatus.Declined:
-        return 'Скасовано';
+        return 'Відмова';
       case DeliveryStatus.Returned:
         return 'Повернуто';
       default:

@@ -2,25 +2,30 @@ import { DeliveryStatus } from '@enums/delivery-status.enum';
 import { GetStatusFn } from '@interfaces/delivery';
 
 export const UkrPoshtaStatusMap: { [key in DeliveryStatus]: string[] } = {
+  [DeliveryStatus.Pending]: ['створено онлайн', 'очікує приймання'],
   [DeliveryStatus.Accepted]: [
-    'надходження',
-    'прийняте',
     'прийнято',
+    'прийняте',
+    'надходження',
     'у сортувальному центрі',
   ],
   [DeliveryStatus.InTransit]: [
-    'до відділення',
+    'виїхало',
     'відправлення посилки',
     'слідує',
     'прямує до точки видачі',
     'з сортувального центру',
   ],
-  [DeliveryStatus.Arrived]: ['у відділенні', 'прибуло', 'у точці видачі'],
-  [DeliveryStatus.Received]: ['вручено'],
-  [DeliveryStatus.Returned]: ['поверн'],
-  [DeliveryStatus.Declined]: ['відмовлено', 'скасовано', 'відмова'],
+  [DeliveryStatus.Arrived]: [
+    'прибуло до відділення',
+    'прибуло до логістичного центру',
+    'у відділенні',
+    'у точці видачі',
+  ],
+  [DeliveryStatus.Received]: ['вручено одержувачу', 'вручено'],
+  [DeliveryStatus.Declined]: ['відмовлено від посилки', 'скасовано замовлення'],
+  [DeliveryStatus.Returned]: ['повернення відправнику', 'поверн'],
   [DeliveryStatus.Unspecified]: [],
-  [DeliveryStatus.Pending]: ['створено онлайн'],
 };
 
 export const getStatus: GetStatusFn = (status: string): DeliveryStatus => {

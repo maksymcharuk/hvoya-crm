@@ -27,10 +27,14 @@ export const USER_UPDATEABLE_ORDER_STATUSES = [OrderStatus.Pending];
 export const MANUAL_ORDER_STATUSES = [
   OrderStatus.Fulfilled,
   OrderStatus.Cancelled,
+  OrderStatus.Refused,
 ];
 
 // Only Processing orders can be fulfilled
 export const FULFILLABLE_ORDER_STATUSES = [OrderStatus.Processing];
+
+// Only Fulfilled orders can be refused
+export const REFUSABLE_ORDER_STATUSES = [OrderStatus.Fulfilled];
 
 // Only Fulfilled and Refused orders can be returned
 export const RETURNABLE_ORDER_STATUSES = [

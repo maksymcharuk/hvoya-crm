@@ -22,6 +22,7 @@ export const UPDATABLE_ORDER_STATUSES = [
 export const MANUAL_ORDER_STATUSES = [
   OrderStatus.Fulfilled,
   OrderStatus.Cancelled,
+  OrderStatus.Refused,
 ];
 
 // Only Fulfilled and Refused orders can be returned
