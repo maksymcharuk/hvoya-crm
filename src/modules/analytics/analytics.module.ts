@@ -15,6 +15,8 @@ import { UsersModule } from '@modules/users/users.module';
 
 import { AnalyticsController } from './analytics.controller';
 import { AnalyticsService } from './services/analytics.service';
+import { NlqController } from './nlq/nlq.controller';
+import { NlqService } from './nlq/nlq.service';
 
 @Module({
   imports: [
@@ -31,8 +33,8 @@ import { AnalyticsService } from './services/analytics.service';
     CaslModule,
     UsersModule,
   ],
-  controllers: [AnalyticsController],
-  providers: [AnalyticsService],
+  controllers: [AnalyticsController, NlqController],
+  providers: [AnalyticsService, NlqService],
   exports: [AnalyticsService],
 })
 export class AnalyticsModule {}

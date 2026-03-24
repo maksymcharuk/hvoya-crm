@@ -1,0 +1,166 @@
+<div class="nlq-chat">
+  <!-- Header -->
+  <div class="chat-header flex justify-content-between align-items-center">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-sparkles text-primary"></i>
+      <span class="font-semibold">AI-аналітика</span>
+      <span class="text-xs text-color-secondary">— задайте питання про замовлення, продукти, дропшиперів</span>
+    </div>
+    @if (messages.length > 0) {
+      <p-button
+        icon="pi pi-trash"
+        severity="secondary"
+        [text]="true"
+        size="small"
+        (onClick)="clearChat()"
+        pTooltip="Очистити чат"
+        tooltipPosition="left"
+      />
+    }
+  </div>
+
+  <!-- Messages -->
+  <div #messagesContainer class="messages-container">
+    @if (messages.length === 0) {
+      <div class="empty-state">
+        <i class="pi pi-comments text-4xl text-color-secondary"></i>
+        <p class="text-color-secondary mt-2">Задайте питання, щоб отримати аналітику</p>
+        <div class="suggestions">
+          <p-button
+            label="Топ продуктів за доходом"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            (onClick)="inputText = 'Топ 5 продуктів за доходом за останні 30 днів'; submit()"
+          />
+          <p-button
+            label="Розподіл замовлень за статусом"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            (onClick)="inputText = 'Покажи розподіл замовлень за статусом'; submit()"
+          />
+          <p-button
+            label="Динаміка замовлень по місяцях"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            (onClick)="inputText = 'Динаміка замовлень по місяцях за цей рік'; submit()"
+          />
+        </div>
+      </div>
+    }
+
+    @for (msg of messages; track $index) {
+      <div class="message" [class.user-message]="msg.role === 'user'" [class.assistant-message]="msg.role === 'assistant'">
+        @if (msg.role === 'assistant') {
+          <div class="avatar">
+            <i class="pi pi-sparkles"></i>
+          </div>
+        }
+        <div class="bubble-wrapper">
+          <div class="bubble">{{ msg.text }}</div>
+
+          <!-- Data visualization -->
+          @if (msg.data && msg.vizType) {
+            <div class="viz-container">
+
+              @switch (msg.vizType) {
+
+                @case ('kpi') {
+                  <div class="kpi-grid">
+                    @for (entry of getKpiEntries(msg.data); track entry.label) {
+                      <div class="kpi-card">
+                        <div class="kpi-value">{{ entry.value }}</div>
+                        <div class="kpi-label">{{ entry.label }}</div>
+                      </div>
+                    }
+                  </div>
+                }
+
+                @case ('table') {
+                  @if (getTableRows(msg.data).length > 0) {
+                    <p-table
+                      [value]="getTableRows(msg.data)"
+                      [scrollable]="true"
+                      scrollHeight="280px"
+                      styleClass="p-datatable-sm"
+                    >
+                      <ng-template pTemplate="header">
+                        <tr>
+                          @for (col of getTableColumns(msg.data); track col) {
+                            <th>{{ col }}</th>
+                          }
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-row>
+                        <tr>
+                          @for (col of getTableColumns(msg.data); track col) {
+                            <td>{{ formatCellValue(row[col]) }}</td>
+                          }
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  }
+                }
+
+                @case ('bar') {
+                  <p-chart
+                    type="bar"
+                    [data]="buildChartData(msg.data, 'bar')"
+                    [options]="getChartOptions()"
+                    height="240"
+                  />
+                }
+
+                @case ('line') {
+                  <p-chart
+                    type="line"
+                    [data]="buildChartData(msg.data, 'line')"
+                    [options]="getChartOptions()"
+                    height="240"
+                  />
+                }
+
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Loading indicator -->
+    @if (loading) {
+      <div class="message assistant-message">
+        <div class="avatar">
+          <i class="pi pi-sparkles"></i>
+        </div>
+        <div class="bubble-wrapper">
+          <div class="bubble loading-bubble">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Input -->
+  <div class="chat-input-area">
+    <textarea
+      class="chat-textarea"
+      [(ngModel)]="inputText"
+      (keydown)="onKeyDown($event)"
+      placeholder="Задайте питання... (Enter — відправити, Shift+Enter — новий рядок)"
+      rows="2"
+      [disabled]="loading"
+    ></textarea>
+    <p-button
+      icon="pi pi-send"
+      [disabled]="!inputText.trim() || loading"
+      (onClick)="submit()"
+      pTooltip="Відправити"
+    />
+  </div>
+</div>

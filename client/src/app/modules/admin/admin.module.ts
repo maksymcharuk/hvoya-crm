@@ -1,5 +1,7 @@
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TooltipModule } from 'primeng/tooltip';
 import { CalendarModule } from 'primeng/calendar';
 import { ChartModule } from 'primeng/chart';
 import { DropdownModule } from 'primeng/dropdown';
@@ -18,6 +20,7 @@ import { SharedModule } from '@shared/shared.module';
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { DropshippersAnalyticsComponent } from './components/dropshippers-analytics/dropshippers-analytics.component';
+import { NlqChatComponent } from './components/nlq-chat/nlq-chat.component';
 import { OrdersFunnelChartComponent } from './components/orders-funnel-chart/orders-funnel-chart.component';
 import { OrdersStatusChartComponent } from './components/orders-status-chart/orders-status-chart.component';
 import { ProductsAnalyticsComponent } from './components/products-analytics/products-analytics.component';
@@ -35,6 +38,7 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
     OrdersStatusChartComponent,
     ProductsAnalyticsComponent,
     TopProductsChartComponent,
+    NlqChatComponent,
   ],
   imports: [
     CommonModule,
@@ -52,6 +56,8 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
     SkeletonModule,
     ChartModule,
     TabViewModule,
+    InputTextareaModule,
+    TooltipModule,
   ],
 })
 export class AdminModule {}

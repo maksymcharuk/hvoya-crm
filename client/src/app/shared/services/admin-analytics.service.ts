@@ -3,6 +3,25 @@ import { Observable, map } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+export type VizType = 'table' | 'bar' | 'line' | 'kpi';
+
+export interface NlqMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface NlqRequest {
+  question: string;
+  conversationHistory?: NlqMessage[];
+}
+
+export interface NlqResponse {
+  answer: string;
+  toolCalled: string | null;
+  data: unknown;
+  vizType: VizType;
+}
+
 import { environment } from '@environment/environment';
 import { DropshipperAnalytics } from '@shared/interfaces/analystics/dropshipper-analytics.interface';
 import {
@@ -201,6 +220,16 @@ export class AdminAnalyticsService {
     return this.http.get<ProductTimeline>(
       `${this.baseUrl}/products/${productId}/timeline`,
       { params },
+    );
+  }
+
+  /**
+   * Send a natural language question to the AI analytics chat
+   */
+  queryNlq(request: NlqRequest): Observable<NlqResponse> {
+    return this.http.post<NlqResponse>(
+      `${environment.apiUrl}/analytics/nlq`,
+      request,
     );
   }
 

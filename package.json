@@ -86,6 +86,7 @@
     "newrelic": "^10.1.2",
     "nocache": "^3.0.4",
     "nodemailer": "^6.8.0",
+    "openai": "^6.32.0",
     "passport": "^0.6.0",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.1",
