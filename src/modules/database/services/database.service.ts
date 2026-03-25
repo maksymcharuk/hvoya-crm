@@ -49,16 +49,25 @@ export class DatabaseService {
     }
 
     await this.execute(createDB);
-    await this.execute(restoreDB);
+    // Exit code 1 means pg_restore completed with warnings (e.g. unrecognized
+    // config params from a newer PG version dump). Treat it as success.
+    await this.execute(restoreDB, [1]);
   }
 
-  private static async execute(command: string): Promise<void> {
+  private static async execute(
+    command: string,
+    allowExitCodes: number[] = [],
+  ): Promise<void> {
     process.env['PGPASSWORD'] = options.password as string;
 
     return new Promise((resolve, reject) => {
       exec(command, (error) => {
         if (error) {
-          reject(error);
+          if (error.code !== undefined && allowExitCodes.includes(error.code)) {
+            resolve();
+          } else {
+            reject(error);
+          }
         } else {
           resolve();
         }

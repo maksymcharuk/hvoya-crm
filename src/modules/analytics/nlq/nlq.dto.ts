@@ -27,4 +27,5 @@ export interface NlqResponseDto {
   toolCalled: string | null;
   data: unknown;
   vizType: VizType;
+  vizFields?: string[];
 }

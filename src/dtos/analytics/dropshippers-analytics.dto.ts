@@ -18,6 +18,7 @@ export class DropshipperAnalyticsDto {
   totalRevenue: Decimal;
   averageOrderValue: Decimal;
   returnedAmount: Decimal;
+  returnedCount: number;
   returnRate: number; // percentage
   walletBalance: Decimal;
   lastOrderDate: Date | null;

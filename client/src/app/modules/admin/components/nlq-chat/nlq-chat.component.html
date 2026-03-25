@@ -59,7 +59,11 @@
           </div>
         }
         <div class="bubble-wrapper">
-          <div class="bubble">{{ msg.text }}</div>
+          @if (msg.role === 'assistant') {
+            <div class="bubble markdown-body" [innerHTML]="renderMarkdown(msg.text)"></div>
+          } @else {
+            <div class="bubble">{{ msg.text }}</div>
+          }
 
           <!-- Data visualization -->
           @if (msg.data && msg.vizType) {
@@ -88,15 +92,15 @@
                     >
                       <ng-template pTemplate="header">
                         <tr>
-                          @for (col of getTableColumns(msg.data); track col) {
-                            <th>{{ col }}</th>
+                          @for (col of getTableColumns(msg.data); track col.key) {
+                            <th>{{ col.label }}</th>
                           }
                         </tr>
                       </ng-template>
                       <ng-template pTemplate="body" let-row>
                         <tr>
-                          @for (col of getTableColumns(msg.data); track col) {
-                            <td>{{ formatCellValue(row[col]) }}</td>
+                          @for (col of getTableColumns(msg.data); track col.key) {
+                            <td>{{ formatCellValue(row[col.key]) }}</td>
                           }
                         </tr>
                       </ng-template>
@@ -107,8 +111,8 @@
                 @case ('bar') {
                   <p-chart
                     type="bar"
-                    [data]="buildChartData(msg.data, 'bar')"
-                    [options]="getChartOptions()"
+                    [data]="msg.chartData"
+                    [options]="chartOptions"
                     height="240"
                   />
                 }
@@ -116,8 +120,8 @@
                 @case ('line') {
                   <p-chart
                     type="line"
-                    [data]="buildChartData(msg.data, 'line')"
-                    [options]="getChartOptions()"
+                    [data]="msg.chartData"
+                    [options]="chartOptions"
                     height="240"
                   />
                 }

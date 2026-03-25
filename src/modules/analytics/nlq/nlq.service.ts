@@ -46,7 +46,7 @@ const TOOLS: ChatCompletionTool[] = [
     function: {
       name: 'getOrdersByMonth',
       description:
-        'Get orders aggregated by month: order count, total amount, processed count, returned count, average order value per month. Best for trend/timeline bar or line charts.',
+        'Get orders aggregated by month: ordersCount (all orders), totalAmount (all orders including cancelled/refunded/refused), revenueAmount (only Fulfilled orders — use this for revenue/profit questions), processedCount (fulfilled count), returnedCount, averageOrderValue. Best for trend/timeline bar or line charts.',
       parameters: {
         type: 'object',
         properties: {
@@ -120,9 +120,10 @@ const TOOLS: ChatCompletionTool[] = [
               'totalRevenue',
               'ordersCount',
               'returnRate',
+              'returnedCount',
               'walletBalance',
             ],
-            description: 'Field to sort dropshippers by',
+            description: 'Field to sort dropshippers by. Use returnedCount for questions about number of returned orders, returnRate for percentage-based return questions.',
           },
         },
       },
@@ -131,9 +132,19 @@ const TOOLS: ChatCompletionTool[] = [
 ];
 
 const SYSTEM_PROMPT = `You are an analytics assistant for Hvoya CRM, a dropshipping business management platform.
-You have access to analytics tools that query the database. When a user asks a question about orders, revenue, products, or dropshippers, call the appropriate tool to get the data, then provide a concise answer in the same language the user used.
+Always respond in Ukrainian regardless of the language used in the question.
+You have access to analytics tools that query the database. When a user asks a question about orders, revenue, products, or dropshippers, call the appropriate tool to get the data, then provide a concise answer.
 Always call a tool before answering data questions. Do not fabricate numbers.
-After receiving tool results, summarize the key insights clearly and briefly.`;
+After receiving tool results, summarize the key insights clearly and briefly.
+
+Formatting rules:
+- Use markdown for structure (bold, lists, headings) when it improves readability.
+- Do NOT draw tables or charts using text symbols (e.g. dashes, pipes, ASCII art). The UI renders data visually as charts and tables automatically — just describe the insights in text.
+
+Revenue and profitability rules:
+- "Revenue", "income", "profit", "дохід", "виручка", "прибуток" always means money from completed orders only. Never include Cancelled, Refunded, or Refused orders in revenue figures.
+- When using getOrdersByMonth, use the \`revenueAmount\` field (Fulfilled orders only) for any revenue or profitability question. Use \`totalAmount\` only if the user explicitly asks about total order volume including non-paid orders.
+- When using getOrdersSummary, note that \`totalRevenue\` already filters for Fulfilled orders.`;
 
 const VIZ_TYPE_MAP: Record<string, VizType> = {
   getOrdersSummary: 'kpi',
@@ -204,17 +215,36 @@ export class NlqService {
           tool_call_id: toolCall.id,
           content: JSON.stringify(toolResult),
         },
+        {
+          role: 'system',
+          content:
+            'After your answer, if the tool was getOrdersByMonth, add a final line in the exact format "VIZ: field1,field2" listing only the data fields most relevant to the user\'s question. ' +
+            'Available fields: ordersCount, totalAmount, revenueAmount, processedCount, returnedCount, averageOrderValue. ' +
+            'Example: "VIZ: returnedCount" for a question about returns, "VIZ: revenueAmount" for revenue. ' +
+            'Omit the VIZ line for all other tools.',
+        },
       ],
-      tools: TOOLS,
     });
 
     const secondChoice = secondResponse.choices[0];
+    const rawContent = secondChoice?.message.content ?? '';
+
+    // Extract optional VIZ: marker and strip it from the visible answer
+    const vizMatch = rawContent.match(/\nVIZ:\s*([^\n]+)/);
+    const vizFields = vizMatch
+      ? vizMatch[1]!
+          .split(',')
+          .map((f) => f.trim())
+          .filter(Boolean)
+      : undefined;
+    const answer = rawContent.replace(/\nVIZ:[^\n]*/g, '').trim();
 
     return {
-      answer: secondChoice?.message.content ?? '',
+      answer,
       toolCalled: toolName,
       data: toolResult,
       vizType: VIZ_TYPE_MAP[toolName] ?? 'table',
+      vizFields,
     };
   }
 

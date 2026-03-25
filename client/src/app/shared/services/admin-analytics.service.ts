@@ -20,6 +20,7 @@ export interface NlqResponse {
   toolCalled: string | null;
   data: unknown;
   vizType: VizType;
+  vizFields?: string[];
 }
 
 import { environment } from '@environment/environment';

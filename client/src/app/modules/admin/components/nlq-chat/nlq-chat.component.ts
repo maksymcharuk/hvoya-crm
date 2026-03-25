@@ -1,3 +1,4 @@
+import { marked } from 'marked';
 import { Subject, takeUntil } from 'rxjs';
 
 import {
@@ -7,6 +8,7 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import {
   AdminAnalyticsService,
@@ -15,11 +17,40 @@ import {
   VizType,
 } from '@shared/services/admin-analytics.service';
 
+const COLUMN_LABELS: Record<string, string> = {
+  productName: 'Продукт',
+  quantitySold: 'Продано (шт.)',
+  totalRevenue: 'Дохід (₴)',
+  uniqueDropshippersCount: 'Дропшиперів',
+  averagePrice: 'Сер. ціна (₴)',
+  minPrice: 'Мін. ціна (₴)',
+  maxPrice: 'Макс. ціна (₴)',
+  returnRate: 'Повернень (%)',
+  name: "Ім'я",
+  email: 'Email',
+  ordersCount: 'Замовлень',
+  averageOrderValue: 'Сер. замовлення (₴)',
+  returnedAmount: 'Повернено (₴)',
+  walletBalance: 'Баланс (₴)',
+  lastOrderDate: 'Остання дата',
+  lifetimeValue: 'LTV (₴)',
+  status: 'Статус',
+  count: 'К-ть',
+  percentage: 'Частка (%)',
+  month: 'Місяць',
+  totalAmount: 'Заг. сума (₴)',
+  revenueAmount: 'Дохід (₴)',
+  processedCount: 'Виконано',
+  returnedCount: 'Повернено',
+};
+
 interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
   data?: unknown;
   vizType?: VizType;
+  vizFields?: string[];
+  chartData?: unknown;
 }
 
 @Component({
@@ -37,7 +68,19 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
   private readonly destroyed$ = new Subject<void>();
   private shouldScrollToBottom = false;
 
-  constructor(private readonly adminAnalyticsService: AdminAnalyticsService) {}
+  readonly chartOptions = {
+    responsive: true,
+    plugins: { legend: { position: 'bottom' } },
+  };
+
+  constructor(
+    private readonly adminAnalyticsService: AdminAnalyticsService,
+    private readonly sanitizer: DomSanitizer,
+  ) {}
+
+  renderMarkdown(text: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(marked.parse(text) as string);
+  }
 
   submit() {
     const question = this.inputText.trim();
@@ -58,12 +101,17 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (response: NlqResponse) => {
-          this.messages.push({
+          const msg: ChatMessage = {
             role: 'assistant',
             text: response.answer,
             data: response.data,
             vizType: response.vizType,
-          });
+            vizFields: response.vizFields,
+          };
+          if (response.data && (response.vizType === 'bar' || response.vizType === 'line')) {
+            msg.chartData = this.buildChartData(response.data, response.vizType, response.vizFields);
+          }
+          this.messages.push(msg);
           this.loading = false;
           this.shouldScrollToBottom = true;
         },
@@ -92,12 +140,14 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
     return rows.slice(0, 10);
   }
 
-  getTableColumns(data: unknown): string[] {
+  getTableColumns(data: unknown): { key: string; label: string }[] {
     const rows = this.getTableRows(data);
     const first = rows[0];
     if (!first) return [];
     const exclude = new Set(['dropshipperId', 'productId']);
-    return Object.keys(first).filter((k) => !exclude.has(k));
+    return Object.keys(first)
+      .filter((k) => !exclude.has(k))
+      .map((k) => ({ key: k, label: COLUMN_LABELS[k] ?? k }));
   }
 
   formatCellValue(value: unknown): string {
@@ -110,49 +160,47 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
     return String(value);
   }
 
-  buildChartData(data: unknown, vizType: 'bar' | 'line'): any {
+  buildChartData(data: unknown, vizType: 'bar' | 'line', vizFields?: string[]): any {
     const d = data as any;
     const rows: any[] = d?.data ?? (Array.isArray(d) ? d : []);
-    const documentStyle = getComputedStyle(document.documentElement);
-    const blue = documentStyle.getPropertyValue('--blue-500') || '#42A5F5';
-    const green = documentStyle.getPropertyValue('--green-500') || '#66BB6A';
+    const s = getComputedStyle(document.documentElement);
+    const blue   = s.getPropertyValue('--blue-500').trim()   || '#42A5F5';
+    const green  = s.getPropertyValue('--green-500').trim()  || '#66BB6A';
+    const red    = s.getPropertyValue('--red-500').trim()    || '#EF5350';
+    const teal   = s.getPropertyValue('--teal-500').trim()   || '#26A69A';
+    const orange = s.getPropertyValue('--orange-400').trim() || '#FFA726';
+    const purple = s.getPropertyValue('--purple-400').trim() || '#AB47BC';
 
     if (vizType === 'bar') {
       return {
         labels: rows.map((r) => r.status),
-        datasets: [
-          {
-            label: 'К-ть замовлень',
-            data: rows.map((r) => r.count),
-            backgroundColor: blue,
-          },
-        ],
+        datasets: [{ label: 'К-ть замовлень', data: rows.map((r) => r.count), backgroundColor: blue }],
       };
     }
 
+    const ALL_LINE_DATASETS = [
+      { field: 'ordersCount',       label: 'Замовлень',             color: blue,   numeric: false },
+      { field: 'revenueAmount',     label: 'Дохід (₴)',             color: green,  numeric: true  },
+      { field: 'totalAmount',       label: 'Заг. сума (₴)',         color: orange, numeric: true  },
+      { field: 'processedCount',    label: 'Виконано',              color: teal,   numeric: false },
+      { field: 'returnedCount',     label: 'Повернено',             color: red,    numeric: false },
+      { field: 'averageOrderValue', label: 'Сер. замовлення (₴)',   color: purple, numeric: true  },
+    ];
+
+    const active = vizFields?.length
+      ? ALL_LINE_DATASETS.filter((d) => vizFields.includes(d.field))
+      : ALL_LINE_DATASETS.filter((d) => ['ordersCount', 'revenueAmount'].includes(d.field));
+
     return {
       labels: rows.map((r) => r.month),
-      datasets: [
-        {
-          label: 'Замовлень',
-          data: rows.map((r) => r.ordersCount),
-          borderColor: blue,
-          fill: false,
-          tension: 0.4,
-        },
-        {
-          label: 'Сума (₴)',
-          data: rows.map((r) => Number(r.totalAmount)),
-          borderColor: green,
-          fill: false,
-          tension: 0.4,
-        },
-      ],
+      datasets: active.map((d) => ({
+        label: d.label,
+        data: rows.map((r) => d.numeric ? Number(r[d.field]) : r[d.field]),
+        borderColor: d.color,
+        fill: false,
+        tension: 0.4,
+      })),
     };
-  }
-
-  getChartOptions(): any {
-    return { responsive: true, plugins: { legend: { position: 'bottom' } } };
   }
 
   getKpiEntries(data: unknown): { label: string; value: string }[] {

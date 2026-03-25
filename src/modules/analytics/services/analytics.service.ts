@@ -56,6 +56,15 @@ export class AnalyticsService {
         'averageOrderValue',
       )
       .addSelect('COALESCE(SUM("returnRequest"."total"), 0)', 'returnedAmount')
+      .addSelect(
+        'COUNT(DISTINCT CASE WHEN "returnRequest"."id" IS NOT NULL THEN "order"."id" END)',
+        'returnedCount',
+      )
+      .addSelect(
+        'CASE WHEN COALESCE(SUM("order"."total"), 0) = 0 THEN 0 ' +
+          'ELSE COALESCE(SUM("returnRequest"."total"), 0) / COALESCE(SUM("order"."total"), 0) * 100.0 END',
+        'returnRate',
+      )
       .addSelect('"balance"."amount"', 'walletBalance')
       .addSelect('MAX("order"."createdAt")', 'lastOrderDate')
       .addSelect('COALESCE(SUM("order"."total"), 0)', 'lifetimeValue')
@@ -117,11 +126,8 @@ export class AnalyticsService {
       totalRevenue: new Decimal(row.totalRevenue || 0),
       averageOrderValue: new Decimal(row.averageOrderValue || 0),
       returnedAmount: new Decimal(row.returnedAmount || 0),
-      returnRate: this.calculateReturnRate(
-        parseInt(row.ordersCount, 10) || 0,
-        new Decimal(row.returnedAmount || 0),
-        new Decimal(row.totalRevenue || 0),
-      ),
+      returnedCount: parseInt(row.returnedCount, 10) || 0,
+      returnRate: parseFloat(row.returnRate || 0),
       walletBalance: new Decimal(row.walletBalance || 0),
       lastOrderDate: row.lastOrderDate ? new Date(row.lastOrderDate) : null,
       lifetimeValue: new Decimal(row.lifetimeValue || 0),
@@ -242,6 +248,10 @@ export class AnalyticsService {
       .addSelect('COUNT("order"."id")', 'ordersCount')
       .addSelect('COALESCE(SUM("order"."total"), 0)', 'totalAmount')
       .addSelect(
+        'COALESCE(SUM(CASE WHEN "order"."currentStatus" = :fulfilled THEN "order"."total" ELSE 0 END), 0)',
+        'revenueAmount',
+      )
+      .addSelect(
         'SUM(CASE WHEN "order"."currentStatus" = :fulfilled THEN 1 ELSE 0 END)',
         'processedCount',
       )
@@ -265,6 +275,7 @@ export class AnalyticsService {
         month: row.month,
         ordersCount: parseInt(row.ordersCount, 10) || 0,
         totalAmount: new Decimal(row.totalAmount || 0),
+        revenueAmount: new Decimal(row.revenueAmount || 0),
         processedCount: parseInt(row.processedCount, 10) || 0,
         returnedCount: parseInt(row.returnedCount, 10) || 0,
         averageOrderValue: new Decimal(row.averageOrderValue || 0),
@@ -498,22 +509,6 @@ export class AnalyticsService {
         ordersCount: parseInt(row.ordersCount, 10) || 0,
       })),
     };
-  }
-
-  /**
-   * Helper method to calculate return rate percentage
-   */
-  private calculateReturnRate(
-    ordersCount: number,
-    returnedAmount: Decimal,
-    totalRevenue: Decimal,
-  ): number {
-    if (ordersCount === 0 || totalRevenue.isZero()) {
-      return 0;
-    }
-    return parseFloat(
-      returnedAmount.dividedBy(totalRevenue).times(100).toFixed(2),
-    );
   }
 
   /**
