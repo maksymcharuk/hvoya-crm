@@ -39,14 +39,12 @@ import { FaqItemComponent } from './components/faq-item/faq-item.component';
 import { FaqListComponent } from './components/faq-list/faq-list.component';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 import { ImageComponentComponent } from './components/image-component/image-component.component';
-import { IncomeChartComponent } from './components/income-chart/income-chart.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { OrderDeliveryStatusBadgeComponent } from './components/order-delivery-status-badge/order-delivery-status-badge.component';
 import { OrderListItemComponent } from './components/order-list/order-list-item/order-list-item.component';
 import { OrderListComponent } from './components/order-list/order-list.component';
 import { OrderStatusBadgeComponent } from './components/order-status-badge/order-status-badge.component';
 import { OrderViewItemComponent } from './components/order-view-item/order-view-item.component';
-import { OrdersChartComponent } from './components/orders-chart/orders-chart.component';
 import { PostsWidgetComponent } from './components/posts-widget/posts-widget.component';
 import { ProductBaseItemComponent } from './components/product-base-item/product-base-item.component';
 import { ProductBaseListComponent } from './components/product-base-list/product-base-list.component';
@@ -124,7 +122,6 @@ const COMPONENTS = [
   TransactionsListComponent,
   OrderListItemComponent,
   ImageComponentComponent,
-  OrdersChartComponent,
   RequestListComponent,
   RequestStatusBadgeComponent,
   RequestListItemComponent,
@@ -134,7 +131,6 @@ const COMPONENTS = [
   ReturnRequestItemListComponent,
   RequestTypeBadgeComponent,
   PostsWidgetComponent,
-  IncomeChartComponent,
   ProductBaseItemComponent,
   ProductBaseListComponent,
 ];

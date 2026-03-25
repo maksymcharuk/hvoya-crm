@@ -8,13 +8,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { User } from '@decorators/user.decorator';
 import { AnalyticsPageOptionsDto } from '@dtos/analytics/analytics-page-options.dto';
 import { DroppershipsAnalyticsQueryDto } from '@dtos/analytics/dropshippers-analytics.dto';
-import { OrdersAnalyticsForAdminsPageOptionsDto } from '@dtos/analytics/orders-analytics-for-admins-page-options.dto';
 import { OrdersAnalyticsQueryDto } from '@dtos/analytics/orders-analytics.dto';
 import { ProductsAnalyticsQueryDto } from '@dtos/analytics/products-analytics.dto';
-import { UsersAnalyticsForAdminsPageOptionsDto } from '@dtos/analytics/users-analytics-for-admins-page-options.dto';
 import { Action } from '@enums/action.enum';
 
 import { JwtAuthGuard } from '@modules/auth/jwt-auth/jwt-auth.guard';
@@ -29,42 +26,6 @@ import { AnalyticsService } from './services/analytics.service';
 @UseGuards(JwtAuthGuard, PoliciesGuard)
 export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
-
-  /**
-   * LEGACY ENDPOINTS - Kept for backward compatibility
-   */
-
-  @Get('admins/users')
-  @CheckPolicies((ability: AppAbility) =>
-    ability.can(Action.Read, 'AdminAalytics'),
-  )
-  getUserDataForAdmins(
-    @Query()
-    usersAnalyticsForAdminsPageOptionsDto: UsersAnalyticsForAdminsPageOptionsDto,
-  ) {
-    return this.analyticsService.getUserDataForAdmins(
-      usersAnalyticsForAdminsPageOptionsDto,
-    );
-  }
-
-  @Get('admins/orders')
-  @CheckPolicies((ability: AppAbility) =>
-    ability.can(Action.Read, 'AdminAalytics'),
-  )
-  getOrderDataForAdmins(
-    @User('id') currentUserId: string,
-    @Query()
-    ordersAnalyticsForAdminsPageOptionsDto: OrdersAnalyticsForAdminsPageOptionsDto,
-  ) {
-    return this.analyticsService.getOrderDataForAdmins(
-      currentUserId,
-      ordersAnalyticsForAdminsPageOptionsDto,
-    );
-  }
-
-  /**
-   * NEW ANALYTICS ENDPOINTS
-   */
 
   /**
    * Get analytics for all dropshippers with sales metrics

@@ -25,14 +25,12 @@ import { OrdersFunnelChartComponent } from './components/orders-funnel-chart/ord
 import { OrdersStatusChartComponent } from './components/orders-status-chart/orders-status-chart.component';
 import { ProductsAnalyticsComponent } from './components/products-analytics/products-analytics.component';
 import { TopProductsChartComponent } from './components/top-products-chart/top-products-chart.component';
-import { UsersRatingComponent } from './components/users-rating/users-rating.component';
 import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
     AdminComponent,
     AdminDashboardComponent,
-    UsersRatingComponent,
     DropshippersAnalyticsComponent,
     OrdersFunnelChartComponent,
     OrdersStatusChartComponent,

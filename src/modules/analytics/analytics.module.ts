@@ -11,7 +11,6 @@ import { ProductVariantEntity } from '@entities/product-variant.entity';
 import { UserEntity } from '@entities/user.entity';
 
 import { CaslModule } from '@modules/casl/casl.module';
-import { UsersModule } from '@modules/users/users.module';
 
 import { AnalyticsController } from './analytics.controller';
 import { AnalyticsService } from './services/analytics.service';
@@ -31,7 +30,6 @@ import { NlqService } from './nlq/nlq.service';
       ProductBaseEntity,
     ]),
     CaslModule,
-    UsersModule,
   ],
   controllers: [AnalyticsController, NlqController],
   providers: [AnalyticsService, NlqService],

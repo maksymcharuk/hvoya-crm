@@ -11,8 +11,6 @@ describe('AnalyticsController', () => {
   let controller: AnalyticsController;
 
   const mockAnalyticsService = {
-    getUserDataForAdmins: jest.fn(),
-    getOrderDataForAdmins: jest.fn(),
     getDropshippersAnalytics: jest.fn(),
     getOrdersSummary: jest.fn(),
     getOrdersByMonth: jest.fn(),

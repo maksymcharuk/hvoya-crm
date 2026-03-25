@@ -4,10 +4,6 @@ import { DataSource } from 'typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { OrderStatus } from '@enums/order-status.enum';
-import { Role } from '@enums/role.enum';
-
-import { CaslAbilityFactory } from '@modules/casl/casl-ability/casl-ability.factory';
-import { UsersService } from '@modules/users/services/users.service';
 
 import { AnalyticsService } from './analytics.service';
 
@@ -22,14 +18,6 @@ describe('AnalyticsService', () => {
     },
   };
 
-  const mockUsersService = {
-    findById: jest.fn(),
-  };
-
-  const mockCaslAbilityFactory = {
-    createForUser: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -37,14 +25,6 @@ describe('AnalyticsService', () => {
         {
           provide: DataSource,
           useValue: mockDataSource,
-        },
-        {
-          provide: UsersService,
-          useValue: mockUsersService,
-        },
-        {
-          provide: CaslAbilityFactory,
-          useValue: mockCaslAbilityFactory,
         },
       ],
     }).compile();
@@ -436,98 +416,4 @@ describe('AnalyticsService', () => {
     });
   });
 
-  describe('getUserDataForAdmins', () => {
-    it('should return user analytics for admins', async () => {
-      const pageOptionsDto = {
-        dateRangeType: 'all',
-        page: 1,
-        take: 10,
-        skip: 0,
-        orderBy: 'createdAt',
-        order: 'DESC',
-      };
-
-      const mockQueryBuilder = {
-        select: jest.fn().mockReturnThis(),
-        addSelect: jest.fn().mockReturnThis(),
-        leftJoin: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        groupBy: jest.fn().mockReturnThis(),
-        addGroupBy: jest.fn().mockReturnThis(),
-        setParameters: jest.fn().mockReturnThis(),
-        addOrderBy: jest.fn().mockReturnThis(),
-        offset: jest.fn().mockReturnThis(),
-        limit: jest.fn().mockReturnThis(),
-        getCount: jest.fn().mockResolvedValue(1),
-        getRawMany: jest.fn().mockResolvedValue([
-          {
-            id: 'user-123',
-            firstName: 'John',
-            lastName: 'Doe',
-            ordersCount: '5',
-            ordersTotalSum: '500',
-            netWorth: '1000',
-          },
-        ]),
-      };
-
-      mockDataSource.manager.createQueryBuilder.mockReturnValueOnce(
-        mockQueryBuilder,
-      );
-
-      const result = await service.getUserDataForAdmins(pageOptionsDto);
-
-      expect(result.data).toHaveLength(1);
-      expect(result.data[0].id).toBe('user-123');
-      expect(result.meta.itemCount).toBe(1);
-    });
-  });
-
-  describe('getOrderDataForAdmins', () => {
-    it('should return order data for admins', async () => {
-      const userId = 'admin-123';
-      const pageOptionsDto = {
-        range: [new Date('2024-01-01'), new Date('2024-12-31')],
-      };
-
-      const mockUser = {
-        id: userId,
-        role: Role.SuperAdmin,
-      };
-
-      mockUsersService.findById.mockResolvedValue(mockUser);
-      mockCaslAbilityFactory.createForUser.mockReturnValue({
-        can: jest.fn().mockReturnValue(true),
-      });
-
-      mockDataSource.manager.find.mockResolvedValueOnce([
-        { id: 'order-1', total: '100', createdAt: new Date('2024-01-01') },
-      ]);
-
-      mockDataSource.manager.find.mockResolvedValueOnce([
-        { id: 'order-2', total: '50', createdAt: new Date('2024-01-02') },
-      ]);
-
-      const result = await service.getOrderDataForAdmins(
-        userId,
-        pageOptionsDto,
-      );
-
-      expect(result.completedOrders).toHaveLength(1);
-      expect(result.failedOrders).toHaveLength(1);
-    });
-
-    it('should throw NotFoundException when user not found', async () => {
-      const userId = 'non-existent';
-      const pageOptionsDto = {
-        range: [new Date('2024-01-01'), new Date('2024-12-31')],
-      };
-
-      mockUsersService.findById.mockResolvedValue(null);
-
-      await expect(
-        service.getOrderDataForAdmins(userId, pageOptionsDto),
-      ).rejects.toThrow('NotFoundException');
-    });
-  });
 });
