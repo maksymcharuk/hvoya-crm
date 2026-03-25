@@ -4,6 +4,7 @@ export interface OrdersSummary {
   averageOrderValue: number;
   averageProcessingTime: number;
   completedOrdersCount: number;
+  inProgressCount: number;
   cancelledOrdersCount: number;
   refundedOrdersCount: number;
   refusedOrdersCount: number;
@@ -11,8 +12,8 @@ export interface OrdersSummary {
 
 export interface OrdersFunnel {
   created: number;
-  paid: number;
-  processed: number;
+  inProgress: number;
+  fulfilled: number;
   returned: number;
 }
 
@@ -24,9 +25,10 @@ export interface OrdersSummaryResponse {
 export interface OrdersByMonthData {
   month: string;
   ordersCount: number;
-  revenue: number;
+  revenueAmount: number;
   processedCount: number;
   returnedCount: number;
+  averageOrderValue: number;
 }
 
 export interface OrdersByStatusData {

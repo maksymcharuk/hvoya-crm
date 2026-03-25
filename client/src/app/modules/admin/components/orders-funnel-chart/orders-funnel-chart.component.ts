@@ -73,11 +73,15 @@ export class OrdersFunnelChartComponent {
   private getData(funnel: any) {
     const stages = [
       { label: 'Створено', value: funnel.created, color: this.colors.blue500 },
-      { label: 'Оплачено', value: funnel.paid, color: this.colors.green500 },
       {
-        label: 'Оброблено',
-        value: funnel.processed,
+        label: 'В обробці',
+        value: funnel.inProgress,
         color: this.colors.yellow500,
+      },
+      {
+        label: 'Виконано',
+        value: funnel.fulfilled,
+        color: this.colors.green500,
       },
       { label: 'Повернено', value: funnel.returned, color: this.colors.red500 },
     ];

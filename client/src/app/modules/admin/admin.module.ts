@@ -21,7 +21,9 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
 import { DropshippersAnalyticsComponent } from './components/dropshippers-analytics/dropshippers-analytics.component';
 import { NlqChatComponent } from './components/nlq-chat/nlq-chat.component';
+import { ProductsOverviewComponent } from './components/products-overview/products-overview.component';
 import { OrdersFunnelChartComponent } from './components/orders-funnel-chart/orders-funnel-chart.component';
+import { OrdersOverviewComponent } from './components/orders-overview/orders-overview.component';
 import { OrdersStatusChartComponent } from './components/orders-status-chart/orders-status-chart.component';
 import { ProductsAnalyticsComponent } from './components/products-analytics/products-analytics.component';
 import { TopProductsChartComponent } from './components/top-products-chart/top-products-chart.component';
@@ -33,10 +35,12 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
     AdminDashboardComponent,
     DropshippersAnalyticsComponent,
     OrdersFunnelChartComponent,
+    OrdersOverviewComponent,
     OrdersStatusChartComponent,
     ProductsAnalyticsComponent,
     TopProductsChartComponent,
     NlqChatComponent,
+    ProductsOverviewComponent,
   ],
   imports: [
     CommonModule,

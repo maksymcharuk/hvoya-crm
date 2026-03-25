@@ -201,28 +201,35 @@ export class AnalyticsService {
       statusCounts.map((s) => [s.status, parseInt(s.count, 10)]),
     );
 
+    // Total all orders (sum of all status buckets)
+    const totalAllOrders = statusCounts.reduce(
+      (sum, s) => sum + parseInt(s.count, 10),
+      0,
+    );
+
+    const inProgressCount =
+      (statusMap.get(OrderStatus.Processing) || 0) +
+      (statusMap.get(OrderStatus.TransferedToDelivery) || 0);
+
     const summary: OrdersSummaryDto = {
-      totalOrdersCount: parseInt(summaryData.totalOrdersCount, 10) || 0,
+      totalOrdersCount: totalAllOrders,
       totalRevenue: new Decimal(summaryData.totalRevenue || 0),
       averageOrderValue: new Decimal(summaryData.averageOrderValue || 0),
       averageProcessingTime: Math.round(
         parseFloat(summaryData.averageProcessingTime) || 0,
       ),
       completedOrdersCount: statusMap.get(OrderStatus.Fulfilled) || 0,
+      inProgressCount,
       cancelledOrdersCount: statusMap.get(OrderStatus.Cancelled) || 0,
       refundedOrdersCount: statusMap.get(OrderStatus.Refunded) || 0,
       refusedOrdersCount: statusMap.get(OrderStatus.Refused) || 0,
     };
 
     // Calculate funnel
-    const totalOrders = summary.totalOrdersCount;
-    const paidOrders =
-      summary.completedOrdersCount + summary.cancelledOrdersCount;
-
     const funnel: OrdersFunnelDto = {
-      created: totalOrders,
-      paid: paidOrders,
-      processed: summary.completedOrdersCount,
+      created: totalAllOrders,
+      inProgress: inProgressCount,
+      fulfilled: summary.completedOrdersCount,
       returned: await this.getReturnedOrdersCount(fromDate, toDate),
     };
 

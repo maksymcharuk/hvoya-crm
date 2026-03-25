@@ -16,6 +16,7 @@ export class OrdersSummaryDto {
   averageOrderValue: Decimal;
   averageProcessingTime: number; // in hours
   completedOrdersCount: number;
+  inProgressCount: number; // Processing + TransferedToDelivery
   cancelledOrdersCount: number;
   refundedOrdersCount: number;
   refusedOrdersCount: number;
@@ -47,10 +48,10 @@ export class OrdersByStatusDto {
  * Orders funnel data showing conversion at each stage
  */
 export class OrdersFunnelDto {
-  created: number;
-  paid: number;
-  processed: number;
-  returned: number;
+  created: number;    // all orders in period
+  inProgress: number; // currently Processing or TransferedToDelivery
+  fulfilled: number;  // completed (Fulfilled)
+  returned: number;   // has a return request
 }
 
 /**

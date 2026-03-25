@@ -25,7 +25,7 @@ const TOOLS: ChatCompletionTool[] = [
     function: {
       name: 'getOrdersSummary',
       description:
-        'Get overall order statistics: total revenue, average order value, order counts by status, conversion funnel. Use for high-level KPI questions.',
+        'Get overall order statistics: total revenue, average order value, order counts by status, conversion funnel (created → inProgress → fulfilled → returned). Use for high-level KPI questions.',
       parameters: {
         type: 'object',
         properties: {
@@ -144,7 +144,7 @@ Formatting rules:
 Revenue and profitability rules:
 - "Revenue", "income", "profit", "дохід", "виручка", "прибуток" always means money from completed orders only. Never include Cancelled, Refunded, or Refused orders in revenue figures.
 - When using getOrdersByMonth, use the \`revenueAmount\` field (Fulfilled orders only) for any revenue or profitability question. Use \`totalAmount\` only if the user explicitly asks about total order volume including non-paid orders.
-- When using getOrdersSummary, note that \`totalRevenue\` already filters for Fulfilled orders.`;
+- When using getOrdersSummary, note that \`totalRevenue\` already filters for Fulfilled orders. The funnel fields are: \`created\` (all orders), \`inProgress\` (Processing + TransferedToDelivery), \`fulfilled\` (Fulfilled), \`returned\` (has return request).`;
 
 const VIZ_TYPE_MAP: Record<string, VizType> = {
   getOrdersSummary: 'kpi',

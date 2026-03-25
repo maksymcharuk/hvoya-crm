@@ -48,6 +48,31 @@ export class DropshippersAnalyticsComponent implements OnDestroy {
 
   loading$ = new BehaviorSubject<boolean>(true);
 
+  kpiStats$ = this.filtersForm.valueChanges.pipe(
+    startWith(this.filtersForm.value),
+    takeUntil(this.destroyed$),
+    switchMap((value) =>
+      this.adminAnalyticsService.getDropshippersAnalytics(
+        { from: value.range?.[0], to: value.range?.[1] },
+        { take: 500, orderBy: 'totalRevenue', order: 'DESC' },
+      ),
+    ),
+    map((response) => ({
+      totalDropshippers: response.meta.itemCount,
+      totalRevenue: response.data.reduce(
+        (sum, d) => sum + Number(d.totalRevenue),
+        0,
+      ),
+      avgReturnRate: response.data.length
+        ? response.data.reduce((sum, d) => sum + Number(d.returnRate), 0) /
+          response.data.length
+        : 0,
+      topPerformer: response.data[0]?.name ?? '—',
+      topRevenue: Number(response.data[0]?.totalRevenue ?? 0),
+    })),
+    shareReplay(1),
+  );
+
   options$ = combineLatest([
     this.filtersForm.valueChanges.pipe(startWith(this.filtersForm.value)),
     this.tableMetadata$,
@@ -108,6 +133,6 @@ export class DropshippersAnalyticsComponent implements OnDestroy {
   }
 
   formatPercent(value: number): string {
-    return `${value.toFixed(2)}%`;
+    return `${Number(value).toFixed(2)}%`;
   }
 }
