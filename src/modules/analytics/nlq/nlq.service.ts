@@ -80,7 +80,7 @@ const TOOLS: ChatCompletionTool[] = [
     function: {
       name: 'getProductsAnalytics',
       description:
-        'Get analytics per product: quantity sold, total revenue, unique dropshippers, average/min/max price. Best for tables or bar charts comparing products.',
+        'Get analytics per product: quantity sold, total revenue, unique dropshippers, average/min/max price. Best for tables or bar charts comparing products. Use order="ASC" with orderBy="quantitySold" for least popular products.',
       parameters: {
         type: 'object',
         properties: {
@@ -94,6 +94,11 @@ const TOOLS: ChatCompletionTool[] = [
             type: 'string',
             enum: ['totalRevenue', 'quantitySold', 'averagePrice'],
             description: 'Field to sort products by',
+          },
+          order: {
+            type: 'string',
+            enum: ['ASC', 'DESC'],
+            description: 'Sort direction: DESC (default) for top/most, ASC for bottom/least',
           },
         },
       },
@@ -125,6 +130,11 @@ const TOOLS: ChatCompletionTool[] = [
             ],
             description: 'Field to sort dropshippers by. Use returnedCount for questions about number of returned orders, returnRate for percentage-based return questions.',
           },
+          order: {
+            type: 'string',
+            enum: ['ASC', 'DESC'],
+            description: 'Sort direction: DESC (default) for top/most, ASC for bottom/least',
+          },
         },
       },
     },
@@ -137,6 +147,13 @@ You have access to analytics tools that query the database. When a user asks a q
 Always call a tool before answering data questions. Do not fabricate numbers.
 After receiving tool results, summarize the key insights clearly and briefly.
 
+Date range rules:
+- Today's date is ${new Date().toISOString().slice(0, 10)}.
+- ALWAYS pass \`from\` and \`to\` parameters whenever the user specifies any time period ("last month", "this year", "last 3 months", "за останній місяць", etc.).
+- "Last month" means the previous calendar month (first day to last day). Example: if today is 2026-03-26, last month is from=2026-02-01 to=2026-02-28.
+- "Last 30 days" means from=(today minus 30 days) to=today.
+- Only omit date filters when the user explicitly asks for all-time data.
+
 Formatting rules:
 - Use markdown for structure (bold, lists, headings) when it improves readability.
 - Do NOT draw tables or charts using text symbols (e.g. dashes, pipes, ASCII art). The UI renders data visually as charts and tables automatically — just describe the insights in text.
@@ -144,7 +161,14 @@ Formatting rules:
 Revenue and profitability rules:
 - "Revenue", "income", "profit", "дохід", "виручка", "прибуток" always means money from completed orders only. Never include Cancelled, Refunded, or Refused orders in revenue figures.
 - When using getOrdersByMonth, use the \`revenueAmount\` field (Fulfilled orders only) for any revenue or profitability question. Use \`totalAmount\` only if the user explicitly asks about total order volume including non-paid orders.
-- When using getOrdersSummary, note that \`totalRevenue\` already filters for Fulfilled orders. The funnel fields are: \`created\` (all orders), \`inProgress\` (Processing + TransferedToDelivery), \`fulfilled\` (Fulfilled), \`returned\` (has return request).`;
+- When using getOrdersSummary, note that \`totalRevenue\` already filters for Fulfilled orders. The funnel fields are: \`created\` (all orders), \`inProgress\` (Processing + TransferedToDelivery), \`fulfilled\` (Fulfilled), \`returned\` (has return request). Return rate = returned / created * 100.
+
+Data field units:
+- \`averageProcessingTime\` is in **hours** (not minutes). Always state the unit as "годин" when reporting this value.
+
+Sorting rules:
+- For "least popular", "bottom", "найменш популярні" questions — use orderBy with order="ASC".
+- For "most popular", "top", "найбільш популярні" questions — use orderBy with order="DESC".`;
 
 const VIZ_TYPE_MAP: Record<string, VizType> = {
   getOrdersSummary: 'kpi',
@@ -266,11 +290,15 @@ export class NlqService {
   private buildPageOptions(args: {
     take?: number;
     orderBy?: string;
+    order?: string;
   }): AnalyticsPageOptionsDto {
     const dto = new AnalyticsPageOptionsDto();
     (dto as any).take = args.take ?? 10;
     (dto as any).page = 1;
     (dto as any).orderBy = args.orderBy;
+    if (args.order === 'ASC' || args.order === 'DESC') {
+      (dto as any).order = args.order;
+    }
     return dto;
   }
 
