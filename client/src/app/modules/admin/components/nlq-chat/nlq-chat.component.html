@@ -60,98 +60,108 @@
         }
         <div class="bubble-wrapper">
           @if (msg.role === 'assistant') {
-            <div
-              class="bubble markdown-body"
-              [class.is-animating]="msg.isAnimating"
-              [innerHTML]="renderMarkdown(msg.displayedText ?? msg.text)"
-            ></div>
+            @if (!msg.text && !msg.activeToolCall) {
+              <!-- Waiting for first LLM response — same dots as before, inside the bubble -->
+              <div class="bubble loading-bubble">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+            } @else {
+              <!-- AG-UI: tool call in progress — shown above the text -->
+              @if (msg.activeToolCall) {
+                <div class="tool-call-indicator">
+                  <i class="pi pi-spin pi-cog"></i>
+                  <span>{{ msg.activeToolCall }}…</span>
+                </div>
+              }
+              @if (msg.text) {
+                <div
+                  class="bubble markdown-body"
+                  [class.is-animating]="msg.isAnimating"
+                  [innerHTML]="renderMarkdown(msg.displayedText ?? msg.text)"
+                ></div>
+              }
+            }
           } @else {
             <div class="bubble">{{ msg.text }}</div>
           }
 
-          <!-- Data visualization -->
-          @if (msg.data && msg.vizType) {
-            <div class="viz-container">
+          <!-- A2UI: render from catalog component name the agent selected -->
+          @if (msg.a2uiSurface?.isReady) {
+            @let viz = getA2uiViz(msg);
+            @if (viz) {
+              <div class="viz-container">
 
-              @switch (msg.vizType) {
+                <!--
+                  A2UI catalog — each @case is a named component the agent can request.
+                  To add a new visualization, add a component here and list it in the catalog.
+                -->
+                @switch (viz.componentName) {
 
-                @case ('kpi') {
-                  <div class="kpi-grid">
-                    @for (entry of getKpiEntries(msg.data); track entry.label) {
-                      <div class="kpi-card">
-                        <div class="kpi-value">{{ entry.value }}</div>
-                        <div class="kpi-label">{{ entry.label }}</div>
-                      </div>
-                    }
-                  </div>
-                }
-
-                @case ('table') {
-                  @if (getTableRows(msg.data).length > 0) {
-                    <p-table
-                      [value]="getTableRows(msg.data)"
-                      [scrollable]="true"
-                      scrollHeight="280px"
-                      styleClass="p-datatable-sm"
-                    >
-                      <ng-template pTemplate="header">
-                        <tr>
-                          @for (col of getTableColumns(msg.data); track col.key) {
-                            <th>{{ col.label }}</th>
-                          }
-                        </tr>
-                      </ng-template>
-                      <ng-template pTemplate="body" let-row>
-                        <tr>
-                          @for (col of getTableColumns(msg.data); track col.key) {
-                            <td>{{ formatCellValue(row[col.key]) }}</td>
-                          }
-                        </tr>
-                      </ng-template>
-                    </p-table>
+                  @case ('KpiGrid') {
+                    <div class="kpi-grid">
+                      @for (entry of getKpiEntries(viz.data); track entry.label) {
+                        <div class="kpi-card">
+                          <div class="kpi-value">{{ entry.value }}</div>
+                          <div class="kpi-label">{{ entry.label }}</div>
+                        </div>
+                      }
+                    </div>
                   }
-                }
 
-                @case ('bar') {
-                  <p-chart
-                    type="bar"
-                    [data]="msg.chartData"
-                    [options]="chartOptions"
-                    height="240"
-                  />
-                }
+                  @case ('DataTable') {
+                    @if (getTableRows(viz.data).length > 0) {
+                      <p-table
+                        [value]="getTableRows(viz.data)"
+                        [scrollable]="true"
+                        scrollHeight="280px"
+                        styleClass="p-datatable-sm"
+                      >
+                        <ng-template pTemplate="header">
+                          <tr>
+                            @for (col of getTableColumns(viz.data); track col.key) {
+                              <th>{{ col.label }}</th>
+                            }
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-row>
+                          <tr>
+                            @for (col of getTableColumns(viz.data); track col.key) {
+                              <td>{{ formatCellValue(row[col.key]) }}</td>
+                            }
+                          </tr>
+                        </ng-template>
+                      </p-table>
+                    }
+                  }
 
-                @case ('line') {
-                  <p-chart
-                    type="line"
-                    [data]="msg.chartData"
-                    [options]="chartOptions"
-                    height="240"
-                  />
-                }
+                  @case ('BarChart') {
+                    <p-chart
+                      type="bar"
+                      [data]="buildChartData(viz.data, 'bar')"
+                      [options]="chartOptions"
+                      height="240"
+                    />
+                  }
 
-              }
-            </div>
+                  @case ('LineChart') {
+                    <p-chart
+                      type="line"
+                      [data]="buildChartData(viz.data, 'line')"
+                      [options]="chartOptions"
+                      height="240"
+                    />
+                  }
+
+                }
+              </div>
+            }
           }
         </div>
       </div>
     }
 
-    <!-- Loading indicator -->
-    @if (loading) {
-      <div class="message assistant-message">
-        <div class="avatar">
-          <i class="pi pi-sparkles"></i>
-        </div>
-        <div class="bubble-wrapper">
-          <div class="bubble loading-bubble">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
-        </div>
-      </div>
-    }
   </div>
 
   <!-- Input -->

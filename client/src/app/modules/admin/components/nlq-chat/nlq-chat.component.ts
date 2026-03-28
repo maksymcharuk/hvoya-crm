@@ -3,6 +3,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 import {
   AfterViewChecked,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
@@ -10,11 +11,10 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
+import { A2uiSurface } from '@shared/protocols/a2ui-surface';
 import {
   AdminAnalyticsService,
   NlqMessage,
-  NlqResponse,
-  VizType,
 } from '@shared/services/admin-analytics.service';
 
 const COLUMN_LABELS: Record<string, string> = {
@@ -49,10 +49,10 @@ interface ChatMessage {
   text: string;
   displayedText?: string;
   isAnimating?: boolean;
-  data?: unknown;
-  vizType?: VizType;
-  vizFields?: string[];
-  chartData?: unknown;
+  /** Set while the agent is calling an analytics tool (AG-UI TOOL_CALL_START). */
+  activeToolCall?: string;
+  /** A2UI surface — populated as a2ui messages arrive; drives the visualization. */
+  a2uiSurface?: A2uiSurface;
 }
 
 @Component({
@@ -80,6 +80,7 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
   constructor(
     private readonly adminAnalyticsService: AdminAnalyticsService,
     private readonly sanitizer: DomSanitizer,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   renderMarkdown(text: string): SafeHtml {
@@ -100,35 +101,70 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
       .slice(-10)
       .map((m) => ({ role: m.role, content: m.text }));
 
+    // Placeholder for the in-progress assistant message
+    const assistantMsg: ChatMessage = {
+      role: 'assistant',
+      text: '',
+      displayedText: '',
+    };
+    this.messages.push(assistantMsg);
+
     this.adminAnalyticsService
-      .queryNlq({ question, conversationHistory: history })
+      .streamNlq({ question, conversationHistory: history })
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: (response: NlqResponse) => {
-          const msg: ChatMessage = {
-            role: 'assistant',
-            text: response.answer,
-            displayedText: '',
-            isAnimating: true,
-            data: response.data,
-            vizType: response.vizType,
-            vizFields: response.vizFields,
-          };
-          if (response.data && (response.vizType === 'bar' || response.vizType === 'line')) {
-            msg.chartData = this.buildChartData(response.data, response.vizType, response.vizFields);
+        next: (evt) => {
+          if (evt.protocol === 'agui') {
+            const e = evt.event;
+
+            if (e.type === 'TOOL_CALL_START') {
+              // Show which tool the agent is calling while we wait for results
+              assistantMsg.activeToolCall = e.toolName;
+            }
+
+            if (e.type === 'TOOL_CALL_END') {
+              assistantMsg.activeToolCall = undefined;
+            }
+
+            if (e.type === 'TEXT_MESSAGE_CONTENT') {
+              // AG-UI: append each streamed text delta
+              assistantMsg.text += e.delta;
+              this.ensureTypewriter(assistantMsg);
+              this.shouldScrollToBottom = true;
+            }
+
+            if (e.type === 'RUN_FINISH' || e.type === 'RUN_ERROR') {
+              if (e.type === 'RUN_ERROR') {
+                assistantMsg.text = 'Виникла помилка. Спробуйте ще раз.';
+                this.ensureTypewriter(assistantMsg);
+              }
+              assistantMsg.activeToolCall = undefined;
+              this.loading = false;
+              this.shouldScrollToBottom = true;
+            }
           }
-          this.messages.push(msg);
-          this.loading = false;
-          this.shouldScrollToBottom = true;
-          this.startTypewriter(msg);
+
+          if (evt.protocol === 'a2ui') {
+            // A2UI: lazily create the surface and feed it each incoming message
+            if (!assistantMsg.a2uiSurface) {
+              assistantMsg.a2uiSurface = new A2uiSurface();
+            }
+            assistantMsg.a2uiSurface.processMessage(evt.event);
+          }
+
+          this.cdr.detectChanges();
         },
         error: () => {
-          this.messages.push({
-            role: 'assistant',
-            text: 'Виникла помилка. Спробуйте ще раз.',
-          });
+          assistantMsg.text = 'Виникла помилка. Спробуйте ще раз.';
+          this.ensureTypewriter(assistantMsg);
+          assistantMsg.activeToolCall = undefined;
           this.loading = false;
           this.shouldScrollToBottom = true;
+          this.cdr.detectChanges();
+        },
+        complete: () => {
+          this.loading = false;
+          this.cdr.detectChanges();
         },
       });
   }
@@ -137,6 +173,25 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       this.submit();
+    }
+  }
+
+  /**
+   * Resolves the A2UI surface for a message.
+   * Returns { componentName, data } where componentName is the catalog entry
+   * the agent selected (e.g. 'KpiGrid', 'DataTable', 'BarChart', 'LineChart').
+   * The template renders by matching against those catalog names — no vizType string.
+   */
+  getA2uiViz(msg: ChatMessage): { componentName: string; data: unknown } | null {
+    const root = msg.a2uiSurface?.getRootResolved();
+    if (!root) return null;
+    const dataJson = root.props['dataJson'] as Record<string, unknown> | undefined;
+    if (!dataJson) return null;
+    try {
+      const data = JSON.parse(dataJson['json'] as string);
+      return { componentName: root.componentName, data };
+    } catch {
+      return null;
     }
   }
 
@@ -159,7 +214,6 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
 
   formatCellValue(value: unknown): string {
     if (value === null || value === undefined) return '—';
-    // Decimal.js serializes to string; try to format numbers
     const num = Number(value);
     if (!isNaN(num) && typeof value === 'string' && value.includes('.')) {
       return num.toFixed(2);
@@ -167,42 +221,69 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
     return String(value);
   }
 
-  buildChartData(data: unknown, vizType: 'bar' | 'line', vizFields?: string[]): any {
+  buildChartData(data: unknown, vizType: 'bar' | 'line'): any {
     const d = data as any;
     const rows: any[] = d?.data ?? (Array.isArray(d) ? d : []);
     const s = getComputedStyle(document.documentElement);
-    const blue   = s.getPropertyValue('--blue-500').trim()   || '#42A5F5';
-    const green  = s.getPropertyValue('--green-500').trim()  || '#66BB6A';
-    const red    = s.getPropertyValue('--red-500').trim()    || '#EF5350';
-    const teal   = s.getPropertyValue('--teal-500').trim()   || '#26A69A';
+    const blue = s.getPropertyValue('--blue-500').trim() || '#42A5F5';
+    const green = s.getPropertyValue('--green-500').trim() || '#66BB6A';
+    const red = s.getPropertyValue('--red-500').trim() || '#EF5350';
+    const teal = s.getPropertyValue('--teal-500').trim() || '#26A69A';
     const orange = s.getPropertyValue('--orange-400').trim() || '#FFA726';
     const purple = s.getPropertyValue('--purple-400').trim() || '#AB47BC';
 
     if (vizType === 'bar') {
       return {
         labels: rows.map((r) => r.status),
-        datasets: [{ label: 'К-ть замовлень', data: rows.map((r) => r.count), backgroundColor: blue }],
+        datasets: [
+          {
+            label: 'К-ть замовлень',
+            data: rows.map((r) => r.count),
+            backgroundColor: blue,
+          },
+        ],
       };
     }
 
-    const ALL_LINE_DATASETS = [
-      { field: 'ordersCount',       label: 'Замовлень',             color: blue,   numeric: false },
-      { field: 'revenueAmount',     label: 'Дохід (₴)',             color: green,  numeric: true  },
-      { field: 'totalAmount',       label: 'Заг. сума (₴)',         color: orange, numeric: true  },
-      { field: 'processedCount',    label: 'Виконано',              color: teal,   numeric: false },
-      { field: 'returnedCount',     label: 'Повернено',             color: red,    numeric: false },
-      { field: 'averageOrderValue', label: 'Сер. замовлення (₴)',   color: purple, numeric: true  },
-    ];
-
-    const active = vizFields?.length
-      ? ALL_LINE_DATASETS.filter((d) => vizFields.includes(d.field))
-      : ALL_LINE_DATASETS.filter((d) => ['ordersCount', 'revenueAmount'].includes(d.field));
+    const datasets = [
+      { field: 'ordersCount', label: 'Замовлень', color: blue, numeric: false },
+      {
+        field: 'revenueAmount',
+        label: 'Дохід (₴)',
+        color: green,
+        numeric: true,
+      },
+      {
+        field: 'totalAmount',
+        label: 'Заг. сума (₴)',
+        color: orange,
+        numeric: true,
+      },
+      {
+        field: 'processedCount',
+        label: 'Виконано',
+        color: teal,
+        numeric: false,
+      },
+      {
+        field: 'returnedCount',
+        label: 'Повернено',
+        color: red,
+        numeric: false,
+      },
+      {
+        field: 'averageOrderValue',
+        label: 'Сер. замовлення (₴)',
+        color: purple,
+        numeric: true,
+      },
+    ].filter((d) => ['ordersCount', 'revenueAmount'].includes(d.field));
 
     return {
       labels: rows.map((r) => r.month),
-      datasets: active.map((d) => ({
+      datasets: datasets.map((d) => ({
         label: d.label,
-        data: rows.map((r) => d.numeric ? Number(r[d.field]) : r[d.field]),
+        data: rows.map((r) => (d.numeric ? Number(r[d.field]) : r[d.field])),
         borderColor: d.color,
         fill: false,
         tension: 0.4,
@@ -237,22 +318,29 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
   }
 
   private startTypewriter(msg: ChatMessage) {
-    const fullText = msg.text;
-    const charsPerTick = Math.max(1, Math.ceil(fullText.length / 50));
+    msg.isAnimating = true;
 
     const id = setInterval(() => {
+      const fullText = msg.text;
       const current = msg.displayedText?.length ?? 0;
       if (current >= fullText.length) {
         msg.displayedText = fullText;
         msg.isAnimating = false;
         clearInterval(id);
       } else {
+        const charsPerTick = Math.max(1, Math.ceil((fullText.length - current) / 12));
         msg.displayedText = fullText.slice(0, current + charsPerTick);
         this.shouldScrollToBottom = true;
       }
+      this.cdr.detectChanges();
     }, 20);
 
     this.animationIntervals.push(id);
+  }
+
+  private ensureTypewriter(msg: ChatMessage) {
+    if (msg.isAnimating) return;
+    this.startTypewriter(msg);
   }
 
   clearChat() {

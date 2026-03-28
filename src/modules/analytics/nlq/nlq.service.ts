@@ -4,6 +4,7 @@ import type {
   ChatCompletionMessageParam,
   ChatCompletionTool,
 } from 'openai/resources';
+import { Response } from 'express';
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -178,6 +179,17 @@ const VIZ_TYPE_MAP: Record<string, VizType> = {
   getDropshippersAnalytics: 'table',
 };
 
+/**
+ * A2UI catalog component names — what the agent declares in surfaceUpdate.
+ * The client renders by matching these names against its local catalog.
+ */
+const A2UI_CATALOG_COMPONENT: Record<string, string> = {
+  kpi: 'KpiGrid',
+  line: 'LineChart',
+  bar: 'BarChart',
+  table: 'DataTable',
+};
+
 @Injectable()
 export class NlqService {
   private readonly openai: OpenAI;
@@ -300,6 +312,102 @@ export class NlqService {
       (dto as any).order = args.order;
     }
     return dto;
+  }
+
+  async stream(dto: NlqRequestDto, res: Response): Promise<void> {
+    const emit = (eventName: string, data: unknown) => {
+      res.write(`event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`);
+    };
+
+    try {
+      emit('agui', { type: 'RUN_START' });
+
+      const messages: ChatCompletionMessageParam[] = [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...this.mapHistory(dto.conversationHistory),
+        { role: 'user', content: dto.question },
+      ];
+
+      const firstResponse = await this.openai.chat.completions.create({
+        model: 'gpt-5.4-nano',
+        messages,
+        tools: TOOLS,
+        tool_choice: 'auto',
+      });
+
+      const firstChoice = firstResponse.choices[0]!.message;
+      const messageId = 'msg-1';
+
+      if (!firstChoice.tool_calls?.length) {
+        emit('agui', { type: 'TEXT_MESSAGE_START', messageId });
+        emit('agui', { type: 'TEXT_MESSAGE_CONTENT', messageId, delta: firstChoice.content ?? '' });
+        emit('agui', { type: 'TEXT_MESSAGE_END', messageId });
+        emit('agui', { type: 'RUN_FINISH' });
+        return;
+      }
+
+      const toolCall = firstChoice.tool_calls[0] as ChatCompletionMessageFunctionToolCall;
+      const toolName = toolCall.function.name;
+      const toolArgs = JSON.parse(toolCall.function.arguments || '{}') as Record<string, any>;
+
+      emit('agui', { type: 'TOOL_CALL_START', toolCallId: toolCall.id, toolName });
+      const toolResult = await this.dispatchTool(toolName, toolArgs);
+      emit('agui', { type: 'TOOL_CALL_END', toolCallId: toolCall.id });
+
+      // A2UI: agent picks a component by name from the catalog, then sends the data separately.
+      // The client looks up the component name and renders the matching Angular component.
+      const vizType = VIZ_TYPE_MAP[toolName] ?? 'table';
+      const catalogComponent = A2UI_CATALOG_COMPONENT[vizType] ?? 'DataTable';
+      emit('a2ui', { beginRendering: { surfaceId: 'viz', catalogId: 'hvoya-crm/v1', root: 'root' } });
+      emit('a2ui', {
+        surfaceUpdate: {
+          surfaceId: 'viz',
+          components: [{
+            id: 'root',
+            component: {
+              // catalogComponent is e.g. 'KpiGrid', 'LineChart', 'BarChart', 'DataTable'
+              [catalogComponent]: {
+                dataJson: { path: '/result' },
+              },
+            },
+          }],
+        },
+      });
+      emit('a2ui', {
+        dataModelUpdate: {
+          surfaceId: 'viz',
+          path: 'result',
+          contents: [{ key: 'json', valueString: JSON.stringify(toolResult) }],
+        },
+      });
+
+      // Second LLM call — streaming so text appears word-by-word
+      const streamResponse = await this.openai.chat.completions.create({
+        model: 'gpt-5.4-nano',
+        messages: [
+          ...messages,
+          firstChoice,
+          { role: 'tool', tool_call_id: toolCall.id, content: JSON.stringify(toolResult) },
+        ],
+        stream: true,
+      });
+
+      emit('agui', { type: 'TEXT_MESSAGE_START', messageId });
+
+      for await (const chunk of streamResponse) {
+        const delta = chunk.choices[0]?.delta?.content ?? '';
+        if (delta) {
+          emit('agui', { type: 'TEXT_MESSAGE_CONTENT', messageId, delta });
+        }
+      }
+
+      emit('agui', { type: 'TEXT_MESSAGE_END', messageId });
+      emit('agui', { type: 'RUN_FINISH' });
+    } catch (err) {
+      emit('agui', { type: 'RUN_ERROR', error: String(err) });
+    } finally {
+      res.end();
+    }
   }
 
   private async dispatchTool(
