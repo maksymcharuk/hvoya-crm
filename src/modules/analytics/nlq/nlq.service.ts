@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 import OpenAI from 'openai';
 import type {
   ChatCompletionMessageFunctionToolCall,
@@ -13,12 +15,7 @@ import { AnalyticsDateRangeDto } from '@dtos/analytics/analytics-date-range.dto'
 import { AnalyticsPageOptionsDto } from '@dtos/analytics/analytics-page-options.dto';
 
 import { AnalyticsService } from '../services/analytics.service';
-import {
-  NlqMessageDto,
-  NlqRequestDto,
-  NlqResponseDto,
-  VizType,
-} from './nlq.dto';
+import { NlqMessageDto, NlqRequestDto, NlqResponseDto } from './nlq.dto';
 
 const TOOLS: ChatCompletionTool[] = [
   {
@@ -157,7 +154,10 @@ Date range rules:
 
 Formatting rules:
 - Use markdown for structure (bold, lists, headings) when it improves readability.
-- Do NOT draw tables or charts using text symbols (e.g. dashes, pipes, ASCII art). The UI renders data visually as charts and tables automatically — just describe the insights in text.
+- Do NOT draw tables or charts using text symbols (e.g. dashes, pipes, ASCII art). The UI renders data visually.
+- A chart or table visualization will be automatically rendered alongside your response when appropriate.
+  When a visualization is present, keep your text short — highlight only the 2-3 most important insights, notable trends, or actionable observations. Do NOT restate the raw numbers already visible in the chart or table.
+  When no visualization applies (simple single-value answer, explanation, or clarification), write a full response.
 
 Revenue and profitability rules:
 - "Revenue", "income", "profit", "дохід", "виручка", "прибуток" always means money from completed orders only. Never include Cancelled, Refunded, or Refused orders in revenue figures.
@@ -171,24 +171,96 @@ Sorting rules:
 - For "least popular", "bottom", "найменш популярні" questions — use orderBy with order="ASC".
 - For "most popular", "top", "найбільш популярні" questions — use orderBy with order="DESC".`;
 
-const VIZ_TYPE_MAP: Record<string, VizType> = {
-  getOrdersSummary: 'kpi',
-  getOrdersByMonth: 'line',
-  getOrdersByStatus: 'bar',
-  getProductsAnalytics: 'table',
-  getDropshippersAnalytics: 'table',
-};
-
 /**
- * A2UI catalog component names — what the agent declares in surfaceUpdate.
- * The client renders by matching these names against its local catalog.
+ * Prompt for A2UI component tree generation.
+ * Describes the available catalog and instructs the LLM to output valid A2UI messages.
  */
-const A2UI_CATALOG_COMPONENT: Record<string, string> = {
-  kpi: 'KpiGrid',
-  line: 'LineChart',
-  bar: 'BarChart',
-  table: 'DataTable',
-};
+const buildA2uiSystemPrompt = (surfaceId: string): string => `
+You generate A2UI component trees to visualize analytics data.
+Output ONLY a JSON object in this exact shape: {"messages": [...]}
+
+Surface ID to use everywhere: ${surfaceId}
+Catalog ID: hvoya-crm/v1
+
+## When to skip visualization
+If the data is a single scalar value, a yes/no answer, or visualization adds no clarity — return {"messages": []} and stop.
+
+## Available components
+
+### Standard catalog
+Text:
+  {"id":"t1","component":{"Text":{"text":{"literalString":"Hello"},"usageHint":"h3"}}}
+  usageHint values: "h1" | "h2" | "h3" | "h4" | "h5" | "body" | "caption"
+
+Row (horizontal flex):
+  {"id":"r1","component":{"Row":{"children":{"explicitList":["id1","id2"]},"alignment":"stretch"}}}
+
+Column (vertical flex):
+  {"id":"c1","component":{"Column":{"children":{"explicitList":["id1","id2"]}}}}
+
+Card (surface with padding/border):
+  {"id":"k1","component":{"Card":{"child":"inner-id"}}}
+
+Divider:
+  {"id":"d1","component":{"Divider":{}}}
+
+### Custom catalog
+DataTable — renders records as a sortable table (use for products/dropshippers lists):
+  {"id":"dt1","component":{"DataTable":{
+    "columnsJson":{"literalString":"[{\\"field\\":\\"name\\",\\"header\\":\\"Назва\\"}]"},
+    "rowsJson":{"literalString":"[{\\"name\\":\\"Product A\\",\\"revenue\\":1200}]"}
+  }}}
+  columnsJson: JSON-encoded array of {field: string, header: string}
+  rowsJson:    JSON-encoded array of row objects
+
+BarChart — vertical bar chart (use for product/dropshipper comparisons):
+  {"id":"bc1","component":{"BarChart":{
+    "labelsJson":{"literalString":"[\\"Продукт A\\",\\"Продукт B\\"]"},
+    "datasetsJson":{"literalString":"[{\\"label\\":\\"Дохід\\",\\"data\\":[1200,800]}]"},
+    "titleText":{"literalString":"Топ продуктів за доходом"}
+  }}}
+  labelsJson:   JSON-encoded string[]  (x-axis labels)
+  datasetsJson: JSON-encoded {label: string, data: number[]}[]
+
+LineChart — line chart (use for time-series: orders/revenue by month):
+  {"id":"lc1","component":{"LineChart":{
+    "labelsJson":{"literalString":"[\\"Січ\\",\\"Лют\\",\\"Бер\\"]"},
+    "datasetsJson":{"literalString":"[{\\"label\\":\\"Замовлення\\",\\"data\\":[30,45,38]}]"},
+    "titleText":{"literalString":"Динаміка замовлень"}
+  }}}
+
+PieChart — doughnut chart (use for status distributions or share breakdowns):
+  {"id":"pc1","component":{"PieChart":{
+    "labelsJson":{"literalString":"[\\"Fulfilled\\",\\"Cancelled\\"]"},
+    "dataJson":{"literalString":"[70,30]"},
+    "titleText":{"literalString":"Розподіл за статусом"}
+  }}}
+  labelsJson: JSON-encoded string[]
+  dataJson:   JSON-encoded number[]  (one value per label)
+
+## Visualization rules
+- KPI / summary scalar metrics → Row of metric Cards (Text h3 for value + Text caption for label)
+- Products or dropshippers list → DataTable  (prefer BarChart when top-N comparison is the focus)
+- Time series (by month) → LineChart
+- Status or category distribution → PieChart
+- Never duplicate data across multiple component types in one response (e.g. don't add a DataTable AND a BarChart for the same dataset)
+
+## Required message structure
+[
+  {"beginRendering":{"surfaceId":"${surfaceId}","catalogId":"hvoya-crm/v1","root":"root"}},
+  {"surfaceUpdate":{"surfaceId":"${surfaceId}","components":[
+    ...all component nodes...
+  ]}}
+]
+
+Rules:
+- The component with id "root" must exist and be listed last.
+- Components reference children/child by id string, never by index.
+- Column/Row children use: {"explicitList": ["id1","id2"]}
+- Card child uses a plain string id: {"child": "inner-id"}
+- All strings inside literalString must be valid JSON-escaped.
+- Use Ukrainian for all label and title text.
+`.trim();
 
 @Injectable()
 export class NlqService {
@@ -210,7 +282,6 @@ export class NlqService {
       { role: 'user', content: dto.question },
     ];
 
-    // First LLM call — may produce a tool_call
     const firstResponse = await this.openai.chat.completions.create({
       model: 'gpt-5.4-nano',
       messages,
@@ -221,97 +292,27 @@ export class NlqService {
     const firstChoice = firstResponse.choices[0]!.message;
 
     if (!firstChoice.tool_calls?.length) {
-      // No tool called — direct answer
-      return {
-        answer: firstChoice.content ?? '',
-        toolCalled: null,
-        data: null,
-        vizType: 'kpi',
-      };
+      return { answer: firstChoice.content ?? '', toolCalled: null, data: null };
     }
 
-    const toolCall = firstChoice
-      .tool_calls[0] as ChatCompletionMessageFunctionToolCall;
-    const toolName = toolCall.function.name;
-    const toolArgs = JSON.parse(toolCall.function.arguments || '{}') as Record<
-      string,
-      any
-    >;
+    const toolCall = firstChoice.tool_calls[0] as ChatCompletionMessageFunctionToolCall;
+    const toolArgs = JSON.parse(toolCall.function.arguments || '{}') as Record<string, any>;
+    const toolResult = await this.dispatchTool(toolCall.function.name, toolArgs);
 
-    const toolResult = await this.dispatchTool(toolName, toolArgs);
-
-    // Second LLM call — summarize the tool result
     const secondResponse = await this.openai.chat.completions.create({
       model: 'gpt-5.4-nano',
       messages: [
         ...messages,
         firstChoice,
-        {
-          role: 'tool',
-          tool_call_id: toolCall.id,
-          content: JSON.stringify(toolResult),
-        },
-        {
-          role: 'system',
-          content:
-            'After your answer, if the tool was getOrdersByMonth, add a final line in the exact format "VIZ: field1,field2" listing only the data fields most relevant to the user\'s question. ' +
-            'Available fields: ordersCount, totalAmount, revenueAmount, processedCount, returnedCount, averageOrderValue. ' +
-            'Example: "VIZ: returnedCount" for a question about returns, "VIZ: revenueAmount" for revenue. ' +
-            'Omit the VIZ line for all other tools.',
-        },
+        { role: 'tool', tool_call_id: toolCall.id, content: JSON.stringify(toolResult) },
       ],
     });
 
-    const secondChoice = secondResponse.choices[0];
-    const rawContent = secondChoice?.message.content ?? '';
-
-    // Extract optional VIZ: marker and strip it from the visible answer
-    const vizMatch = rawContent.match(/\nVIZ:\s*([^\n]+)/);
-    const vizFields = vizMatch
-      ? vizMatch[1]!
-          .split(',')
-          .map((f) => f.trim())
-          .filter(Boolean)
-      : undefined;
-    const answer = rawContent.replace(/\nVIZ:[^\n]*/g, '').trim();
-
     return {
-      answer,
-      toolCalled: toolName,
+      answer: secondResponse.choices[0]?.message.content ?? '',
+      toolCalled: toolCall.function.name,
       data: toolResult,
-      vizType: VIZ_TYPE_MAP[toolName] ?? 'table',
-      vizFields,
     };
-  }
-
-  private mapHistory(history?: NlqMessageDto[]): ChatCompletionMessageParam[] {
-    if (!history?.length) return [];
-    return history.map((m) => ({ role: m.role, content: m.content }));
-  }
-
-  private buildDateRangeQuery(args: {
-    from?: string;
-    to?: string;
-  }): AnalyticsDateRangeDto {
-    const dto = new AnalyticsDateRangeDto();
-    (dto as any).from = args.from ? new Date(args.from) : undefined;
-    (dto as any).to = args.to ? new Date(args.to) : undefined;
-    return dto;
-  }
-
-  private buildPageOptions(args: {
-    take?: number;
-    orderBy?: string;
-    order?: string;
-  }): AnalyticsPageOptionsDto {
-    const dto = new AnalyticsPageOptionsDto();
-    (dto as any).take = args.take ?? 10;
-    (dto as any).page = 1;
-    (dto as any).orderBy = args.orderBy;
-    if (args.order === 'ASC' || args.order === 'DESC') {
-      (dto as any).order = args.order;
-    }
-    return dto;
   }
 
   async stream(dto: NlqRequestDto, res: Response): Promise<void> {
@@ -354,43 +355,27 @@ export class NlqService {
       const toolResult = await this.dispatchTool(toolName, toolArgs);
       emit('agui', { type: 'TOOL_CALL_END', toolCallId: toolCall.id });
 
-      // A2UI: agent picks a component by name from the catalog, then sends the data separately.
-      // The client looks up the component name and renders the matching Angular component.
-      const vizType = VIZ_TYPE_MAP[toolName] ?? 'table';
-      const catalogComponent = A2UI_CATALOG_COMPONENT[vizType] ?? 'DataTable';
-      emit('a2ui', { beginRendering: { surfaceId: 'viz', catalogId: 'hvoya-crm/v1', root: 'root' } });
-      emit('a2ui', {
-        surfaceUpdate: {
-          surfaceId: 'viz',
-          components: [{
-            id: 'root',
-            component: {
-              // catalogComponent is e.g. 'KpiGrid', 'LineChart', 'BarChart', 'DataTable'
-              [catalogComponent]: {
-                dataJson: { path: '/result' },
-              },
-            },
-          }],
-        },
-      });
-      emit('a2ui', {
-        dataModelUpdate: {
-          surfaceId: 'viz',
-          path: 'result',
-          contents: [{ key: 'json', valueString: JSON.stringify(toolResult) }],
-        },
-      });
+      const surfaceId = `viz-${randomUUID()}`;
+      const toolMessages: ChatCompletionMessageParam[] = [
+        ...messages,
+        firstChoice,
+        { role: 'tool', tool_call_id: toolCall.id, content: JSON.stringify(toolResult) },
+      ];
 
-      // Second LLM call — streaming so text appears word-by-word
-      const streamResponse = await this.openai.chat.completions.create({
-        model: 'gpt-5.4-nano',
-        messages: [
-          ...messages,
-          firstChoice,
-          { role: 'tool', tool_call_id: toolCall.id, content: JSON.stringify(toolResult) },
-        ],
-        stream: true,
-      });
+      // Run text streaming and A2UI generation in parallel to avoid extra latency
+      const [streamResponse, a2uiMessages] = await Promise.all([
+        this.openai.chat.completions.create({
+          model: 'gpt-5.4-nano',
+          messages: toolMessages,
+          stream: true,
+        }),
+        this.generateA2uiMessages(dto.question, toolName, toolResult, surfaceId),
+      ]);
+
+      // Emit A2UI visualization first so it appears before the text
+      for (const msg of a2uiMessages) {
+        emit('a2ui', msg);
+      }
 
       emit('agui', { type: 'TEXT_MESSAGE_START', messageId });
 
@@ -410,10 +395,65 @@ export class NlqService {
     }
   }
 
-  private async dispatchTool(
-    name: string,
-    args: Record<string, any>,
-  ): Promise<unknown> {
+  /**
+   * Calls the LLM to generate A2UI component tree messages for the given tool result.
+   * Returns an empty array on any error so the main stream always completes.
+   */
+  private async generateA2uiMessages(
+    question: string,
+    toolName: string,
+    toolResult: unknown,
+    surfaceId: string,
+  ): Promise<Record<string, unknown>[]> {
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-5.4-nano',
+        response_format: { type: 'json_object' },
+        messages: [
+          { role: 'system', content: buildA2uiSystemPrompt(surfaceId) },
+          {
+            role: 'user',
+            content: `Question: ${question}\nTool called: ${toolName}\nData: ${JSON.stringify(toolResult)}`,
+          },
+        ],
+      });
+
+      const raw = response.choices[0]?.message.content ?? '{}';
+      const parsed = JSON.parse(raw) as { messages?: Record<string, unknown>[] };
+      return Array.isArray(parsed.messages) ? parsed.messages : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private mapHistory(history?: NlqMessageDto[]): ChatCompletionMessageParam[] {
+    if (!history?.length) return [];
+    return history.map((m) => ({ role: m.role, content: m.content }));
+  }
+
+  private buildDateRangeQuery(args: { from?: string; to?: string }): AnalyticsDateRangeDto {
+    const dto = new AnalyticsDateRangeDto();
+    (dto as any).from = args.from ? new Date(args.from) : undefined;
+    (dto as any).to = args.to ? new Date(args.to) : undefined;
+    return dto;
+  }
+
+  private buildPageOptions(args: {
+    take?: number;
+    orderBy?: string;
+    order?: string;
+  }): AnalyticsPageOptionsDto {
+    const dto = new AnalyticsPageOptionsDto();
+    (dto as any).take = args.take ?? 10;
+    (dto as any).page = 1;
+    (dto as any).orderBy = args.orderBy;
+    if (args.order === 'ASC' || args.order === 'DESC') {
+      (dto as any).order = args.order;
+    }
+    return dto;
+  }
+
+  private async dispatchTool(name: string, args: Record<string, any>): Promise<unknown> {
     const query = this.buildDateRangeQuery(args);
     const pageOptions = this.buildPageOptions(args);
 
@@ -427,10 +467,7 @@ export class NlqService {
       case 'getProductsAnalytics':
         return this.analyticsService.getProductsAnalytics(query, pageOptions);
       case 'getDropshippersAnalytics':
-        return this.analyticsService.getDropshippersAnalytics(
-          query as any,
-          pageOptions,
-        );
+        return this.analyticsService.getDropshippersAnalytics(query as any, pageOptions);
       default:
         return null;
     }

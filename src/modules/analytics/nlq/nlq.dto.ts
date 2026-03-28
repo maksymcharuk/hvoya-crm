@@ -20,12 +20,8 @@ export class NlqRequestDto {
   conversationHistory?: NlqMessageDto[];
 }
 
-export type VizType = 'table' | 'bar' | 'line' | 'kpi';
-
 export interface NlqResponseDto {
   answer: string;
   toolCalled: string | null;
   data: unknown;
-  vizType: VizType;
-  vizFields?: string[];
 }
