@@ -55,7 +55,7 @@
   [infiniteScrollThrottle]="1000"
   (scrolled)="onScroll()"
 >
-  <div class="grid grid-cols-12 gap-4 -mt-4 -ml-4 -mr-4">
+  <div class="grid grid-cols-12 gap-4">
     @if (productList$ | async; as products) { @if (!showSkeletonLoading) { @if
     (products.length > 0) { @if (filtersActivated$ | async) { @for (product of
     productVariantList$ | async; track product) {
@@ -103,10 +103,7 @@
     </div>
     } } }
   </div>
-  <div
-    [class.hidden]="!showMoreLoader"
-    class="flex justify-center py-2"
-  >
+  <div [class.hidden]="!showMoreLoader" class="flex justify-center py-2">
     <p-progressSpinner styleClass="w-16 h-16"></p-progressSpinner>
   </div>
 </div>

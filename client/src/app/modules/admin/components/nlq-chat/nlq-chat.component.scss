@@ -1,7 +1,7 @@
 .nlq-chat {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 228px);
+  height: calc(100vh - 262px);
 }
 
 .chat-header {
@@ -170,8 +170,13 @@
 }
 
 @keyframes blink-cursor {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 .loading-bubble {

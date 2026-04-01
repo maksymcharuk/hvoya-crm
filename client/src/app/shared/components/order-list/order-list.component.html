@@ -13,7 +13,7 @@
   [paginator]="true"
   [sortOrder]="-1"
   [scrollable]="true"
-  [scrollHeight]="'calc(100vh - 273px)'"
+  [scrollHeight]="'calc(100vh - 254px)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>
@@ -65,9 +65,7 @@
       <th>Статус доставки</th>
       <th>Служба доставки</th>
       <th>
-        <div class="flex justify-between items-center">
-          Номер ТТН
-        </div>
+        <div class="flex justify-between items-center">Номер ТТН</div>
       </th>
       <th pSortableColumn="total">
         <div class="flex justify-between items-center">
@@ -87,6 +85,7 @@
         <p-columnFilter type="date" field="createdAt" [showMenu]="false">
           <ng-template pTemplate="filter" let-filter="filterCallback">
             <p-datepicker
+              class="w-30"
               (onSelect)="filter($event)"
               (onClear)="filter($event)"
               appendTo="body"
