@@ -47,6 +47,8 @@ const COLUMN_LABELS: Record<string, string> = {
 interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
+  displayedText?: string;
+  isAnimating?: boolean;
   data?: unknown;
   vizType?: VizType;
   vizFields?: string[];
@@ -67,6 +69,7 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
 
   private readonly destroyed$ = new Subject<void>();
   private shouldScrollToBottom = false;
+  private readonly animationIntervals: ReturnType<typeof setInterval>[] = [];
 
   readonly chartOptions = {
     responsive: true,
@@ -104,6 +107,8 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
           const msg: ChatMessage = {
             role: 'assistant',
             text: response.answer,
+            displayedText: '',
+            isAnimating: true,
             data: response.data,
             vizType: response.vizType,
             vizFields: response.vizFields,
@@ -114,6 +119,7 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
           this.messages.push(msg);
           this.loading = false;
           this.shouldScrollToBottom = true;
+          this.startTypewriter(msg);
         },
         error: () => {
           this.messages.push({
@@ -229,7 +235,28 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
     return String(value);
   }
 
+  private startTypewriter(msg: ChatMessage) {
+    const fullText = msg.text;
+    const charsPerTick = Math.max(1, Math.ceil(fullText.length / 50));
+
+    const id = setInterval(() => {
+      const current = msg.displayedText?.length ?? 0;
+      if (current >= fullText.length) {
+        msg.displayedText = fullText;
+        msg.isAnimating = false;
+        clearInterval(id);
+      } else {
+        msg.displayedText = fullText.slice(0, current + charsPerTick);
+        this.shouldScrollToBottom = true;
+      }
+    }, 20);
+
+    this.animationIntervals.push(id);
+  }
+
   clearChat() {
+    this.animationIntervals.forEach(clearInterval);
+    this.animationIntervals.length = 0;
     this.messages = [];
   }
 
@@ -242,6 +269,7 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
   }
 
   ngOnDestroy() {
+    this.animationIntervals.forEach(clearInterval);
     this.destroyed$.next();
     this.destroyed$.complete();
   }

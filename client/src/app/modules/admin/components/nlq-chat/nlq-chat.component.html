@@ -60,7 +60,11 @@
         }
         <div class="bubble-wrapper">
           @if (msg.role === 'assistant') {
-            <div class="bubble markdown-body" [innerHTML]="renderMarkdown(msg.text)"></div>
+            <div
+              class="bubble markdown-body"
+              [class.is-animating]="msg.isAnimating"
+              [innerHTML]="renderMarkdown(msg.displayedText ?? msg.text)"
+            ></div>
           } @else {
             <div class="bubble">{{ msg.text }}</div>
           }
