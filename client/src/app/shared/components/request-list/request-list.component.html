@@ -18,19 +18,19 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(rows)">
-      <tr>
-        <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
-        <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
-        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        <ng-container *ngIf="adminView">
-          <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        </ng-container>
-      </tr>
-    </ng-container>
+    @for (_ of [].constructor(rows); track _) {
+    <tr>
+      <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
+      <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+      <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      @if (adminView) {
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      }
+    </tr>
+    }
   </ng-template>
   <ng-template pTemplate="caption">
     <div class="table-header flex justify-content-between align-items-center">
@@ -64,29 +64,29 @@
       <th>Статус</th>
       <th>Статус доставки</th>
       <th>Номер ТТН</th>
-      <ng-container *ngIf="adminView">
-        <th>ПІБ</th>
-      </ng-container>
+      @if (adminView) {
+      <th>ПІБ</th>
+      }
     </tr>
     <tr>
       <th></th>
       <th>
         <p-columnFilter type="date" field="createdAt" [showMenu]="false">
           <ng-template pTemplate="filter" let-filter="filterCallback">
-            <p-calendar
+            <p-datepicker
               (onSelect)="filter($event)"
               (onClear)="filter($event)"
               appendTo="body"
               placeholder="Дата"
               [showClear]="true"
-            ></p-calendar>
+            ></p-datepicker>
           </ng-template>
         </p-columnFilter>
       </th>
       <th>
         <p-columnFilter field="requestType" [showMenu]="false" class="ml-auto">
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
+            <p-select
               [ngModel]="value"
               [options]="requestTypes"
               (onChange)="filter($event.value)"
@@ -100,12 +100,11 @@
                 ></app-request-type-badge>
               </ng-template>
               <ng-template pTemplate="selectedItem">
-                <app-request-type-badge
-                  *ngIf="value"
-                  [type]="value"
-                ></app-request-type-badge>
+                @if (value) {
+                <app-request-type-badge [type]="value"></app-request-type-badge>
+                }
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
@@ -116,7 +115,7 @@
           class="ml-auto"
         >
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
+            <p-select
               [ngModel]="value"
               [options]="requestStatuses"
               (onChange)="filter($event.value)"
@@ -130,12 +129,13 @@
                 ></app-request-status-badge>
               </ng-template>
               <ng-template pTemplate="selectedItem">
+                @if (value) {
                 <app-request-status-badge
-                  *ngIf="value"
                   [status]="value"
                 ></app-request-status-badge>
+                }
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
@@ -146,7 +146,7 @@
           class="ml-auto"
         >
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
+            <p-select
               [ngModel]="value"
               [options]="deliveryStatuses"
               (onChange)="filter($event.value)"
@@ -160,19 +160,20 @@
                 ></app-return-request-delivery-status-badge>
               </ng-template>
               <ng-template pTemplate="selectedItem">
+                @if (value) {
                 <app-return-request-delivery-status-badge
-                  *ngIf="value"
                   [status]="value"
                 ></app-return-request-delivery-status-badge>
+                }
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
       <th></th>
-      <ng-container *ngIf="adminView">
-        <th></th>
-      </ng-container>
+      @if (adminView) {
+      <th></th>
+      }
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-request let-notification>

@@ -1,22 +1,22 @@
 <td>
   <div class="flex align-items-center">
     <span data-cy="order-list-item-id">{{ order.number }}</span>
-    <i
-      *ngIf="showOrderNotification(order, notifications$ | async)"
-      class="pi pi-circle-fill text-green-600 ml-2"
-    ></i>
+    @if (showOrderNotification(order, notifications$ | async)) {
+    <i class="pi pi-circle-fill text-green-600 ml-2"></i>
+    }
   </div>
 </td>
 <td>
   <div class="flex">
+    @for (image of getPreviewThumbs(order); track image; let first = $first) {
     <img
-      *ngFor="let image of getPreviewThumbs(order); let first = first"
       [src]="image.url"
       [ngClass]="{ '-ml-4': !first }"
       [alt]="image.alt"
       [title]="image.alt"
       class="w-3rem h-3rem border-circle border border-1 border-200"
     />
+    }
   </div>
 </td>
 <td>{{ getOrderItemsNumber(order) }}</td>
@@ -36,13 +36,14 @@
     <app-order-delivery-status-badge
       [status]="order.delivery.status"
     ></app-order-delivery-status-badge>
+    @if (getDeliveryWarningData(order); as data) {
     <i
-      *ngIf="getDeliveryWarningData(order) as data"
       class="pi pi-exclamation-triangle ml-3"
       [ngClass]="data.iconClass"
       [pTooltip]="data.text"
       tooltipPosition="right"
     ></i>
+    }
   </div>
 </td>
 <td>
@@ -61,9 +62,9 @@
   <span class="p-column-title" data-cy="order-list-item-amount">Сума</span>
   {{ order.total | currency }}
 </td>
-<ng-container *ngIf="adminView">
-  <td>
-    <span class="p-column-title">ПІБ</span>
-    {{ order.customer.fullName }}
-  </td>
-</ng-container>
+@if (adminView) {
+<td>
+  <span class="p-column-title">ПІБ</span>
+  {{ order.customer.fullName }}
+</td>
+}

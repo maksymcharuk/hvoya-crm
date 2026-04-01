@@ -4,6 +4,7 @@ import { ICONS } from '@shared/constants/base.constants';
 import { RequestType } from '@shared/enums/request-type.enum';
 
 @Component({
+  standalone: false,
   selector: 'app-request-type-badge',
   templateUrl: './request-type-badge.component.html',
   styleUrls: ['./request-type-badge.component.scss'],

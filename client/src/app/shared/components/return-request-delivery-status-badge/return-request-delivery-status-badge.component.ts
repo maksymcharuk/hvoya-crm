@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DeliveryStatus } from '@shared/enums/return-request-delivery-status.enum';
 
 @Component({
+  standalone: false,
   selector: 'app-return-request-delivery-status-badge',
   templateUrl: './return-request-delivery-status-badge.component.html',
   styleUrls: ['./return-request-delivery-status-badge.component.scss'],

@@ -1,15 +1,14 @@
 <div class="grid">
   <div class="col-12">
-    <div
-      *ngIf="'create' | able : userEntity"
-      class="flex justify-content-end mb-3"
-    >
+    @if ('create' | able : userEntity) {
+    <div class="flex justify-content-end mb-3">
       <p-button
         label="Запросити адміністратора"
         icon="pi pi-plus"
         (click)="openAdminInvitationDialog()"
       ></p-button>
     </div>
+    }
     <div class="card p-0">
       <app-users-list
         [users]="users$ | async"
@@ -19,8 +18,8 @@
   </div>
 </div>
 
+@if ('create' | able : userEntity) {
 <p-dialog
-  *ngIf="'create' | able : userEntity"
   header="Надіслати запрошення для нового адміністратора"
   styleClass="p-fluid"
   [modal]="true"
@@ -47,7 +46,7 @@
       </div>
       <div class="field">
         <label for="role">Роль:</label>
-        <p-dropdown
+        <p-select
           formControlName="role"
           placeholder="Статус"
           appendTo="body"
@@ -59,7 +58,7 @@
           <ng-template let-option pTemplate="item">
             {{ option | roleName }}
           </ng-template>
-        </p-dropdown>
+        </p-select>
         <app-form-control-error-message
           [formGroup]="adminInvitationForm"
           controlName="role"
@@ -69,7 +68,6 @@
       </div>
     </form>
   </ng-template>
-
   <ng-template pTemplate="footer">
     <p-button
       label="Відмінити"
@@ -85,3 +83,4 @@
     ></p-button>
   </ng-template>
 </p-dialog>
+}

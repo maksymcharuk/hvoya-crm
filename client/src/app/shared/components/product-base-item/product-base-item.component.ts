@@ -6,6 +6,7 @@ import {
 } from '@shared/interfaces/entities/product.entity';
 
 @Component({
+  standalone: false,
   selector: 'app-product-base-item',
   templateUrl: './product-base-item.component.html',
   styleUrls: ['./product-base-item.component.scss'],

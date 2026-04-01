@@ -1,10 +1,9 @@
 <td>
   <div class="flex align-items-center">
     <span data-cy="order-list-item-id">{{ request.number }}</span>
-    <i
-      *ngIf="showRequestNotification(request, notifications$ | async)"
-      class="pi pi-circle-fill text-green-600 ml-2"
-    ></i>
+    @if (showRequestNotification(request, notifications$ | async)) {
+    <i class="pi pi-circle-fill text-green-600 ml-2"></i>
+    }
   </div>
 </td>
 <td>
@@ -19,44 +18,39 @@
   </div>
 </td>
 
-<ng-container [ngSwitch]="request.requestType">
-  <ng-container *ngSwitchCase="requestType.Return">
-    <td>
-      <span class="p-column-title">Статус</span>
-      <app-request-status-badge
-        [status]="request.returnRequest!.status"
-      ></app-request-status-badge>
-    </td>
-    <td>
-      <ng-container *ngIf="request.requestType === requestType.Return">
-        <span class="p-column-title">Статус доставки</span>
-        <app-return-request-delivery-status-badge
-          [status]="request.returnRequest!.delivery.status"
-        ></app-return-request-delivery-status-badge>
-      </ng-container>
-    </td>
-    <td>
-      <span class="p-column-title" data-cy="order-list-item-amount">
-        Номер ТТН
-      </span>
-      {{ request.returnRequest!.delivery.trackingId }}
-    </td>
-  </ng-container>
-  <ng-container *ngSwitchCase="requestType.FundsWithdrawal">
-    <td>
-      <span class="p-column-title">Статус</span>
-      <app-request-status-badge
-        [status]="request.fundsWithdrawalRequest!.status"
-      ></app-request-status-badge>
-    </td>
-    <td></td>
-    <td></td>
-  </ng-container>
-</ng-container>
-
-<ng-container *ngIf="adminView">
-  <td>
-    <span class="p-column-title">ПІБ</span>
-    <span class="white-space-nowrap">{{ request.customer!.fullName }}</span>
-  </td>
-</ng-container>
+@switch (request.requestType) { @case (requestType.Return) {
+<td>
+  <span class="p-column-title">Статус</span>
+  <app-request-status-badge
+    [status]="request.returnRequest!.status"
+  ></app-request-status-badge>
+</td>
+<td>
+  @if (request.requestType === requestType.Return) {
+  <span class="p-column-title">Статус доставки</span>
+  <app-return-request-delivery-status-badge
+    [status]="request.returnRequest!.delivery.status"
+  ></app-return-request-delivery-status-badge>
+  }
+</td>
+<td>
+  <span class="p-column-title" data-cy="order-list-item-amount">
+    Номер ТТН
+  </span>
+  {{ request.returnRequest!.delivery.trackingId }}
+</td>
+} @case (requestType.FundsWithdrawal) {
+<td>
+  <span class="p-column-title">Статус</span>
+  <app-request-status-badge
+    [status]="request.fundsWithdrawalRequest!.status"
+  ></app-request-status-badge>
+</td>
+<td></td>
+<td></td>
+} } @if (adminView) {
+<td>
+  <span class="p-column-title">ПІБ</span>
+  <span class="white-space-nowrap">{{ request.customer!.fullName }}</span>
+</td>
+}

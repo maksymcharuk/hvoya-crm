@@ -11,26 +11,29 @@
         class="wrapper__img"
         [image]="primaryImageUrl"
       ></app-image-component>
-      <div *ngIf="product?.properties?.isPublished === false" class="overlay">
+      @if (product?.properties?.isPublished === false) {
+      <div class="overlay">
         <p-tag
           class="published-tag"
           severity="danger"
           value="Не опублікований"
         ></p-tag>
       </div>
+      }
     </a>
+    @if (product?.stock !== undefined) {
     <app-stock-badge
-      *ngIf="product?.stock !== undefined"
       class="stock-badge"
       [value]="product!.stock"
     ></app-stock-badge>
+    }
   </div>
   <ng-template #imageWrapperSkeleton>
     <p-skeleton height="15rem" width="100%"></p-skeleton>
   </ng-template>
   <div class="flex-grow-1 my-2">
+    @if (product?.properties?.name) {
     <a
-      *ngIf="product?.properties?.name; else productNameSkeleton"
       [routerLink]="
         baseProductId
           ? [baseProductId, product.id.toString()]
@@ -41,31 +44,27 @@
     >
       {{ product.properties.name }}
     </a>
-  </div>
-  <ng-template #productNameSkeleton>
+    } @else {
     <p-skeleton height="2rem" width="100%"></p-skeleton>
-  </ng-template>
+    }
+  </div>
   <div class="my-3 flex justify-content-between">
-    <span
-      *ngIf="product?.properties?.price; else priceSkeleton"
-      class="font-bold text-900"
-      data-cy="product-price"
-      >{{ product.properties.price | currency }}</span
-    >
-    <span
-      *ngIf="product?.sku; else skuSkeleton"
-      class="text-600 text-base overflow-hidden w-6rem"
-      >{{ product.sku }}</span
-    >
+    @if (product?.properties?.price) {
+    <span class="font-bold text-900" data-cy="product-price">{{
+      product.properties.price | currency
+    }}</span>
+    } @else {
+    <p-skeleton height="2rem" width="100%"></p-skeleton>
+    } @if (product?.sku) {
+    <span class="text-600 text-base overflow-hidden w-6rem">{{
+      product.sku
+    }}</span>
+    } @else {
+    <p-skeleton height="2rem" width="100%"></p-skeleton>
+    }
   </div>
-  <ng-template #priceSkeleton>
-    <p-skeleton height="2rem" width="100%"></p-skeleton>
-  </ng-template>
-  <ng-template #skuSkeleton>
-    <p-skeleton height="2rem" width="100%"></p-skeleton>
-  </ng-template>
+  @if (!hideAddToCartButton) {
   <button
-    *ngIf="!hideAddToCartButton"
     pButton
     class="w-full"
     type="button"
@@ -76,4 +75,5 @@
     [disabled]="!product.stock"
     (click)="onAddToCart()"
   ></button>
+  }
 </div>

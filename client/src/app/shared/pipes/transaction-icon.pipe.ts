@@ -4,6 +4,7 @@ import { ICONS } from '@shared/constants/base.constants';
 import { PaymentTransaction } from '@shared/interfaces/entities/payment-transaction.entity';
 
 @Pipe({
+  standalone: false,
   name: 'transactionIcon',
 })
 export class TransactionIconPipe implements PipeTransform {

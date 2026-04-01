@@ -5,6 +5,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { LayoutService } from '@shared/layout/services/layout.service';
 
 @Component({
+  standalone: false,
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
 })

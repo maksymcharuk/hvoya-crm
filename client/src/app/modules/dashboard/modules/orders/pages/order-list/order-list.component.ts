@@ -8,6 +8,7 @@ import { Page } from '@shared/interfaces/page.interface';
 import { OrdersService } from '@shared/services/orders.service';
 
 @Component({
+  standalone: false,
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.scss'],
 })

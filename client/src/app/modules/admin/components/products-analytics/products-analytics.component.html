@@ -14,16 +14,16 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(rows)">
-      <tr>
-        <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
-      </tr>
-    </ng-container>
+    @for (_ of [].constructor(rows); track _) {
+    <tr>
+      <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
+    </tr>
+    }
   </ng-template>
   <ng-template pTemplate="caption">
     <div class="table-header flex justify-content-between align-items-center">
@@ -32,12 +32,12 @@
         <div class="col">
           <div class="field">
             <label>Період:</label>
-            <p-calendar
+            <p-datepicker
               formControlName="range"
               selectionMode="range"
               appendTo="body"
               placeholder="Період"
-            ></p-calendar>
+            ></p-datepicker>
           </div>
         </div>
       </form>

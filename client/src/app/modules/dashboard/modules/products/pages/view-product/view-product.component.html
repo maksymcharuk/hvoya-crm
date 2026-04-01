@@ -1,4 +1,5 @@
-<div *ngIf="product$ | async as product" class="grid">
+@if (product$ | async; as product) {
+<div class="grid">
   <div class="col-12">
     <p-button routerLink=".." label="Назад" icon="pi pi-arrow-left"></p-button>
   </div>
@@ -12,3 +13,4 @@
     </div>
   </div>
 </div>
+}

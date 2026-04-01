@@ -17,14 +17,14 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(rows)">
-      <tr>
-        <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
-        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
-        <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
-      </tr>
-    </ng-container>
+    @for (_ of [].constructor(rows); track _) {
+    <tr>
+      <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+      <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+      <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
+    </tr>
+    }
   </ng-template>
   <ng-template pTemplate="caption">
     <div class="table-header flex justify-content-between align-items-center">
@@ -59,7 +59,8 @@
         <p-sortIcon field="amount"></p-sortIcon>
       </th>
       <th class="w-4">Статус</th>
-      <th *ngIf="currentUser?.isAnyAdmin">
+      @if (currentUser?.isAnyAdmin) {
+      <th>
         <div
           class="flex align-items-center"
           pTooltip="Статус синхронізації з 1С"
@@ -67,6 +68,7 @@
           <i class="pi pi-sync mr-1"></i>1С
         </div>
       </th>
+      }
       <th class="w-4" pSortableColumn="updatedAt">
         <div class="flex justify-content-between align-items-center">
           Дата
@@ -78,17 +80,19 @@
     <tr>
       <th></th>
       <th></th>
-      <th *ngIf="currentUser?.isAnyAdmin"></th>
+      @if (currentUser?.isAnyAdmin) {
+      <th></th>
+      }
       <th>
         <p-columnFilter type="date" field="updatedAt" [showMenu]="false">
           <ng-template pTemplate="filter" let-filter="filterCallback">
-            <p-calendar
+            <p-datepicker
               (onSelect)="filter($event)"
               (onClear)="filter($event)"
               appendTo="body"
               placeholder="Дата"
               [showClear]="true"
-            ></p-calendar>
+            ></p-datepicker>
           </ng-template>
         </p-columnFilter>
       </th>
@@ -108,15 +112,15 @@
         >
           {{ transaction.amount | currency }}
         </div>
-        <small
-          *ngIf="transaction.status === transactionStatus.Success"
-          class="text-600"
-        >
+        @if (transaction.status === transactionStatus.Success) {
+        <small class="text-600">
           {{ transaction.netBalance | currency }}
         </small>
+        }
       </td>
       <td>{{ transaction.status | transactionStatus }}</td>
-      <td *ngIf="currentUser?.isAnyAdmin">
+      @if (currentUser?.isAnyAdmin) {
+      <td>
         <span
           class="white-space-nowrap"
           [pTooltip]="
@@ -128,16 +132,11 @@
           {{ transaction.syncOneCStatus | transactionSyncOneCStatus }}
         </span>
       </td>
+      }
       <td>{{ transaction.updatedAt | date : 'short' }}</td>
-      <td
-        *ngIf="
-          transaction.order ||
-            transaction.orderReturnRequest ||
-            transaction.fundsWithdrawalRequest;
-          else noEntity
-        "
-        class="text-center"
-      >
+      @if ( transaction.order || transaction.orderReturnRequest ||
+      transaction.fundsWithdrawalRequest) {
+      <td class="text-center">
         <button
           pButton
           pTooltip="Натистіть для перегляду замовлення або запиту"
@@ -146,7 +145,9 @@
           (click)="navigateToEntity(transaction)"
         ></button>
       </td>
-      <ng-template #noEntity><td></td></ng-template>
+      } @else {
+      <td></td>
+      }
     </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage">

@@ -24,6 +24,7 @@ import { DownloadService } from '@shared/services/download.service';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
+  standalone: false,
   selector: 'app-transactions-list',
   templateUrl: './transactions-list.component.html',
   styleUrls: ['./transactions-list.component.scss'],

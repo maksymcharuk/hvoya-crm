@@ -1,7 +1,8 @@
 <div class="request-view grid" data-cy="request-view-page">
   <div class="col-12">
     <div class="card request-view__content">
-      <div *ngIf="request$ | async as request">
+      @if (request$ | async; as request) {
+      <div>
         <h4 class="flex align-items-center">
           <span>Повернення №{{ request.number }}</span>
         </h4>
@@ -12,12 +13,14 @@
           ></app-return-request-item-list>
           <div class="flex justify-content-end my-4">
             <table>
-              <tr *ngIf="request.returnRequest!.deduction > 0">
+              @if (request.returnRequest!.deduction > 0) {
+              <tr>
                 <td>Відрахування:</td>
                 <td class="pl-5">
                   -{{ request.returnRequest!.deduction | currency }}
                 </td>
               </tr>
+              }
               <tr>
                 <td class="text-xl text-900 font-bold text-3xl">Всього:</td>
                 <td class="text-xl text-900 font-bold text-3xl pl-5">
@@ -27,10 +30,8 @@
             </table>
           </div>
         </div>
-        <div
-          *ngIf="request.managerComment || request.managerImages.length !== 0"
-          class="my-5"
-        >
+        @if (request.managerComment || request.managerImages.length !== 0) {
+        <div class="my-5">
           <ul class="striped-list">
             <li class="striped-list__item">
               <div class="striped-list__item-key align-self-baseline">
@@ -39,18 +40,20 @@
               <div class="striped-list__item-value">
                 <div class="mb-2">{{ request.managerComment }}</div>
                 <div class="flex">
+                  @for (image of request.managerImages; track image) {
                   <p-image
-                    *ngFor="let image of request.managerImages"
                     class="mr-2"
                     [src]="image.url"
                     [preview]="true"
                     width="80"
                   ></p-image>
+                  }
                 </div>
               </div>
             </li>
           </ul>
         </div>
+        }
         <div class="grid">
           <div class="col-12 xl:col-6">
             <h5>Дані запиту</h5>
@@ -89,13 +92,14 @@
                 <div class="striped-list__item-value">
                   <div class="mb-2">{{ request.customerComment }}</div>
                   <div class="flex">
+                    @for (image of request.customerImages; track image) {
                     <p-image
-                      *ngFor="let image of request.customerImages"
                       class="mr-2"
                       [src]="image.url"
                       [preview]="true"
                       width="80"
                     ></p-image>
+                    }
                   </div>
                 </div>
               </li>
@@ -107,13 +111,12 @@
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Служба доставки</div>
                 <div class="striped-list__item-value">
+                  @if ( request.returnRequest!.delivery .deliveryService; as
+                  deliveryService ) {
                   <app-delivery-service-badge
-                    *ngIf="
-                      request.returnRequest!.delivery
-                        .deliveryService as deliveryService
-                    "
                     [deliveryService]="deliveryService"
                   ></app-delivery-service-badge>
+                  }
                 </div>
               </li>
               <li class="striped-list__item">
@@ -124,58 +127,49 @@
                   ></app-return-request-delivery-status-badge>
                 </div>
               </li>
-              <li
-                *ngIf="!('update' | able : request.returnRequest)"
-                class="striped-list__item"
-              >
+              @if (!('update' | able : request.returnRequest)) {
+              <li class="striped-list__item">
                 <div class="striped-list__item-key">Номер ТТН</div>
                 <div class="striped-list__item-value">
                   {{ request.returnRequest!.delivery.trackingId }}
                 </div>
               </li>
+              }
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Експрес-накладна</div>
                 <div class="striped-list__item-value">
-                  <ng-container
-                    *ngIf="
-                      request.returnRequest!.delivery.waybill?.url as url;
-                      else noWaybill
+                  @if ( request.returnRequest!.delivery.waybill?.url; as url) {
+                  <p-button
+                    icon="pi pi-eye"
+                    label="Переглянути"
+                    data-cy="order-waybill-view-button"
+                    (click)="showWaybillViewDialogHandler()"
+                  ></p-button>
+                  <p-dialog
+                    [header]="
+                      'Товарно-транспортна накладна (запит №' +
+                      request.number +
+                      ')'
                     "
+                    [(visible)]="showWaybillViewDialog"
+                    [modal]="true"
+                    [style]="{ width: '80vw' }"
+                    [draggable]="false"
+                    [resizable]="false"
                   >
-                    <p-button
-                      icon="pi pi-eye"
-                      label="Переглянути"
-                      data-cy="order-waybill-view-button"
-                      (click)="showWaybillViewDialogHandler()"
-                    ></p-button>
-                    <p-dialog
-                      [header]="
-                        'Товарно-транспортна накладна (запит №' +
-                        request.number +
-                        ')'
-                      "
-                      [(visible)]="showWaybillViewDialog"
-                      [modal]="true"
-                      [style]="{ width: '80vw' }"
-                      [draggable]="false"
-                      [resizable]="false"
-                    >
-                      <ngx-doc-viewer
-                        [url]="url"
-                        viewer="pdf"
-                        style="width: 100%; height: 70vh"
-                      ></ngx-doc-viewer>
-                    </p-dialog>
-                  </ng-container>
-                  <ng-template #noWaybill>
-                    <span>—</span>
-                  </ng-template>
+                    <ngx-doc-viewer
+                      [url]="url"
+                      viewer="pdf"
+                      style="width: 100%; height: 70vh"
+                    ></ngx-doc-viewer>
+                  </p-dialog>
+                  } @else {
+                  <span>—</span>
+                  }
                 </div>
               </li>
-              <li
-                *ngIf="'update' | able : request.returnRequest"
-                class="striped-list__item"
-              >
+              @if ('update' | able : request.returnRequest) {
+              <li class="striped-list__item">
                 <div class="striped-list__item-key"></div>
                 <form
                   [formGroup]="updateDeliveryForm"
@@ -185,28 +179,30 @@
                     <div class="formgrid grid">
                       <div class="field col-12">
                         <label for="delivery-service">Служба доставки:</label>
-                        <p-dropdown
+                        <p-select
                           id="delivery-service"
                           [options]="deliveryServices"
                           formControlName="deliveryService"
                         >
                           <ng-template let-selected pTemplate="selectedItem">
+                            @if (selected; as deliveryService) {
                             <app-delivery-service-badge
-                              *ngIf="selected as deliveryService"
                               mode="short"
                               [withText]="true"
                               [deliveryService]="deliveryService"
                             ></app-delivery-service-badge>
+                            }
                           </ng-template>
                           <ng-template let-option pTemplate="item">
+                            @if (option; as deliveryService) {
                             <app-delivery-service-badge
-                              *ngIf="option as deliveryService"
                               mode="short"
                               [withText]="true"
                               [deliveryService]="deliveryService"
                             ></app-delivery-service-badge>
+                            }
                           </ng-template>
-                        </p-dropdown>
+                        </p-select>
                         <app-form-control-error-message
                           [formGroup]="updateDeliveryForm"
                           controlName="deliveryService"
@@ -262,10 +258,12 @@
                   ></button>
                 </form>
               </li>
+              }
             </ul>
           </div>
         </div>
       </div>
+      }
     </div>
   </div>
 </div>

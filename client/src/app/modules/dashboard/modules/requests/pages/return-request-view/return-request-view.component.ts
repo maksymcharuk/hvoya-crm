@@ -14,6 +14,7 @@ import { RequestsService } from '@shared/services/requests.service';
 import { alphanumeric } from '@shared/validators/alphanumeric.validator';
 
 @Component({
+  standalone: false,
   selector: 'app-return-request-view',
   templateUrl: './return-request-view.component.html',
   styleUrls: ['./return-request-view.component.scss'],

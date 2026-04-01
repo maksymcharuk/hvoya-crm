@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { VerticalMenuItem } from '@shared/interfaces/vertical-menu-item.interface';
 
 @Component({
+  standalone: false,
   selector: 'app-product-attributes',
   templateUrl: './product-attributes.component.html',
   styleUrls: ['./product-attributes.component.scss'],

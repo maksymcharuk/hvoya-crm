@@ -16,6 +16,7 @@ import { AccountService } from '@shared/services/account.service';
 import { PasswordValidators } from '@shared/validators/password-validator';
 
 @Component({
+  standalone: false,
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],

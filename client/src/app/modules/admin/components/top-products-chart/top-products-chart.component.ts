@@ -7,6 +7,7 @@ import { FormBuilder } from '@angular/forms';
 import { AdminAnalyticsService } from '@shared/services/admin-analytics.service';
 
 @Component({
+  standalone: false,
   selector: 'app-top-products-chart',
   templateUrl: './top-products-chart.component.html',
   styleUrls: ['./top-products-chart.component.scss'],

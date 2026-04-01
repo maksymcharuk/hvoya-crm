@@ -41,29 +41,29 @@
       >
         <div class="p-fluid sm:w-10rem">
           <div>Запит на: {{ requestedItem.quantity }} шт.</div>
+          @if (approvedItem) {
           <div
-            *ngIf="approvedItem"
             [class.text-red-600]="
               requestedItem.quantity > approvedItem.quantity
             "
           >
             Підтверджено: {{ approvedItem.quantity }} шт.
           </div>
+          }
         </div>
         <div class="flex flex-column sm:align-items-end">
           <span class="text-900 text-xl font-medium mb-1 sm:mb-2">
-            <ng-container *ngIf="approvedItem; else requestedItemPrice">
-              {{
-                approvedItem.orderItem!.productProperties.price *
-                  approvedItem.quantity! | currency
-              }}
-            </ng-container>
-            <ng-template #requestedItemPrice>
-              {{
-                requestedItem.orderItem!.productProperties.price *
-                  requestedItem.quantity! | currency
-              }}
-            </ng-template>
+            @if (approvedItem) {
+            {{
+              approvedItem.orderItem!.productProperties.price *
+                approvedItem.quantity! | currency
+            }}
+            } @else {
+            {{
+              requestedItem.orderItem!.productProperties.price *
+                requestedItem.quantity! | currency
+            }}
+            }
           </span>
         </div>
       </div>

@@ -14,6 +14,7 @@ import { CartItem } from '@shared/interfaces/entities/cart.entity';
 import { CartService } from '../../services/cart/cart.service';
 
 @Component({
+  standalone: false,
   selector: 'tr[app-cart-widget-item]',
   templateUrl: './cart-widget-item.component.html',
   styleUrls: ['./cart-widget-item.component.scss'],

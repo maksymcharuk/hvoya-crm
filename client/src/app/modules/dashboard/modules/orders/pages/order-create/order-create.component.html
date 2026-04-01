@@ -2,52 +2,87 @@
   <div class="col-12">
     <div class="card">
       <h4>Оформити</h4>
-      <ng-container *ngIf="cart$ | async as cart; else skeleton">
-        <ng-container *ngIf="cartNotEmpty$ | async; else emptyCart">
-          <app-order-cart-item
-            *ngFor="let cartItem of cart.items; trackBy: identify"
-            [cartItem]="cartItem"
-          ></app-order-cart-item>
-          <div class="flex">
-            <div class="w-12rem hidden md:block"></div>
-            <div class="md:pl-5 mt-2 flex-auto">
-              <div class="flex-column">
-                <div class="flex justify-content-end pt-4">
-                  <span class="text-xl text-900 font-bold text-3xl"
-                    >Всього:</span
-                  >
-                  <span
-                    class="text-xl text-900 font-bold text-3xl ml-5"
-                    data-cy="order-total"
-                  >
-                    <ng-container
-                      *ngIf="
-                        (cartLoading$ | async) === 0;
-                        else totalPriceSkeleton
-                      "
-                    >
-                      {{ cart.total | currency }}
-                    </ng-container>
-                    <ng-template #totalPriceSkeleton>
-                      <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
-                    </ng-template>
-                  </span>
-                </div>
-
-                <div
-                  class="flex justify-content-end text-base text-red-300 ml-5 mb-6"
-                >
-                  <ng-container *ngIf="balance$ | async as balance">
-                    <ng-container *ngIf="+cart.total > +balance.amount">
-                      Недостатньо коштів на балансі
-                    </ng-container>
-                  </ng-container>
-                </div>
+      @if (cart$ | async; as cart) { @if (cartNotEmpty$ | async) { @for
+      (cartItem of cart.items; track identify($index, cartItem)) {
+      <app-order-cart-item [cartItem]="cartItem"></app-order-cart-item>
+      }
+      <div class="flex">
+        <div class="w-12rem hidden md:block"></div>
+        <div class="md:pl-5 mt-2 flex-auto">
+          <div class="flex-column">
+            <div class="flex justify-content-end pt-4">
+              <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
+              <span
+                class="text-xl text-900 font-bold text-3xl ml-5"
+                data-cy="order-total"
+              >
+                @if ( (cartLoading$ | async) === 0) {
+                {{ cart.total | currency }}
+                } @else {
+                <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+                }
+              </span>
+            </div>
+            <div
+              class="flex justify-content-end text-base text-red-300 ml-5 mb-6"
+            >
+              @if (balance$ | async; as balance) { @if (+cart.total >
+              +balance.amount) { Недостатньо коштів на балансі } }
+            </div>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <div
+        class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
+      >
+        <i class="pi pi-shopping-cart text-4xl"></i>
+        <span class="text-2xl mt-3 mb-6">Кошик пустий</span>
+      </div>
+      } } @else { @for (_ of [].constructor(2); track _) {
+      <div
+        class="flex flex-column md:flex-row py-2 border-top-1 border-bottom-1 surface-border md:align-items-center"
+      >
+        <p-skeleton height="4rem" width="4rem"></p-skeleton>
+        <div class="flex-auto py-1 md:pl-2">
+          <div
+            class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
+          >
+            <div class="w-full sm:w-6 flex flex-column">
+              <span class="mb-2">
+                <p-skeleton height="1.5rem" width="8rem"></p-skeleton>
+              </span>
+              <p-skeleton height="1rem" width="5rem"></p-skeleton>
+            </div>
+            <div
+              class="w-full sm:w-6 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
+            >
+              <div class="p-fluid sm:w-6rem">
+                <p-skeleton height="39px" width="84px"></p-skeleton>
+              </div>
+              <div class="flex flex-column sm:align-items-end">
+                <span class="mb-1 sm:mb-2">
+                  <p-skeleton height="1.5rem" width="5rem"></p-skeleton>
+                </span>
+                <p-skeleton height="1rem" width="5rem"></p-skeleton>
               </div>
             </div>
           </div>
-        </ng-container>
-      </ng-container>
+        </div>
+      </div>
+      }
+      <div class="flex">
+        <div class="w-12rem hidden md:block"></div>
+        <div class="md:pl-5 mt-2 flex-auto">
+          <div class="flex justify-content-end mb-4 pt-4">
+            <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+            <span class="ml-5">
+              <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
+            </span>
+          </div>
+        </div>
+      </div>
+      }
       <form [formGroup]="orderCreateForm">
         <div class="grid">
           <div class="col-12">
@@ -101,7 +136,7 @@
                     id="first-name"
                     pInputText
                     formControlName="firstName"
-                  />
+                    />
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
                     controlName="firstName"
@@ -125,7 +160,7 @@
                     id="middle-name"
                     pInputText
                     formControlName="middleName"
-                  />
+                    />
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
                     controlName="middleName"
@@ -142,28 +177,30 @@
               <div class="formgrid grid">
                 <div class="field col-12">
                   <label for="delivery-service">Служба доставки:</label>
-                  <p-dropdown
+                  <p-select
                     id="delivery-service"
                     [options]="deliveryServices"
                     formControlName="deliveryService"
                   >
                     <ng-template let-selected pTemplate="selectedItem">
+                      @if (selected; as deliveryService) {
                       <app-delivery-service-badge
-                        *ngIf="selected as deliveryService"
                         mode="short"
                         [withText]="true"
                         [deliveryService]="deliveryService"
                       ></app-delivery-service-badge>
+                      }
                     </ng-template>
                     <ng-template let-option pTemplate="item">
+                      @if (option; as deliveryService) {
                       <app-delivery-service-badge
-                        *ngIf="option as deliveryService"
                         mode="short"
                         [withText]="true"
                         [deliveryService]="deliveryService"
                       ></app-delivery-service-badge>
+                      }
                     </ng-template>
-                  </p-dropdown>
+                  </p-select>
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
                     controlName="deliveryService"
@@ -173,48 +210,49 @@
                 </div>
                 <!-- NOTE: Keep this for a waybill generation logic in future -->
                 <!-- <div class="field col-12">
-                  <label for="delivery-type">Тип доставки:</label>
-                  <p-dropdown
-                    id="delivery-type"
-                    [options]="deliveryTypes"
-                    formControlName="deliveryType"
-                    optionValue="value"
-                  ></p-dropdown>
-                  <app-form-control-error-message
-                    [formGroup]="orderCreateForm"
-                    controlName="deliveryType"
-                    errorType="required"
-                    errorMessage="Це є обов'язковим полем"
-                  ></app-form-control-error-message>
-                </div>
-                <div class="field col-12">
-                  <label for="city">Місто:</label>
-                  <input id="city" pInputText formControlName="city" />
-                  <app-form-control-error-message
-                    [formGroup]="orderCreateForm"
-                    controlName="city"
-                    errorType="required"
-                    errorMessage="Це є обов'язковим полем"
-                  ></app-form-control-error-message>
-                </div> -->
+                <label for="delivery-type">Тип доставки:</label>
+                <p-select
+                  id="delivery-type"
+                  [options]="deliveryTypes"
+                  formControlName="deliveryType"
+                  optionValue="value"
+                ></p-select>
+                <app-form-control-error-message
+                  [formGroup]="orderCreateForm"
+                  controlName="deliveryType"
+                  errorType="required"
+                  errorMessage="Це є обов'язковим полем"
+                ></app-form-control-error-message>
+              </div>
+              <div class="field col-12">
+                <label for="city">Місто:</label>
+                <input id="city" pInputText formControlName="city" />
+                <app-form-control-error-message
+                  [formGroup]="orderCreateForm"
+                  controlName="city"
+                  errorType="required"
+                  errorMessage="Це є обов'язковим полем"
+                ></app-form-control-error-message>
+              </div> -->
               </div>
               <div class="formgrid grid">
                 <!-- NOTE: Keep this for a waybill generation logic in future -->
                 <!-- <div class="field col-12">
-                  <label for="post-office">Відділення:</label>
-                  <input
-                    id="post-office"
-                    pInputText
-                    formControlName="postOffice"
-                  />
-                  <app-form-control-error-message
-                    [formGroup]="orderCreateForm"
-                    controlName="postOffice"
-                    errorType="required"
-                    errorMessage="Це є обов'язковим полем"
-                  ></app-form-control-error-message>
-                </div> -->
-                <div *ngIf="!isSelfPickup" class="field col-12">
+              <label for="post-office">Відділення:</label>
+              <input
+                id="post-office"
+                pInputText
+                formControlName="postOffice"
+                />
+              <app-form-control-error-message
+                [formGroup]="orderCreateForm"
+                controlName="postOffice"
+                errorType="required"
+                errorMessage="Це є обов'язковим полем"
+              ></app-form-control-error-message>
+            </div> -->
+                @if (!isSelfPickup) {
+                <div class="field col-12">
                   <label for="tracking-id">Номер ТТН:</label>
                   <input
                     pInputText
@@ -235,9 +273,11 @@
                     errorMessage="Номер ТТН повинен містити тільки літери та цифри"
                   ></app-form-control-error-message>
                 </div>
+                }
               </div>
             </div>
-            <div *ngIf="!isSelfPickup" class="formgrid grid">
+            @if (!isSelfPickup) {
+            <div class="formgrid grid">
               <div class="field col-12">
                 <label>Маркування (PDF):</label>
                 <p-fileUpload
@@ -257,6 +297,7 @@
                 ></app-form-control-error-message>
               </div>
             </div>
+            }
           </div>
           <div class="col-6">
             <div class="p-fluid">
@@ -290,58 +331,3 @@
     </div>
   </div>
 </div>
-
-<ng-template #skeleton>
-  <ng-container *ngFor="let _ of [].constructor(2)">
-    <div
-      class="flex flex-column md:flex-row py-2 border-top-1 border-bottom-1 surface-border md:align-items-center"
-    >
-      <p-skeleton height="4rem" width="4rem"></p-skeleton>
-      <div class="flex-auto py-1 md:pl-2">
-        <div
-          class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
-        >
-          <div class="w-full sm:w-6 flex flex-column">
-            <span class="mb-2">
-              <p-skeleton height="1.5rem" width="8rem"></p-skeleton>
-            </span>
-            <p-skeleton height="1rem" width="5rem"></p-skeleton>
-          </div>
-          <div
-            class="w-full sm:w-6 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
-          >
-            <div class="p-fluid sm:w-6rem">
-              <p-skeleton height="39px" width="84px"></p-skeleton>
-            </div>
-            <div class="flex flex-column sm:align-items-end">
-              <span class="mb-1 sm:mb-2">
-                <p-skeleton height="1.5rem" width="5rem"></p-skeleton>
-              </span>
-              <p-skeleton height="1rem" width="5rem"></p-skeleton>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </ng-container>
-  <div class="flex">
-    <div class="w-12rem hidden md:block"></div>
-    <div class="md:pl-5 mt-2 flex-auto">
-      <div class="flex justify-content-end mb-4 pt-4">
-        <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
-        <span class="ml-5">
-          <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
-        </span>
-      </div>
-    </div>
-  </div>
-</ng-template>
-
-<ng-template #emptyCart>
-  <div
-    class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
-  >
-    <i class="pi pi-shopping-cart text-4xl"></i>
-    <span class="text-2xl mt-3 mb-6">Кошик пустий</span>
-  </div>
-</ng-template>

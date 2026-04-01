@@ -8,6 +8,7 @@ import { NotificationsService } from '@shared/services/notifications.service';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
+  standalone: false,
   selector: 'tr[app-request-list-item]',
   templateUrl: './request-list-item.component.html',
   styleUrls: ['./request-list-item.component.scss'],

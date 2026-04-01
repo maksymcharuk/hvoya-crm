@@ -9,6 +9,7 @@ import { NotificationsService } from '@shared/services/notifications.service';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
+  standalone: false,
   selector: 'tr[app-order-list-item]',
   templateUrl: './order-list-item.component.html',
   styleUrls: ['./order-list-item.component.scss'],

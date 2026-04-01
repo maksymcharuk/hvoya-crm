@@ -18,6 +18,7 @@ import { FormBuilder } from '@angular/forms';
 import { AdminAnalyticsService } from '@shared/services/admin-analytics.service';
 
 @Component({
+  standalone: false,
   selector: 'app-products-overview',
   templateUrl: './products-overview.component.html',
   styleUrls: ['./products-overview.component.scss'],

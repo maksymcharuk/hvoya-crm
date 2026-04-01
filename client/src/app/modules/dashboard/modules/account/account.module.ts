@@ -2,7 +2,7 @@ import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { PasswordModule } from 'primeng/password';
 import { TooltipModule } from 'primeng/tooltip';
 
@@ -25,7 +25,7 @@ import { SettingsComponent } from './pages/settings/settings.component';
     ReactiveFormsModule,
     SharedModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     ButtonModule,
     InputMaskModule,
     PasswordModule,

@@ -30,6 +30,7 @@ const CONFIRM_MESSAGE =
 const REJECT_MESSAGE = 'Ви справді хочете відхилити цей запит на повернення?';
 
 @Component({
+  standalone: false,
   selector: 'app-return-request-view',
   templateUrl: './return-request-view.component.html',
   styleUrls: ['./return-request-view.component.scss'],

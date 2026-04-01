@@ -17,6 +17,7 @@ import {
 } from '@shared/interfaces/entities/product.entity';
 
 @Component({
+  standalone: false,
   selector: 'app-product-view',
   templateUrl: './product-view.component.html',
   styleUrls: ['./product-view.component.scss'],

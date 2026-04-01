@@ -17,6 +17,7 @@ const REJECT_MESSAGE =
   'Ви справді хочете відхилити цей запит на вивелення коштів?';
 
 @Component({
+  standalone: false,
   selector: 'app-funds-withdrawal-request-view',
   templateUrl: './funds-withdrawal-request-view.component.html',
   styleUrls: ['./funds-withdrawal-request-view.component.scss'],

@@ -4,6 +4,7 @@ import { FundsWithdrawalRequestStatus } from '@shared/enums/funds-withdrawal-req
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 
 @Component({
+  standalone: false,
   selector: 'app-request-status-badge',
   templateUrl: './request-status-badge.component.html',
   styleUrls: ['./request-status-badge.component.scss'],

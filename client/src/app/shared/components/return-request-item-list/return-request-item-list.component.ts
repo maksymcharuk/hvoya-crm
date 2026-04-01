@@ -6,6 +6,7 @@ import {
 } from '@shared/interfaces/entities/order-return-request.entity';
 
 @Component({
+  standalone: false,
   selector: 'app-return-request-item-list',
   templateUrl: './return-request-item-list.component.html',
   styleUrls: ['./return-request-item-list.component.scss'],

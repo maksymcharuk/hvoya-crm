@@ -46,16 +46,15 @@
   ></app-stock-badge>
 </td>
 <td class="pl-5 text-900 font-medium">
-  <ng-container *ngIf="(updating$ | async) === 0; else priceSkeleton">
-    {{ cartItem.product.properties.price * cartItem.quantity | currency }}
-    <div class="text-600 text-sm mt-1">
-      {{ cartItem.product.properties.price | currency }} / од.
-    </div>
-  </ng-container>
-  <ng-template #priceSkeleton>
-    <p-skeleton height="1.2rem" width="5rem"></p-skeleton>
-    <p-skeleton class="block mt-1" height="1rem" width="6rem"></p-skeleton>
-  </ng-template>
+  @if ((updating$ | async) === 0) {
+  {{ cartItem.product.properties.price * cartItem.quantity | currency }}
+  <div class="text-600 text-sm mt-1">
+    {{ cartItem.product.properties.price | currency }} / од.
+  </div>
+  } @else {
+  <p-skeleton height="1.2rem" width="5rem"></p-skeleton>
+  <p-skeleton class="block mt-1" height="1rem" width="6rem"></p-skeleton>
+  }
 </td>
 <td class="pl-5 text-900 font-medium">
   <a

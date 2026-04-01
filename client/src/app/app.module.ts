@@ -1,11 +1,13 @@
 import { MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { ToastModule } from 'primeng/toast';
+import Aura from '@primeuix/themes/aura';
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 
 import { AppAbility } from '@shared/interfaces/casl.interface';
 import { PoliciesService } from '@shared/services/policies.service';
@@ -19,7 +21,7 @@ import { AppComponent } from './app.component';
         AppRoutingModule,
         BrowserAnimationsModule,
         ToastModule,
-        AbilityModule,
+        AblePipe,
         SharedModule], providers: [
         MessageService,
         {
@@ -30,5 +32,6 @@ import { AppComponent } from './app.component';
             deps: [PoliciesService],
         },
         provideHttpClient(withInterceptorsFromDi()),
+        providePrimeNG({ theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } } }),
     ] })
 export class AppModule { }

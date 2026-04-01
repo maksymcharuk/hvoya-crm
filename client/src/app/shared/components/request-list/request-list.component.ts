@@ -19,6 +19,7 @@ import { PageOptions } from '@shared/interfaces/page-options.interface';
 import { Page } from '@shared/interfaces/page.interface';
 
 @Component({
+  standalone: false,
   selector: 'app-request-list',
   templateUrl: './request-list.component.html',
   styleUrls: ['./request-list.component.scss'],

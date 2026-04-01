@@ -1,5 +1,5 @@
 import { MenuItem } from 'primeng/api';
-import { OverlayPanel } from 'primeng/overlaypanel';
+import { Popover } from 'primeng/popover';
 import { Subscription, filter } from 'rxjs';
 
 import {
@@ -21,6 +21,7 @@ import { SidebarComponent } from './sidebar.component';
 import { TopBarComponent } from './topbar.component';
 
 @Component({
+  standalone: false,
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
@@ -28,12 +29,12 @@ import { TopBarComponent } from './topbar.component';
 export class LayoutComponent implements OnDestroy, AfterContentInit {
   @Input() sidebarMenuItems: MenuItem[] = [];
 
-  @ContentChildren('overlayPanel') overlayPanels!: QueryList<OverlayPanel>;
+  @ContentChildren('overlayPanel') overlayPanels!: QueryList<Popover>;
 
   @ViewChild(SidebarComponent) appSidebar!: SidebarComponent;
   @ViewChild(TopBarComponent) appTopbar!: TopBarComponent;
 
-  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:scroll')
   onWindowScroll() {
     this.hideOverlayPanels();
   }

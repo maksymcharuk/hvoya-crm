@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { CartService } from '../../services/cart/cart.service';
 
 @Component({
+  standalone: false,
   selector: 'app-cart-widget',
   templateUrl: './cart-widget.component.html',
   styleUrls: ['./cart-widget.component.scss'],

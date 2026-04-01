@@ -3,20 +3,21 @@ import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputMaskModule } from 'primeng/inputmask';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { MessagesModule } from 'primeng/messages';
+import { TextareaModule } from 'primeng/textarea';
+import { MessageModule } from 'primeng/message';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -39,21 +40,22 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     FormsModule,
     ReactiveFormsModule,
     SkeletonModule,
+    ProgressBarModule,
     ButtonModule,
     InputNumberModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     ButtonModule,
     InputMaskModule,
     FileUploadModule,
     TableModule,
-    DropdownModule,
+    SelectModule,
     DialogModule,
     SharedModule,
-    AbilityModule,
+    AblePipe,
     NgxDocViewerModule,
     ConfirmDialogModule,
-    MessagesModule,
+    MessageModule,
   ],
   providers: [ConfirmationService],
 })

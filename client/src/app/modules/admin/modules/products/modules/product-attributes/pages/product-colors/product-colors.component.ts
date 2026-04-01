@@ -8,6 +8,7 @@ import { ProductColor } from '@shared/interfaces/entities/product.entity';
 import { ProductColorsService } from '../../../../services/product-colors.service';
 
 @Component({
+  standalone: false,
   selector: 'app-product-colors',
   templateUrl: './product-colors.component.html',
   styleUrls: ['./product-colors.component.scss'],

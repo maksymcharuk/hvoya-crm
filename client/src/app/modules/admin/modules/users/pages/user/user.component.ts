@@ -36,6 +36,7 @@ import { Page } from '@shared/interfaces/page.interface';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
+  standalone: false,
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],

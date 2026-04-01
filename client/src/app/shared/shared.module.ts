@@ -1,16 +1,16 @@
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 import { ChartModule } from 'primeng/chart';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DragDropModule } from 'primeng/dragdrop';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { EditorModule } from 'primeng/editor';
 import { GalleriaModule } from 'primeng/galleria';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -21,18 +21,24 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 import {
   CommonModule,
   CurrencyPipe,
   registerLocaleData,
 } from '@angular/common';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import localeUk from '@angular/common/locales/uk';
 import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 
 import { DeliveryServiceBadgeComponent } from './components/delivery-service-badge/delivery-service-badge.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
@@ -140,7 +146,7 @@ const PRIMENG_MODULES = [
   SkeletonModule,
   ButtonModule,
   TableModule,
-  DropdownModule,
+  SelectModule,
   InputTextModule,
   GalleriaModule,
   PanelModule,
@@ -154,35 +160,43 @@ const PRIMENG_MODULES = [
   MultiSelectModule,
   TagModule,
   ProgressSpinnerModule,
-  CalendarModule,
-  InputSwitchModule,
+  DatePickerModule,
+  ToggleSwitchModule,
   ChartModule,
   InputNumberModule,
+  TooltipModule,
+  ProgressBarModule,
 ];
 
 const NG_PIPES = [CurrencyPipe];
 
-@NgModule({ declarations: [...COMPONENTS, ...PIPES],
-    exports: [...COMPONENTS, ...PIPES], imports: [CommonModule,
-        RouterModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AbilityModule,
-        InfiniteScrollModule,
-        ...PRIMENG_MODULES], providers: [
-        ...NG_PIPES,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HttpExceptionInterceptor,
-            multi: true,
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthInterceptor,
-            multi: true,
-        },
-        { provide: LOCALE_ID, useValue: 'uk' },
-        { provide: DEFAULT_CURRENCY_CODE, useValue: 'UAH' },
-        provideHttpClient(withInterceptorsFromDi()),
-    ] })
+@NgModule({
+  declarations: [...COMPONENTS, ...PIPES],
+  exports: [...COMPONENTS, ...PIPES],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AblePipe,
+    InfiniteScrollModule,
+    ...PRIMENG_MODULES,
+  ],
+  providers: [
+    ...NG_PIPES,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpExceptionInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    { provide: LOCALE_ID, useValue: 'uk' },
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'UAH' },
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
+})
 export class SharedModule {}

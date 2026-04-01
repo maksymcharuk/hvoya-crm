@@ -6,12 +6,12 @@
   <div class="col-fixed">
     <div class="field">
       <label>Період:</label>
-      <p-calendar
+      <p-datepicker
         formControlName="range"
         selectionMode="range"
         appendTo="body"
         placeholder="Період"
-      ></p-calendar>
+      ></p-datepicker>
     </div>
   </div>
 </form>
@@ -20,118 +20,116 @@
 <div class="grid">
   <div class="col-12 md:col-6 lg:col-3">
     <div class="card mb-0">
-      <ng-container *ngIf="kpiStats$ | async as kpis; else kpiSkeleton">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium mb-3"
-              >Всього продуктів</span
-            >
-            <div class="text-900 font-medium text-xl">
-              {{ kpis.totalProducts }}
-            </div>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center bg-blue-100 border-round"
-            style="width: 2.5rem; height: 2.5rem"
-          >
-            <i class="pi pi-box text-blue-500 text-xl"></i>
+      @if (kpiStats$ | async; as kpis) {
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3">Всього продуктів</span>
+          <div class="text-900 font-medium text-xl">
+            {{ kpis.totalProducts }}
           </div>
         </div>
-        <span class="text-500">У каталозі за період</span>
-      </ng-container>
-    </div>
-  </div>
-
-  <div class="col-12 md:col-6 lg:col-3">
-    <div class="card mb-0">
-      <ng-container *ngIf="kpiStats$ | async as kpis; else kpiSkeleton">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium mb-3">Топ продукт</span>
-            <div class="text-900 font-medium text-xl">
-              {{ kpis.topProduct }}
-            </div>
-          </div>
-          <div
-            class="flex flex-none align-items-center justify-content-center bg-yellow-100 border-round"
-            style="width: 2.5rem; height: 2.5rem"
-          >
-            <i class="pi pi-star text-yellow-500 text-xl"></i>
-          </div>
-        </div>
-        <span class="text-500"
-          >{{ formatCurrency(kpis.topRevenue) }} доходу</span
+        <div
+          class="flex align-items-center justify-content-center bg-blue-100 border-round"
+          style="width: 2.5rem; height: 2.5rem"
         >
-      </ng-container>
+          <i class="pi pi-box text-blue-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-500">У каталозі за період</span>
+      } @else {
+      <p-skeleton height="60px"></p-skeleton>
+      }
     </div>
   </div>
 
   <div class="col-12 md:col-6 lg:col-3">
     <div class="card mb-0">
-      <ng-container *ngIf="kpiStats$ | async as kpis; else kpiSkeleton">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium mb-3"
-              >Продано одиниць (топ 10)</span
-            >
-            <div class="text-900 font-medium text-xl">
-              {{ kpis.totalUnitsSold }}
-            </div>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center bg-green-100 border-round"
-            style="width: 2.5rem; height: 2.5rem"
-          >
-            <i class="pi pi-shopping-cart text-green-500 text-xl"></i>
+      @if (kpiStats$ | async; as kpis) {
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3">Топ продукт</span>
+          <div class="text-900 font-medium text-xl">
+            {{ kpis.topProduct }}
           </div>
         </div>
-        <span class="text-500">Серед топ-10 за доходом</span>
-      </ng-container>
+        <div
+          class="flex flex-none align-items-center justify-content-center bg-yellow-100 border-round"
+          style="width: 2.5rem; height: 2.5rem"
+        >
+          <i class="pi pi-star text-yellow-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-500">{{ formatCurrency(kpis.topRevenue) }} доходу</span>
+      } @else {
+      <p-skeleton height="60px"></p-skeleton>
+      }
     </div>
   </div>
 
   <div class="col-12 md:col-6 lg:col-3">
     <div class="card mb-0">
-      <ng-container *ngIf="kpiStats$ | async as kpis; else kpiSkeleton">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium mb-3"
-              >Сер. % повернень</span
-            >
-            <div class="text-900 font-medium text-xl">
-              {{ formatPercent(kpis.avgReturnRate) }}
-            </div>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center bg-red-100 border-round"
-            style="width: 2.5rem; height: 2.5rem"
+      @if (kpiStats$ | async; as kpis) {
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3"
+            >Продано одиниць (топ 10)</span
           >
-            <i class="pi pi-replay text-red-500 text-xl"></i>
+          <div class="text-900 font-medium text-xl">
+            {{ kpis.totalUnitsSold }}
           </div>
         </div>
-        <span class="text-500">Серед топ-10 продуктів</span>
-      </ng-container>
+        <div
+          class="flex align-items-center justify-content-center bg-green-100 border-round"
+          style="width: 2.5rem; height: 2.5rem"
+        >
+          <i class="pi pi-shopping-cart text-green-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-500">Серед топ-10 за доходом</span>
+      } @else {
+      <p-skeleton height="60px"></p-skeleton>
+      }
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6 lg:col-3">
+    <div class="card mb-0">
+      @if (kpiStats$ | async; as kpis) {
+      <div class="flex justify-content-between mb-3">
+        <div>
+          <span class="block text-500 font-medium mb-3">Сер. % повернень</span>
+          <div class="text-900 font-medium text-xl">
+            {{ formatPercent(kpis.avgReturnRate) }}
+          </div>
+        </div>
+        <div
+          class="flex align-items-center justify-content-center bg-red-100 border-round"
+          style="width: 2.5rem; height: 2.5rem"
+        >
+          <i class="pi pi-replay text-red-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-500">Серед топ-10 продуктів</span>
+      } @else {
+      <p-skeleton height="60px"></p-skeleton>
+      }
     </div>
   </div>
 </div>
 
-<ng-template #kpiSkeleton>
-  <p-skeleton height="60px"></p-skeleton>
-</ng-template>
-
 <!-- Top Products Chart -->
 <div class="card mt-3 mb-0">
   <h5>Топ 10 продуктів за доходом</h5>
+  @if (chartData$ | async; as chartData) {
   <p-chart
-    *ngIf="chartData$ | async as chartData; else chartSkeleton"
     type="bar"
     [data]="chartData"
     [options]="chartOptions"
     height="350px"
   ></p-chart>
-  <ng-template #chartSkeleton>
-    <p-skeleton height="350px"></p-skeleton>
-  </ng-template>
+  } @else {
+  <p-skeleton height="350px"></p-skeleton>
+  }
 </div>
 
 <!-- Products Table -->
@@ -152,16 +150,16 @@
   >
     <ng-template pTemplate="loadingicon"></ng-template>
     <ng-template pTemplate="loadingbody">
-      <ng-container *ngFor="let _ of [].constructor(rows)">
-        <tr>
-          <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
-        </tr>
-      </ng-container>
+      @for (_ of [].constructor(rows); track _) {
+      <tr>
+        <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
+      </tr>
+      }
     </ng-template>
     <ng-template pTemplate="caption">
       <h5 class="m-0">Аналітика продуктів</h5>

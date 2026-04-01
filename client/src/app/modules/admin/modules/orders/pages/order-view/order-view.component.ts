@@ -33,6 +33,7 @@ import { OrdersService } from '@shared/services/orders.service';
 import { alphanumeric } from '@shared/validators/alphanumeric.validator';
 
 @Component({
+  standalone: false,
   selector: 'app-order-view',
   templateUrl: './order-view.component.html',
   styleUrls: ['./order-view.component.scss'],

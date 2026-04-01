@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { ProductsService } from '@shared/services/products.service';
 
 @Component({
+  standalone: false,
   selector: 'app-admin-product-list',
   templateUrl: './admin-product-list.component.html',
   styleUrls: ['./admin-product-list.component.scss'],

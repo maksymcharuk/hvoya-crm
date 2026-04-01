@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-forgot-password-confirmation',
   templateUrl: './forgot-password-confirmation.component.html',
   styleUrls: ['./forgot-password-confirmation.component.scss'],

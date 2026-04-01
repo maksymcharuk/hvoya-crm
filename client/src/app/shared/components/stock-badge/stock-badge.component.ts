@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-stock-badge',
   templateUrl: './stock-badge.component.html',
   styleUrls: ['./stock-badge.component.scss'],

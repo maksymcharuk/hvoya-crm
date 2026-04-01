@@ -11,6 +11,7 @@ import { ProductsService } from '@shared/services/products.service';
 import { CartService } from '../../../modules/dashboard/modules/cart/services/cart/cart.service';
 
 @Component({
+  standalone: false,
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss'],

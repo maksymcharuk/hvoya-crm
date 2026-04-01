@@ -20,6 +20,7 @@ import { ProductColorsService } from '../../services/product-colors.service';
 import { ProductSizesService } from '../../services/product-sizes.service';
 
 @Component({
+  standalone: false,
   selector: 'app-upsert-product-form',
   templateUrl: './upsert-product-form.component.html',
   styleUrls: ['./upsert-product-form.component.scss'],

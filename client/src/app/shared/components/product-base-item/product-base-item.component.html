@@ -11,16 +11,16 @@
     <p-skeleton height="15rem" width="100%"></p-skeleton>
   </ng-template>
   <div class="flex-grow-1 my-2">
+    @if (product.name) {
     <a
-      *ngIf="product.name; else productNameSkeleton"
       [routerLink]="[product.id?.toString()]"
       class="text-900 font-medium text-xl"
       data-cy="product-name"
     >
       {{ product.name }}
     </a>
-  </div>
-  <ng-template #productNameSkeleton>
+    } @else {
     <p-skeleton height="2rem" width="100%"></p-skeleton>
-  </ng-template>
+    }
+  </div>
 </div>

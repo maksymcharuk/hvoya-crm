@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-sign-up-confirmation',
   templateUrl: './sign-up-confirmation.component.html',
   styleUrls: ['./sign-up-confirmation.component.scss'],

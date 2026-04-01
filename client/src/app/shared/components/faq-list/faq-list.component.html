@@ -1,15 +1,15 @@
 <div class="flex align-items-center justify-content-between mb-5">
   <h4 class="mb-0">Запитання та відповіді</h4>
   <div>
+    @if ('create' | able : faqEntity) {
     <p-button
-      *ngIf="'create' | able : faqEntity"
       label="Додати"
       icon="pi pi-plus"
       data-cy="add-faq-button"
       (onClick)="openNew()"
     ></p-button>
+    } @if ('update' | able : faqEntity) {
     <p-button
-      *ngIf="'update' | able : faqEntity"
       class="ml-2"
       label="Зберегти порядок"
       icon="pi pi-save"
@@ -20,37 +20,30 @@
       [disabled]="!isOrderChanged"
       (onClick)="onOrderSave()"
     ></p-button>
+    }
   </div>
 </div>
-<ng-container *ngIf="'update' | able : faqEntity; else regularList">
-  <app-faq-item
-    *ngFor="let faq of faqList; let index = index"
-    pDraggable="dd"
-    pDroppable="dd"
-    dragHandle=".p-panel-header"
-    class="block mb-4"
-    [faq]="faq"
-    (onDragStart)="onDragStart(index)"
-    (onDrop)="onDrop(index)"
-    (onUpdate)="editFaq($event)"
-    (onPublishToggle)="onFaqItemPublishToggle($event)"
-  ></app-faq-item>
-  <div *ngIf="faqList.length === 0" class="mt-5 mb-2">
-    <p class="text-center">Список питань порожній</p>
-  </div>
-</ng-container>
-
-<ng-template #regularList>
-  <app-faq-item
-    *ngFor="let faq of faqList"
-    class="block mb-4"
-    toggler="header"
-    [faq]="faq"
-  ></app-faq-item
-></ng-template>
-
+@if ('update' | able : faqEntity) { @for (faq of faqList; track faq; let index =
+$index) {
+<app-faq-item
+  pDraggable="dd"
+  pDroppable="dd"
+  dragHandle=".p-panel-header"
+  class="block mb-4"
+  [faq]="faq"
+  (onDragStart)="onDragStart(index)"
+  (onDrop)="onDrop(index)"
+  (onUpdate)="editFaq($event)"
+  (onPublishToggle)="onFaqItemPublishToggle($event)"
+></app-faq-item>
+} @if (faqList.length === 0) {
+<div class="mt-5 mb-2">
+  <p class="text-center">Список питань порожній</p>
+</div>
+} } @else { @for (faq of faqList; track faq) {
+<app-faq-item class="block mb-4" toggler="header" [faq]="faq"></app-faq-item>
+} } @if (('create' | able : faqEntity) || ('update' | able : faqEntity)) {
 <p-dialog
-  *ngIf="('create' | able : faqEntity) || ('update' | able : faqEntity)"
   [(visible)]="faqDialog"
   [modal]="true"
   header="Запитання та відповідь"
@@ -81,7 +74,6 @@
       ></p-editor>
     </div>
   </ng-template>
-
   <ng-template pTemplate="footer">
     <p-button
       label="Відмінити"
@@ -97,6 +89,7 @@
     ></p-button>
   </ng-template>
 </p-dialog>
+}
 
 <p-confirmDialog
   rejectButtonStyleClass="p-button-text"

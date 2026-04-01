@@ -4,26 +4,19 @@
       class="p-link layout-topbar-button"
       (click)="notifications.toggle($event)"
     >
-      <ng-container
-        *ngIf="notificationsNumber$ | async as notificationsNumber; else bell"
-      >
-        <i
-          class="pi pi-bell"
-          pBadge
-          [value]="notificationsNumber.toString()"
-        ></i>
-      </ng-container>
-      <ng-template #bell>
-        <i class="pi pi-bell"></i>
-      </ng-template>
+      @if (notificationsNumber$ | async; as notificationsNumber) {
+      <i class="pi pi-bell" pBadge [value]="notificationsNumber.toString()"></i>
+      } @else {
+      <i class="pi pi-bell"></i>
+      }
 
       <span class="topbar-button-text">Сповіщення</span>
     </button>
-    <p-overlayPanel #overlayPanel #notifications>
+    <p-popover #overlayPanel #notifications>
       <ng-template pTemplate>
         <app-notifications></app-notifications>
       </ng-template>
-    </p-overlayPanel>
+    </p-popover>
 
     <button
       class="p-link layout-topbar-button"
@@ -32,7 +25,7 @@
       <i class="pi pi-user"></i>
       <span class="topbar-button-text">Акаунт</span>
     </button>
-    <p-overlayPanel #overlayPanel #account>
+    <p-popover #overlayPanel #account>
       <ng-template pTemplate>
         <div class="layout-menu-dropdown">
           <button
@@ -51,7 +44,7 @@
           ></button>
         </div>
       </ng-template>
-    </p-overlayPanel>
+    </p-popover>
   </ng-container>
   <ng-container sidebar-appendix>
     <app-posts-widget></app-posts-widget>

@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 
 @Component({
+  standalone: false,
   selector: 'app-delivery-service-badge',
   templateUrl: './delivery-service-badge.component.html',
   styleUrls: ['./delivery-service-badge.component.scss'],

@@ -1,7 +1,7 @@
 import { ButtonModule } from 'primeng/button';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { SidebarModule } from 'primeng/sidebar';
+import { DrawerModule } from 'primeng/drawer';
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -13,10 +13,10 @@ import { ConfigComponent } from './config.component';
   imports: [
     CommonModule,
     FormsModule,
-    SidebarModule,
+    DrawerModule,
     RadioButtonModule,
     ButtonModule,
-    InputSwitchModule,
+    ToggleSwitchModule,
   ],
   declarations: [ConfigComponent],
   exports: [ConfigComponent],

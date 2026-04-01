@@ -11,6 +11,7 @@ import { Page } from '@shared/interfaces/page.interface';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
+  standalone: false,
   templateUrl: './users-list-page.component.html',
   styleUrls: ['./users-list-page.component.scss'],
 })

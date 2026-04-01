@@ -7,6 +7,7 @@ import { ProductBase } from '@shared/interfaces/entities/product.entity';
 import { ProductsService } from '@shared/services/products.service';
 
 @Component({
+  standalone: false,
   selector: 'app-view-product',
   templateUrl: './view-product.component.html',
   styleUrls: ['./view-product.component.scss'],

@@ -3,6 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { RequestType } from '@shared/enums/request-type.enum';
 
 @Pipe({
+  standalone: false,
   name: 'requestType',
 })
 export class RequestTypePipe implements PipeTransform {

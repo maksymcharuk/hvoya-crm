@@ -1,14 +1,17 @@
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
+import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
+import { MessageModule } from 'primeng/message';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { TextareaModule } from 'primeng/textarea';
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -25,12 +28,15 @@ import { OrderViewComponent } from './pages/order-view/order-view.component';
     FormsModule,
     ReactiveFormsModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     FileUploadModule,
-    DropdownModule,
+    SelectModule,
+    MessageModule,
     DialogModule,
     NgxDocViewerModule,
-    AbilityModule,
+    ButtonModule,
+    ProgressBarModule,
+    AblePipe,
   ],
 })
 export class OrdersModule {}

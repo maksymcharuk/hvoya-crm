@@ -11,6 +11,7 @@ import {
 import { Faq } from '@shared/interfaces/entities/faq.entity';
 
 @Component({
+  standalone: false,
   selector: 'app-faq-item',
   templateUrl: './faq-item.component.html',
   styleUrls: ['./faq-item.component.scss'],

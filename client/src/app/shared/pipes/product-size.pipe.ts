@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 import { ProductSize } from '@shared/interfaces/entities/product.entity';
 
-@Pipe({ name: 'productSize' })
+@Pipe({
+  standalone: false, name: 'productSize' })
 export class ProductSizePipe implements PipeTransform {
   transform(value: ProductSize, mode?: 'short' | undefined): string {
     if (value.diameter) {

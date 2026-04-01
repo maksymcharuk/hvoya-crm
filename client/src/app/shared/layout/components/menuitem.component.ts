@@ -23,17 +23,16 @@ import { NotificationsService } from '@shared/services/notifications.service';
 import { MenuService } from '../services/menu.service';
 
 @Component({
+  standalone: false,
   selector: '[menuitem]',
   template: `
     <ng-container>
-      <div
-        *ngIf="root && item.visible !== false"
-        class="layout-menuitem-root-text"
-      >
+      @if (root && item.visible !== false) {
+      <div class="layout-menuitem-root-text">
         {{ item.label }}
       </div>
+      } @if ((!item.routerLink || item.items) && item.visible !== false) {
       <a
-        *ngIf="(!item.routerLink || item.items) && item.visible !== false"
         [attr.href]="item.url"
         (click)="itemClick($event)"
         [ngClass]="item.class"
@@ -43,13 +42,12 @@ import { MenuService } from '../services/menu.service';
       >
         <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
         <span class="layout-menuitem-text">{{ item.label }}</span>
-        <i
-          class="pi pi-fw pi-angle-down layout-submenu-toggler"
-          *ngIf="item.items"
-        ></i>
+        @if (item.items) {
+        <i class="pi pi-fw pi-angle-down layout-submenu-toggler"></i>
+        }
       </a>
+      } @if (item.routerLink && !item.items && item.visible !== false) {
       <a
-        *ngIf="item.routerLink && !item.items && item.visible !== false"
         (click)="itemClick($event)"
         [ngClass]="item.class"
         [routerLink]="item.routerLink"
@@ -76,32 +74,29 @@ import { MenuService } from '../services/menu.service';
       >
         <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
         <span class="layout-menuitem-text">{{ item.label }}</span>
-        <i
-          class="pi pi-fw pi-angle-down layout-submenu-toggler"
-          *ngIf="item.items"
-        ></i>
+        @if (item.items) {
+        <i class="pi pi-fw pi-angle-down layout-submenu-toggler"></i>
+        } @if (item.badge) {
         <span
-          *ngIf="item.badge"
           class="layout-submenu-toggler mr-2"
           pBadge
           [value]="item.badge"
         ></span>
+        }
       </a>
-
-      <ul
-        *ngIf="item.items && item.visible !== false"
-        [@children]="submenuAnimation"
-      >
-        <ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
-          <li
-            menuitem
-            [item]="child"
-            [index]="i"
-            [parentKey]="key"
-            [class]="child.badgeClass"
-          ></li>
-        </ng-template>
+      } @if (item.items && item.visible !== false) {
+      <ul [@children]="submenuAnimation">
+        @for (child of item.items; track child; let i = $index) {
+        <li
+          menuitem
+          [item]="child"
+          [index]="i"
+          [parentKey]="key"
+          [class]="child.badgeClass"
+        ></li>
+        }
       </ul>
+      }
     </ng-container>
   `,
   animations: [

@@ -1,26 +1,23 @@
 <td>
-  <ng-container *ngIf="user.isUser; else noAccountNumber">
-    <span class="p-column-title">Номер договору</span>
-    <div class="flex align-items-center">
-      <span>{{ user.accountNumber }}</span>
-      <i
-        *ngIf="showUserNotification(user, notifications$ | async)"
-        class="pi pi-circle-fill text-green-600 ml-2"
-      ></i>
-    </div>
-  </ng-container>
-  <ng-template #noAccountNumber> - </ng-template>
+  @if (user.isUser) {
+  <span class="p-column-title">Номер договору</span>
+  <div class="flex align-items-center">
+    <span>{{ user.accountNumber }}</span>
+    @if (showUserNotification(user, notifications$ | async)) {
+    <i class="pi pi-circle-fill text-green-600 ml-2"></i>
+    }
+  </div>
+  } @else { - }
 </td>
 <td>
   <span class="p-column-title">ПІБ</span>
   <span class="white-space-nowrap">{{ user.fullName }}</span>
 </td>
 <td class="note">
-  <ng-container *ngIf="user.isUser; else noNote">
-    <span class="p-column-title">Нотатка</span>
-    {{ user.note | truncate : 55 }}
-  </ng-container>
-  <ng-template #noNote> - </ng-template>
+  @if (user.isUser) {
+  <span class="p-column-title">Нотатка</span>
+  {{ user.note | truncate : 55 }}
+  } @else { - }
 </td>
 <td>
   <span class="p-column-title">Пошта</span>
@@ -30,7 +27,9 @@
   <span class="p-column-title">Номер телефону</span>
   <span class="white-space-nowrap">{{ user.phoneNumber | phoneNumber }}</span>
 </td>
-<td *ngIf="!hideManager">{{ user.manager ? user.manager.fullName : '-' }}</td>
+@if (!hideManager) {
+<td>{{ user.manager ? user.manager.fullName : '-' }}</td>
+}
 <td
   [ngClass]="{
     'text-red-500': !user.userConfirmed,

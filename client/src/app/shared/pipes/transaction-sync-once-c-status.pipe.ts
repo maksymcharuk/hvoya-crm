@@ -3,6 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { TransactionStatus } from '@shared/enums/transaction-status.enum';
 
 @Pipe({
+  standalone: false,
   name: 'transactionSyncOneCStatus',
 })
 export class TransactionSyncOneCStatusPipe implements PipeTransform {

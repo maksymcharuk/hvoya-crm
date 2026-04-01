@@ -20,21 +20,23 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(rows)">
-      <tr>
-        <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
-        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
-        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        <td *ngIf="!hideManager">
-          <p-skeleton height="16px" width="55px"></p-skeleton>
-        </td>
-        <td><p-skeleton height="18px" width="18px"></p-skeleton></td>
-        <td><p-skeleton height="18px" width="18px"></p-skeleton></td>
-        <td><p-skeleton height="18px" width="18px"></p-skeleton></td>
-      </tr>
-    </ng-container>
+    @for (_ of [].constructor(rows); track _) {
+    <tr>
+      <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+      <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+      <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      @if (!hideManager) {
+      <td>
+        <p-skeleton height="16px" width="55px"></p-skeleton>
+      </td>
+      }
+      <td><p-skeleton height="18px" width="18px"></p-skeleton></td>
+      <td><p-skeleton height="18px" width="18px"></p-skeleton></td>
+      <td><p-skeleton height="18px" width="18px"></p-skeleton></td>
+    </tr>
+    }
   </ng-template>
   <ng-template pTemplate="caption">
     <div class="table-header flex justify-content-between align-items-center">
@@ -62,7 +64,9 @@
       <th>Нотатка</th>
       <th>Пошта</th>
       <th>Номер телефону</th>
-      <th *ngIf="!hideManager">Менеджер</th>
+      @if (!hideManager) {
+      <th>Менеджер</th>
+      }
       <th pSortableColumn="userConfirmed">
         <div class="flex justify-content-between align-items-center">
           <i
@@ -100,7 +104,8 @@
       <th></th>
       <th></th>
       <th></th>
-      <th *ngIf="!hideManager">
+      @if (!hideManager) {
+      <th>
         <p-columnFilter [showMenu]="false" class="ml-auto">
           <ng-template pTemplate="filter" let-value>
             <p-multiSelect
@@ -119,6 +124,7 @@
           </ng-template>
         </p-columnFilter>
       </th>
+      }
       <th>
         <p-columnFilter type="boolean" field="userConfirmed"></p-columnFilter>
       </th>
@@ -131,11 +137,13 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="groupheader" let-user>
-    <tr *ngIf="'read' | able : user" pRowGroupHeader>
+    @if ('read' | able : user) {
+    <tr pRowGroupHeader>
       <td colspan="9">
         <span class="font-bold ml-2">{{ user.role | roleName }}</span>
       </td>
     </tr>
+    }
   </ng-template>
   <ng-template pTemplate="body" let-user let-notification>
     <tr

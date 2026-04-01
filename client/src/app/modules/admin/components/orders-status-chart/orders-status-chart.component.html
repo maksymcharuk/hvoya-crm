@@ -5,25 +5,20 @@
   <div class="col-fixed">
     <div class="field">
       <label>Період:</label>
-      <p-calendar
+      <p-datepicker
         formControlName="range"
         selectionMode="range"
         appendTo="body"
         placeholder="Період"
-      ></p-calendar>
+      ></p-datepicker>
     </div>
   </div>
 </form>
 
-<p-chart
-  *ngIf="!loading; else skeleton"
-  type="doughnut"
-  [data]="data"
-  [options]="options"
-></p-chart>
-
-<ng-template #skeleton>
-  <div class="flex justify-content-center align-items-center">
-    <p-skeleton shape="circle" size="300px" class="skeleton"></p-skeleton>
-  </div>
-</ng-template>
+@if (!loading) {
+<p-chart type="doughnut" [data]="data" [options]="options"></p-chart>
+} @else {
+<div class="flex justify-content-center align-items-center">
+  <p-skeleton shape="circle" size="300px" class="skeleton"></p-skeleton>
+</div>
+}

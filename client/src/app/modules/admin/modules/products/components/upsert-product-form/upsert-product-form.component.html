@@ -1,15 +1,13 @@
 <div class="grid">
   <div class="col-12 md:col-8">
     <div class="card">
-      <form
-        *ngIf="productForm"
-        [formGroup]="productForm"
-        (ngSubmit)="onSubmit(productForm.value)"
-      >
-        <div *ngIf="isEdit" class="p-fluid p-formgrid grid">
+      @if (productForm) {
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
+        @if (isEdit) {
+        <div class="p-fluid p-formgrid grid">
           <div class="field col-12 md:col-6">
             <label for="productsList">Продукт</label>
-            <p-dropdown
+            <p-select
               [options]="productsList"
               placeholder="Виберіть продукт для зміни"
               optionLabel="properties.name"
@@ -25,26 +23,27 @@
                   <div>{{ product.properties.name }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </div>
-          <div
-            class="field col-12 md:col-4 changes-message"
-            *ngIf="productBaseProductChange"
-          >
+          @if (productBaseProductChange) {
+          <div class="field col-12 md:col-4 changes-message">
             <app-product-state-changes
               [change]="productBaseProductChange"
             ></app-product-state-changes>
           </div>
+          }
         </div>
-        <hr *ngIf="isEdit" />
-
+        } @if (isEdit) {
+        <hr />
+        }
         <div
           class="p-fluid p-formgrid grid"
           formGroupName="productCategoryGroup"
         >
-          <div *ngIf="!newCategory" class="field col-12 md:col-6">
+          @if (!newCategory) {
+          <div class="field col-12 md:col-6">
             <label for="productCategoryId">Категорія</label>
-            <p-dropdown
+            <p-select
               [options]="productsCategories"
               placeholder="Виберіть категорію"
               optionLabel="name"
@@ -61,7 +60,7 @@
                   <div>{{ category.name }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
             <app-form-control-error-message
               [formGroup]="productForm"
               controlName="productCategoryGroup.productCategoryId"
@@ -70,7 +69,8 @@
             >
             </app-form-control-error-message>
           </div>
-          <div *ngIf="newCategory" class="field col-12 md:col-6">
+          } @if (newCategory) {
+          <div class="field col-12 md:col-6">
             <label for="productCategoryName">Нова категорія</label>
             <input
               id="productCategoryName"
@@ -89,6 +89,7 @@
             >
             </app-form-control-error-message>
           </div>
+          }
           <div class="field col-12 md:col-1">
             <label>&nbsp;</label>
             <button
@@ -104,9 +105,10 @@
         </div>
         <hr />
         <div class="p-fluid p-formgrid grid" formGroupName="productBaseGroup">
-          <div *ngIf="!newProductBase" class="field col-12 md:col-6">
+          @if (!newProductBase) {
+          <div class="field col-12 md:col-6">
             <label for="productBaseId">Базовий продукт</label>
-            <p-dropdown
+            <p-select
               [options]="isEdit ? allBaseProducts : baseProductsByCategory"
               placeholder="Виберіть базовий продукт"
               optionLabel="name"
@@ -121,7 +123,7 @@
                   {{ baseProduct.name }}
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
             <app-form-control-error-message
               [formGroup]="productForm"
               controlName="productBaseGroup.productBaseId"
@@ -130,7 +132,8 @@
             >
             </app-form-control-error-message>
           </div>
-          <div *ngIf="newProductBase" class="field col-12 md:col-6">
+          } @if (newProductBase) {
+          <div class="field col-12 md:col-6">
             <label for="productBaseName">Новий базовий продукт</label>
             <input
               id="productBaseName"
@@ -149,6 +152,7 @@
             >
             </app-form-control-error-message>
           </div>
+          }
           <div class="field col-12 md:col-1">
             <label>&nbsp;</label>
             <button
@@ -162,17 +166,15 @@
               data-cy="new-base-product-toggle"
             ></button>
           </div>
-          <div
-            *ngIf="isEdit && baseProductCategoryChange"
-            class="field col-12 md:col-4 changes-message"
-          >
+          @if (isEdit && baseProductCategoryChange) {
+          <div class="field col-12 md:col-4 changes-message">
             <app-product-state-changes
               [change]="baseProductCategoryChange"
             ></app-product-state-changes>
           </div>
+          }
         </div>
         <hr />
-
         <div
           class="p-fluid p-formgrid grid"
           formGroupName="productVariantGroup"
@@ -234,7 +236,7 @@
           </div>
           <div class="field col-4">
             <label for="productVariantSizeId">Розмір</label>
-            <p-dropdown
+            <p-select
               [options]="sizes"
               formControlName="productVariantSizeId"
               [showClear]="true"
@@ -249,7 +251,7 @@
               <ng-template let-size pTemplate="item">
                 {{ size | productSize }}
               </ng-template>
-            </p-dropdown>
+            </p-select>
             <app-form-control-error-message
               [formGroup]="productForm"
               controlName="productVariantGroup.productVariantSizeId"
@@ -260,7 +262,7 @@
           </div>
           <div class="field col-4">
             <label for="productVariantColorId">Колір</label>
-            <p-dropdown
+            <p-select
               #colorDropdown
               [options]="colors"
               formControlName="productVariantColorId"
@@ -271,14 +273,14 @@
               data-cy="product-color"
             >
               <!-- <ng-template pTemplate="selectedItem">
-                <div class="flex align-items-center">
-                  <app-product-color-badge
-                    class="mr-2"
-                    [color]="colorDropdown.selectedOption.value"
-                  ></app-product-color-badge>
-                  <div>{{ color.name }}</div>
-                </div>
-              </ng-template> -->
+              <div class="flex align-items-center">
+                <app-product-color-badge
+                  class="mr-2"
+                  [color]="colorDropdown.selectedOption.value"
+                ></app-product-color-badge>
+                <div>{{ color.name }}</div>
+              </div>
+            </ng-template> -->
               <ng-template let-color pTemplate="item">
                 <div class="flex align-items-center">
                   <app-product-color-badge
@@ -288,7 +290,7 @@
                   <div>{{ color.name }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
             <app-form-control-error-message
               [formGroup]="productForm"
               controlName="productVariantGroup.productVariantColorId"
@@ -318,7 +320,6 @@
             >
             </app-form-control-error-message>
           </div>
-
           <div class="field col-4">
             <label for="productVariantWeight">Вага</label>
             <p-inputNumber
@@ -341,7 +342,6 @@
             >
             </app-form-control-error-message>
           </div>
-
           <div class="field col-4">
             <label for="productVariantStock">Наявність</label>
             <p-inputNumber
@@ -353,7 +353,6 @@
             >
             </p-inputNumber>
           </div>
-
           <div class="field col-12 flex align-items-center">
             <p-checkbox
               inputId="productVariantIsPublished"
@@ -365,14 +364,11 @@
               Опублікований
             </label>
           </div>
-
-          <div
-            class="col-12 selected-product-images-wrapper"
-            *ngIf="isEdit && selectedProductImages.length"
-          >
+          @if (isEdit && selectedProductImages.length) {
+          <div class="col-12 selected-product-images-wrapper">
+            @for (image of selectedProductImages; track image) {
             <div
               class="selected-product-images-wrapper-image"
-              *ngFor="let image of selectedProductImages"
               data-cy="product-images"
             >
               <img
@@ -382,8 +378,8 @@
                 [class.remove]="image?.remove"
                 (click)="setImageActive(image)"
               />
+              @if (!image?.active) {
               <button
-                *ngIf="!image?.active"
                 pButton
                 pRipple
                 type="button"
@@ -392,9 +388,11 @@
                 [class]="image?.remove ? 'restore' : 'remove'"
                 (click)="removeProductImage(image)"
               ></button>
+              }
             </div>
+            }
           </div>
-
+          }
           <div class="field col-12">
             <label for="images">Завантаження файлів</label>
             <p-fileUpload
@@ -414,17 +412,17 @@
               data-cy="product-image-upload"
             >
               <ng-template pTemplate="content">
-                <ul *ngIf="productImagesControl?.value?.length">
-                  <li *ngFor="let file of productImagesControl?.value">
-                    {{ file.name }} - {{ file.size }} bytes
-                  </li>
+                @if (productImagesControl?.value?.length) {
+                <ul>
+                  @for (file of productImagesControl?.value; track file) {
+                  <li>{{ file.name }} - {{ file.size }} bytes</li>
+                  }
                 </ul>
+                }
               </ng-template>
               <ng-template pTemplate="content">
-                <ul
-                  *ngIf="!productImagesControl?.value?.length"
-                  class="upload-files-no-files"
-                >
+                @if (!productImagesControl?.value?.length) {
+                <ul class="upload-files-no-files">
                   <span class="upload-files-no-files-text"
                     >Перетягніть файл для завантаження<i
                       class="pi pi-upload"
@@ -432,10 +430,10 @@
                     ></i
                   ></span>
                 </ul>
+                }
               </ng-template>
             </p-fileUpload>
           </div>
-
           <div class="grid justify-content-end col-12">
             <div class="field col-3">
               <button
@@ -448,6 +446,7 @@
           </div>
         </div>
       </form>
+      }
     </div>
   </div>
   <div class="col-4 hidden md:block">

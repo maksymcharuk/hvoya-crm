@@ -1,21 +1,22 @@
 <div class="card transfer">
+  @if (submitting) {
   <p-progressBar
-    *ngIf="submitting"
     class="transfer__progress"
     mode="indeterminate"
     [style]="{ height: '4px' }"
   ></p-progressBar>
+  }
   <form [formGroup]="importForm" (ngSubmit)="onImportSubmit()">
     <div class="p-fluid">
       <h5>Імпорт продуктів</h5>
       <div class="field">
         <label for="import-source">Джерело імпорту:</label>
-        <p-dropdown
+        <p-select
           id="import-source"
           [options]="importSources"
           formControlName="source"
           optionValue="value"
-        ></p-dropdown>
+        ></p-select>
         <app-form-control-error-message
           [formGroup]="importForm"
           controlName="source"
@@ -29,10 +30,8 @@
           [options]="importSourceTypes"
         ></p-selectButton>
       </div>
-      <div
-        *ngIf="sourceType?.value === importSourceTypeEnum.Link"
-        class="field"
-      >
+      @if (sourceType?.value === importSourceTypeEnum.Link) {
+      <div class="field">
         <label for="link">Посилання:</label>
         <input id="link" pInputText formControlName="link" />
         <app-form-control-error-message
@@ -42,11 +41,10 @@
           errorMessage="Необхідно ввести посилання"
         ></app-form-control-error-message>
       </div>
+      }
     </div>
-    <div
-      *ngIf="sourceType?.value === importSourceTypeEnum.File"
-      class="formgrid"
-    >
+    @if (sourceType?.value === importSourceTypeEnum.File) {
+    <div class="formgrid">
       <div class="field">
         <label>Файл (XML/XLS):</label>
         <p-fileUpload
@@ -66,6 +64,7 @@
         ></app-form-control-error-message>
       </div>
     </div>
+    }
     <button
       pButton
       type="submit"

@@ -6,6 +6,7 @@ import { FormBuilder } from '@angular/forms';
 import { AdminAnalyticsService } from '@shared/services/admin-analytics.service';
 
 @Component({
+  standalone: false,
   selector: 'app-orders-funnel-chart',
   templateUrl: './orders-funnel-chart.component.html',
   styleUrls: ['./orders-funnel-chart.component.scss'],

@@ -2,20 +2,20 @@ import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
-import { TabViewModule } from 'primeng/tabview';
+import { TabsModule } from 'primeng/tabs';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -38,15 +38,15 @@ import { UsersRoutingModule } from './users-routing.module';
     SharedModule,
     SkeletonModule,
     TableModule,
-    DropdownModule,
+    SelectModule,
     ButtonModule,
     FormsModule,
     ReactiveFormsModule,
     InputTextModule,
-    AbilityModule,
+    AblePipe,
     ConfirmDialogModule,
-    TabViewModule,
-    InputTextareaModule,
+    TabsModule,
+    TextareaModule,
     DialogModule,
     TooltipModule,
     MultiSelectModule,

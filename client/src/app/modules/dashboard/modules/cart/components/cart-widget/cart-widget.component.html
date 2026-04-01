@@ -1,69 +1,59 @@
 <div class="cart-widget">
   <div class="text-900 text-xl pb-3 border-bottom-1 surface-border">Кошик</div>
-  <ng-container
-    *ngIf="
-      {
-        cart: cart$ | async,
-        cartLoading: cartLoading$ | async,
-        cartNotEmpty: cartNotEmpty$ | async
-      } as state;
-      else skeleton
-    "
+  @if ( { cart: cart$ | async, cartLoading: cartLoading$ | async, cartNotEmpty:
+  cartNotEmpty$ | async }; as state) { @if (state.cart) { @if
+  (state.cartNotEmpty) {
+  <div class="max-h-15rem overflow-y-auto">
+    <table class="w-full">
+      @for (cartItem of state.cart.items; track cartItem) {
+      <tr
+        app-cart-widget-item
+        data-cy="cart-widget-item"
+        [cartItem]="cartItem"
+      ></tr>
+      }
+    </table>
+  </div>
+  <div class="py-3 border-bottom-1 surface-border">
+    <div class="flex align-items-center justify-content-between">
+      <span class="text-900 font-bold"> Всього </span>
+      <span
+        class="text-xl text-900 font-bold text-3xl ml-5"
+        data-cy="order-total"
+      >
+        @if (state.cartLoading === 0) {
+        {{ state.cart.total | currency }}
+        } @else {
+        <p-skeleton height="1.75rem" width="8rem"></p-skeleton>
+        }
+      </span>
+    </div>
+  </div>
+  <div class="py-3 flex align-items-center p-fluid">
+    <!-- <button
+          routerLink="cart"
+          pButton
+          class="p-button-outlined mr-2"
+          type="button"
+          label="Кошик"
+        ></button> -->
+    <button
+      [routerLink]="['/dashboard', 'orders', 'checkout']"
+      pButton
+      class="ml-2"
+      type="button"
+      label="Оформити"
+      data-cy="cart-widget-checkout-button"
+    ></button>
+  </div>
+  } @else {
+  <div
+    class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
   >
-    <ng-container *ngIf="state.cart">
-      <ng-container *ngIf="state.cartNotEmpty; else emptyCart">
-        <div class="max-h-15rem overflow-y-auto">
-          <table class="w-full">
-            <ng-container *ngFor="let cartItem of state.cart.items">
-              <tr
-                app-cart-widget-item
-                data-cy="cart-widget-item"
-                [cartItem]="cartItem"
-              ></tr>
-            </ng-container>
-          </table>
-        </div>
-        <div class="py-3 border-bottom-1 surface-border">
-          <div class="flex align-items-center justify-content-between">
-            <span class="text-900 font-bold"> Всього </span>
-            <span
-              class="text-xl text-900 font-bold text-3xl ml-5"
-              data-cy="order-total"
-            >
-              <ng-container
-                *ngIf="state.cartLoading === 0; else totalPriceSkeleton"
-              >
-                {{ state.cart.total | currency }}
-              </ng-container>
-              <ng-template #totalPriceSkeleton>
-                <p-skeleton height="1.75rem" width="8rem"></p-skeleton>
-              </ng-template>
-            </span>
-          </div>
-        </div>
-        <div class="py-3 flex align-items-center p-fluid">
-          <!-- <button
-            routerLink="cart"
-            pButton
-            class="p-button-outlined mr-2"
-            type="button"
-            label="Кошик"
-          ></button> -->
-          <button
-            [routerLink]="['/dashboard', 'orders', 'checkout']"
-            pButton
-            class="ml-2"
-            type="button"
-            label="Оформити"
-            data-cy="cart-widget-checkout-button"
-          ></button>
-        </div>
-      </ng-container>
-    </ng-container>
-  </ng-container>
-</div>
-
-<ng-template #skeleton>
+    <i class="pi pi-shopping-cart text-4xl"></i>
+    <span class="text-2xl mt-3">Кошик пустий</span>
+  </div>
+  } } } @else {
   <div class="py-3">
     <p-skeleton height="4rem" width="252px"></p-skeleton>
   </div>
@@ -81,13 +71,5 @@
       <p-skeleton height="39px"></p-skeleton>
     </div>
   </div>
-</ng-template>
-
-<ng-template #emptyCart>
-  <div
-    class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
-  >
-    <i class="pi pi-shopping-cart text-4xl"></i>
-    <span class="text-2xl mt-3">Кошик пустий</span>
-  </div>
-</ng-template>
+  }
+</div>

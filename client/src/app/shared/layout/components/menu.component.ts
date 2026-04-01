@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
 import { LayoutService } from '../services/layout.service';
 
 @Component({
+  standalone: false,
   selector: 'app-menu',
   templateUrl: './menu.component.html',
 })

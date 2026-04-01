@@ -1,5 +1,5 @@
 import { MessageService } from 'primeng/api';
-import { Dropdown } from 'primeng/dropdown';
+import { Select } from 'primeng/select';
 import {
   BehaviorSubject,
   Observable,
@@ -34,12 +34,13 @@ import { UserService } from '@shared/services/user.service';
 import { alphanumeric } from '@shared/validators/alphanumeric.validator';
 
 @Component({
+  standalone: false,
   selector: 'app-return-request-create',
   templateUrl: './return-request-create.component.html',
   styleUrls: ['./return-request-create.component.scss'],
 })
 export class ReturnRequestCreateComponent {
-  @ViewChild('orderNumberDropdown') orderNumberDropdown?: Dropdown;
+  @ViewChild('orderNumberDropdown') orderNumberDropdown?: Select;
 
   deliveryServices = Object.values(DeliveryService).filter(
     (value) => value !== DeliveryService.SelfPickup,

@@ -73,20 +73,24 @@
                   <p class="mt-2">Вимоги до паролю</p>
                   <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
                     <li [ngClass]="{ valid: !hasLowerCase }">
-                      Хоча б одна мала літера
-                      <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
+                      Хоча б одна мала літера @if (!hasLowerCase) {
+                      <i class="pi pi-check"></i>
+                      }
                     </li>
                     <li [ngClass]="{ valid: !hasUpperCase }">
-                      Хоча б одна велика літера
-                      <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
+                      Хоча б одна велика літера @if (!hasUpperCase) {
+                      <i class="pi pi-check"></i>
+                      }
                     </li>
                     <li [ngClass]="{ valid: !hasNumeric }">
-                      Хоча б одна цифра
-                      <i class="pi pi-check" *ngIf="!hasNumeric"></i>
+                      Хоча б одна цифра @if (!hasNumeric) {
+                      <i class="pi pi-check"></i>
+                      }
                     </li>
                     <li [ngClass]="{ valid: !hasMinLength }">
-                      Не менше 8 символів
-                      <i class="pi pi-check" *ngIf="!hasMinLength"></i>
+                      Не менше 8 символів @if (!hasMinLength) {
+                      <i class="pi pi-check"></i>
+                      }
                     </li>
                   </ul>
                 </ng-template>

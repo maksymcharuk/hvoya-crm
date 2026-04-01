@@ -8,6 +8,7 @@ import { ProductSize } from '@shared/interfaces/entities/product.entity';
 import { ProductSizesService } from '../../../../services/product-sizes.service';
 
 @Component({
+  standalone: false,
   selector: 'app-product-sizes',
   templateUrl: './product-sizes.component.html',
   styleUrls: ['./product-sizes.component.scss'],
