@@ -7,7 +7,8 @@
 
   <div class="field">
     <label for="phoneNumber">Номер договору:</label>
-    <span class="p-input-icon-right">
+    <p-iconField iconPosition="right">
+      <p-inputIcon [styleClass]="accountNumberCopied ? 'pi pi-check' : 'pi pi-copy'" />
       <input
         [value]="accountNumber"
         type="text"
@@ -15,8 +16,7 @@
         readonly
         (click)="copyAccountNumber()"
       />
-      <i [ngClass]="accountNumberCopied ? 'pi pi-check' : 'pi pi-copy'"></i>
-    </span>
+    </p-iconField>
   </div>
   <div class="field">
     <label for="phoneNumber">Номер телефону:</label>

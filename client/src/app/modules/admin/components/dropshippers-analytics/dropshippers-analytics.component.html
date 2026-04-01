@@ -199,32 +199,13 @@
     <ng-template pTemplate="body" let-dropshipper>
       @if (!(loading$ | async)) {
       <tr>
+        <td>{{ dropshipper.name }}</td>
+        <td>{{ dropshipper.ordersCount }}</td>
+        <td>{{ formatCurrency(dropshipper.totalRevenue) }}</td>
+        <td>{{ formatCurrency(dropshipper.averageOrderValue) }}</td>
+        <td>{{ formatPercent(dropshipper.returnRate) }}</td>
+        <td>{{ formatCurrency(dropshipper.walletBalance) }}</td>
         <td>
-          <span class="p-column-title">Ім'я</span>
-          {{ dropshipper.name }}
-        </td>
-        <td>
-          <span class="p-column-title">К-ть замовлень</span>
-          {{ dropshipper.ordersCount }}
-        </td>
-        <td>
-          <span class="p-column-title">Загальний дохід</span>
-          {{ formatCurrency(dropshipper.totalRevenue) }}
-        </td>
-        <td>
-          <span class="p-column-title">Середня вартість замовлення</span>
-          {{ formatCurrency(dropshipper.averageOrderValue) }}
-        </td>
-        <td>
-          <span class="p-column-title">% повернень</span>
-          {{ formatPercent(dropshipper.returnRate) }}
-        </td>
-        <td>
-          <span class="p-column-title">Баланс гаманця</span>
-          {{ formatCurrency(dropshipper.walletBalance) }}
-        </td>
-        <td>
-          <span class="p-column-title">Останнє замовлення</span>
           @if (dropshipper.lastOrderDate) {
           {{ dropshipper.lastOrderDate | date : 'short' }}
           } @else { — }

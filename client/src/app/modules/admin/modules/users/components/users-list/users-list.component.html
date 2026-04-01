@@ -41,14 +41,16 @@
   <ng-template pTemplate="caption">
     <div class="table-header flex justify-content-between align-items-center">
       Користувачі
-      <form [formGroup]="searchForm" class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input
-          pInputText
-          formControlName="search"
-          type="text"
-          placeholder="Прізвище, ім'я або № договору"
-        />
+      <form [formGroup]="searchForm">
+        <p-iconField iconPosition="left">
+          <p-inputIcon styleClass="pi pi-search" />
+          <input
+            pInputText
+            formControlName="search"
+            type="text"
+            placeholder="Прізвище, ім'я або № договору"
+          />
+        </p-iconField>
       </form>
     </div>
   </ng-template>

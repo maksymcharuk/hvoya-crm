@@ -1,4 +1,6 @@
 import { ConfirmationService } from 'primeng/api';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
@@ -36,6 +38,8 @@ import { UsersRoutingModule } from './users-routing.module';
     UsersRoutingModule,
     CommonModule,
     SharedModule,
+    IconFieldModule,
+    InputIconModule,
     SkeletonModule,
     TableModule,
     SelectModule,

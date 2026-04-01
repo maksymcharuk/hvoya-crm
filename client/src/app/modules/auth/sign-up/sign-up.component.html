@@ -19,8 +19,8 @@
           <div class="col-12 md:col-6">
             <div class="field">
               <label for="email">Пошта</label>
-              <div class="p-input-icon-right">
-                <i class="pi pi-user"></i>
+              <p-iconField iconPosition="right">
+                <p-inputIcon styleClass="pi pi-user" />
                 <input
                   name="email"
                   formControlName="email"
@@ -29,7 +29,7 @@
                   placeholder="Введіть пошту"
                   data-cy="email"
                 />
-              </div>
+              </p-iconField>
               <app-form-control-error-message
                 [formGroup]="signUpForm"
                 controlName="email"

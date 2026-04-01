@@ -10,8 +10,8 @@
     styleClass="mb-2 md:mb-0"
     [options]="sortOptions"
   ></p-select> -->
-    <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
+    <p-iconField iconPosition="left">
+      <p-inputIcon styleClass="pi pi-search" />
       <input
         pInputText
         formControlName="search"
@@ -19,7 +19,7 @@
         placeholder="Назва товару або артикул"
         class="w-16rem"
       />
-    </span>
+    </p-iconField>
     <div class="flex align-items-start">
       <div class="flex align-items-center h-full">
         <p-toggleswitch
@@ -31,7 +31,7 @@
       </div>
       <p-multiSelect
         formControlName="filters"
-        defaultLabel="Виберіть фільтри"
+        placeholder="Виберіть фільтри"
         display="chip"
         dataKey="uuid"
         optionLabel="label"

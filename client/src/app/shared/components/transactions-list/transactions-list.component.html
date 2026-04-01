@@ -40,14 +40,16 @@
           pTooltip="Експорт Excel файлу"
           tooltipPosition="bottom"
         ></button>
-        <form [formGroup]="searchForm" class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            formControlName="search"
-            type="text"
-            placeholder="Сума транзакції"
-          />
+        <form [formGroup]="searchForm">
+          <p-iconField iconPosition="left">
+            <p-inputIcon styleClass="pi pi-search" />
+            <input
+              pInputText
+              formControlName="search"
+              type="text"
+              placeholder="Сума транзакції"
+            />
+          </p-iconField>
         </form>
       </div>
     </div>

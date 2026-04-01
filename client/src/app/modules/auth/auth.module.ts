@@ -1,4 +1,6 @@
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { DividerModule } from 'primeng/divider';
 import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
@@ -41,6 +43,8 @@ import { AdminSignUpComponent } from './admin-sign-up/admin-sign-up.component';
     ],
     exports: [RouterModule], imports: [AuthRoutingModule,
         CommonModule,
+        IconFieldModule,
+        InputIconModule,
         InputTextModule,
         ReactiveFormsModule,
         PasswordModule,

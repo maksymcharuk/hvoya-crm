@@ -44,6 +44,9 @@
     height: 3rem;
     cursor: pointer;
     transition: background-color $transitionDuration;
+    border: none;
+    background: transparent;
+    padding: 0;
 
     &:hover {
       color: var(--text-color);

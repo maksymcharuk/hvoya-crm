@@ -13,8 +13,8 @@
           <div class="col-12">
             <div class="field">
               <label for="email">Пошта</label>
-              <div class="p-input-icon-right">
-                <i class="pi pi-user"></i>
+              <p-iconField iconPosition="right">
+                <p-inputIcon styleClass="pi pi-user" />
                 <input
                   name="email"
                   formControlName="email"
@@ -24,7 +24,7 @@
                   [readonly]="true"
                   [disabled]="true"
                 />
-              </div>
+              </p-iconField>
             </div>
             <div class="field">
               <label for="phoneNumber">Номер телефону</label>

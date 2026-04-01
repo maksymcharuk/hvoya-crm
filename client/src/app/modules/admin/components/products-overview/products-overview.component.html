@@ -207,30 +207,12 @@
     <ng-template pTemplate="body" let-product>
       @if (!(loading$ | async)) {
       <tr>
-        <td>
-          <span class="p-column-title">Назва продукту</span>
-          {{ product.productName }}
-        </td>
-        <td>
-          <span class="p-column-title">К-ть продано</span>
-          {{ product.quantitySold }}
-        </td>
-        <td>
-          <span class="p-column-title">Загальний дохід</span>
-          {{ formatCurrency(product.totalRevenue) }}
-        </td>
-        <td>
-          <span class="p-column-title">Дропшипери</span>
-          {{ product.uniqueDropshippersCount }}
-        </td>
-        <td>
-          <span class="p-column-title">% повернень</span>
-          {{ formatPercent(product.returnRate) }}
-        </td>
-        <td>
-          <span class="p-column-title">Середня ціна</span>
-          {{ formatCurrency(product.averagePrice) }}
-        </td>
+        <td>{{ product.productName }}</td>
+        <td>{{ product.quantitySold }}</td>
+        <td>{{ formatCurrency(product.totalRevenue) }}</td>
+        <td>{{ product.uniqueDropshippersCount }}</td>
+        <td>{{ formatPercent(product.returnRate) }}</td>
+        <td>{{ formatCurrency(product.averagePrice) }}</td>
       </tr>
       }
     </ng-template>

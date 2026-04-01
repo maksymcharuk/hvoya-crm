@@ -1,3 +1,9 @@
+// PrimeFlex 4 sets label to inline-block; PrimeNG 21 inputs may be inline-flex,
+// causing label + input to appear side-by-side. Force block to restore vertical stacking.
+.field > label {
+  display: block;
+}
+
 .card {
   background: var(--surface-card);
   border: 1px solid var(--surface-border);

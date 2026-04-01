@@ -1,5 +1,7 @@
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { BadgeModule } from 'primeng/badge';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ChartModule } from 'primeng/chart';
@@ -142,6 +144,8 @@ const COMPONENTS = [
 ];
 
 const PRIMENG_MODULES = [
+  IconFieldModule,
+  InputIconModule,
   SelectButtonModule,
   SkeletonModule,
   ButtonModule,

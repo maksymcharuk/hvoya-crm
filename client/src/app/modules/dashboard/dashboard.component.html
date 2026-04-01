@@ -12,7 +12,7 @@
       }
     </button>
     <p-popover #overlayPanel #balance>
-      <ng-template pTemplate
+      <ng-template pTemplate="content"
         ><app-balance-widget></app-balance-widget
       ></ng-template>
     </p-popover>
@@ -30,7 +30,7 @@
       <span class="topbar-button-text">Сповіщення</span>
     </button>
     <p-popover #overlayPanel #notifications>
-      <ng-template pTemplate>
+      <ng-template pTemplate="content">
         <app-notifications></app-notifications>
       </ng-template>
     </p-popover>
@@ -48,7 +48,7 @@
       <span class="topbar-button-text">Кошик</span>
     </button>
     <p-popover #overlayPanel #cart>
-      <ng-template pTemplate><app-cart-widget></app-cart-widget></ng-template>
+      <ng-template pTemplate="content"><app-cart-widget></app-cart-widget></ng-template>
     </p-popover>
 
     <button
@@ -59,7 +59,7 @@
       <span class="topbar-button-text">Акаунт</span>
     </button>
     <p-popover #overlayPanel #account>
-      <ng-template pTemplate>
+      <ng-template pTemplate="content">
         <div class="layout-menu-dropdown">
           <button
             pButton
