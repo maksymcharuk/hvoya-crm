@@ -1,7 +1,7 @@
-import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { PopoverModule } from 'primeng/popover';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
@@ -36,7 +36,7 @@ import { ConfigModule } from './config/config.module';
         FormsModule,
         InputTextModule,
         DrawerModule,
-        BadgeModule,
+        OverlayBadgeModule,
         RadioButtonModule,
         ToggleSwitchModule,
         RippleModule,

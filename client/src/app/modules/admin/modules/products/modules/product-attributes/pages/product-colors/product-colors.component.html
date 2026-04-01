@@ -15,7 +15,7 @@
   #productColorsTable
   dataKey="id"
   currentPageReportTemplate="Показано від {first} до {last} з {totalRecords} кольорів"
-  class="block border-surface-300 dark:border-surface-500 border-l border-r"
+  class="block border-surface-300 border-l border-r"
   [value]="colors"
   [rows]="rows"
   [paginator]="true"
@@ -76,19 +76,19 @@
   [style]="{ width: '450px' }"
   header="Колір"
   [modal]="true"
-  styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <div class="flex justify-center">
+    <div class="flex justify-center mb-4">
       <!-- TODO: update color badge when color is changed in dialog -->
       <app-product-color-badge
         size="42px"
         [color]="color"
       ></app-product-color-badge>
     </div>
-    <div class="field">
+    <div class="flex flex-col gap-1 mb-4">
       <label for="name">Назва</label>
       <input
+        class="w-full"
         type="text"
         pInputText
         id="name"
@@ -97,9 +97,16 @@
         autofocus
       />
     </div>
-    <div class="field">
-      <label for="description">HEX</label>
-      <input type="text" pInputText id="hex" [(ngModel)]="color.hex" required />
+    <div class="flex flex-col gap-1 mb-4">
+      <label for="hex">HEX</label>
+      <input
+        class="w-full"
+        type="text"
+        pInputText
+        id="hex"
+        [(ngModel)]="color.hex"
+        required
+      />
     </div>
   </ng-template>
 

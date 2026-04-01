@@ -30,11 +30,11 @@
             cartItem.product.baseProduct.id,
             cartItem.product.id
           ]"
-          class="text-surface-900 dark:text-surface-0 text-xl font-medium mb-4"
+          class="text-surface-900 text-xl font-medium mb-4"
         >
           {{ cartItem.product.properties.name }}
         </a>
-        <span class="text-surface-600 dark:text-surface-200">{{ cartItem.product.sku }}</span>
+        <span class="text-surface-600">{{ cartItem.product.sku }}</span>
       </div>
       <div
         class="w-full sm:w-6/12 flex items-start justify-between mt-4 sm:mt-0 pl-8"
@@ -54,12 +54,12 @@
           ></app-stock-badge>
         </div>
         <div class="flex flex-col sm:items-end">
-          <span class="text-surface-900 dark:text-surface-0 text-2xl font-medium mb-1 sm:mb-2">
+          <span class="text-surface-900 text-2xl font-medium mb-1 sm:mb-2">
             @if ((updating$ | async) === 0) {
             {{
               cartItem.product.properties.price * cartItem.quantity | currency
             }}
-            <div class="text-surface-600 dark:text-surface-200 text-base">
+            <div class="text-surface-600 text-base">
               {{ cartItem.product.properties.price | currency }} / од.
             </div>
             } @else {

@@ -7,11 +7,12 @@
   ></p-progressBar>
   }
   <form [formGroup]="importForm" (ngSubmit)="onImportSubmit()">
-    <div class="p-fluid">
-      <h5>Імпорт продуктів</h5>
-      <div class="field">
-        <label for="import-source">Джерело імпорту:</label>
+    <h5>Імпорт продуктів</h5>
+    <div class="mt-4 flex flex-col gap-5">
+      <div class="flex flex-col gap-2">
+        <label for="import-source" class="font-medium">Джерело імпорту:</label>
         <p-select
+          fluid
           id="import-source"
           [options]="importSources"
           formControlName="source"
@@ -24,16 +25,17 @@
           errorMessage="Необхідно обрати джерело імпорту"
         ></app-form-control-error-message>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Тип джерела:</label>
         <p-selectButton
           formControlName="sourceType"
           [options]="importSourceTypes"
         ></p-selectButton>
       </div>
       @if (sourceType?.value === importSourceTypeEnum.Link) {
-      <div class="field">
-        <label for="link">Посилання:</label>
-        <input id="link" pInputText formControlName="link" />
+      <div class="flex flex-col gap-2">
+        <label for="link" class="font-medium">Посилання:</label>
+        <input id="link" pInputText fluid formControlName="link" />
         <app-form-control-error-message
           [formGroup]="importForm"
           controlName="link"
@@ -41,13 +43,12 @@
           errorMessage="Необхідно ввести посилання"
         ></app-form-control-error-message>
       </div>
-      }
-    </div>
-    @if (sourceType?.value === importSourceTypeEnum.File) {
-    <div class="formgrid">
-      <div class="field">
-        <label>Файл (XML/XLS):</label>
+      } @if (sourceType?.value === importSourceTypeEnum.File) {
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Файл (XML/XLS):</label>
         <p-fileUpload
+          fluid
+          class="w-full"
           accept=".xml, .xls, .xlsx"
           [customUpload]="true"
           [auto]="true"
@@ -63,13 +64,14 @@
           errorMessage="Необхідно вибрати файл"
         ></app-form-control-error-message>
       </div>
+      }
+      <button
+        pButton
+        class="self-start"
+        type="submit"
+        label="Імпортувати"
+        [disabled]="submitting"
+      ></button>
     </div>
-    }
-    <button
-      pButton
-      type="submit"
-      label="Імпортувати"
-      [disabled]="submitting"
-    ></button>
   </form>
 </div>

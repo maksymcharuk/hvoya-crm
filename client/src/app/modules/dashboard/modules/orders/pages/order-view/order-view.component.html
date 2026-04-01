@@ -67,7 +67,7 @@
               <div class="striped-list__item-key">Коментар</div>
               <div class="striped-list__item-value">
                 @if ('update' | able : order) {
-                <form class="p-fluid" [formGroup]="orderNoteForm">
+                <form class="flex flex-col gap-2" [formGroup]="orderNoteForm">
                   <p-progressBar
                     class="order-view__note-progress-bar"
                     mode="indeterminate"
@@ -75,6 +75,8 @@
                     [style]="{ height: '4px' }"
                   ></p-progressBar>
                   <textarea
+                    class="w-full"
+                    fluid
                     rows="5"
                     cols="30"
                     pInputTextarea
@@ -205,93 +207,94 @@
               <div class="striped-list__item-key"></div>
               <form
                 [formGroup]="updateWaybillForm"
-                class="striped-list__item-value"
+                class="striped-list__item-value flex flex-col gap-4"
               >
-                <div class="p-fluid">
-                  <div class="formgrid grid grid-cols-12 gap-4">
-                    <div class="field col-span-6">
-                      <label for="delivery-service">Служба доставки:</label>
-                      <p-select
-                        id="delivery-service"
-                        [options]="deliveryServices"
-                        formControlName="deliveryService"
-                      >
-                        <ng-template let-selected pTemplate="selectedItem">
-                          @if (selected; as deliveryService) {
-                          <app-delivery-service-badge
-                            mode="short"
-                            [withText]="true"
-                            [deliveryService]="deliveryService"
-                          ></app-delivery-service-badge>
-                          }
-                        </ng-template>
-                        <ng-template let-option pTemplate="item">
-                          @if (option; as deliveryService) {
-                          <app-delivery-service-badge
-                            mode="short"
-                            [withText]="true"
-                            [deliveryService]="deliveryService"
-                          ></app-delivery-service-badge>
-                          }
-                        </ng-template>
-                      </p-select>
-                      <app-form-control-error-message
-                        [formGroup]="updateWaybillForm"
-                        controlName="deliveryService"
-                        errorType="required"
-                        errorMessage="Це є обов'язковим полем"
-                      ></app-form-control-error-message>
-                    </div>
+                <div class="grid grid-cols-12 gap-4">
+                  <div class="col-span-12 md:col-span-6 flex flex-col gap-1">
+                    <label for="delivery-service">Служба доставки:</label>
+                    <p-select
+                      class="w-full"
+                      id="delivery-service"
+                      [options]="deliveryServices"
+                      formControlName="deliveryService"
+                    >
+                      <ng-template let-selected pTemplate="selectedItem">
+                        @if (selected; as deliveryService) {
+                        <app-delivery-service-badge
+                          mode="short"
+                          [withText]="true"
+                          [deliveryService]="deliveryService"
+                        ></app-delivery-service-badge>
+                        }
+                      </ng-template>
+                      <ng-template let-option pTemplate="item">
+                        @if (option; as deliveryService) {
+                        <app-delivery-service-badge
+                          mode="short"
+                          [withText]="true"
+                          [deliveryService]="deliveryService"
+                        ></app-delivery-service-badge>
+                        }
+                      </ng-template>
+                    </p-select>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="deliveryService"
+                      errorType="required"
+                      errorMessage="Це є обов'язковим полем"
+                    ></app-form-control-error-message>
                   </div>
-                  @if (!isSelfPickup) {
-                  <div class="formgrid grid grid-cols-12 gap-4">
-                    <div class="field col-span-6">
-                      <label for="tracking-id">Номер ТТН:</label>
-                      <input
-                        pInputText
-                        id="tracking-id"
-                        autocomplete="off"
-                        formControlName="trackingId"
-                      />
-                      <app-form-control-error-message
-                        [formGroup]="updateWaybillForm"
-                        controlName="trackingId"
-                        errorType="required"
-                        errorMessage="Потрібно ввести номер ТТН"
-                      ></app-form-control-error-message>
-                      <app-form-control-error-message
-                        [formGroup]="updateWaybillForm"
-                        controlName="trackingId"
-                        errorType="alphanumeric"
-                        errorMessage="Номер ТТН повинен містити тільки літери та цифри"
-                      ></app-form-control-error-message>
-                    </div>
-                  </div>
-                  } @if (!isSelfPickup) {
-                  <div class="formgrid grid grid-cols-12 gap-4">
-                    <div class="field col-span-12 md:col-span-6">
-                      <label for="tracking-id">Файл маркування:</label>
-                      <p-fileUpload
-                        #waybillUpload
-                        data-cy="order-waybill-upload"
-                        [accept]="fileFormats"
-                        [customUpload]="true"
-                        [auto]="true"
-                        [maxFileSize]="1000000"
-                        [disabled]="(waybillSubmitting$ | async)!"
-                        (uploadHandler)="onFileUpload($event)"
-                      >
-                      </p-fileUpload>
-                      <app-form-control-error-message
-                        [formGroup]="updateWaybillForm"
-                        controlName="waybill"
-                        errorType="required"
-                        errorMessage="Це є обов'язковим полем"
-                      ></app-form-control-error-message>
-                    </div>
-                  </div>
-                  }
                 </div>
+                @if (!isSelfPickup) {
+                <div class="grid grid-cols-12 gap-4">
+                  <div class="col-span-12 md:col-span-6 flex flex-col gap-1">
+                    <label for="tracking-id">Номер ТТН:</label>
+                    <input
+                      class="w-full"
+                      pInputText
+                      id="tracking-id"
+                      autocomplete="off"
+                      formControlName="trackingId"
+                    />
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="trackingId"
+                      errorType="required"
+                      errorMessage="Потрібно ввести номер ТТН"
+                    ></app-form-control-error-message>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="trackingId"
+                      errorType="alphanumeric"
+                      errorMessage="Номер ТТН повинен містити тільки літери та цифри"
+                    ></app-form-control-error-message>
+                  </div>
+                </div>
+                } @if (!isSelfPickup) {
+                <div class="grid grid-cols-12 gap-4">
+                  <div class="col-span-12 md:col-span-6 flex flex-col gap-1">
+                    <label for="tracking-id">Файл маркування:</label>
+                    <p-fileUpload
+                      class="w-full"
+                      #waybillUpload
+                      data-cy="order-waybill-upload"
+                      [accept]="fileFormats"
+                      [customUpload]="true"
+                      [auto]="true"
+                      [maxFileSize]="1000000"
+                      [disabled]="(waybillSubmitting$ | async)!"
+                      (uploadHandler)="onFileUpload($event)"
+                    >
+                    </p-fileUpload>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="waybill"
+                      errorType="required"
+                      errorMessage="Це є обов'язковим полем"
+                    ></app-form-control-error-message>
+                  </div>
+                </div>
+                }
                 <button
                   pButton
                   label="Оновини дані доставки"
@@ -312,9 +315,11 @@
             <div class="w-48 hidden md:block"></div>
             <div class="md:pl-8 mt-2 flex-auto">
               <div class="flex justify-end mb-6 pt-6">
-                <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</span>
+                <span class="text-xl text-surface-900 font-bold text-3xl"
+                  >Всього:</span
+                >
                 <span
-                  class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl ml-8"
+                  class="text-xl text-surface-900 font-bold text-3xl ml-8"
                   data-cy="order-total-amount"
                 >
                   {{ order.total | currency }}

@@ -1,25 +1,25 @@
-<div class="p-fluid">
-  <div class="field">
-    <label for="email">Ел. пошта:</label>
-    <input
-      id="email"
-      [value]="(profile$ | async)?.email"
-      pInputText
-      [readOnly]="true"
-      [disabled]="true"
-    />
-  </div>
+<div class="mb-4 flex flex-col gap-1">
+  <label for="email">Ел. пошта:</label>
+  <input
+    class="w-full"
+    id="email"
+    [value]="(profile$ | async)?.email"
+    pInputText
+    [readOnly]="true"
+    [disabled]="true"
+  />
 </div>
 
 <form
-  class="p-fluid"
+  class="flex flex-col gap-4"
   [formGroup]="changePasswordForm"
   (ngSubmit)="onChangePasswordSubmit(changePasswordForm.value)"
 >
   <h5>Змінити пароль</h5>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="current-password">Поточний пароль:</label>
     <p-password
+      fluid
       inputId="current-password"
       formControlName="currentPassword"
       [toggleMask]="true"
@@ -33,9 +33,10 @@
     >
     </app-form-control-error-message>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="password">Новий пароль:</label>
     <p-password
+      fluid
       inputId="password"
       formControlName="password"
       [toggleMask]="true"
@@ -75,9 +76,10 @@
     >
     </app-form-control-error-message>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="confirm-password">Підтвердити новий пароль:</label>
     <p-password
+      fluid
       formControlName="confirmPassword"
       inputId="confirm-password"
       [toggleMask]="true"

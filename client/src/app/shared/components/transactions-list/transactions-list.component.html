@@ -12,12 +12,12 @@
   [loading]="loading"
   [paginator]="true"
   [scrollable]="true"
-  [scrollHeight]="'calc(100vh - 273px)'"
+  [scrollHeight]="'calc(100vh - 17rem)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    @for (_ of [].constructor(rows); track _) {
+    @for (_ of [].constructor(rows); track $index) {
     <tr>
       <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
       <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
@@ -29,14 +29,15 @@
   <ng-template pTemplate="caption">
     <div class="table-header flex justify-between items-center">
       <div>Список транзакцій</div>
-      <div>
+      <div class="flex items-center gap-4">
         <button
           type="button"
           pButton
           [disabled]="exporting$ | async"
           icon="pi pi-file-excel"
           (click)="exportExcel()"
-          class="p-button-success mr-2"
+          class="p-button-success"
+          size="small"
           pTooltip="Експорт Excel файлу"
           tooltipPosition="bottom"
         ></button>
@@ -63,10 +64,7 @@
       <th class="w-4/12">Статус</th>
       @if (currentUser?.isAnyAdmin) {
       <th>
-        <div
-          class="flex items-center"
-          pTooltip="Статус синхронізації з 1С"
-        >
+        <div class="flex items-center" pTooltip="Статус синхронізації з 1С">
           <i class="pi pi-sync mr-1"></i>1С
         </div>
       </th>
@@ -115,7 +113,7 @@
           {{ transaction.amount | currency }}
         </div>
         @if (transaction.status === transactionStatus.Success) {
-        <small class="text-surface-600 dark:text-surface-200">
+        <small class="text-surface-600">
           {{ transaction.netBalance | currency }}
         </small>
         }

@@ -2,7 +2,9 @@
 || formGroup.get(controlName)?.touched)) {
 <div class="mt-1">
   @if (formGroup.get(controlName)?.errors![errorType]) {
-  <small class="p-error block">{{ errorMessage }}</small>
+  <p-message severity="error" variant="simple" size="small">
+    {{ errorMessage }}
+  </p-message>
   }
 </div>
 }

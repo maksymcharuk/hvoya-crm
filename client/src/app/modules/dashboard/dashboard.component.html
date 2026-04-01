@@ -22,7 +22,9 @@
       (click)="notifications.toggle($event)"
     >
       @if (notificationsNumber$ | async; as notificationsNumber) {
-      <i class="pi pi-bell" pBadge [value]="notificationsNumber.toString()"></i>
+      <p-overlaybadge [value]="notificationsNumber.toString()">
+        <i class="pi pi-bell"></i>
+      </p-overlaybadge>
       } @else {
       <i class="pi pi-bell"></i>
       }
@@ -37,18 +39,18 @@
 
     <button class="p-link layout-topbar-button" (click)="cart.toggle($event)">
       @if ( cartItemsNumber$ | async; as cartItemsNumber) {
-      <i
-        class="pi pi-shopping-cart"
-        pBadge
-        [value]="cartItemsNumber.toString()"
-      ></i>
+      <p-overlaybadge [value]="cartItemsNumber.toString()">
+        <i class="pi pi-shopping-cart"></i>
+      </p-overlaybadge>
       } @else {
       <i class="pi pi-shopping-cart"></i>
       }
       <span class="topbar-button-text">Кошик</span>
     </button>
     <p-popover #overlayPanel #cart>
-      <ng-template pTemplate="content"><app-cart-widget></app-cart-widget></ng-template>
+      <ng-template pTemplate="content"
+        ><app-cart-widget></app-cart-widget
+      ></ng-template>
     </p-popover>
 
     <button

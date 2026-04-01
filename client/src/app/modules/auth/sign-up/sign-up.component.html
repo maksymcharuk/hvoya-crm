@@ -12,16 +12,22 @@
     <div class="sign-up-wrapper-title">
       <h3>Реєстрація</h3>
     </div>
-    <form [formGroup]="signUpForm" (ngSubmit)="onSubmit(signUpForm.value)">
+    <form
+      class="w-full"
+      [formGroup]="signUpForm"
+      (ngSubmit)="onSubmit(signUpForm.value)"
+    >
       <div class="sign-up-wrapper-form">
-        <div class="p-fluid formgrid grid grid-cols-12 gap-4">
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-12">
           <!-- Left column -->
-          <div class="col-span-12 md:col-span-6">
-            <div class="field">
-              <label for="email">Пошта</label>
-              <p-iconField iconPosition="right">
+          <div class="col-span-12 flex flex-col gap-4 md:col-span-6">
+            <div class="flex flex-col gap-1.5">
+              <label for="sign-up-email">Пошта</label>
+              <p-iconField iconPosition="right" class="w-full">
                 <p-inputIcon styleClass="pi pi-user" />
                 <input
+                  class="w-full"
+                  id="sign-up-email"
                   name="email"
                   formControlName="email"
                   type="email"
@@ -38,11 +44,13 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="phoneNumber">Номер телефону</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="sign-up-phone-number">Номер телефону</label>
               <p-inputMask
+                fluid
+                class="w-full"
                 name="phoneNumber"
-                inputId="phone-number"
+                inputId="sign-up-phone-number"
                 formControlName="phoneNumber"
                 mask="+38 (999) 999-9999"
                 slotChar=" "
@@ -50,7 +58,7 @@
                 [autoClear]="false"
                 placeholder="Введіть номер телефону"
                 data-cy="phone-number"
-              ></p-inputMask>
+              />
               <app-form-control-error-message
                 [formGroup]="signUpForm"
                 controlName="phoneNumber"
@@ -59,9 +67,11 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="password">Пароль</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="sign-up-password">Пароль</label>
               <p-password
+                fluid
+                inputId="sign-up-password"
                 name="password"
                 formControlName="password"
                 [toggleMask]="true"
@@ -103,9 +113,11 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="confirmPassword">Підтвердіть пароль</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="sign-up-confirm-password">Підтвердіть пароль</label>
               <p-password
+                fluid
+                inputId="sign-up-confirm-password"
                 name="confirmPassword"
                 formControlName="confirmPassword"
                 [toggleMask]="true"
@@ -131,10 +143,12 @@
             </div>
           </div>
           <!-- Right column -->
-          <div class="col-span-12 md:col-span-6 flex flex-col">
-            <div class="field">
-              <label for="lastName">Прізвище</label>
+          <div class="col-span-12 flex flex-col gap-4 md:col-span-6">
+            <div class="flex flex-col gap-1.5">
+              <label for="sign-up-last-name">Прізвище</label>
               <input
+                class="w-full"
+                id="sign-up-last-name"
                 name="lastName"
                 formControlName="lastName"
                 type="text"
@@ -157,9 +171,11 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="firstName">Ім'я</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="sign-up-first-name">Ім'я</label>
               <input
+                class="w-full"
+                id="sign-up-first-name"
                 name="firstName"
                 formControlName="firstName"
                 type="text"
@@ -182,9 +198,11 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="middleName">По батькові</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="sign-up-middle-name">По батькові</label>
               <input
+                class="w-full"
+                id="sign-up-middle-name"
                 name="middleName"
                 formControlName="middleName"
                 type="text"
@@ -207,8 +225,8 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="website">
+            <div class="flex flex-col gap-1.5">
+              <label for="sign-up-website">
                 Веб-сайт або сторінка у соц. мережі
                 <i
                   class="pi pi-info-circle"
@@ -217,6 +235,8 @@
                 ></i>
               </label>
               <input
+                class="w-full"
+                id="sign-up-website"
                 name="website"
                 formControlName="website"
                 type="text"
@@ -234,10 +254,12 @@
             </div>
           </div>
         </div>
-        <div class="flex items-center mt-8">
+        <div
+          class="mt-8 flex flex-col-reverse gap-4 justify-center sm:flex-row sm:items-center"
+        >
           <a [routerLink]="['/', 'auth', 'sign-in']">Вхід</a>
           <button
-            class="ml-8"
+            class="w-full sm:w-auto"
             type="submit"
             pButton
             label="Зареєструватися"

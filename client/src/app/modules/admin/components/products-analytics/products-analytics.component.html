@@ -14,7 +14,7 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    @for (_ of [].constructor(rows); track _) {
+    @for (_ of [].constructor(rows); track $index) {
     <tr>
       <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
       <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
@@ -26,19 +26,20 @@
     }
   </ng-template>
   <ng-template pTemplate="caption">
-    <div class="table-header flex justify-between items-center">
+    <div
+      class="table-header flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+    >
       <h5 class="m-0">Аналітика продуктів</h5>
-      <form class="p-fluid formgrid grid grid-cols-12 gap-4" [formGroup]="filtersForm">
-        <div class="col">
-          <div class="field">
-            <label>Період:</label>
-            <p-datepicker
-              formControlName="range"
-              selectionMode="range"
-              appendTo="body"
-              placeholder="Період"
-            ></p-datepicker>
-          </div>
+      <form class="w-full sm:w-auto" [formGroup]="filtersForm">
+        <div class="flex flex-col gap-2 sm:w-72">
+          <label class="font-medium">Період</label>
+          <p-datepicker
+            class="w-full"
+            formControlName="range"
+            selectionMode="range"
+            appendTo="body"
+            placeholder="Період"
+          ></p-datepicker>
         </div>
       </form>
     </div>

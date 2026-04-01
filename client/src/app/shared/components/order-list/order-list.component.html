@@ -13,12 +13,12 @@
   [paginator]="true"
   [sortOrder]="-1"
   [scrollable]="true"
-  [scrollHeight]="'calc(100vh - 254px)'"
+  [scrollHeight]="'calc(100vh - 17rem)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    @for (_ of [].constructor(rows); track _) {
+    @for (_ of [].constructor(rows); track $index) {
     <tr>
       <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
       <td><p-skeleton height="28px" width="85px"></p-skeleton></td>

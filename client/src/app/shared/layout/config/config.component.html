@@ -25,7 +25,7 @@
     <div class="flex gap-2 items-center">
       @for (s of scales; track s) {
       <i
-        class="pi pi-circle-fill text-surface-300 dark:text-surface-500"
+        class="pi pi-circle-fill text-surface-300"
         [ngClass]="{ 'text-primary-500': s === scale }"
       ></i>
       }
@@ -425,10 +425,7 @@
       </button>
     </div>
     <div class="col-span-3">
-      <button
-        class="p-link w-8 h-8"
-        (click)="changeTheme('vela-blue', 'dark')"
-      >
+      <button class="p-link w-8 h-8" (click)="changeTheme('vela-blue', 'dark')">
         <img
           src="assets/layout/images/themes/vela-blue.png"
           class="w-8 h-8"
@@ -473,10 +470,7 @@
       </button>
     </div>
     <div class="col-span-3">
-      <button
-        class="p-link w-8 h-8"
-        (click)="changeTheme('arya-blue', 'dark')"
-      >
+      <button class="p-link w-8 h-8" (click)="changeTheme('arya-blue', 'dark')">
         <img
           src="assets/layout/images/themes/arya-blue.png"
           class="w-8 h-8"

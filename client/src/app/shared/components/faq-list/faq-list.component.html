@@ -51,27 +51,30 @@ $index) {
   [style]="{ width: '700px', maxWidth: '90%' }"
 >
   <ng-template pTemplate="content">
-    <div class="field">
-      <label for="question">Запитання:</label>
-      <input
-        pInputText
-        id="question"
-        name="question"
-        placeholder="Введіть питання"
-        data-cy="faq-question-input"
-        [(ngModel)]="faq.question"
-      />
-    </div>
-    <div class="field">
-      <label for="answer">Відповідь:</label>
-      <p-editor
-        [autofocus]="true"
-        id="answer"
-        name="answer"
-        placeholder="Введіть відповідь"
-        data-cy="faq-answer-input"
-        [(ngModel)]="faq.answer"
-      ></p-editor>
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
+        <label for="question">Запитання:</label>
+        <input
+          fluid
+          pInputText
+          id="question"
+          name="question"
+          placeholder="Введіть питання"
+          data-cy="faq-question-input"
+          [(ngModel)]="faq.question"
+        />
+      </div>
+      <div class="flex flex-col gap-2">
+        <label for="answer">Відповідь:</label>
+        <p-editor
+          [autofocus]="true"
+          id="answer"
+          name="answer"
+          placeholder="Введіть відповідь"
+          data-cy="faq-answer-input"
+          [(ngModel)]="faq.answer"
+        ></p-editor>
+      </div>
     </div>
   </ng-template>
   <ng-template pTemplate="footer">

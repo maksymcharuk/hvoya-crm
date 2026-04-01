@@ -19,7 +19,7 @@
     <div>Щоб побачити зміни новин у боковій панелі перезавантажте сторінку</div>
   </div>
   @for (post of postPage.data; track post) {
-  <div class="mb-8 pb-2 border-b border-surface-300 dark:border-surface-500">
+  <div class="mb-8 pb-2 border-b border-surface-300">
     <div class="flex justify-between">
       <div>
         <div class="mb-2">
@@ -65,22 +65,23 @@
   [(visible)]="postDialog"
   [modal]="true"
   header="Новина"
-  styleClass="p-fluid"
   [style]="{ width: '700px', maxWidth: '90%' }"
 >
   <ng-template pTemplate="content">
-    <div class="field">
+    <div class="flex items-center gap-3 pb-2">
       <p-checkbox
         [(ngModel)]="post.isPublished"
         [binary]="true"
         inputId="binary"
-        label="Опублікувати"
       ></p-checkbox>
+      <label class="cursor-pointer font-medium" for="binary">
+        Опублікувати
+      </label>
     </div>
-    <div class="field">
-      <div class="flex">
-        <div>
-          <label for="body">Контент:</label>
+    <div class="grid gap-6 pt-2 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div class="flex flex-col gap-2">
+        <label class="font-medium" for="body">Контент:</label>
+        <div class="w-full">
           <p-editor
             [autofocus]="true"
             id="body"
@@ -90,19 +91,19 @@
             [style]="{ height: '320px' }"
           ></p-editor>
         </div>
-        <div class="ml-4">
-          <label>Перегляд:</label>
-          <div class="post-preview-block">
-            @if (post.body) {
-            <div [innerHTML]="post.body | safeHtml"></div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Перегляд:</label>
+        <div class="post-preview-block">
+          @if (post.body) {
+          <div [innerHTML]="post.body | safeHtml"></div>
+          }
+          <small>
+            {{ currentDate | date : 'short' }}
+            @if (!post.isPublished) {
+            <span class="text-red-500">(Не опубліковано)</span>
             }
-            <small>
-              {{ currentDate | date : 'short' }}
-              @if (!post.isPublished) {
-              <span class="text-red-500">(Не опубліковано)</span>
-              }
-            </small>
-          </div>
+          </small>
         </div>
       </div>
     </div>

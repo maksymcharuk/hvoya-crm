@@ -11,9 +11,11 @@
         <div class="md:pl-8 mt-2 flex-auto">
           <div class="flex-col">
             <div class="flex justify-end pt-6">
-              <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</span>
+              <span class="text-xl text-surface-900 font-bold text-3xl"
+                >Всього:</span
+              >
               <span
-                class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl ml-8"
+                class="text-xl text-surface-900 font-bold text-3xl ml-8"
                 data-cy="order-total"
               >
                 @if ( (cartLoading$ | async) === 0) {
@@ -23,9 +25,7 @@
                 }
               </span>
             </div>
-            <div
-              class="flex justify-end text-base text-red-300 ml-8 mb-12"
-            >
+            <div class="flex justify-end text-base text-red-300 ml-8 mb-12">
               @if (balance$ | async; as balance) { @if (+cart.total >
               +balance.amount) { Недостатньо коштів на балансі } }
             </div>
@@ -33,13 +33,11 @@
         </div>
       </div>
       } @else {
-      <div
-        class="p-8 pt-12 flex flex-col items-center justify-center"
-      >
+      <div class="p-8 pt-12 flex flex-col items-center justify-center">
         <i class="pi pi-shopping-cart text-4xl"></i>
         <span class="text-2xl mt-4 mb-12">Кошик пустий</span>
       </div>
-      } } @else { @for (_ of [].constructor(2); track _) {
+      } } @else { @for (_ of [].constructor(2); track $index) {
       <div
         class="flex flex-col md:flex-row py-2 border-t border-b border-surface md:items-center"
       >
@@ -57,7 +55,7 @@
             <div
               class="w-full sm:w-6/12 flex items-start justify-between mt-4 sm:mt-0 pl-8"
             >
-              <div class="p-fluid sm:w-24">
+              <div class="sm:w-24">
                 <p-skeleton height="39px" width="84px"></p-skeleton>
               </div>
               <div class="flex flex-col sm:items-end">
@@ -98,12 +96,12 @@
           </div>
           <!-- NOTE: Keep this for a waybill generation logic in future -->
           <!-- <div class="col-span-6">
-            <div class="p-fluid">
+            <div class="flex flex-col gap-4">
               <h5>Інформація про отримувача</h5>
-              <div class="formgrid grid grid-cols-12 gap-4">
-                <div class="field col-span-12">
+              <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 flex flex-col gap-1">
                   <label for="email">Ел. пошта:</label>
-                  <input id="email" pInputText formControlName="email" />
+                  <input class="w-full" id="email" pInputText formControlName="email" />
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
                     controlName="email"
@@ -111,9 +109,10 @@
                     errorMessage="Потрібно ввести електронну пошту"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col-span-12">
+                <div class="col-span-12 flex flex-col gap-1">
                   <label for="phone-number">Номер телефону:</label>
                   <p-inputMask
+                    class="w-full"
                     inputId="phone-number"
                     formControlName="phoneNumber"
                     mask="+38 (999) 999-9999"
@@ -129,10 +128,11 @@
                   ></app-form-control-error-message>
                 </div>
               </div>
-              <div class="formgrid grid grid-cols-12 gap-4">
-                <div class="field col-span-12">
+              <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 flex flex-col gap-1">
                   <label for="first-name">Ім'я:</label>
                   <input
+                    class="w-full"
                     id="first-name"
                     pInputText
                     formControlName="firstName"
@@ -144,9 +144,9 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col-span-12">
+                <div class="col-span-12 flex flex-col gap-1">
                   <label for="last-name">Прізвище:</label>
-                  <input id="last-name" pInputText formControlName="lastName" />
+                  <input class="w-full" id="last-name" pInputText formControlName="lastName" />
                   <app-form-control-error-message
                     [formGroup]="orderCreateForm"
                     controlName="lastName"
@@ -154,9 +154,10 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col-span-12">
+                <div class="col-span-12 flex flex-col gap-1">
                   <label for="middle-name">По-батькові:</label>
                   <input
+                    class="w-full"
                     id="middle-name"
                     pInputText
                     formControlName="middleName"
@@ -171,13 +172,14 @@
               </div>
             </div>
           </div> -->
-          <div class="col-span-6">
-            <div class="p-fluid">
+          <div class="col-span-12 lg:col-span-6">
+            <div class="flex flex-col gap-4">
               <h5>Інформація про достаку</h5>
-              <div class="formgrid grid grid-cols-12 gap-4">
-                <div class="field col-span-12">
+              <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 flex flex-col gap-1">
                   <label for="delivery-service">Служба доставки:</label>
                   <p-select
+                    class="w-full"
                     id="delivery-service"
                     [options]="deliveryServices"
                     formControlName="deliveryService"
@@ -209,9 +211,10 @@
                   ></app-form-control-error-message>
                 </div>
                 <!-- NOTE: Keep this for a waybill generation logic in future -->
-                <!-- <div class="field col-span-12">
+                <!-- <div class="col-span-12 flex flex-col gap-1">
                 <label for="delivery-type">Тип доставки:</label>
                 <p-select
+                  class="w-full"
                   id="delivery-type"
                   [options]="deliveryTypes"
                   formControlName="deliveryType"
@@ -224,9 +227,9 @@
                   errorMessage="Це є обов'язковим полем"
                 ></app-form-control-error-message>
               </div>
-              <div class="field col-span-12">
+              <div class="col-span-12 flex flex-col gap-1">
                 <label for="city">Місто:</label>
-                <input id="city" pInputText formControlName="city" />
+                <input class="w-full" id="city" pInputText formControlName="city" />
                 <app-form-control-error-message
                   [formGroup]="orderCreateForm"
                   controlName="city"
@@ -235,11 +238,12 @@
                 ></app-form-control-error-message>
               </div> -->
               </div>
-              <div class="formgrid grid grid-cols-12 gap-4">
+              <div class="grid grid-cols-12 gap-4">
                 <!-- NOTE: Keep this for a waybill generation logic in future -->
-                <!-- <div class="field col-span-12">
+                <!-- <div class="col-span-12 flex flex-col gap-1">
               <label for="post-office">Відділення:</label>
               <input
+                class="w-full"
                 id="post-office"
                 pInputText
                 formControlName="postOffice"
@@ -250,11 +254,12 @@
                 errorType="required"
                 errorMessage="Це є обов'язковим полем"
               ></app-form-control-error-message>
-            </div> -->
+                </div> -->
                 @if (!isSelfPickup) {
-                <div class="field col-span-12">
+                <div class="col-span-12 flex flex-col gap-1">
                   <label for="tracking-id">Номер ТТН:</label>
                   <input
+                    class="w-full"
                     pInputText
                     id="tracking-id"
                     autocomplete="off"
@@ -277,10 +282,11 @@
               </div>
             </div>
             @if (!isSelfPickup) {
-            <div class="formgrid grid grid-cols-12 gap-4">
-              <div class="field col-span-12">
+            <div class="mt-4 grid grid-cols-12 gap-4">
+              <div class="col-span-12 flex flex-col gap-1">
                 <label>Маркування (PDF):</label>
                 <p-fileUpload
+                  class="w-full"
                   data-cy="order-waybill-upload"
                   [accept]="fileFormats"
                   [customUpload]="true"
@@ -299,13 +305,15 @@
             </div>
             }
           </div>
-          <div class="col-span-6">
-            <div class="p-fluid">
+          <div class="col-span-12 lg:col-span-6">
+            <div class="flex flex-col gap-4">
               <h5>Додаткова інформація</h5>
-              <div class="formgrid grid grid-cols-12 gap-4">
-                <div class="field col-span-12">
+              <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-12 flex flex-col gap-1">
                   <label for="customerNote">Коментар:</label>
                   <textarea
+                    class="w-full"
+                    fluid
                     rows="5"
                     cols="30"
                     id="customerNote"
@@ -319,7 +327,7 @@
           </div>
         </div>
       </form>
-      <div>
+      <div class="mt-8">
         <button
           pButton
           (click)="orderCreate()"

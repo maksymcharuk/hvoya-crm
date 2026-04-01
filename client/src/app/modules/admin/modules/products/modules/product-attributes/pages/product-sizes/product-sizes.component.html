@@ -15,7 +15,7 @@
   #productSizesTable
   dataKey="id"
   currentPageReportTemplate="Показано від {first} до {last} з {totalRecords} розмірів"
-  class="block border-surface-300 dark:border-surface-500 border-l border-r"
+  class="block border-surface-300 border-l border-r"
   [value]="sizes"
   [rows]="rows"
   [paginator]="true"
@@ -79,12 +79,12 @@
   [style]="{ width: '450px' }"
   header="Розмір (см)"
   [modal]="true"
-  styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <div class="field">
+    <div class="flex flex-col gap-1 mb-4">
       <label for="height">Висота</label>
       <p-inputNumber
+        class="w-full"
         autofocus
         id="height"
         mode="decimal"
@@ -92,27 +92,30 @@
         [required]="true"
       ></p-inputNumber>
     </div>
-    <div class="field">
+    <div class="flex flex-col gap-1 mb-4">
       <label for="width">Ширина</label>
       <p-inputNumber
+        class="w-full"
         autofocus
         id="width"
         mode="decimal"
         [(ngModel)]="size.width"
       ></p-inputNumber>
     </div>
-    <div class="field">
+    <div class="flex flex-col gap-1 mb-4">
       <label for="depth">Глибина</label>
       <p-inputNumber
+        class="w-full"
         autofocus
         id="depth"
         mode="decimal"
         [(ngModel)]="size.depth"
       ></p-inputNumber>
     </div>
-    <div class="field">
+    <div class="flex flex-col gap-1 mb-4">
       <label for="diameter">Діаметр (для вінків)</label>
       <p-inputNumber
+        class="w-full"
         autofocus
         id="diameter"
         mode="decimal"

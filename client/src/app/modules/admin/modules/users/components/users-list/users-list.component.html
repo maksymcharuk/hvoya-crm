@@ -15,12 +15,12 @@
   [totalRecords]="users?.meta?.itemCount || 0"
   [sortOrder]="-1"
   [scrollable]="true"
-  [scrollHeight]="'calc(100vh - 361px)'"
+  [scrollHeight]="'calc(100vh - 20.5rem)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    @for (_ of [].constructor(rows); track _) {
+    @for (_ of [].constructor(rows); track $index) {
     <tr>
       <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
       <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
@@ -115,6 +115,7 @@
               [options]="(managers$ | async) || []"
               placeholder="Виберіть ПІБ"
               appendTo="body"
+              size="small"
               (onChange)="filterByManager($event.value)"
               optionLabel="lastName"
               selectedItemsLabel="ellipsis"

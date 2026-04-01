@@ -25,6 +25,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { MessageModule } from 'primeng/message';
 
 import {
   CommonModule,
@@ -170,6 +171,7 @@ const PRIMENG_MODULES = [
   InputNumberModule,
   TooltipModule,
   ProgressBarModule,
+  MessageModule,
 ];
 
 const NG_PIPES = [CurrencyPipe];

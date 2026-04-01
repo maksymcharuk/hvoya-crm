@@ -1,7 +1,7 @@
-import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { PopoverModule } from 'primeng/popover';
 import { PanelMenuModule } from 'primeng/panelmenu';
 
@@ -27,7 +27,7 @@ import { DashboardMainComponent } from './pages/main/main.component';
     MenuModule,
     PanelMenuModule,
     InputTextModule,
-    BadgeModule,
+    OverlayBadgeModule,
     ButtonModule,
     LayoutModule,
     PopoverModule,

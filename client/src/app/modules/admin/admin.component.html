@@ -5,7 +5,9 @@
       (click)="notifications.toggle($event)"
     >
       @if (notificationsNumber$ | async; as notificationsNumber) {
-      <i class="pi pi-bell" pBadge [value]="notificationsNumber.toString()"></i>
+      <p-overlaybadge [value]="notificationsNumber.toString()">
+        <i class="pi pi-bell"></i>
+      </p-overlaybadge>
       } @else {
       <i class="pi pi-bell"></i>
       }

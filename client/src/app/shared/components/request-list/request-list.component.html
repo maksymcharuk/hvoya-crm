@@ -13,12 +13,12 @@
   [paginator]="true"
   [sortOrder]="-1"
   [scrollable]="true"
-  [scrollHeight]="adminView ? 'calc(100vh - 273px)' : 'calc(100vh - 326px)'"
+  [scrollHeight]="adminView ? 'calc(100vh - 17rem)' : 'calc(100vh - 20.5rem)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    @for (_ of [].constructor(rows); track _) {
+    @for (_ of [].constructor(rows); track $index) {
     <tr>
       <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
       <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
@@ -103,7 +103,10 @@
               </ng-template>
               <ng-template pTemplate="selectedItem">
                 @if (value) {
-                <app-request-type-badge [type]="value"></app-request-type-badge>
+                <app-request-type-badge
+                  class="whitespace-nowrap"
+                  [type]="value"
+                ></app-request-type-badge>
                 }
               </ng-template>
             </p-select>

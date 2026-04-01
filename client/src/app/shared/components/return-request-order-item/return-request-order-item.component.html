@@ -14,10 +14,12 @@
       class="flex flex-wrap items-start sm:items-center sm:flex-row sm:justify-between border-surface"
     >
       <div class="w-full sm:w-6/12 flex flex-col">
-        <div class="text-surface-900 dark:text-surface-0 text-xl font-medium mb-4">
+        <div class="text-surface-900 text-xl font-medium mb-4">
           {{ requestItem.orderItem.productProperties.name }}
         </div>
-        <span class="text-surface-600 dark:text-surface-200">{{ requestItem.orderItem.product.sku }}</span>
+        <span class="text-surface-600">{{
+          requestItem.orderItem.product.sku
+        }}</span>
       </div>
       <div
         class="w-full sm:w-6/12 flex items-start justify-between mt-4 sm:mt-0 pl-8"
@@ -34,13 +36,13 @@
           </form>
         </div>
         <div class="flex flex-col sm:items-end">
-          <span class="text-surface-900 dark:text-surface-0 text-2xl font-medium mb-1 sm:mb-2">
+          <span class="text-surface-900 text-2xl font-medium mb-1 sm:mb-2">
             @if ((updating$ | async) === 0) {
             {{
               requestItem.orderItem.productProperties.price *
                 requestItem.quantity | currency
             }}
-            <div class="text-surface-600 dark:text-surface-200 text-base">
+            <div class="text-surface-600 text-base">
               {{ requestItem.orderItem.productProperties.price | currency }}
               / од.
             </div>

@@ -39,7 +39,7 @@
           ? [baseProductId, product.id.toString()]
           : product.id.toString()
       "
-      class="text-surface-900 dark:text-surface-0 font-medium text-xl"
+      class="text-surface-900 font-medium text-xl"
       data-cy="product-name"
     >
       {{ product.properties.name }}
@@ -50,13 +50,13 @@
   </div>
   <div class="my-4 flex justify-between">
     @if (product?.properties?.price) {
-    <span class="font-bold text-surface-900 dark:text-surface-0" data-cy="product-price">{{
+    <span class="font-bold text-surface-900" data-cy="product-price">{{
       product.properties.price | currency
     }}</span>
     } @else {
     <p-skeleton height="2rem" width="100%"></p-skeleton>
     } @if (product?.sku) {
-    <span class="text-surface-600 dark:text-surface-200 text-base overflow-hidden w-24">{{
+    <span class="text-surface-600 text-base overflow-hidden w-24">{{
       product.sku
     }}</span>
     } @else {

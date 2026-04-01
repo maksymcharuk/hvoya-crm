@@ -30,18 +30,18 @@
             orderItem.product.baseProduct.id,
             orderItem.product.id
           ]"
-          class="text-surface-900 dark:text-surface-0 text-l font-medium mb-2"
+          class="text-surface-900 text-l font-medium mb-2"
         >
           {{ orderItem.productProperties.name }}
         </a>
-        <span class="text-surface-600 dark:text-surface-200">{{ orderItem.product.sku }}</span>
+        <span class="text-surface-600">{{ orderItem.product.sku }}</span>
       </div>
       <div
         class="w-full sm:w-4/12 flex items-start justify-between mt-4 sm:mt-0 pl-8"
       >
         <div class="p-fluid sm:w-24">К-ть: {{ orderItem.quantity }}</div>
         <div class="flex flex-col sm:items-end">
-          <span class="text-surface-900 dark:text-surface-0 text-xl font-medium mb-1 sm:mb-2">
+          <span class="text-surface-900 text-xl font-medium mb-1 sm:mb-2">
             {{
               orderItem.productProperties.price * orderItem.quantity | currency
             }}

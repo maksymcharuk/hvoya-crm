@@ -3,19 +3,22 @@
   <div class="col-span-12 lg:col-span-6 relative">
     @if (selectedVariant.properties?.images; as images) {
     <p-galleria
-      #galleria
-      [value]="images || null"
+      [value]="images"
+      [numVisible]="images.length >= 5 ? 5 : images.length || 1"
+      [responsiveOptions]="galleryResponsiveOptions"
+      [circular]="images.length > 1"
       [showItemNavigators]="images.length > 1"
       [showThumbnailNavigators]="images.length > 3"
-      [showThumbnails]="images.length > 2"
+      [showThumbnails]="images.length > 1"
+      [containerStyle]="{ 'max-width': '100%' }"
     >
-      <ng-template pTemplate="item" let-item>
+      <ng-template #item let-item>
         <app-image-component
           class="gallery-image"
           [image]="item.url"
         ></app-image-component>
       </ng-template>
-      <ng-template pTemplate="thumbnail" let-item>
+      <ng-template #thumbnail let-item>
         <img class="gallery-thumbnail" [src]="item.url" />
       </ng-template>
     </p-galleria>
@@ -44,21 +47,21 @@
       >
     </ol>
     <div class="flex items-center justify-between mb-6">
-      <span class="text-xl font-medium text-surface-900 dark:text-surface-0">{{
+      <span class="text-xl font-medium text-surface-900">{{
         selectedVariant.properties.name
       }}</span
-      ><span class="text-xl font-medium text-surface-900 dark:text-surface-0 ml-12">{{
+      ><span class="text-xl font-medium text-surface-900 ml-12">{{
         selectedVariant.properties.price | currency
       }}</span>
     </div>
     <p
-      class="p-0 mt-0 mb-8 leading-normal text-surface-700 dark:text-surface-100"
+      class="p-0 mt-0 mb-8 leading-normal text-surface-700"
       [innerHTML]="selectedVariant.properties.description"
     ></p>
-    <div class="font-bold text-surface-900 dark:text-surface-0 mb-4">
-      Артикул: <span class="text-surface-600 dark:text-surface-200">{{ selectedVariant.sku }}</span>
+    <div class="font-bold text-surface-900 mb-4">
+      Артикул: <span class="text-surface-600">{{ selectedVariant.sku }}</span>
     </div>
-    <div class="font-bold text-surface-900 dark:text-surface-0 mb-4">Колір</div>
+    <div class="font-bold text-surface-900 mb-4">Колір</div>
     @if (selectedVariant.properties?.color; as color) {
     <div class="flex items-center mb-8">
       <app-product-color-badge
@@ -68,7 +71,7 @@
     </div>
     } @if (selectedVariant.properties?.size; as size) {
     <div class="mb-4 flex items-center justify-between">
-      <span class="font-bold text-surface-900 dark:text-surface-0">Розмір</span>
+      <span class="font-bold text-surface-900">Розмір</span>
     </div>
     <div class="flex items-center mb-8">
       {{ size | productSize : 'short' }}
@@ -79,7 +82,7 @@
       @if (selectedVariant.properties?.packageSize; as packageSize) {
       <div>
         <div class="mb-4 flex items-center justify-between">
-          <span class="font-bold text-surface-900 dark:text-surface-0">Габарити</span>
+          <span class="font-bold text-surface-900">Габарити</span>
         </div>
         <div class="flex items-center mb-8">
           {{ packageSize | productPackageSize }}
@@ -90,7 +93,7 @@
       @if (selectedVariant.properties?.weight; as weight) {
       <div class="ml-12">
         <div class="mb-4 flex items-center justify-between">
-          <span class="font-bold text-surface-900 dark:text-surface-0">Вага</span>
+          <span class="font-bold text-surface-900">Вага</span>
         </div>
         <div class="flex items-center mb-8">
           {{ weight | productWeight }}
@@ -100,7 +103,7 @@
     </div>
     <!-- Наявність -->
     <div class="mb-4 flex items-center justify-between">
-      <span class="font-bold text-surface-900 dark:text-surface-0">Наявність</span>
+      <span class="font-bold text-surface-900">Наявність</span>
     </div>
     <div class="flex items-center mb-8">
       @if (selectedVariant.stock !== undefined) {

@@ -30,7 +30,7 @@
         <div class="flex items-center justify-between">
           <div class="flex items-baseline">
             <h4 class="mb-0">Замовлення №{{ order.number }}</h4>
-            <small class="ml-2 text-surface-600 dark:text-surface-200">
+            <small class="ml-2 text-surface-600">
               {{ order.createdAt | date : 'short' }}
             </small>
           </div>
@@ -99,7 +99,7 @@
             <li class="striped-list__item">
               <div class="striped-list__item-key">Нотатка</div>
               <div class="striped-list__item-value">
-                <form class="p-fluid" [formGroup]="orderNoteForm">
+                <form [formGroup]="orderNoteForm">
                   <p-progressBar
                     class="order-view__note-progress-bar"
                     mode="indeterminate"
@@ -107,6 +107,7 @@
                     [style]="{ height: '4px' }"
                   ></p-progressBar>
                   <textarea
+                    class="w-full"
                     rows="1"
                     cols="30"
                     pInputTextarea
@@ -224,90 +225,92 @@
                 <div class="striped-list__item-key"></div>
                 <form
                   [formGroup]="updateWaybillForm"
-                  class="striped-list__item-value"
+                  class="striped-list__item-value flex flex-col gap-4"
                 >
-                  <div class="p-fluid">
-                    <div class="formgrid grid grid-cols-12 gap-4">
-                      <div class="field col-span-12">
-                        <label for="delivery-service">Служба доставки:</label>
-                        <p-select
-                          id="delivery-service"
-                          [options]="deliveryServices"
-                          formControlName="deliveryService"
-                        >
-                          <ng-template let-selected pTemplate="selectedItem">
-                            @if (selected; as deliveryService) {
-                            <app-delivery-service-badge
-                              mode="short"
-                              [withText]="true"
-                              [deliveryService]="deliveryService"
-                            ></app-delivery-service-badge>
-                            }
-                          </ng-template>
-                          <ng-template let-option pTemplate="item">
-                            @if (option; as deliveryService) {
-                            <app-delivery-service-badge
-                              mode="short"
-                              [withText]="true"
-                              [deliveryService]="deliveryService"
-                            ></app-delivery-service-badge>
-                            }
-                          </ng-template>
-                        </p-select>
-                        <app-form-control-error-message
-                          [formGroup]="updateWaybillForm"
-                          controlName="deliveryService"
-                          errorType="required"
-                          errorMessage="Це є обов'язковим полем"
-                        ></app-form-control-error-message>
-                      </div>
-                      @if (!isSelfPickup) {
-                      <div class="field col-span-12">
-                        <label for="tracking-id">Номер ТТН:</label>
-                        <input
-                          pInputText
-                          id="tracking-id"
-                          autocomplete="off"
-                          formControlName="trackingId"
-                        />
-                        <app-form-control-error-message
-                          [formGroup]="updateWaybillForm"
-                          controlName="trackingId"
-                          errorType="required"
-                          errorMessage="Потрібно ввести номер ТТН"
-                        ></app-form-control-error-message>
-                        <app-form-control-error-message
-                          [formGroup]="updateWaybillForm"
-                          controlName="trackingId"
-                          errorType="alphanumeric"
-                          errorMessage="Номер ТТН повинен містити тільки літери та цифри"
-                        ></app-form-control-error-message>
-                      </div>
-                      }
-                    </div>
+                  <div class="flex flex-col gap-2">
+                    <label class="font-medium" for="delivery-service"
+                      >Служба доставки:</label
+                    >
+                    <p-select
+                      fluid
+                      id="delivery-service"
+                      [options]="deliveryServices"
+                      formControlName="deliveryService"
+                    >
+                      <ng-template let-selected pTemplate="selectedItem">
+                        @if (selected; as deliveryService) {
+                        <app-delivery-service-badge
+                          mode="short"
+                          [withText]="true"
+                          [deliveryService]="deliveryService"
+                        ></app-delivery-service-badge>
+                        }
+                      </ng-template>
+                      <ng-template let-option pTemplate="item">
+                        @if (option; as deliveryService) {
+                        <app-delivery-service-badge
+                          mode="short"
+                          [withText]="true"
+                          [deliveryService]="deliveryService"
+                        ></app-delivery-service-badge>
+                        }
+                      </ng-template>
+                    </p-select>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="deliveryService"
+                      errorType="required"
+                      errorMessage="Це є обов'язковим полем"
+                    ></app-form-control-error-message>
                   </div>
                   @if (!isSelfPickup) {
-                  <div class="formgrid grid grid-cols-12 gap-4">
-                    <div class="field col-span-12">
-                      <label for="tracking-id">Файл маркування:</label>
-                      <p-fileUpload
-                        #waybillUpload
-                        data-cy="order-waybill-upload"
-                        [accept]="fileFormats"
-                        [customUpload]="true"
-                        [auto]="true"
-                        [maxFileSize]="1000000"
-                        [disabled]="(waybillSubmitting$ | async)!"
-                        (uploadHandler)="onFileUpload($event)"
-                      >
-                      </p-fileUpload>
-                      <app-form-control-error-message
-                        [formGroup]="updateWaybillForm"
-                        controlName="waybill"
-                        errorType="required"
-                        errorMessage="Це є обов'язковим полем"
-                      ></app-form-control-error-message>
-                    </div>
+                  <div class="flex flex-col gap-2">
+                    <label class="font-medium" for="tracking-id"
+                      >Номер ТТН:</label
+                    >
+                    <input
+                      class="w-full"
+                      pInputText
+                      id="tracking-id"
+                      autocomplete="off"
+                      formControlName="trackingId"
+                    />
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="trackingId"
+                      errorType="required"
+                      errorMessage="Потрібно ввести номер ТТН"
+                    ></app-form-control-error-message>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="trackingId"
+                      errorType="alphanumeric"
+                      errorMessage="Номер ТТН повинен містити тільки літери та цифри"
+                    ></app-form-control-error-message>
+                  </div>
+                  } @if (!isSelfPickup) {
+                  <div class="flex flex-col gap-2">
+                    <label class="font-medium" for="tracking-id"
+                      >Файл маркування:</label
+                    >
+                    <p-fileUpload
+                      class="w-full"
+                      #waybillUpload
+                      data-cy="order-waybill-upload"
+                      [accept]="fileFormats"
+                      [customUpload]="true"
+                      [auto]="true"
+                      [maxFileSize]="1000000"
+                      [disabled]="(waybillSubmitting$ | async)!"
+                      (uploadHandler)="onFileUpload($event)"
+                    >
+                    </p-fileUpload>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="waybill"
+                      errorType="required"
+                      errorMessage="Це є обов'язковим полем"
+                    ></app-form-control-error-message>
                   </div>
                   }
                   <button
@@ -331,8 +334,10 @@
             <div class="w-48 hidden md:block"></div>
             <div class="md:pl-8 mt-2 flex-auto">
               <div class="flex justify-end mb-6 pt-6">
-                <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</span>
-                <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl ml-8">
+                <span class="text-xl text-surface-900 font-bold text-3xl"
+                  >Всього:</span
+                >
+                <span class="text-xl text-surface-900 font-bold text-3xl ml-8">
                   {{ order.total | currency }}
                 </span>
               </div>
@@ -350,53 +355,52 @@
   [style]="{ width: '600px' }"
   header="Статус замовлення"
   [modal]="true"
-  styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <form [formGroup]="updateOrderStatusForm" class="flex items-center">
-      <div class="formgrid w-full">
-        <div class="field">
-          <label for="delivery-service">Статус:</label>
-          <p-select
-            formControlName="orderStatus"
-            placeholder="Статус"
-            data-cy="order-status-edit-dropdown"
-            [options]="orderStatuses"
-          >
-            <ng-template let-selected pTemplate="selectedItem">
-              <app-order-status-badge
-                [status]="selected.label"
-              ></app-order-status-badge>
-            </ng-template>
-            <ng-template let-option pTemplate="item">
-              <app-order-status-badge
-                [status]="option.label"
-              ></app-order-status-badge>
-            </ng-template>
-          </p-select>
-          <app-form-control-error-message
-            [formGroup]="updateOrderStatusForm"
-            controlName="orderStatus"
-            errorType="required"
-            errorMessage="Це є обов'язковим полем"
-          ></app-form-control-error-message>
-        </div>
-        <div class="field">
-          <label for="delivery-service">Коментар:</label>
-          <textarea
-            formControlName="orderStatusComment"
-            pInputTextarea
-            placeholder="Коментар"
-            rows="5"
-            data-cy="order-status-edit-comment"
-          ></textarea>
-          <app-form-control-error-message
-            [formGroup]="updateOrderStatusForm"
-            controlName="orderStatusComment"
-            errorType="required"
-            errorMessage="Для зміни на даний статус потрібно вказати причину"
-          ></app-form-control-error-message>
-        </div>
+    <form [formGroup]="updateOrderStatusForm" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
+        <label class="font-medium" for="delivery-service">Статус:</label>
+        <p-select
+          fluid
+          formControlName="orderStatus"
+          placeholder="Статус"
+          data-cy="order-status-edit-dropdown"
+          [options]="orderStatuses"
+        >
+          <ng-template let-selected pTemplate="selectedItem">
+            <app-order-status-badge
+              [status]="selected.label"
+            ></app-order-status-badge>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <app-order-status-badge
+              [status]="option.label"
+            ></app-order-status-badge>
+          </ng-template>
+        </p-select>
+        <app-form-control-error-message
+          [formGroup]="updateOrderStatusForm"
+          controlName="orderStatus"
+          errorType="required"
+          errorMessage="Це є обов'язковим полем"
+        ></app-form-control-error-message>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="font-medium" for="delivery-service">Коментар:</label>
+        <textarea
+          class="w-full"
+          formControlName="orderStatusComment"
+          pInputTextarea
+          placeholder="Коментар"
+          rows="5"
+          data-cy="order-status-edit-comment"
+        ></textarea>
+        <app-form-control-error-message
+          [formGroup]="updateOrderStatusForm"
+          controlName="orderStatusComment"
+          errorType="required"
+          errorMessage="Для зміни на даний статус потрібно вказати причину"
+        ></app-form-control-error-message>
       </div>
     </form>
     @if (order$ | async; as order) {

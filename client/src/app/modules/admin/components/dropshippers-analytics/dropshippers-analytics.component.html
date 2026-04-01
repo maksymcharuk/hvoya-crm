@@ -1,18 +1,14 @@
 <!-- Date filter -->
-<form
-  [formGroup]="filtersForm"
-  class="p-fluid formgrid grid grid-cols-12 gap-4 justify-end mb-4"
->
-  <div class="col-fixed">
-    <div class="field">
-      <label>Період:</label>
-      <p-datepicker
-        formControlName="range"
-        selectionMode="range"
-        appendTo="body"
-        placeholder="Період"
-      ></p-datepicker>
-    </div>
+<form [formGroup]="filtersForm" class="mb-4 flex justify-end">
+  <div class="flex w-full flex-col gap-2 md:w-72">
+    <label class="font-medium">Період</label>
+    <p-datepicker
+      class="w-full"
+      formControlName="range"
+      selectionMode="range"
+      appendTo="body"
+      placeholder="Період"
+    ></p-datepicker>
   </div>
 </form>
 
@@ -23,10 +19,10 @@
       @if (kpiStats$ | async; as kpis) {
       <div class="flex justify-between mb-4">
         <div>
-          <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4"
+          <span class="block text-surface-500 font-medium mb-4"
             >Всього дропшиперів</span
           >
-          <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
+          <div class="text-surface-900 font-medium text-xl">
             {{ kpis.totalDropshippers }}
           </div>
         </div>
@@ -37,7 +33,7 @@
           <i class="pi pi-users text-blue-500 text-xl"></i>
         </div>
       </div>
-      <span class="text-surface-500 dark:text-surface-300">За обраний період</span>
+      <span class="text-surface-500">За обраний період</span>
       } @else {
       <p-skeleton height="60px"></p-skeleton>
       }
@@ -49,8 +45,10 @@
       @if (kpiStats$ | async; as kpis) {
       <div class="flex justify-between mb-4">
         <div>
-          <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Загальний дохід</span>
-          <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
+          <span class="block text-surface-500 font-medium mb-4"
+            >Загальний дохід</span
+          >
+          <div class="text-surface-900 font-medium text-xl">
             {{ formatCurrency(kpis.totalRevenue) }}
           </div>
         </div>
@@ -61,7 +59,7 @@
           <i class="pi pi-wallet text-green-500 text-xl"></i>
         </div>
       </div>
-      <span class="text-surface-500 dark:text-surface-300">Від виконаних замовлень</span>
+      <span class="text-surface-500">Від виконаних замовлень</span>
       } @else {
       <p-skeleton height="60px"></p-skeleton>
       }
@@ -73,8 +71,10 @@
       @if (kpiStats$ | async; as kpis) {
       <div class="flex justify-between mb-4">
         <div>
-          <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Сер. % повернень</span>
-          <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
+          <span class="block text-surface-500 font-medium mb-4"
+            >Сер. % повернень</span
+          >
+          <div class="text-surface-900 font-medium text-xl">
             {{ formatPercent(kpis.avgReturnRate) }}
           </div>
         </div>
@@ -85,7 +85,7 @@
           <i class="pi pi-replay text-orange-500 text-xl"></i>
         </div>
       </div>
-      <span class="text-surface-500 dark:text-surface-300">Серед усіх дропшиперів</span>
+      <span class="text-surface-500">Серед усіх дропшиперів</span>
       } @else {
       <p-skeleton height="60px"></p-skeleton>
       }
@@ -97,8 +97,10 @@
       @if (kpiStats$ | async; as kpis) {
       <div class="flex justify-between mb-4">
         <div>
-          <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Топ дропшипер</span>
-          <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
+          <span class="block text-surface-500 font-medium mb-4"
+            >Топ дропшипер</span
+          >
+          <div class="text-surface-900 font-medium text-xl">
             {{ kpis.topPerformer }}
           </div>
         </div>
@@ -109,7 +111,9 @@
           <i class="pi pi-star text-yellow-500 text-xl"></i>
         </div>
       </div>
-      <span class="text-surface-500 dark:text-surface-300">{{ formatCurrency(kpis.topRevenue) }} доходу</span>
+      <span class="text-surface-500"
+        >{{ formatCurrency(kpis.topRevenue) }} доходу</span
+      >
       } @else {
       <p-skeleton height="60px"></p-skeleton>
       }
@@ -135,7 +139,7 @@
   >
     <ng-template pTemplate="loadingicon"></ng-template>
     <ng-template pTemplate="loadingbody">
-      @for (_ of [].constructor(rows); track _) {
+      @for (_ of [].constructor(rows); track $index) {
       <tr>
         <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
         <td><p-skeleton height="16px" width="80px"></p-skeleton></td>

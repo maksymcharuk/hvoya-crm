@@ -1,9 +1,10 @@
 <form [formGroup]="returnRequestForm" (ngSubmit)="onSubmit()">
-  <div class="p-fluid">
-    <div class="formgrid grid grid-cols-12 gap-4">
-      <div class="field col-span-12">
+  <div class="flex flex-col gap-4">
+    <div class="grid grid-cols-12 gap-4">
+      <div class="col-span-12 flex flex-col gap-1">
         <label for="orders">Замовлення:</label>
         <p-select
+          class="w-full"
           #orderNumberDropdown
           id="orders"
           placeholder="Виберіть замовлення для повернення"
@@ -22,7 +23,7 @@
       <ng-container formArrayName="requestedItems">
         @for ( requestedItemForm of requestedItems.controls; track
         requestedItemForm; let i = $index) {
-        <div class="field col-span-12">
+        <div class="col-span-12 flex flex-col gap-1">
           <label>Виберіть товари які хочете повернути:</label>
           <app-return-request-order-item
             [formControl]="requestedItemForm"
@@ -31,16 +32,16 @@
         }
       </ng-container>
     </div>
-  </div>
 
-  @if (orderNumberControl.value) {
-  <div class="p-fluid">
-    <div class="grid grid-cols-12 gap-4">
-      <div class="col-span-6">
-        <div class="formgrid grid grid-cols-12 gap-4">
-          <div class="field col-span-12">
+    @if (orderNumberControl.value) {
+    <div class="grid grid-cols-12 gap-6">
+      <div class="col-span-12 lg:col-span-6">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12 flex flex-col gap-1">
             <label for="customerComment">Причина повернення:</label>
             <textarea
+              class="w-full"
+              fluid
               id="customerComment"
               rows="5"
               cols="30"
@@ -55,9 +56,10 @@
               errorMessage="Необхідно вказати причину повернення"
             ></app-form-control-error-message>
           </div>
-          <div class="field col-span-12">
+          <div class="col-span-12 flex flex-col gap-1">
             <label for="customerImages">Фото:</label>
             <p-fileUpload
+              class="w-full"
               [accept]="imageFormats"
               [customUpload]="true"
               [auto]="true"
@@ -71,11 +73,12 @@
           </div>
         </div>
       </div>
-      <div class="col-span-6">
-        <div class="formgrid grid grid-cols-12 gap-4">
-          <div class="field col-span-12">
+      <div class="col-span-12 lg:col-span-6">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12 flex flex-col gap-1">
             <label for="delivery-service">Служба доставки:</label>
             <p-select
+              class="w-full"
               id="delivery-service"
               [options]="deliveryServices"
               formControlName="deliveryService"
@@ -106,9 +109,10 @@
               errorMessage="Це є обов'язковим полем"
             ></app-form-control-error-message>
           </div>
-          <div class="field col-span-12">
+          <div class="col-span-12 flex flex-col gap-1">
             <label for="tracking-id">Номер ТТН:</label>
             <input
+              class="w-full"
               pInputText
               id="tracking-id"
               autocomplete="off"
@@ -127,9 +131,10 @@
               errorMessage="Номер ТТН повинен містити тільки літери та цифри"
             ></app-form-control-error-message>
           </div>
-          <div class="field col-span-12">
+          <div class="col-span-12 flex flex-col gap-1">
             <label for="tracking-id">Експрес-накладна:</label>
             <p-fileUpload
+              class="w-full"
               [accept]="fileFormats"
               [customUpload]="true"
               [auto]="true"
@@ -143,16 +148,16 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="grid grid-cols-12 gap-4">
-    <div class="flex justify-end col-span-12">
-      <button
-        type="submit"
-        pButton
-        label="Відправити"
-        [disabled]="submitting"
-      ></button>
+    <div class="grid grid-cols-12 gap-4">
+      <div class="flex justify-end col-span-12">
+        <button
+          type="submit"
+          pButton
+          label="Відправити"
+          [disabled]="submitting"
+        ></button>
+      </div>
     </div>
+    }
   </div>
-  }
 </form>

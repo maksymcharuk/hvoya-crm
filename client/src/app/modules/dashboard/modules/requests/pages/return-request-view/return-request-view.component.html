@@ -22,8 +22,10 @@
               </tr>
               }
               <tr>
-                <td class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</td>
-                <td class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl pl-8">
+                <td class="text-xl text-surface-900 font-bold text-3xl">
+                  Всього:
+                </td>
+                <td class="text-xl text-surface-900 font-bold text-3xl pl-8">
                   {{ request.returnRequest!.total | currency }}
                 </td>
               </tr>
@@ -173,70 +175,71 @@
                 <div class="striped-list__item-key"></div>
                 <form
                   [formGroup]="updateDeliveryForm"
-                  class="striped-list__item-value"
+                  class="striped-list__item-value flex flex-col gap-4"
                 >
-                  <div class="p-fluid">
-                    <div class="formgrid grid grid-cols-12 gap-4">
-                      <div class="field col-span-12">
-                        <label for="delivery-service">Служба доставки:</label>
-                        <p-select
-                          id="delivery-service"
-                          [options]="deliveryServices"
-                          formControlName="deliveryService"
-                        >
-                          <ng-template let-selected pTemplate="selectedItem">
-                            @if (selected; as deliveryService) {
-                            <app-delivery-service-badge
-                              mode="short"
-                              [withText]="true"
-                              [deliveryService]="deliveryService"
-                            ></app-delivery-service-badge>
-                            }
-                          </ng-template>
-                          <ng-template let-option pTemplate="item">
-                            @if (option; as deliveryService) {
-                            <app-delivery-service-badge
-                              mode="short"
-                              [withText]="true"
-                              [deliveryService]="deliveryService"
-                            ></app-delivery-service-badge>
-                            }
-                          </ng-template>
-                        </p-select>
-                        <app-form-control-error-message
-                          [formGroup]="updateDeliveryForm"
-                          controlName="deliveryService"
-                          errorType="required"
-                          errorMessage="Це є обов'язковим полем"
-                        ></app-form-control-error-message>
-                      </div>
-                      <div class="field col-span-12">
-                        <label for="tracking-id">Номер ТТН:</label>
-                        <input
-                          pInputText
-                          id="tracking-id"
-                          autocomplete="off"
-                          formControlName="trackingId"
-                        />
-                        <app-form-control-error-message
-                          [formGroup]="updateDeliveryForm"
-                          controlName="trackingId"
-                          errorType="required"
-                          errorMessage="Потрібно ввести номер ТТН"
-                        ></app-form-control-error-message>
-                        <app-form-control-error-message
-                          [formGroup]="updateDeliveryForm"
-                          controlName="trackingId"
-                          errorType="alphanumeric"
-                          errorMessage="Номер ТТН повинен містити тільки літери та цифри"
-                        ></app-form-control-error-message>
-                      </div>
+                  <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12 flex flex-col gap-1">
+                      <label for="delivery-service">Служба доставки:</label>
+                      <p-select
+                        class="w-full"
+                        id="delivery-service"
+                        [options]="deliveryServices"
+                        formControlName="deliveryService"
+                      >
+                        <ng-template let-selected pTemplate="selectedItem">
+                          @if (selected; as deliveryService) {
+                          <app-delivery-service-badge
+                            mode="short"
+                            [withText]="true"
+                            [deliveryService]="deliveryService"
+                          ></app-delivery-service-badge>
+                          }
+                        </ng-template>
+                        <ng-template let-option pTemplate="item">
+                          @if (option; as deliveryService) {
+                          <app-delivery-service-badge
+                            mode="short"
+                            [withText]="true"
+                            [deliveryService]="deliveryService"
+                          ></app-delivery-service-badge>
+                          }
+                        </ng-template>
+                      </p-select>
+                      <app-form-control-error-message
+                        [formGroup]="updateDeliveryForm"
+                        controlName="deliveryService"
+                        errorType="required"
+                        errorMessage="Це є обов'язковим полем"
+                      ></app-form-control-error-message>
+                    </div>
+                    <div class="col-span-12 flex flex-col gap-1">
+                      <label for="tracking-id">Номер ТТН:</label>
+                      <input
+                        class="w-full"
+                        pInputText
+                        id="tracking-id"
+                        autocomplete="off"
+                        formControlName="trackingId"
+                      />
+                      <app-form-control-error-message
+                        [formGroup]="updateDeliveryForm"
+                        controlName="trackingId"
+                        errorType="required"
+                        errorMessage="Потрібно ввести номер ТТН"
+                      ></app-form-control-error-message>
+                      <app-form-control-error-message
+                        [formGroup]="updateDeliveryForm"
+                        controlName="trackingId"
+                        errorType="alphanumeric"
+                        errorMessage="Номер ТТН повинен містити тільки літери та цифри"
+                      ></app-form-control-error-message>
                     </div>
                   </div>
-                  <div class="formgrid grid grid-cols-12 gap-4">
-                    <div class="field col-span-12">
+                  <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12 flex flex-col gap-1">
                       <label for="tracking-id">Експрес-накладна:</label>
                       <p-fileUpload
+                        class="w-full"
                         #waybillUpload
                         data-cy="order-waybill-upload"
                         [accept]="fileFormats"

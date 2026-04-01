@@ -1,9 +1,9 @@
-import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ChartModule } from 'primeng/chart';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { SelectModule } from 'primeng/select';
 import { PopoverModule } from 'primeng/popover';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -51,7 +51,7 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
     SelectModule,
     DatePickerModule,
     PopoverModule,
-    BadgeModule,
+    OverlayBadgeModule,
     LayoutModule,
     SharedModule,
     TableModule,

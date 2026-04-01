@@ -1,12 +1,14 @@
 <form
-  class="p-fluid"
+  class="flex flex-col gap-4"
   [formGroup]="updateProfileForm"
   (ngSubmit)="onSubmit(updateProfileForm.value)"
 >
   <h5>Персональні дані</h5>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="phoneNumber">Номер телефону:</label>
     <p-inputMask
+      fluid
+      class="w-full"
       name="phoneNumber"
       inputId="phone-number"
       formControlName="phoneNumber"
@@ -16,7 +18,7 @@
       [autoClear]="false"
       placeholder="Введіть номер телефону"
       data-cy="phone-number"
-    ></p-inputMask>
+    />
     <app-form-control-error-message
       [formGroup]="updateProfileForm"
       controlName="phoneNumber"
@@ -25,9 +27,10 @@
     >
     </app-form-control-error-message>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="lastName">Прізвище:</label>
     <input
+      class="w-full"
       name="lastName"
       formControlName="lastName"
       type="text"
@@ -50,9 +53,10 @@
     >
     </app-form-control-error-message>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="firstName">Ім'я:</label>
     <input
+      class="w-full"
       name="firstName"
       formControlName="firstName"
       type="text"
@@ -75,9 +79,10 @@
     >
     </app-form-control-error-message>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="middleName">По батькові:</label>
     <input
+      class="w-full"
       name="middleName"
       formControlName="middleName"
       type="text"

@@ -81,7 +81,7 @@
     <div class="col-span-12 my-8 text-center">
       За вашим запитом нічого не знайдено. Спробуйте змінити параметри.
     </div>
-    } } @else { @for (_ of [].constructor(10); track _) {
+    } } @else { @for (_ of [].constructor(10); track $index) {
     <div class="col-span-12 md:col-span-6 lg:col-span-4 mb-8 md:mb-0">
       <div class="card">
         <div class="skeleton-wrapper mb-4">

@@ -21,16 +21,16 @@
 @if ('create' | able : userEntity) {
 <p-dialog
   header="Надіслати запрошення для нового адміністратора"
-  styleClass="p-fluid"
   [modal]="true"
   [style]="{ width: '400px', maxWidth: '90%' }"
   [(visible)]="showAdminInvitationDialog"
 >
   <ng-template pTemplate="content">
-    <form [formGroup]="adminInvitationForm">
-      <div class="field">
-        <label for="email">Ел. пошта:</label>
+    <form [formGroup]="adminInvitationForm" class="flex flex-col gap-5 pt-1">
+      <div class="flex flex-col gap-2">
+        <label class="font-medium" for="email">Ел. пошта:</label>
         <input
+          class="w-full"
           pInputText
           id="email"
           name="email"
@@ -44,9 +44,11 @@
           errorMessage="Це є обов'язковим полем"
         ></app-form-control-error-message>
       </div>
-      <div class="field">
-        <label for="role">Роль:</label>
+      <div class="flex flex-col gap-2">
+        <label class="font-medium" for="role">Роль:</label>
         <p-select
+          fluid
+          inputId="role"
           formControlName="role"
           placeholder="Статус"
           appendTo="body"

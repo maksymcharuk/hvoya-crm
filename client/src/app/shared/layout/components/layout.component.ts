@@ -40,6 +40,8 @@ export class LayoutComponent implements OnDestroy, AfterContentInit {
   }
 
   overlayMenuOpenSubscription: Subscription;
+  overlayPanelsChangesSubscription?: Subscription;
+  overlayPanelShowSubscriptions: Subscription[] = [];
   menuOutsideClickListener: any;
   profileMenuOutsideClickListener: any;
 
@@ -108,6 +110,14 @@ export class LayoutComponent implements OnDestroy, AfterContentInit {
   }
 
   ngAfterContentInit() {
+    this.bindOverlayPanelListeners();
+
+    this.overlayPanelsChangesSubscription = this.overlayPanels.changes.subscribe(
+      () => {
+        this.bindOverlayPanelListeners();
+      },
+    );
+
     this.router.events
       .pipe(filter((e) => e instanceof NavigationStart))
       .subscribe(() => {
@@ -121,6 +131,28 @@ export class LayoutComponent implements OnDestroy, AfterContentInit {
         overlayPanel.hide();
       });
     }
+  }
+
+  hideOtherOverlayPanels(activeOverlayPanel: Popover) {
+    if (this.overlayPanels) {
+      this.overlayPanels.forEach((overlayPanel) => {
+        if (overlayPanel !== activeOverlayPanel) {
+          overlayPanel.hide();
+        }
+      });
+    }
+  }
+
+  bindOverlayPanelListeners() {
+    this.overlayPanelShowSubscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
+
+    this.overlayPanelShowSubscriptions = this.overlayPanels.map((overlayPanel) =>
+      overlayPanel.onShow.subscribe(() => {
+        this.hideOtherOverlayPanels(overlayPanel);
+      }),
+    );
   }
 
   hideMenu() {
@@ -184,6 +216,14 @@ export class LayoutComponent implements OnDestroy, AfterContentInit {
     if (this.overlayMenuOpenSubscription) {
       this.overlayMenuOpenSubscription.unsubscribe();
     }
+
+    if (this.overlayPanelsChangesSubscription) {
+      this.overlayPanelsChangesSubscription.unsubscribe();
+    }
+
+    this.overlayPanelShowSubscriptions.forEach((subscription) => {
+      subscription.unsubscribe();
+    });
 
     if (this.menuOutsideClickListener) {
       this.menuOutsideClickListener();

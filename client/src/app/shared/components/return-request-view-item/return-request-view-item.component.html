@@ -30,11 +30,13 @@
             requestedItem.orderItem.product.baseProduct.id,
             requestedItem.orderItem.product.id
           ]"
-          class="text-surface-900 dark:text-surface-0 text-l font-medium mb-2"
+          class="text-surface-900 text-l font-medium mb-2"
         >
           {{ requestedItem.orderItem.productProperties.name }}
         </a>
-        <span class="text-surface-600 dark:text-surface-200">{{ requestedItem.orderItem.product.sku }}</span>
+        <span class="text-surface-600">{{
+          requestedItem.orderItem.product.sku
+        }}</span>
       </div>
       <div
         class="w-full sm:w-6/12 flex items-start justify-between mt-4 sm:mt-0 pl-8"
@@ -52,7 +54,7 @@
           }
         </div>
         <div class="flex flex-col sm:items-end">
-          <span class="text-surface-900 dark:text-surface-0 text-xl font-medium mb-1 sm:mb-2">
+          <span class="text-surface-900 text-xl font-medium mb-1 sm:mb-2">
             @if (approvedItem) {
             {{
               approvedItem.orderItem!.productProperties.price *

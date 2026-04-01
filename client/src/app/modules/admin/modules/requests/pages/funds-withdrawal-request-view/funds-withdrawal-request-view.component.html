@@ -7,10 +7,11 @@
           <span>Виведення коштів №{{ request.number }}</span>
         </h4>
         @if ( 'approve' | able : request.fundsWithdrawalRequest) {
-        <form [formGroup]="fundsWithdrawalRequestForm" class="formgrid grid grid-cols-12 gap-4">
-          <div class="p-fluid field col-span-12 xl:col-span-6">
-            <label for="managerComment">Коментар:</label>
+        <form [formGroup]="fundsWithdrawalRequestForm" class="grid grid-cols-12 gap-5">
+          <div class="col-span-12 flex flex-col gap-2 xl:col-span-6">
+            <label class="font-medium" for="managerComment">Коментар:</label>
             <textarea
+              class="w-full"
               rows="5"
               cols="30"
               id="managerComment"
@@ -26,9 +27,10 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-span-12 xl:col-span-6">
-            <label for="receipt">Документ:</label>
+          <div class="col-span-12 flex flex-col gap-2 xl:col-span-6">
+            <label class="font-medium" for="receipt">Документ:</label>
             <p-fileUpload
+              class="w-full"
               [accept]="'.pdf'"
               [customUpload]="true"
               [auto]="true"

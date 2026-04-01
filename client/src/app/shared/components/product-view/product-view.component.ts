@@ -1,5 +1,4 @@
 import { MessageService } from 'primeng/api';
-import { Galleria } from 'primeng/galleria';
 
 import {
   Component,
@@ -7,7 +6,6 @@ import {
   Input,
   OnInit,
   Output,
-  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -29,10 +27,23 @@ export class ProductViewComponent implements OnInit {
   @Input() previewImages: string[] = [];
 
   @Output() addToCart = new EventEmitter<ProductVariant>();
-  @ViewChild('galleria') galleria!: Galleria;
 
   variants: ProductVariant[] = [];
   selectedVariant: ProductVariant | undefined;
+  readonly galleryResponsiveOptions = [
+    {
+      breakpoint: '1024px',
+      numVisible: 4,
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 3,
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 2,
+    },
+  ];
 
   constructor(
     private readonly router: Router,

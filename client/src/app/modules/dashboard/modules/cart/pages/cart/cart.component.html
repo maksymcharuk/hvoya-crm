@@ -10,8 +10,10 @@
         <div class="w-48 hidden md:block"></div>
         <div class="md:pl-8 mt-12 flex-auto">
           <div class="flex justify-end mb-6 pt-6">
-            <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</span>
-            <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl ml-8">
+            <span class="text-xl text-surface-900 font-bold text-3xl"
+              >Всього:</span
+            >
+            <span class="text-xl text-surface-900 font-bold text-3xl ml-8">
               @if ( (cartLoading$ | async) === 0) {
               {{ cart.total | currency }}
               } @else {
@@ -30,13 +32,11 @@
         </div>
       </div>
       } @else {
-      <div
-        class="p-8 pt-12 flex flex-col items-center justify-center"
-      >
+      <div class="p-8 pt-12 flex flex-col items-center justify-center">
         <i class="pi pi-shopping-cart text-4xl"></i>
         <span class="text-2xl mt-4">Кошик пустий</span>
       </div>
-      } } @else { @for (_ of [].constructor(2); track _) {
+      } } @else { @for (_ of [].constructor(2); track $index) {
       <div
         class="flex flex-col md:flex-row py-2 border-t border-b border-surface md:items-center"
       >

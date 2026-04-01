@@ -77,11 +77,12 @@ import { MenuService } from '../services/menu.service';
         @if (item.items) {
         <i class="pi pi-fw pi-angle-down layout-submenu-toggler"></i>
         } @if (item.badge) {
-        <span
+        <p-overlaybadge
           class="layout-submenu-toggler mr-2"
-          pBadge
           [value]="item.badge"
-        ></span>
+        >
+          <span></span>
+        </p-overlaybadge>
         }
       </a>
       } @if (item.items && item.visible !== false) {

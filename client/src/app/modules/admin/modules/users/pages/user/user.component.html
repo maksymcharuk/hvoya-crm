@@ -54,7 +54,7 @@
           <li class="striped-list__item">
             <div class="striped-list__item-key">Нотатки</div>
             <div class="striped-list__item-value">
-              <form class="p-fluid" [formGroup]="userForm">
+              <form [formGroup]="userForm">
                 <p-progressBar
                   class="user__note-progress-bar"
                   mode="indeterminate"
@@ -62,6 +62,7 @@
                   [style]="{ height: '4px' }"
                 ></p-progressBar>
                 <textarea
+                  class="w-full"
                   rows="5"
                   cols="30"
                   pInputTextarea
@@ -181,13 +182,13 @@
   [style]="{ width: '450px' }"
   header="Відповідальний менеджер"
   [modal]="true"
-  styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
     <form [formGroup]="userConfirmationForm">
-      <div class="field">
+      <div class="flex flex-col gap-1 mb-4">
         <label for="name">Менеджер</label>
         <p-select
+          fluid
           optionValue="id"
           filterBy="fullName"
           placeholder="Виберіть менеджера"
@@ -232,7 +233,6 @@
   </ng-template>
 </p-dialog>
 <p-dialog
-  styleClass="p-fluid"
   header="Видалення акаунту"
   [style]="{ width: '500px' }"
   [modal]="true"
@@ -240,16 +240,17 @@
 >
   <ng-template pTemplate="content">
     <form [formGroup]="deleteUserForm">
-      <div class="field">
+      <div class="flex flex-col gap-1 mb-4">
         <label for="confirmationString" class="w-full">
           <div class="mb-1">
             Для видалення акаунту користувача введіть його прізвище та ім'я:
           </div>
-          <div class="text-center p-2 bg-surface-200 dark:bg-surface-600">
+          <div class="text-center p-2 bg-surface-200">
             <b>{{ user.lastName }} {{ user.firstName }}</b>
           </div>
         </label>
         <input
+          class="w-full"
           pInputText
           id="confirmationString"
           name="confirmationString"

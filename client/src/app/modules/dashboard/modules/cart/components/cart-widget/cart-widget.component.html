@@ -1,5 +1,5 @@
 <div class="cart-widget">
-  <div class="text-surface-900 dark:text-surface-0 text-xl pb-4 border-b border-surface">Кошик</div>
+  <div class="text-surface-900 text-xl pb-4 border-b border-surface">Кошик</div>
   @if ( { cart: cart$ | async, cartLoading: cartLoading$ | async, cartNotEmpty:
   cartNotEmpty$ | async }; as state) { @if (state.cart) { @if
   (state.cartNotEmpty) {
@@ -16,9 +16,9 @@
   </div>
   <div class="py-4 border-b border-surface">
     <div class="flex items-center justify-between">
-      <span class="text-surface-900 dark:text-surface-0 font-bold"> Всього </span>
+      <span class="text-surface-900 font-bold"> Всього </span>
       <span
-        class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl ml-8"
+        class="text-xl text-surface-900 font-bold text-3xl ml-8"
         data-cy="order-total"
       >
         @if (state.cartLoading === 0) {
@@ -47,9 +47,7 @@
     ></button>
   </div>
   } @else {
-  <div
-    class="p-8 pt-12 flex flex-col items-center justify-center"
-  >
+  <div class="p-8 pt-12 flex flex-col items-center justify-center">
     <i class="pi pi-shopping-cart text-4xl"></i>
     <span class="text-2xl mt-4">Кошик пустий</span>
   </div>
