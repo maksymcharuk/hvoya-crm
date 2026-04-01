@@ -1,4 +1,4 @@
-<div class="flex align-items-center justify-content-between mb-5">
+<div class="flex items-center justify-between mb-8">
   <h4 class="mb-0">Запитання та відповіді</h4>
   <div>
     @if ('create' | able : faqEntity) {
@@ -29,7 +29,7 @@ $index) {
   pDraggable="dd"
   pDroppable="dd"
   dragHandle=".p-panel-header"
-  class="block mb-4"
+  class="block mb-6"
   [faq]="faq"
   (onDragStart)="onDragStart(index)"
   (onDrop)="onDrop(index)"
@@ -37,11 +37,11 @@ $index) {
   (onPublishToggle)="onFaqItemPublishToggle($event)"
 ></app-faq-item>
 } @if (faqList.length === 0) {
-<div class="mt-5 mb-2">
+<div class="mt-8 mb-2">
   <p class="text-center">Список питань порожній</p>
 </div>
 } } @else { @for (faq of faqList; track faq) {
-<app-faq-item class="block mb-4" toggler="header" [faq]="faq"></app-faq-item>
+<app-faq-item class="block mb-6" toggler="header" [faq]="faq"></app-faq-item>
 } } @if (('create' | able : faqEntity) || ('update' | able : faqEntity)) {
 <p-dialog
   [(visible)]="faqDialog"

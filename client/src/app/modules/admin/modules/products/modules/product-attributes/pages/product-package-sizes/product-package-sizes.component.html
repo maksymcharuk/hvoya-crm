@@ -1,4 +1,4 @@
-<p-toolbar styleClass="mb-4 gap-2">
+<p-toolbar styleClass="mb-6 gap-2">
   <ng-template pTemplate="left">
     <button
       pButton
@@ -15,7 +15,7 @@
   #productSizesTable
   dataKey="id"
   currentPageReportTemplate="Показано від {first} до {last} з {totalRecords} розмірів"
-  class="block border-300 border-left-1 border-right-1"
+  class="block border-surface-300 dark:border-surface-500 border-l border-r"
   [value]="sizes"
   [rows]="rows"
   [paginator]="true"
@@ -25,7 +25,7 @@
   [filterDelay]="0"
 >
   <ng-template pTemplate="caption">
-    <div class="flex align-items-center justify-content-between">
+    <div class="flex items-center justify-between">
       <h5 class="m-0">Розміри (см)</h5>
       <p-iconField iconPosition="left">
         <p-inputIcon styleClass="pi pi-search" />

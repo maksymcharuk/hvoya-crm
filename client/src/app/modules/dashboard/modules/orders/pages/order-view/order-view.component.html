@@ -3,9 +3,9 @@
   @if (order.returnRequest; as returnRequest) {
   <p-message severity="warn">
     <ng-template pTemplate>
-      <div class="flex align-items-center">
+      <div class="flex items-center">
         <i class="pi mr-2" [ngClass]="ICONS.ORDER_RETURN_REQUEST"></i>
-        <span class="vertical-align-middle">
+        <span class="align-middle">
           Запит на повернення
           <a
             [routerLink]="[
@@ -17,21 +17,21 @@
           </a>
         </span>
         <app-request-status-badge
-          class="ml-5"
+          class="ml-8"
           [status]="returnRequest.status"
         ></app-request-status-badge>
       </div>
     </ng-template>
   </p-message>
   }
-  <div class="grid order-view">
-    <div class="col-12">
+  <div class="grid grid-cols-12 gap-4 order-view">
+    <div class="col-span-12">
       <div class="card order-view__content">
-        <div class="flex align-items-center justify-content-between mb-3">
-          <h4 class="flex align-items-center m-0">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="flex items-center m-0">
             <span>Замовлення №{{ order.number }}</span>
             <app-order-status-badge
-              class="ml-5"
+              class="ml-8"
               [status]="order.currentStatus"
             ></app-order-status-badge>
           </h4>
@@ -55,7 +55,7 @@
           ></p-button>
           }
         </div>
-        <div class="my-5">
+        <div class="my-8">
           <ul class="striped-list">
             <li class="striped-list__item">
               <div class="striped-list__item-key">Дата</div>
@@ -121,7 +121,7 @@
               </li> -->
           </ul>
         </div>
-        <div class="my-5">
+        <div class="my-8">
           <h5>Дані доставки</h5>
           <ul class="striped-list">
             <li class="striped-list__item">
@@ -139,9 +139,9 @@
             <li class="striped-list__item">
               <div class="striped-list__item-key">Статус доставки</div>
               <div class="striped-list__item-value">
-                <div class="py-2 mr-5">
-                  <div class="flex align-items-center mb-1">
-                    <span class="mr-3">
+                <div class="py-2 mr-8">
+                  <div class="flex items-center mb-1">
+                    <span class="mr-4">
                       <u>
                         {{ order.delivery.updatedAt | date : 'short' }}
                       </u>
@@ -208,8 +208,8 @@
                 class="striped-list__item-value"
               >
                 <div class="p-fluid">
-                  <div class="formgrid grid">
-                    <div class="field col-6">
+                  <div class="formgrid grid grid-cols-12 gap-4">
+                    <div class="field col-span-6">
                       <label for="delivery-service">Служба доставки:</label>
                       <p-select
                         id="delivery-service"
@@ -244,8 +244,8 @@
                     </div>
                   </div>
                   @if (!isSelfPickup) {
-                  <div class="formgrid grid">
-                    <div class="field col-6">
+                  <div class="formgrid grid grid-cols-12 gap-4">
+                    <div class="field col-span-6">
                       <label for="tracking-id">Номер ТТН:</label>
                       <input
                         pInputText
@@ -268,8 +268,8 @@
                     </div>
                   </div>
                   } @if (!isSelfPickup) {
-                  <div class="formgrid grid">
-                    <div class="field col-12 md:col-6">
+                  <div class="formgrid grid grid-cols-12 gap-4">
+                    <div class="field col-span-12 md:col-span-6">
                       <label for="tracking-id">Файл маркування:</label>
                       <p-fileUpload
                         #waybillUpload
@@ -309,12 +309,12 @@
           <app-order-view-item [orderItem]="orderItem"></app-order-view-item>
           }
           <div class="flex">
-            <div class="w-12rem hidden md:block"></div>
-            <div class="md:pl-5 mt-2 flex-auto">
-              <div class="flex justify-content-end mb-4 pt-4">
-                <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
+            <div class="w-48 hidden md:block"></div>
+            <div class="md:pl-8 mt-2 flex-auto">
+              <div class="flex justify-end mb-6 pt-6">
+                <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</span>
                 <span
-                  class="text-xl text-900 font-bold text-3xl ml-5"
+                  class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl ml-8"
                   data-cy="order-total-amount"
                 >
                   {{ order.total | currency }}

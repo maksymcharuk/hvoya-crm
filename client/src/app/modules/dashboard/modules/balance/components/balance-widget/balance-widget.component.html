@@ -1,10 +1,10 @@
 <div class="cart-widget widget-width">
   <div
-    class="text-900 text-xl pb-3 border-bottom-1 surface-border flex justify-content-between"
+    class="text-surface-900 dark:text-surface-0 text-xl pb-4 border-b border-surface flex justify-between"
   >
     <span>
       Баланс @if (profile$ | async; as profile) {
-      <span class="text-600 text-base">
+      <span class="text-surface-600 dark:text-surface-200 text-base">
         (Номер договору: {{ profile.accountNumber }})
       </span>
       }
@@ -18,8 +18,8 @@
     }
   </div>
   @if (balance$ | async; as balance) {
-  <div class="grid mt-2">
-    <div class="col-12">
+  <div class="grid grid-cols-12 gap-4 mt-2">
+    <div class="col-span-12">
       <p-button
         label="Поповнити баланс"
         (onClick)="redirectToBank()"
@@ -31,7 +31,7 @@
         [queryParams]="{
           requestType: RequestType.FundsWithdrawal
         }"
-        styleClass="ml-4 p-button-danger"
+        styleClass="ml-6 p-button-danger"
         tooltipPosition="bottom"
       >
         <app-request-type-badge
@@ -39,7 +39,7 @@
         ></app-request-type-badge>
       </p-button>
     </div>
-    <div class="col-12">
+    <div class="col-span-12">
       <p-table
         class="block"
         [value]="(paymentTransactions$ | async) || []"
@@ -66,7 +66,7 @@
             <th>Сума</th>
             <th>Статус</th>
             <th>Дата</th>
-            <th class="w-1"></th>
+            <th class="w-1/12"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-transaction>
@@ -83,7 +83,7 @@
                 {{ transaction.amount | currency }}
               </div>
               @if (transaction.status === TransactionStatus.Success) {
-              <small class="text-600">
+              <small class="text-surface-600 dark:text-surface-200">
                 {{ transaction.netBalance | currency }}
               </small>
               }
@@ -113,7 +113,7 @@
         </ng-template>
       </p-table>
     </div>
-    <div class="col-12 flex justify-content-end">
+    <div class="col-span-12 flex justify-end">
       <p-button
         data-cy="transactions-history-button"
         label="Історія транзакцій"
@@ -122,15 +122,15 @@
     </div>
   </div>
   } @else {
-  <div class="py-3 grid">
-    <div class="col-6 pr-2 pb-0">
+  <div class="py-4 grid grid-cols-12 gap-4">
+    <div class="col-span-6 pr-2 pb-0">
       <p-skeleton height="39px"></p-skeleton>
     </div>
-    <div class="col-6 pl-2 pb-0">
+    <div class="col-span-6 pl-2 pb-0">
       <p-skeleton height="39px"></p-skeleton>
     </div>
   </div>
-  <div class="py-3">
+  <div class="py-4">
     <p-skeleton height="6rem" width="30rem"></p-skeleton>
   </div>
   }

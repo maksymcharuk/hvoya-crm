@@ -33,7 +33,7 @@
     }
   </ng-template>
   <ng-template pTemplate="caption">
-    <div class="table-header flex justify-content-between align-items-center">
+    <div class="table-header flex justify-between items-center">
       Запити
       <form [formGroup]="searchForm">
         <p-iconField iconPosition="left">
@@ -51,13 +51,13 @@
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="number">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Номер
           <p-sortIcon field="number"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="createdAt">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Дата
           <p-sortIcon field="createdAt"></p-sortIcon>
         </div>

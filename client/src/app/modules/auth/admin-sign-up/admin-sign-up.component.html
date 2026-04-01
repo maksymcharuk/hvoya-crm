@@ -8,9 +8,9 @@
     </div>
     <form [formGroup]="adminSignUpForm" (ngSubmit)="onSubmit()">
       <div class="admin-sign-up-wrapper-form">
-        <div class="p-fluid formgrid grid">
+        <div class="p-fluid formgrid grid grid-cols-12 gap-4">
           <!-- Left column -->
-          <div class="col-12">
+          <div class="col-span-12">
             <div class="field">
               <label for="email">Пошта</label>
               <p-iconField iconPosition="right">
@@ -194,10 +194,10 @@
             </div>
           </div>
         </div>
-        <div class="flex align-items-center mt-5">
+        <div class="flex items-center mt-8">
           <a [routerLink]="['/', 'auth', 'sign-in']">Вхід</a>
           <button
-            class="ml-5"
+            class="ml-8"
             type="submit"
             pButton
             label="Зареєструватися"

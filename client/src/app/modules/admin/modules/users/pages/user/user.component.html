@@ -1,6 +1,6 @@
 @if (user$ | async; as user) {
-<div class="grid user">
-  <div class="col-12">
+<div class="grid grid-cols-12 gap-4 user">
+  <div class="col-span-12">
     <div class="card">
       <div class="user__header">
         <h4 class="mb-0">{{ user.fullName }}</h4>
@@ -10,7 +10,7 @@
         </span>
         }
       </div>
-      <div class="my-5">
+      <div class="my-8">
         <ul class="striped-list">
           <li class="striped-list__item">
             <div class="striped-list__item-key">Пошта</div>
@@ -81,7 +81,7 @@
                 pRipple
                 label="Надати доступ до системи"
                 (click)="openConfirmUserDialog()"
-                class="p-button-success mr-4"
+                class="p-button-success mr-6"
                 data-cy="confirm-user-open-dialog-button"
               ></button>
               } @else {
@@ -90,7 +90,7 @@
                 pRipple
                 [disabled]="true"
                 label="Доступ надано"
-                class="p-button-outlined p-button-success mr-4"
+                class="p-button-outlined p-button-success mr-6"
               ></button>
               } @if (user.userFreezed) {
               <button
@@ -245,7 +245,7 @@
           <div class="mb-1">
             Для видалення акаунту користувача введіть його прізвище та ім'я:
           </div>
-          <div class="text-center p-2 surface-200">
+          <div class="text-center p-2 bg-surface-200 dark:bg-surface-600">
             <b>{{ user.lastName }} {{ user.firstName }}</b>
           </div>
         </label>

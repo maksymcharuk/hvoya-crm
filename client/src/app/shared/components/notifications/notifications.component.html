@@ -35,7 +35,7 @@
                   *ngIf="notification.dataIsOrder(notification.data)"
                 >
                   <ng-template #title>
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                       <i class="pi mr-2" [ngClass]="ICONS.ORDER"></i>
                       Нове замовлення №{{ notification.data.number }}
                     </div>
@@ -60,7 +60,7 @@
                   *ngIf="notification.dataIsOrder(notification.data)"
                 >
                   <ng-template #title>
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                       <i class="pi mr-2" [ngClass]="ICONS.ORDER"></i>
                       Замовлення №{{ notification.data.number }} (статус
                       змінено)
@@ -102,13 +102,13 @@
                   *ngIf="notification.dataIsOrder(notification.data)"
                 >
                   <ng-template #title>
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                       <i class="pi mr-2" [ngClass]="ICONS.ORDER"></i>
                       Замовлення №{{ notification.data.number }}
                     </div>
                   </ng-template>
                   <ng-template #body>
-                    <div class="flex align-items-center mb-1">
+                    <div class="flex items-center mb-1">
                       Замовлення
                       <app-order-status-badge
                         class="ml-2"
@@ -136,7 +136,7 @@
                   *ngIf="notification.dataIsUser(notification.data)"
                 >
                   <ng-template #title>
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                       <i class="pi pi-user-plus mr-2"></i>
                       Користувач створив акаунт
                     </div>
@@ -161,7 +161,7 @@
                   *ngIf="notification.dataIsUser(notification.data)"
                 >
                   <ng-template #title>
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                       <i class="pi pi-verified mr-2"></i>
                       Акаунт підтвердженно
                     </div>
@@ -186,7 +186,7 @@
                   *ngIf="notification.dataIsUser(notification.data)"
                 >
                   <ng-template #title>
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                       <i class="pi pi-user-plus mr-2"></i>
                       Новий адміністратор
                     </div>
@@ -211,7 +211,7 @@
                   *ngIf="notification.dataIsUser(notification.data)"
                 >
                   <ng-template #title>
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                       <i class="pi pi-user-minus mr-2"></i>
                       Акаунт видалено
                     </div>
@@ -236,7 +236,7 @@
                   *ngIf="notification.dataIsRequest(notification.data)"
                 >
                   <ng-template #title>
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                       <i class="pi pi-flag mr-2"></i>
                       Новий запит №{{ notification.data.number }}
                     </div>
@@ -270,7 +270,7 @@
                   *ngIf="notification.dataIsRequest(notification.data)"
                 >
                   <ng-template #title>
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                       <i class="pi pi-flag mr-2"></i>
                       Запит №{{ notification.data.number }} (статус змінено)
                     </div>
@@ -345,7 +345,7 @@
 </ng-template>
 
 <ng-template #noNotifications>
-  <div class="flex align-items-center justify-content-center p-2 h-full">
+  <div class="flex items-center justify-center p-2 h-full">
     <span class="text-color">Сповіщень немає</span>
   </div>
 </ng-template>

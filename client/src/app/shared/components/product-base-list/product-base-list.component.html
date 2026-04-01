@@ -1,7 +1,7 @@
 <ng-container>
   <form
     [formGroup]="filtersForm"
-    class="filter-bar flex mb-3 justify-content-between card p-3"
+    class="filter-bar flex mb-4 justify-between card p-4"
   >
     <!-- <p-select
     formControlName="sort"
@@ -17,11 +17,11 @@
         formControlName="search"
         type="text"
         placeholder="Назва товару або артикул"
-        class="w-16rem"
+        class="w-64"
       />
     </p-iconField>
-    <div class="flex align-items-start">
-      <div class="flex align-items-center h-full">
+    <div class="flex items-start">
+      <div class="flex items-center h-full">
         <p-toggleswitch
           formControlName="stock"
           class="flex"
@@ -37,10 +37,10 @@
         optionLabel="label"
         [options]="(filterOptions$ | async) || []"
         [group]="true"
-        class="ml-4"
+        class="ml-6"
       >
         <ng-template let-filter pTemplate="group">
-          <div class="flex align-items-center">
+          <div class="flex items-center">
             <span>{{ filter.label }}</span>
           </div>
         </ng-template>
@@ -55,11 +55,11 @@
   [infiniteScrollThrottle]="1000"
   (scrolled)="onScroll()"
 >
-  <div class="grid -mt-3 -ml-3 -mr-3">
+  <div class="grid grid-cols-12 gap-4 -mt-4 -ml-4 -mr-4">
     @if (productList$ | async; as products) { @if (!showSkeletonLoading) { @if
     (products.length > 0) { @if (filtersActivated$ | async) { @for (product of
     productVariantList$ | async; track product) {
-    <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
+    <div class="flex col-span-12 md:col-span-6 lg:col-span-4 mb-8 md:mb-0">
       <app-product-item
         class="flex"
         data-cy="product-item"
@@ -70,7 +70,7 @@
       />
     </div>
     } } @else { @for (product of products; track product) {
-    <div class="flex col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
+    <div class="flex col-span-12 md:col-span-6 lg:col-span-4 mb-8 md:mb-0">
       <app-product-base-item
         class="flex"
         data-cy="product-item"
@@ -78,13 +78,13 @@
       />
     </div>
     } } } @else {
-    <div class="col-12 my-5 text-center">
+    <div class="col-span-12 my-8 text-center">
       За вашим запитом нічого не знайдено. Спробуйте змінити параметри.
     </div>
     } } @else { @for (_ of [].constructor(10); track _) {
-    <div class="col-12 md:col-6 lg:col-4 mb-5 md:mb-0">
+    <div class="col-span-12 md:col-span-6 lg:col-span-4 mb-8 md:mb-0">
       <div class="card">
-        <div class="skeleton-wrapper mb-3">
+        <div class="skeleton-wrapper mb-4">
           <p-skeleton
             width="100%"
             styleClass="skeleton-wrapper-img"
@@ -94,7 +94,7 @@
         <div class="my-2">
           <p-skeleton width="100%" height="25px"></p-skeleton>
         </div>
-        <div class="my-4 flex justify-content-between">
+        <div class="my-6 flex justify-between">
           <p-skeleton width="5rem" height="16px"></p-skeleton>
           <p-skeleton width="5rem" height="16px"></p-skeleton>
         </div>
@@ -105,8 +105,8 @@
   </div>
   <div
     [class.hidden]="!showMoreLoader"
-    class="flex justify-content-center py-2"
+    class="flex justify-center py-2"
   >
-    <p-progressSpinner styleClass="w-4rem h-4rem"></p-progressSpinner>
+    <p-progressSpinner styleClass="w-16 h-16"></p-progressSpinner>
   </div>
 </div>

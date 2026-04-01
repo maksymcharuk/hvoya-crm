@@ -1,10 +1,10 @@
 <div class="nlq-chat">
   <!-- Header -->
-  <div class="chat-header flex justify-content-between align-items-center">
-    <div class="flex align-items-center gap-2">
+  <div class="chat-header flex justify-between items-center">
+    <div class="flex items-center gap-2">
       <i class="pi pi-sparkles text-primary"></i>
       <span class="font-semibold">AI-аналітика</span>
-      <span class="text-xs text-color-secondary">— задайте питання про замовлення, продукти, дропшиперів</span>
+      <span class="text-xs text-muted-color">— задайте питання про замовлення, продукти, дропшиперів</span>
     </div>
     @if (messages.length > 0) {
       <p-button
@@ -23,8 +23,8 @@
   <div #messagesContainer class="messages-container">
     @if (messages.length === 0) {
       <div class="empty-state">
-        <i class="pi pi-comments text-4xl text-color-secondary"></i>
-        <p class="text-color-secondary mt-2">Задайте питання, щоб отримати аналітику</p>
+        <i class="pi pi-comments text-4xl text-muted-color"></i>
+        <p class="text-muted-color mt-2">Задайте питання, щоб отримати аналітику</p>
         <div class="suggestions">
           <p-button
             label="Топ продуктів за доходом"

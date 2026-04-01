@@ -1,6 +1,6 @@
 <td>
   @if (user.isUser) {
-  <div class="flex align-items-center">
+  <div class="flex items-center">
     <span>{{ user.accountNumber }}</span>
     @if (showUserNotification(user, notifications$ | async)) {
     <i class="pi pi-circle-fill text-green-600 ml-2"></i>
@@ -9,7 +9,7 @@
   } @else { - }
 </td>
 <td>
-  <span class="white-space-nowrap">{{ user.fullName }}</span>
+  <span class="whitespace-nowrap">{{ user.fullName }}</span>
 </td>
 <td class="note">
   @if (user.isUser) {
@@ -17,10 +17,10 @@
   } @else { - }
 </td>
 <td>
-  <span class="white-space-nowrap">{{ user.email }}</span>
+  <span class="whitespace-nowrap">{{ user.email }}</span>
 </td>
 <td>
-  <span class="white-space-nowrap">{{ user.phoneNumber | phoneNumber }}</span>
+  <span class="whitespace-nowrap">{{ user.phoneNumber | phoneNumber }}</span>
 </td>
 @if (!hideManager) {
 <td>{{ user.manager ? user.manager.fullName : '-' }}</td>

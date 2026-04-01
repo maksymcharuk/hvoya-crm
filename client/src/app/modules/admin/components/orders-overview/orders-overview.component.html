@@ -1,6 +1,6 @@
 <form
   [formGroup]="filtersForm"
-  class="p-fluid formgrid grid justify-content-end mb-3"
+  class="p-fluid formgrid grid grid-cols-12 gap-4 justify-end mb-4"
 >
   <div class="col-fixed">
     <div class="field">
@@ -16,25 +16,25 @@
 </form>
 
 <!-- KPI Cards -->
-<div class="grid">
-  <div class="col-12 md:col-6 lg:col-3">
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12 md:col-span-6 lg:col-span-3">
     <div class="card mb-0">
       @if (!loadingSummary) {
-      <div class="flex justify-content-between mb-3">
+      <div class="flex justify-between mb-4">
         <div>
-          <span class="block text-500 font-medium mb-3">Всього замовлень</span>
-          <div class="text-900 font-medium text-xl">
+          <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Всього замовлень</span>
+          <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
             {{ summary?.totalOrdersCount || 0 }}
           </div>
         </div>
         <div
-          class="flex align-items-center justify-content-center bg-blue-100 border-round"
+          class="flex items-center justify-center bg-blue-100 rounded-border"
           style="width: 2.5rem; height: 2.5rem"
         >
           <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
         </div>
       </div>
-      <span class="text-500"
+      <span class="text-surface-500 dark:text-surface-300"
         >В обробці: {{ summary?.inProgressCount || 0 }}</span
       >
       } @else {
@@ -43,24 +43,24 @@
     </div>
   </div>
 
-  <div class="col-12 md:col-6 lg:col-3">
+  <div class="col-span-12 md:col-span-6 lg:col-span-3">
     <div class="card mb-0">
       @if (!loadingSummary) {
-      <div class="flex justify-content-between mb-3">
+      <div class="flex justify-between mb-4">
         <div>
-          <span class="block text-500 font-medium mb-3">Дохід</span>
-          <div class="text-900 font-medium text-xl">
+          <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Дохід</span>
+          <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
             {{ formatCurrency(summary?.totalRevenue || 0) }}
           </div>
         </div>
         <div
-          class="flex align-items-center justify-content-center bg-green-100 border-round"
+          class="flex items-center justify-center bg-green-100 rounded-border"
           style="width: 2.5rem; height: 2.5rem"
         >
           <i class="pi pi-wallet text-green-500 text-xl"></i>
         </div>
       </div>
-      <span class="text-500"
+      <span class="text-surface-500 dark:text-surface-300"
         >Сер. замовлення:
         {{ formatCurrency(summary?.averageOrderValue || 0) }}</span
       >
@@ -70,24 +70,24 @@
     </div>
   </div>
 
-  <div class="col-12 md:col-6 lg:col-3">
+  <div class="col-span-12 md:col-span-6 lg:col-span-3">
     <div class="card mb-0">
       @if (!loadingSummary) {
-      <div class="flex justify-content-between mb-3">
+      <div class="flex justify-between mb-4">
         <div>
-          <span class="block text-500 font-medium mb-3">Виконання</span>
-          <div class="text-900 font-medium text-xl">
+          <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Виконання</span>
+          <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
             {{ formatPercent(fulfillmentRate) }}
           </div>
         </div>
         <div
-          class="flex align-items-center justify-content-center bg-cyan-100 border-round"
+          class="flex items-center justify-center bg-cyan-100 rounded-border"
           style="width: 2.5rem; height: 2.5rem"
         >
           <i class="pi pi-check-circle text-cyan-500 text-xl"></i>
         </div>
       </div>
-      <span class="text-500"
+      <span class="text-surface-500 dark:text-surface-300"
         >Виконано: {{ summary?.completedOrdersCount || 0 }}</span
       >
       } @else {
@@ -96,24 +96,24 @@
     </div>
   </div>
 
-  <div class="col-12 md:col-6 lg:col-3">
+  <div class="col-span-12 md:col-span-6 lg:col-span-3">
     <div class="card mb-0">
       @if (!loadingSummary) {
-      <div class="flex justify-content-between mb-3">
+      <div class="flex justify-between mb-4">
         <div>
-          <span class="block text-500 font-medium mb-3">Повернення</span>
-          <div class="text-900 font-medium text-xl">
+          <span class="block text-surface-500 dark:text-surface-300 font-medium mb-4">Повернення</span>
+          <div class="text-surface-900 dark:text-surface-0 font-medium text-xl">
             {{ formatPercent(returnRate) }}
           </div>
         </div>
         <div
-          class="flex align-items-center justify-content-center bg-red-100 border-round"
+          class="flex items-center justify-center bg-red-100 rounded-border"
           style="width: 2.5rem; height: 2.5rem"
         >
           <i class="pi pi-replay text-red-500 text-xl"></i>
         </div>
       </div>
-      <span class="text-500">Повернень: {{ funnel?.returned || 0 }}</span>
+      <span class="text-surface-500 dark:text-surface-300">Повернень: {{ funnel?.returned || 0 }}</span>
       } @else {
       <p-skeleton height="60px"></p-skeleton>
       }
@@ -122,7 +122,7 @@
 </div>
 
 <!-- Monthly Trend Chart -->
-<div class="card mt-3 mb-0">
+<div class="card mt-4 mb-0">
   <h5>Динаміка за місяцями</h5>
   @if (!loadingTrend) {
   <p-chart

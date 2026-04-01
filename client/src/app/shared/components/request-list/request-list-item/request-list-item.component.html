@@ -1,5 +1,5 @@
 <td>
-  <div class="flex align-items-center">
+  <div class="flex items-center">
     <span data-cy="order-list-item-id">{{ request.number }}</span>
     @if (showRequestNotification(request, notifications$ | async)) {
     <i class="pi pi-circle-fill text-green-600 ml-2"></i>
@@ -10,7 +10,7 @@
   {{ request.createdAt | date : 'short' }}
 </td>
 <td>
-  <div class="flex align-items-center">
+  <div class="flex items-center">
     <app-request-type-badge
       [type]="request.requestType"
     ></app-request-type-badge>
@@ -43,6 +43,6 @@
 <td></td>
 } } @if (adminView) {
 <td>
-  <span class="white-space-nowrap">{{ request.customer!.fullName }}</span>
+  <span class="whitespace-nowrap">{{ request.customer!.fullName }}</span>
 </td>
 }

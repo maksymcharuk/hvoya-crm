@@ -1,5 +1,5 @@
-<div class="grid">
-  <div class="col-12">
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12">
     <div class="card">
       <h4>Оформити</h4>
       @if (cart$ | async; as cart) { @if (cartNotEmpty$ | async) { @for
@@ -7,13 +7,13 @@
       <app-order-cart-item [cartItem]="cartItem"></app-order-cart-item>
       }
       <div class="flex">
-        <div class="w-12rem hidden md:block"></div>
-        <div class="md:pl-5 mt-2 flex-auto">
-          <div class="flex-column">
-            <div class="flex justify-content-end pt-4">
-              <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
+        <div class="w-48 hidden md:block"></div>
+        <div class="md:pl-8 mt-2 flex-auto">
+          <div class="flex-col">
+            <div class="flex justify-end pt-6">
+              <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</span>
               <span
-                class="text-xl text-900 font-bold text-3xl ml-5"
+                class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl ml-8"
                 data-cy="order-total"
               >
                 @if ( (cartLoading$ | async) === 0) {
@@ -24,7 +24,7 @@
               </span>
             </div>
             <div
-              class="flex justify-content-end text-base text-red-300 ml-5 mb-6"
+              class="flex justify-end text-base text-red-300 ml-8 mb-12"
             >
               @if (balance$ | async; as balance) { @if (+cart.total >
               +balance.amount) { Недостатньо коштів на балансі } }
@@ -34,33 +34,33 @@
       </div>
       } @else {
       <div
-        class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
+        class="p-8 pt-12 flex flex-col items-center justify-center"
       >
         <i class="pi pi-shopping-cart text-4xl"></i>
-        <span class="text-2xl mt-3 mb-6">Кошик пустий</span>
+        <span class="text-2xl mt-4 mb-12">Кошик пустий</span>
       </div>
       } } @else { @for (_ of [].constructor(2); track _) {
       <div
-        class="flex flex-column md:flex-row py-2 border-top-1 border-bottom-1 surface-border md:align-items-center"
+        class="flex flex-col md:flex-row py-2 border-t border-b border-surface md:items-center"
       >
         <p-skeleton height="4rem" width="4rem"></p-skeleton>
         <div class="flex-auto py-1 md:pl-2">
           <div
-            class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
+            class="flex flex-wrap items-start sm:items-center sm:flex-row sm:justify-between border-surface"
           >
-            <div class="w-full sm:w-6 flex flex-column">
+            <div class="w-full sm:w-6/12 flex flex-col">
               <span class="mb-2">
                 <p-skeleton height="1.5rem" width="8rem"></p-skeleton>
               </span>
               <p-skeleton height="1rem" width="5rem"></p-skeleton>
             </div>
             <div
-              class="w-full sm:w-6 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
+              class="w-full sm:w-6/12 flex items-start justify-between mt-4 sm:mt-0 pl-8"
             >
-              <div class="p-fluid sm:w-6rem">
+              <div class="p-fluid sm:w-24">
                 <p-skeleton height="39px" width="84px"></p-skeleton>
               </div>
-              <div class="flex flex-column sm:align-items-end">
+              <div class="flex flex-col sm:items-end">
                 <span class="mb-1 sm:mb-2">
                   <p-skeleton height="1.5rem" width="5rem"></p-skeleton>
                 </span>
@@ -72,11 +72,11 @@
       </div>
       }
       <div class="flex">
-        <div class="w-12rem hidden md:block"></div>
-        <div class="md:pl-5 mt-2 flex-auto">
-          <div class="flex justify-content-end mb-4 pt-4">
+        <div class="w-48 hidden md:block"></div>
+        <div class="md:pl-8 mt-2 flex-auto">
+          <div class="flex justify-end mb-6 pt-6">
             <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
-            <span class="ml-5">
+            <span class="ml-8">
               <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
             </span>
           </div>
@@ -84,8 +84,8 @@
       </div>
       }
       <form [formGroup]="orderCreateForm">
-        <div class="grid">
-          <div class="col-12">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12">
             <h5>Деталі замовлення</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
@@ -97,11 +97,11 @@
             </ul>
           </div>
           <!-- NOTE: Keep this for a waybill generation logic in future -->
-          <!-- <div class="col-6">
+          <!-- <div class="col-span-6">
             <div class="p-fluid">
               <h5>Інформація про отримувача</h5>
-              <div class="formgrid grid">
-                <div class="field col-12">
+              <div class="formgrid grid grid-cols-12 gap-4">
+                <div class="field col-span-12">
                   <label for="email">Ел. пошта:</label>
                   <input id="email" pInputText formControlName="email" />
                   <app-form-control-error-message
@@ -111,7 +111,7 @@
                     errorMessage="Потрібно ввести електронну пошту"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col-12">
+                <div class="field col-span-12">
                   <label for="phone-number">Номер телефону:</label>
                   <p-inputMask
                     inputId="phone-number"
@@ -129,8 +129,8 @@
                   ></app-form-control-error-message>
                 </div>
               </div>
-              <div class="formgrid grid">
-                <div class="field col-12">
+              <div class="formgrid grid grid-cols-12 gap-4">
+                <div class="field col-span-12">
                   <label for="first-name">Ім'я:</label>
                   <input
                     id="first-name"
@@ -144,7 +144,7 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col-12">
+                <div class="field col-span-12">
                   <label for="last-name">Прізвище:</label>
                   <input id="last-name" pInputText formControlName="lastName" />
                   <app-form-control-error-message
@@ -154,7 +154,7 @@
                     errorMessage="Це є обов'язковим полем"
                   ></app-form-control-error-message>
                 </div>
-                <div class="field col-12">
+                <div class="field col-span-12">
                   <label for="middle-name">По-батькові:</label>
                   <input
                     id="middle-name"
@@ -171,11 +171,11 @@
               </div>
             </div>
           </div> -->
-          <div class="col-6">
+          <div class="col-span-6">
             <div class="p-fluid">
               <h5>Інформація про достаку</h5>
-              <div class="formgrid grid">
-                <div class="field col-12">
+              <div class="formgrid grid grid-cols-12 gap-4">
+                <div class="field col-span-12">
                   <label for="delivery-service">Служба доставки:</label>
                   <p-select
                     id="delivery-service"
@@ -209,7 +209,7 @@
                   ></app-form-control-error-message>
                 </div>
                 <!-- NOTE: Keep this for a waybill generation logic in future -->
-                <!-- <div class="field col-12">
+                <!-- <div class="field col-span-12">
                 <label for="delivery-type">Тип доставки:</label>
                 <p-select
                   id="delivery-type"
@@ -224,7 +224,7 @@
                   errorMessage="Це є обов'язковим полем"
                 ></app-form-control-error-message>
               </div>
-              <div class="field col-12">
+              <div class="field col-span-12">
                 <label for="city">Місто:</label>
                 <input id="city" pInputText formControlName="city" />
                 <app-form-control-error-message
@@ -235,9 +235,9 @@
                 ></app-form-control-error-message>
               </div> -->
               </div>
-              <div class="formgrid grid">
+              <div class="formgrid grid grid-cols-12 gap-4">
                 <!-- NOTE: Keep this for a waybill generation logic in future -->
-                <!-- <div class="field col-12">
+                <!-- <div class="field col-span-12">
               <label for="post-office">Відділення:</label>
               <input
                 id="post-office"
@@ -252,7 +252,7 @@
               ></app-form-control-error-message>
             </div> -->
                 @if (!isSelfPickup) {
-                <div class="field col-12">
+                <div class="field col-span-12">
                   <label for="tracking-id">Номер ТТН:</label>
                   <input
                     pInputText
@@ -277,8 +277,8 @@
               </div>
             </div>
             @if (!isSelfPickup) {
-            <div class="formgrid grid">
-              <div class="field col-12">
+            <div class="formgrid grid grid-cols-12 gap-4">
+              <div class="field col-span-12">
                 <label>Маркування (PDF):</label>
                 <p-fileUpload
                   data-cy="order-waybill-upload"
@@ -299,11 +299,11 @@
             </div>
             }
           </div>
-          <div class="col-6">
+          <div class="col-span-6">
             <div class="p-fluid">
               <h5>Додаткова інформація</h5>
-              <div class="formgrid grid">
-                <div class="field col-12">
+              <div class="formgrid grid grid-cols-12 gap-4">
+                <div class="field col-span-12">
                   <label for="customerNote">Коментар:</label>
                   <textarea
                     rows="5"

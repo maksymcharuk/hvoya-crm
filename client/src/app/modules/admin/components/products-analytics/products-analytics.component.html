@@ -26,9 +26,9 @@
     }
   </ng-template>
   <ng-template pTemplate="caption">
-    <div class="table-header flex justify-content-between align-items-center">
+    <div class="table-header flex justify-between items-center">
       <h5 class="m-0">Аналітика продуктів</h5>
-      <form class="p-fluid formgrid grid" [formGroup]="filtersForm">
+      <form class="p-fluid formgrid grid grid-cols-12 gap-4" [formGroup]="filtersForm">
         <div class="col">
           <div class="field">
             <label>Період:</label>
@@ -46,37 +46,37 @@
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="productName">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Назва продукту
           <p-sortIcon field="productName"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="quantitySold">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           К-ть продано
           <p-sortIcon field="quantitySold"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="totalRevenue">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Загальний дохід
           <p-sortIcon field="totalRevenue"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="uniqueDropshippersCount">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Дропшипери
           <p-sortIcon field="uniqueDropshippersCount"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="returnRate">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           % повернень
           <p-sortIcon field="returnRate"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="averagePrice">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Середня ціна
           <p-sortIcon field="averagePrice"></p-sortIcon>
         </div>

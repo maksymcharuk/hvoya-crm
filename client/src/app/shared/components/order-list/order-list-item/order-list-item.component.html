@@ -1,5 +1,5 @@
 <td>
-  <div class="flex align-items-center">
+  <div class="flex items-center">
     <span data-cy="order-list-item-id">{{ order.number }}</span>
     @if (showOrderNotification(order, notifications$ | async)) {
     <i class="pi pi-circle-fill text-green-600 ml-2"></i>
@@ -14,7 +14,7 @@
       [ngClass]="{ '-ml-4': !first }"
       [alt]="image.alt"
       [title]="image.alt"
-      class="w-3rem h-3rem border-circle border border-1 border-200"
+      class="w-12 h-12 rounded-full border border border-surface-200 dark:border-surface-600"
     />
     }
   </div>
@@ -29,13 +29,13 @@
   ></app-order-status-badge>
 </td>
 <td>
-  <div class="flex align-items-center">
+  <div class="flex items-center">
     <app-order-delivery-status-badge
       [status]="order.delivery.status"
     ></app-order-delivery-status-badge>
     @if (getDeliveryWarningData(order); as data) {
     <i
-      class="pi pi-exclamation-triangle ml-3"
+      class="pi pi-exclamation-triangle ml-4"
       [ngClass]="data.iconClass"
       [pTooltip]="data.text"
       tooltipPosition="right"

@@ -7,8 +7,8 @@
       <h3>Вхід</h3>
     </div>
     <form [formGroup]="signInForm" (ngSubmit)="onSubmit(signInForm.value)">
-      <div class="p-fluid formgrid grid">
-        <div class="field col-12">
+      <div class="p-fluid formgrid grid grid-cols-12 gap-4">
+        <div class="field col-span-12">
           <label>Пошта</label>
           <input
             name="email"
@@ -26,7 +26,7 @@
           >
           </app-form-control-error-message>
         </div>
-        <div class="field col-12">
+        <div class="field col-span-12">
           <label for="float-input-invalid">Пароль</label>
           <p-password
             name="password"
@@ -45,18 +45,18 @@
           </app-form-control-error-message>
         </div>
       </div>
-      <div class="p-fluid formgrid grid">
-        <div class="field col-6 md:col-6">
+      <div class="p-fluid formgrid grid grid-cols-12 gap-4">
+        <div class="field col-span-6 md:col-span-6">
           <a [routerLink]="['/', 'auth', 'sign-up']">Реєстрація</a>
         </div>
-        <div class="field col-6 md:col-6 text-right">
+        <div class="field col-span-6 md:col-span-6 text-right">
           <a [routerLink]="['/', 'auth', 'forgot-password']">
             Відновити пароль
           </a>
         </div>
       </div>
-      <div class="p-fluid formgrid grid">
-        <div class="col-12 md:col-12">
+      <div class="p-fluid formgrid grid grid-cols-12 gap-4">
+        <div class="col-span-12 md:col-span-12">
           <button
             [disabled]="isLoading"
             type="submit"

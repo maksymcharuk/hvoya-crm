@@ -1,6 +1,6 @@
 <form [formGroup]="fundsWithdrawalRequestForm" (ngSubmit)="onSubmit()">
-  <div class="p-fluid formgrid grid">
-    <div class="col-6 field">
+  <div class="p-fluid formgrid grid grid-cols-12 gap-4">
+    <div class="col-span-6 field">
       <label>Приклад реквізитів:</label>
       <table class="example-table">
         <tr>
@@ -21,7 +21,7 @@
         </tr>
       </table>
     </div>
-    <div class="col-6">
+    <div class="col-span-6">
       <div class="field">
         <label for="customerComment">Реквізити:</label>
         <textarea
@@ -65,8 +65,8 @@
         </app-form-control-error-message>
       </div>
     </div>
-    <div class="flex justify-content-end w-full">
-      <div class="col-3">
+    <div class="flex justify-end w-full">
+      <div class="col-span-3">
         <button
           type="submit"
           pButton

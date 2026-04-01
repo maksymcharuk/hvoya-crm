@@ -1,11 +1,11 @@
-<div class="grid">
-  <div class="col-12 md:col-8">
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12 md:col-span-8">
     <div class="card">
       @if (productForm) {
       <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
         @if (isEdit) {
-        <div class="p-fluid p-formgrid grid">
-          <div class="field col-12 md:col-6">
+        <div class="p-fluid p-formgrid grid grid-cols-12 gap-4">
+          <div class="field col-span-12 md:col-span-6">
             <label for="productsList">Продукт</label>
             <p-select
               [options]="productsList"
@@ -26,7 +26,7 @@
             </p-select>
           </div>
           @if (productBaseProductChange) {
-          <div class="field col-12 md:col-4 changes-message">
+          <div class="field col-span-12 md:col-span-4 changes-message">
             <app-product-state-changes
               [change]="productBaseProductChange"
             ></app-product-state-changes>
@@ -37,11 +37,11 @@
         <hr />
         }
         <div
-          class="p-fluid p-formgrid grid"
+          class="p-fluid p-formgrid grid grid-cols-12 gap-4"
           formGroupName="productCategoryGroup"
         >
           @if (!newCategory) {
-          <div class="field col-12 md:col-6">
+          <div class="field col-span-12 md:col-span-6">
             <label for="productCategoryId">Категорія</label>
             <p-select
               [options]="productsCategories"
@@ -70,7 +70,7 @@
             </app-form-control-error-message>
           </div>
           } @if (newCategory) {
-          <div class="field col-12 md:col-6">
+          <div class="field col-span-12 md:col-span-6">
             <label for="productCategoryName">Нова категорія</label>
             <input
               id="productCategoryName"
@@ -90,7 +90,7 @@
             </app-form-control-error-message>
           </div>
           }
-          <div class="field col-12 md:col-1">
+          <div class="field col-span-12 md:col-span-1">
             <label>&nbsp;</label>
             <button
               pButton
@@ -104,9 +104,9 @@
           </div>
         </div>
         <hr />
-        <div class="p-fluid p-formgrid grid" formGroupName="productBaseGroup">
+        <div class="p-fluid p-formgrid grid grid-cols-12 gap-4" formGroupName="productBaseGroup">
           @if (!newProductBase) {
-          <div class="field col-12 md:col-6">
+          <div class="field col-span-12 md:col-span-6">
             <label for="productBaseId">Базовий продукт</label>
             <p-select
               [options]="isEdit ? allBaseProducts : baseProductsByCategory"
@@ -133,7 +133,7 @@
             </app-form-control-error-message>
           </div>
           } @if (newProductBase) {
-          <div class="field col-12 md:col-6">
+          <div class="field col-span-12 md:col-span-6">
             <label for="productBaseName">Новий базовий продукт</label>
             <input
               id="productBaseName"
@@ -153,7 +153,7 @@
             </app-form-control-error-message>
           </div>
           }
-          <div class="field col-12 md:col-1">
+          <div class="field col-span-12 md:col-span-1">
             <label>&nbsp;</label>
             <button
               pButton
@@ -167,7 +167,7 @@
             ></button>
           </div>
           @if (isEdit && baseProductCategoryChange) {
-          <div class="field col-12 md:col-4 changes-message">
+          <div class="field col-span-12 md:col-span-4 changes-message">
             <app-product-state-changes
               [change]="baseProductCategoryChange"
             ></app-product-state-changes>
@@ -176,10 +176,10 @@
         </div>
         <hr />
         <div
-          class="p-fluid p-formgrid grid"
+          class="p-fluid p-formgrid grid grid-cols-12 gap-4"
           formGroupName="productVariantGroup"
         >
-          <div class="field col-6">
+          <div class="field col-span-6">
             <label for="productVariantSku">Артикул</label>
             <input
               id="productVariantSku"
@@ -198,7 +198,7 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-6">
+          <div class="field col-span-6">
             <label for="productVariantName">Назва</label>
             <input
               id="productVariantName"
@@ -217,7 +217,7 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-12">
+          <div class="field col-span-12">
             <label for="productVariantDescription">Опис</label>
             <p-editor
               formControlName="productVariantDescription"
@@ -234,7 +234,7 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-4">
+          <div class="field col-span-4">
             <label for="productVariantSizeId">Розмір</label>
             <p-select
               [options]="sizes"
@@ -260,7 +260,7 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-4">
+          <div class="field col-span-4">
             <label for="productVariantColorId">Колір</label>
             <p-select
               #colorDropdown
@@ -273,7 +273,7 @@
               data-cy="product-color"
             >
               <!-- <ng-template pTemplate="selectedItem">
-              <div class="flex align-items-center">
+              <div class="flex items-center">
                 <app-product-color-badge
                   class="mr-2"
                   [color]="colorDropdown.selectedOption.value"
@@ -282,7 +282,7 @@
               </div>
             </ng-template> -->
               <ng-template let-color pTemplate="item">
-                <div class="flex align-items-center">
+                <div class="flex items-center">
                   <app-product-color-badge
                     class="mr-2"
                     [color]="color"
@@ -299,7 +299,7 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-4">
+          <div class="field col-span-4">
             <label for="productVariantPrice">Ціна</label>
             <p-inputNumber
               inputId="productVariantPrice"
@@ -320,7 +320,7 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-4">
+          <div class="field col-span-4">
             <label for="productVariantWeight">Вага</label>
             <p-inputNumber
               inputId="productVariantWeight"
@@ -342,7 +342,7 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-4">
+          <div class="field col-span-4">
             <label for="productVariantStock">Наявність</label>
             <p-inputNumber
               pTooltip="Наявність товару синхронізується з 1С"
@@ -353,19 +353,19 @@
             >
             </p-inputNumber>
           </div>
-          <div class="field col-12 flex align-items-center">
+          <div class="field col-span-12 flex items-center">
             <p-checkbox
               inputId="productVariantIsPublished"
               aria-labelledby="Опубліковати товар"
               [binary]="true"
               formControlName="productVariantIsPublished"
             ></p-checkbox>
-            <label class="mb-0 ml-3" for="productVariantIsPublished">
+            <label class="mb-0 ml-4" for="productVariantIsPublished">
               Опублікований
             </label>
           </div>
           @if (isEdit && selectedProductImages.length) {
-          <div class="col-12 selected-product-images-wrapper">
+          <div class="col-span-12 selected-product-images-wrapper">
             @for (image of selectedProductImages; track image) {
             <div
               class="selected-product-images-wrapper-image"
@@ -393,7 +393,7 @@
             }
           </div>
           }
-          <div class="field col-12">
+          <div class="field col-span-12">
             <label for="images">Завантаження файлів</label>
             <p-fileUpload
               #fileUpload
@@ -434,8 +434,8 @@
               </ng-template>
             </p-fileUpload>
           </div>
-          <div class="grid justify-content-end col-12">
-            <div class="field col-3">
+          <div class="grid grid-cols-12 gap-4 justify-end col-span-12">
+            <div class="field col-span-3">
               <button
                 type="submit"
                 pButton
@@ -449,9 +449,9 @@
       }
     </div>
   </div>
-  <div class="col-4 hidden md:block">
+  <div class="col-span-4 hidden md:block">
     <div class="product-preview">
-      <div class="product-preview-header mb-4">
+      <div class="product-preview-header mb-6">
         <div>Попередній перегляд</div>
       </div>
       <app-product-item

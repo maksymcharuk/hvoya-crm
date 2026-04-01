@@ -1,7 +1,7 @@
 <form [formGroup]="returnRequestForm" (ngSubmit)="onSubmit()">
   <div class="p-fluid">
-    <div class="formgrid grid">
-      <div class="field col-12">
+    <div class="formgrid grid grid-cols-12 gap-4">
+      <div class="field col-span-12">
         <label for="orders">Замовлення:</label>
         <p-select
           #orderNumberDropdown
@@ -22,7 +22,7 @@
       <ng-container formArrayName="requestedItems">
         @for ( requestedItemForm of requestedItems.controls; track
         requestedItemForm; let i = $index) {
-        <div class="field col-12">
+        <div class="field col-span-12">
           <label>Виберіть товари які хочете повернути:</label>
           <app-return-request-order-item
             [formControl]="requestedItemForm"
@@ -35,10 +35,10 @@
 
   @if (orderNumberControl.value) {
   <div class="p-fluid">
-    <div class="grid">
-      <div class="col-6">
-        <div class="formgrid grid">
-          <div class="field col-12">
+    <div class="grid grid-cols-12 gap-4">
+      <div class="col-span-6">
+        <div class="formgrid grid grid-cols-12 gap-4">
+          <div class="field col-span-12">
             <label for="customerComment">Причина повернення:</label>
             <textarea
               id="customerComment"
@@ -55,7 +55,7 @@
               errorMessage="Необхідно вказати причину повернення"
             ></app-form-control-error-message>
           </div>
-          <div class="field col-12">
+          <div class="field col-span-12">
             <label for="customerImages">Фото:</label>
             <p-fileUpload
               [accept]="imageFormats"
@@ -71,9 +71,9 @@
           </div>
         </div>
       </div>
-      <div class="col-6">
-        <div class="formgrid grid">
-          <div class="field col-12">
+      <div class="col-span-6">
+        <div class="formgrid grid grid-cols-12 gap-4">
+          <div class="field col-span-12">
             <label for="delivery-service">Служба доставки:</label>
             <p-select
               id="delivery-service"
@@ -106,7 +106,7 @@
               errorMessage="Це є обов'язковим полем"
             ></app-form-control-error-message>
           </div>
-          <div class="field col-12">
+          <div class="field col-span-12">
             <label for="tracking-id">Номер ТТН:</label>
             <input
               pInputText
@@ -127,7 +127,7 @@
               errorMessage="Номер ТТН повинен містити тільки літери та цифри"
             ></app-form-control-error-message>
           </div>
-          <div class="field col-12">
+          <div class="field col-span-12">
             <label for="tracking-id">Експрес-накладна:</label>
             <p-fileUpload
               [accept]="fileFormats"
@@ -144,8 +144,8 @@
       </div>
     </div>
   </div>
-  <div class="grid">
-    <div class="flex justify-content-end col-12">
+  <div class="grid grid-cols-12 gap-4">
+    <div class="flex justify-end col-span-12">
       <button
         type="submit"
         pButton

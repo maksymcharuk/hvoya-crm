@@ -1,5 +1,5 @@
 <div
-  class="flex flex-column md:flex-row py-1 border-top-1 border-bottom-1 surface-border md:align-items-center"
+  class="flex flex-col md:flex-row py-1 border-t border-b border-surface md:items-center"
 >
   <a
     [routerLink]="[
@@ -15,14 +15,14 @@
           ? cartItem.product.properties.images[0]?.url
           : ''
       "
-      class="w-4rem h-4rem flex-shrink-0 mx-auto md:mx-0"
+      class="w-16 h-16 shrink-0 mx-auto md:mx-0"
     />
   </a>
   <div class="flex-auto py-1 md:pl-2">
     <div
-      class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
+      class="flex flex-wrap items-start sm:items-center sm:flex-row sm:justify-between border-surface"
     >
-      <div class="w-full sm:w-6 flex flex-column">
+      <div class="w-full sm:w-6/12 flex flex-col">
         <a
           [routerLink]="[
             '/dashboard',
@@ -30,16 +30,16 @@
             cartItem.product.baseProduct.id,
             cartItem.product.id
           ]"
-          class="text-900 text-l font-medium mb-2"
+          class="text-surface-900 dark:text-surface-0 text-l font-medium mb-2"
         >
           {{ cartItem.product.properties.name }}
         </a>
-        <span class="text-600">{{ cartItem.product.sku }}</span>
+        <span class="text-surface-600 dark:text-surface-200">{{ cartItem.product.sku }}</span>
       </div>
       <div
-        class="w-full sm:w-4 flex align-items-center justify-content-between mt-3 sm:mt-0 pl-5"
+        class="w-full sm:w-4/12 flex items-center justify-between mt-4 sm:mt-0 pl-8"
       >
-        <div class="p-fluid sm:w-6rem">
+        <div class="p-fluid sm:w-24">
           <form [formGroup]="quantityForm">
             <p-inputNumber
               mode="decimal"
@@ -54,13 +54,13 @@
             [highlight]="hightlight"
           ></app-stock-badge>
         </div>
-        <div class="flex flex-column sm:align-items-end">
-          <span class="text-900 text-xl font-medium mb-1 sm:mb-2">
+        <div class="flex flex-col sm:items-end">
+          <span class="text-surface-900 dark:text-surface-0 text-xl font-medium mb-1 sm:mb-2">
             @if ((updating$ | async) === 0) {
             {{
               cartItem.product.properties.price * cartItem.quantity | currency
             }}
-            <div class="text-600 text-base">
+            <div class="text-surface-600 dark:text-surface-200 text-base">
               {{ cartItem.product.properties.price | currency }} / од.
             </div>
             } @else {
@@ -70,7 +70,7 @@
           <a
             (click)="removeCartItem()"
             tabindex="0"
-            class="cursor-pointer text-pink-500 font-medium hover:text-pink-600 transition-colors transition-duration-300"
+            class="cursor-pointer text-pink-500 font-medium hover:text-pink-600 transition-colors duration-300"
           >
             Видалити
           </a>

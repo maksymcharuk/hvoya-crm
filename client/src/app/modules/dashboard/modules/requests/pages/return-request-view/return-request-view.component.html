@@ -1,29 +1,29 @@
-<div class="request-view grid" data-cy="request-view-page">
-  <div class="col-12">
+<div class="request-view grid grid-cols-12 gap-4" data-cy="request-view-page">
+  <div class="col-span-12">
     <div class="card request-view__content">
       @if (request$ | async; as request) {
       <div>
-        <h4 class="flex align-items-center">
+        <h4 class="flex items-center">
           <span>Повернення №{{ request.number }}</span>
         </h4>
-        <div class="my-5">
+        <div class="my-8">
           <h5>Товари</h5>
           <app-return-request-item-list
             [orderReturnRequest]="request.returnRequest!"
           ></app-return-request-item-list>
-          <div class="flex justify-content-end my-4">
+          <div class="flex justify-end my-6">
             <table>
               @if (request.returnRequest!.deduction > 0) {
               <tr>
                 <td>Відрахування:</td>
-                <td class="pl-5">
+                <td class="pl-8">
                   -{{ request.returnRequest!.deduction | currency }}
                 </td>
               </tr>
               }
               <tr>
-                <td class="text-xl text-900 font-bold text-3xl">Всього:</td>
-                <td class="text-xl text-900 font-bold text-3xl pl-5">
+                <td class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</td>
+                <td class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl pl-8">
                   {{ request.returnRequest!.total | currency }}
                 </td>
               </tr>
@@ -31,10 +31,10 @@
           </div>
         </div>
         @if (request.managerComment || request.managerImages.length !== 0) {
-        <div class="my-5">
+        <div class="my-8">
           <ul class="striped-list">
             <li class="striped-list__item">
-              <div class="striped-list__item-key align-self-baseline">
+              <div class="striped-list__item-key self-baseline">
                 Коментар менеджера
               </div>
               <div class="striped-list__item-value">
@@ -54,8 +54,8 @@
           </ul>
         </div>
         }
-        <div class="grid">
-          <div class="col-12 xl:col-6">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані запиту</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
@@ -86,7 +86,7 @@
                 </div>
               </li>
               <li class="striped-list__item">
-                <div class="striped-list__item-key align-self-baseline">
+                <div class="striped-list__item-key self-baseline">
                   Коментар до запиту
                 </div>
                 <div class="striped-list__item-value">
@@ -105,7 +105,7 @@
               </li>
             </ul>
           </div>
-          <div class="col-12 xl:col-6">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані доставки</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
@@ -176,8 +176,8 @@
                   class="striped-list__item-value"
                 >
                   <div class="p-fluid">
-                    <div class="formgrid grid">
-                      <div class="field col-12">
+                    <div class="formgrid grid grid-cols-12 gap-4">
+                      <div class="field col-span-12">
                         <label for="delivery-service">Служба доставки:</label>
                         <p-select
                           id="delivery-service"
@@ -210,7 +210,7 @@
                           errorMessage="Це є обов'язковим полем"
                         ></app-form-control-error-message>
                       </div>
-                      <div class="field col-12">
+                      <div class="field col-span-12">
                         <label for="tracking-id">Номер ТТН:</label>
                         <input
                           pInputText
@@ -233,8 +233,8 @@
                       </div>
                     </div>
                   </div>
-                  <div class="formgrid grid">
-                    <div class="field col-12">
+                  <div class="formgrid grid grid-cols-12 gap-4">
+                    <div class="field col-span-12">
                       <label for="tracking-id">Експрес-накладна:</label>
                       <p-fileUpload
                         #waybillUpload

@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="flex align-items-center justify-content-between mb-5">
+  <div class="flex items-center justify-between mb-8">
     <h4 class="mb-0">Новини</h4>
     <div>
       @if ('create' | able : postEntity) {
@@ -13,14 +13,14 @@
   </div>
 
   @if (postPage$ | async; as postPage) { @if (postPage.data.length > 0) {
-  <div class="mb-5">
+  <div class="mb-8">
     <div>Всього новин: {{ postPage.meta.itemCount }}</div>
     <div>Користувачам буде відображатися 5 останніх новин</div>
     <div>Щоб побачити зміни новин у боковій панелі перезавантажте сторінку</div>
   </div>
   @for (post of postPage.data; track post) {
-  <div class="mb-5 pb-2 border-bottom-1 border-300">
-    <div class="flex justify-content-between">
+  <div class="mb-8 pb-2 border-b border-surface-300 dark:border-surface-500">
+    <div class="flex justify-between">
       <div>
         <div class="mb-2">
           @if (!post.isPublished) {
@@ -90,7 +90,7 @@
             [style]="{ height: '320px' }"
           ></p-editor>
         </div>
-        <div class="ml-3">
+        <div class="ml-4">
           <label>Перегляд:</label>
           <div class="post-preview-block">
             @if (post.body) {

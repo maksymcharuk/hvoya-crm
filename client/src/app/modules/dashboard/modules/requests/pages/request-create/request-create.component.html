@@ -1,6 +1,6 @@
 <div class="card">
-  <div class="p-fluid formgrid grid">
-    <div class="field col-12">
+  <div class="p-fluid formgrid grid grid-cols-12 gap-4">
+    <div class="field col-span-12">
       <label for="type">Тип запиту:</label>
       <p-select
         id="type"
@@ -20,8 +20,8 @@
     </div>
   </div>
   @if (selectedType) {
-  <div class="grid">
-    <div class="col-12">
+  <div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12">
       <div>
         @switch (selectedType) { @case (requestType.Return) {
         <app-return-request-create> </app-return-request-create>

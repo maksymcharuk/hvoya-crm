@@ -1,6 +1,6 @@
 <form
   [formGroup]="filtersForm"
-  class="p-fluid formgrid grid justify-content-end"
+  class="p-fluid formgrid grid grid-cols-12 gap-4 justify-end"
 >
   <div class="col-fixed">
     <div class="field">
@@ -18,7 +18,7 @@
 @if (!loading) {
 <p-chart type="doughnut" [data]="data" [options]="options"></p-chart>
 } @else {
-<div class="flex justify-content-center align-items-center">
+<div class="flex justify-center items-center">
   <p-skeleton shape="circle" size="300px" class="skeleton"></p-skeleton>
 </div>
 }

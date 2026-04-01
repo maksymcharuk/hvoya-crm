@@ -1,5 +1,5 @@
-<div class="card flex flex-column w-full">
-  <div class="wrapper mb-3">
+<div class="card flex flex-col w-full">
+  <div class="wrapper mb-4">
     <a
       [routerLink]="
         baseProductId
@@ -31,7 +31,7 @@
   <ng-template #imageWrapperSkeleton>
     <p-skeleton height="15rem" width="100%"></p-skeleton>
   </ng-template>
-  <div class="flex-grow-1 my-2">
+  <div class="grow my-2">
     @if (product?.properties?.name) {
     <a
       [routerLink]="
@@ -39,7 +39,7 @@
           ? [baseProductId, product.id.toString()]
           : product.id.toString()
       "
-      class="text-900 font-medium text-xl"
+      class="text-surface-900 dark:text-surface-0 font-medium text-xl"
       data-cy="product-name"
     >
       {{ product.properties.name }}
@@ -48,15 +48,15 @@
     <p-skeleton height="2rem" width="100%"></p-skeleton>
     }
   </div>
-  <div class="my-3 flex justify-content-between">
+  <div class="my-4 flex justify-between">
     @if (product?.properties?.price) {
-    <span class="font-bold text-900" data-cy="product-price">{{
+    <span class="font-bold text-surface-900 dark:text-surface-0" data-cy="product-price">{{
       product.properties.price | currency
     }}</span>
     } @else {
     <p-skeleton height="2rem" width="100%"></p-skeleton>
     } @if (product?.sku) {
-    <span class="text-600 text-base overflow-hidden w-6rem">{{
+    <span class="text-surface-600 dark:text-surface-200 text-base overflow-hidden w-24">{{
       product.sku
     }}</span>
     } @else {

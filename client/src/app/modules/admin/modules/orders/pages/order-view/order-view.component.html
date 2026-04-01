@@ -3,9 +3,9 @@
   @if (order.returnRequest; as returnRequest) {
   <p-message severity="warn">
     <ng-template pTemplate>
-      <div class="flex align-items-center">
+      <div class="flex items-center">
         <i class="pi mr-2" [ngClass]="ICONS.ORDER_RETURN_REQUEST"></i>
-        <span class="vertical-align-middle">
+        <span class="align-middle">
           Запит на повернення
           <a
             [routerLink]="[
@@ -17,20 +17,20 @@
           </a>
         </span>
         <app-request-status-badge
-          class="ml-5"
+          class="ml-8"
           [status]="returnRequest.status"
         ></app-request-status-badge>
       </div>
     </ng-template>
   </p-message>
   }
-  <div class="order-view grid">
-    <div class="col-12">
+  <div class="order-view grid grid-cols-12 gap-4">
+    <div class="col-span-12">
       <div class="card order-view__content">
-        <div class="flex align-items-center justify-content-between">
-          <div class="flex align-items-baseline">
+        <div class="flex items-center justify-between">
+          <div class="flex items-baseline">
             <h4 class="mb-0">Замовлення №{{ order.number }}</h4>
-            <small class="ml-2 text-600">
+            <small class="ml-2 text-surface-600 dark:text-surface-200">
               {{ order.createdAt | date : 'short' }}
             </small>
           </div>
@@ -45,14 +45,14 @@
           ></p-button>
           }
         </div>
-        <div class="my-5">
+        <div class="my-8">
           <ul class="striped-list">
             <li class="striped-list__item">
               <div class="striped-list__item-key">Статус</div>
               <div class="striped-list__item-value order-view__status-column">
-                <div class="py-2 mr-5">
-                  <div class="flex align-items-center mb-1">
-                    <span class="mr-3">
+                <div class="py-2 mr-8">
+                  <div class="flex items-center mb-1">
+                    <span class="mr-4">
                       <u>
                         {{
                           order.latestStatusFromHistory.createdAt
@@ -118,8 +118,8 @@
             </li>
           </ul>
         </div>
-        <div class="grid">
-          <div class="col-12 xl:col-6">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані дропшипера</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
@@ -140,7 +140,7 @@
               </li>
             </ul>
           </div>
-          <div class="col-12 xl:col-6">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані доставки</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
@@ -158,9 +158,9 @@
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Статус доставки</div>
                 <div class="striped-list__item-value">
-                  <div class="py-2 mr-5">
-                    <div class="flex align-items-center mb-1">
-                      <span class="mr-3">
+                  <div class="py-2 mr-8">
+                    <div class="flex items-center mb-1">
+                      <span class="mr-4">
                         <u>
                           {{ order.delivery.updatedAt | date : 'short' }}
                         </u>
@@ -227,8 +227,8 @@
                   class="striped-list__item-value"
                 >
                   <div class="p-fluid">
-                    <div class="formgrid grid">
-                      <div class="field col-12">
+                    <div class="formgrid grid grid-cols-12 gap-4">
+                      <div class="field col-span-12">
                         <label for="delivery-service">Служба доставки:</label>
                         <p-select
                           id="delivery-service"
@@ -262,7 +262,7 @@
                         ></app-form-control-error-message>
                       </div>
                       @if (!isSelfPickup) {
-                      <div class="field col-12">
+                      <div class="field col-span-12">
                         <label for="tracking-id">Номер ТТН:</label>
                         <input
                           pInputText
@@ -287,8 +287,8 @@
                     </div>
                   </div>
                   @if (!isSelfPickup) {
-                  <div class="formgrid grid">
-                    <div class="field col-12">
+                  <div class="formgrid grid grid-cols-12 gap-4">
+                    <div class="field col-span-12">
                       <label for="tracking-id">Файл маркування:</label>
                       <p-fileUpload
                         #waybillUpload
@@ -328,11 +328,11 @@
           <app-order-view-item [orderItem]="orderItem"></app-order-view-item>
           }
           <div class="flex">
-            <div class="w-12rem hidden md:block"></div>
-            <div class="md:pl-5 mt-2 flex-auto">
-              <div class="flex justify-content-end mb-4 pt-4">
-                <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
-                <span class="text-xl text-900 font-bold text-3xl ml-5">
+            <div class="w-48 hidden md:block"></div>
+            <div class="md:pl-8 mt-2 flex-auto">
+              <div class="flex justify-end mb-6 pt-6">
+                <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</span>
+                <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl ml-8">
                   {{ order.total | currency }}
                 </span>
               </div>
@@ -353,7 +353,7 @@
   styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <form [formGroup]="updateOrderStatusForm" class="flex align-items-center">
+    <form [formGroup]="updateOrderStatusForm" class="flex items-center">
       <div class="formgrid w-full">
         <div class="field">
           <label for="delivery-service">Статус:</label>
@@ -400,13 +400,13 @@
       </div>
     </form>
     @if (order$ | async; as order) {
-    <div class="mt-5">
+    <div class="mt-8">
       <h5>Історія статусів:</h5>
       <div class="statuses-history">
         @for (status of order.statuses; track status) {
         <div class="statuses-history__item">
-          <div class="flex align-items-center mb-1">
-            <span class="mr-3">
+          <div class="flex items-center mb-1">
+            <span class="mr-4">
               <u>
                 {{ status.createdAt | date : 'short' }}
               </u>

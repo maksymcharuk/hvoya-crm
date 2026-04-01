@@ -1,5 +1,5 @@
-<div class="grid">
-  <div class="col-12">
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12">
     <div class="card">
       <h4>Кошик</h4>
       @if (cart$ | async; as cart) { @if (cartNotEmpty$ | async) { @for
@@ -7,11 +7,11 @@
       <app-cart-item [cartItem]="cartItem"></app-cart-item>
       }
       <div class="flex">
-        <div class="w-12rem hidden md:block"></div>
-        <div class="md:pl-5 mt-6 flex-auto">
-          <div class="flex justify-content-end mb-4 pt-4">
-            <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
-            <span class="text-xl text-900 font-bold text-3xl ml-5">
+        <div class="w-48 hidden md:block"></div>
+        <div class="md:pl-8 mt-12 flex-auto">
+          <div class="flex justify-end mb-6 pt-6">
+            <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl">Всього:</span>
+            <span class="text-xl text-surface-900 dark:text-surface-0 font-bold text-3xl ml-8">
               @if ( (cartLoading$ | async) === 0) {
               {{ cart.total | currency }}
               } @else {
@@ -19,7 +19,7 @@
               }
             </span>
           </div>
-          <div class="flex justify-content-end">
+          <div class="flex justify-end">
             <button
               [routerLink]="['/dashboard', 'orders', 'checkout']"
               pButton
@@ -31,34 +31,34 @@
       </div>
       } @else {
       <div
-        class="p-5 pt-6 flex flex-column align-items-center justify-content-center"
+        class="p-8 pt-12 flex flex-col items-center justify-center"
       >
         <i class="pi pi-shopping-cart text-4xl"></i>
-        <span class="text-2xl mt-3">Кошик пустий</span>
+        <span class="text-2xl mt-4">Кошик пустий</span>
       </div>
       } } @else { @for (_ of [].constructor(2); track _) {
       <div
-        class="flex flex-column md:flex-row py-2 border-top-1 border-bottom-1 surface-border md:align-items-center"
+        class="flex flex-col md:flex-row py-2 border-t border-b border-surface md:items-center"
       >
         <p-skeleton height="12rem" width="12rem"></p-skeleton>
-        <div class="flex-auto py-5 md:pl-5">
+        <div class="flex-auto py-8 md:pl-8">
           <div
-            class="flex flex-wrap align-items-start sm:align-items-center sm:flex-row sm:justify-content-between surface-border"
+            class="flex flex-wrap items-start sm:items-center sm:flex-row sm:justify-between border-surface"
           >
-            <div class="w-full sm:w-6 flex flex-column">
-              <span class="mb-3">
+            <div class="w-full sm:w-6/12 flex flex-col">
+              <span class="mb-4">
                 <p-skeleton height="1.5rem" width="8rem"></p-skeleton>
               </span>
               <p-skeleton height="1rem" width="5rem"></p-skeleton>
             </div>
             <div
-              class="w-full sm:w-6 flex align-items-start justify-content-between mt-3 sm:mt-0 pl-5"
+              class="w-full sm:w-6/12 flex items-start justify-between mt-4 sm:mt-0 pl-8"
             >
-              <div class="p-fluid sm:w-6rem">
+              <div class="p-fluid sm:w-24">
                 <p-skeleton height="39px" width="84px"></p-skeleton>
               </div>
-              <div class="flex flex-column sm:align-items-end">
-                <span class="mb-2 sm:mb-3">
+              <div class="flex flex-col sm:items-end">
+                <span class="mb-2 sm:mb-4">
                   <p-skeleton height="1.5rem" width="5rem"></p-skeleton>
                 </span>
                 <p-skeleton height="1rem" width="5rem"></p-skeleton>
@@ -69,15 +69,15 @@
       </div>
       }
       <div class="flex">
-        <div class="w-12rem hidden md:block"></div>
-        <div class="md:pl-5 mt-6 flex-auto">
-          <div class="flex justify-content-end mb-4 pt-4">
+        <div class="w-48 hidden md:block"></div>
+        <div class="md:pl-8 mt-12 flex-auto">
+          <div class="flex justify-end mb-6 pt-6">
             <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
-            <span class="ml-5">
+            <span class="ml-8">
               <p-skeleton height="1.75rem" width="5rem"></p-skeleton>
             </span>
           </div>
-          <div class="flex justify-content-end">
+          <div class="flex justify-end">
             <p-skeleton height="39px" width="107px"></p-skeleton>
           </div>
         </div>

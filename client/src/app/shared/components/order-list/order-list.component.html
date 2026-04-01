@@ -35,7 +35,7 @@
     }
   </ng-template>
   <ng-template pTemplate="caption">
-    <div class="table-header flex justify-content-between align-items-center">
+    <div class="table-header flex justify-between items-center">
       Замовлення
       <form [formGroup]="searchForm">
         <p-iconField iconPosition="left">
@@ -56,7 +56,7 @@
       <th style="width: 1%"></th>
       <th>К-ть товарів</th>
       <th pSortableColumn="createdAt">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Дата
           <p-sortIcon field="createdAt"></p-sortIcon>
         </div>
@@ -65,12 +65,12 @@
       <th>Статус доставки</th>
       <th>Служба доставки</th>
       <th>
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Номер ТТН
         </div>
       </th>
       <th pSortableColumn="total">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Сума
           <p-sortIcon field="total"></p-sortIcon>
         </div>

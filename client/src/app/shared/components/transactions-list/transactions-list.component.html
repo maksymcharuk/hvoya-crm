@@ -27,7 +27,7 @@
     }
   </ng-template>
   <ng-template pTemplate="caption">
-    <div class="table-header flex justify-content-between align-items-center">
+    <div class="table-header flex justify-between items-center">
       <div>Список транзакцій</div>
       <div>
         <button
@@ -56,28 +56,28 @@
   </ng-template>
   <ng-template pTemplate="header">
     <tr>
-      <th class="w-4" pSortableColumn="amount">
+      <th class="w-4/12" pSortableColumn="amount">
         Сума
         <p-sortIcon field="amount"></p-sortIcon>
       </th>
-      <th class="w-4">Статус</th>
+      <th class="w-4/12">Статус</th>
       @if (currentUser?.isAnyAdmin) {
       <th>
         <div
-          class="flex align-items-center"
+          class="flex items-center"
           pTooltip="Статус синхронізації з 1С"
         >
           <i class="pi pi-sync mr-1"></i>1С
         </div>
       </th>
       }
-      <th class="w-4" pSortableColumn="updatedAt">
-        <div class="flex justify-content-between align-items-center">
+      <th class="w-4/12" pSortableColumn="updatedAt">
+        <div class="flex justify-between items-center">
           Дата
           <p-sortIcon field="updatedAt"></p-sortIcon>
         </div>
       </th>
-      <th class="w-1"></th>
+      <th class="w-1/12"></th>
     </tr>
     <tr>
       <th></th>
@@ -115,7 +115,7 @@
           {{ transaction.amount | currency }}
         </div>
         @if (transaction.status === transactionStatus.Success) {
-        <small class="text-600">
+        <small class="text-surface-600 dark:text-surface-200">
           {{ transaction.netBalance | currency }}
         </small>
         }
@@ -124,7 +124,7 @@
       @if (currentUser?.isAnyAdmin) {
       <td>
         <span
-          class="white-space-nowrap"
+          class="whitespace-nowrap"
           [pTooltip]="
             transaction.syncOneCStatus === transactionSyncOneCStatus.Failed
               ? 'У разі невдалої синхронізації система буде робити ще спроби. Зачекайте до години і також перевірте чи працює сервер 1С.'

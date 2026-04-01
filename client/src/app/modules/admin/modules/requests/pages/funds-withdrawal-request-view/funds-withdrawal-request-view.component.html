@@ -1,14 +1,14 @@
-<div class="request-view grid" data-cy="request-view-page">
-  <div class="col-12">
+<div class="request-view grid grid-cols-12 gap-4" data-cy="request-view-page">
+  <div class="col-span-12">
     <div class="card request-view__content">
       @if (request$ | async; as request) {
       <div>
-        <h4 class="flex align-items-center">
+        <h4 class="flex items-center">
           <span>Виведення коштів №{{ request.number }}</span>
         </h4>
         @if ( 'approve' | able : request.fundsWithdrawalRequest) {
-        <form [formGroup]="fundsWithdrawalRequestForm" class="formgrid grid">
-          <div class="p-fluid field col-12 xl:col-6">
+        <form [formGroup]="fundsWithdrawalRequestForm" class="formgrid grid grid-cols-12 gap-4">
+          <div class="p-fluid field col-span-12 xl:col-span-6">
             <label for="managerComment">Коментар:</label>
             <textarea
               rows="5"
@@ -26,7 +26,7 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-12 xl:col-6">
+          <div class="field col-span-12 xl:col-span-6">
             <label for="receipt">Документ:</label>
             <p-fileUpload
               [accept]="'.pdf'"
@@ -48,9 +48,9 @@
             </app-form-control-error-message>
           </div>
         </form>
-        <div class="grid mb-5">
-          <div class="col-12">
-            <div class="flex justify-content-end">
+        <div class="grid grid-cols-12 gap-4 mb-8">
+          <div class="col-span-12">
+            <div class="flex justify-end">
               <p-button
                 icon="pi pi-check"
                 label="Підтвердити"
@@ -61,7 +61,7 @@
                 icon="pi pi-times"
                 label="Відхилити"
                 styleClass="p-button-danger"
-                class="ml-3"
+                class="ml-4"
                 [disabled]="submitting"
                 (click)="confirmOrRejectToggle(action.Reject)"
               ></p-button>
@@ -75,10 +75,10 @@
         </div>
         } @else { @if ( request.managerComment ||
         request.fundsWithdrawalRequest!.fundsWithdrawalReceipt?.url ) {
-        <ul class="striped-list my-5">
+        <ul class="striped-list my-8">
           @if (request.managerComment) {
           <li class="striped-list__item">
-            <div class="striped-list__item-key align-self-baseline">
+            <div class="striped-list__item-key self-baseline">
               Коментар менеджера
             </div>
             <div class="striped-list__item-value">
@@ -88,7 +88,7 @@
           } @if ( request.fundsWithdrawalRequest!.fundsWithdrawalReceipt ?.url;
           as url ) {
           <li class="striped-list__item">
-            <div class="striped-list__item-key align-self-baseline">
+            <div class="striped-list__item-key self-baseline">
               Документ
             </div>
             <div class="striped-list__item-value">
@@ -116,8 +116,8 @@
           }
         </ul>
         } }
-        <div class="grid">
-          <div class="col-12 xl:col-6">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані запиту</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
@@ -135,7 +135,7 @@
                 </div>
               </li>
               <li class="striped-list__item">
-                <div class="striped-list__item-key align-self-baseline">
+                <div class="striped-list__item-key self-baseline">
                   Сума
                 </div>
                 <div class="striped-list__item-value">
@@ -145,7 +145,7 @@
                 </div>
               </li>
               <li class="striped-list__item">
-                <div class="striped-list__item-key align-self-baseline">
+                <div class="striped-list__item-key self-baseline">
                   Коментар до запиту
                 </div>
                 <div class="striped-list__item-value">
@@ -154,7 +154,7 @@
               </li>
             </ul>
           </div>
-          <div class="col-12 xl:col-6">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані дропшипера</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
