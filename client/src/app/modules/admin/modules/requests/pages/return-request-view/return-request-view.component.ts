@@ -1,5 +1,4 @@
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
 import { BehaviorSubject, finalize } from 'rxjs';
 
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
@@ -17,6 +16,7 @@ import {
   IMAGE_ACCEPTABLE_FILE_FORMATS,
   WAYBILL_ACCEPTABLE_FILE_FORMATS,
 } from '@shared/constants/order.constants';
+import { FileUploadComponent } from '@shared/components/file-upload/file-upload.component';
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { RequestAction } from '@shared/enums/request-action.enum';
 import { OrderReturnRequestItemEntity } from '@shared/interfaces/entities/order-return-request.entity';
@@ -30,6 +30,7 @@ const CONFIRM_MESSAGE =
 const REJECT_MESSAGE = 'Ви справді хочете відхилити цей запит на повернення?';
 
 @Component({
+  standalone: false,
   selector: 'app-return-request-view',
   templateUrl: './return-request-view.component.html',
   styleUrls: ['./return-request-view.component.scss'],
@@ -92,7 +93,7 @@ export class ReturnRequestViewComponent implements OnInit {
     return this.updateDeliveryForm.controls.waybill;
   }
 
-  @ViewChild('waybillUpload') waybillUpload!: FileUpload;
+  @ViewChild('waybillUpload') waybillUpload!: FileUploadComponent;
 
   constructor(
     private readonly route: ActivatedRoute,

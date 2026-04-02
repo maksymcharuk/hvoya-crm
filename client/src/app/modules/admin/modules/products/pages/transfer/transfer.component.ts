@@ -14,6 +14,7 @@ import {
 import { ProductsTransferService } from '@shared/services/products-transfer.service';
 
 @Component({
+  standalone: false,
   selector: 'app-transfer',
   templateUrl: './transfer.component.html',
   styleUrls: ['./transfer.component.scss'],

@@ -1,12 +1,7 @@
 <ul class="layout-menu">
-  <ng-container *ngFor="let item of menuItems; let i = index">
-    <li
-      menuitem
-      *ngIf="!item.separator"
-      [item]="item"
-      [index]="i"
-      [root]="true"
-    ></li>
-    <li *ngIf="item.separator" class="menu-separator"></li>
-  </ng-container>
+  @for (item of menuItems; track item; let i = $index) { @if (!item.separator) {
+  <li menuitem [item]="item" [index]="i" [root]="true"></li>
+  } @if (item.separator) {
+  <li class="menu-separator"></li>
+  } }
 </ul>

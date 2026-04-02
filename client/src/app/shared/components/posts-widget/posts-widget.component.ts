@@ -8,6 +8,7 @@ import { Page } from '@shared/interfaces/page.interface';
 import { PostsService } from '@shared/services/posts.service';
 
 @Component({
+  standalone: false,
   selector: 'app-posts-widget',
   templateUrl: './posts-widget.component.html',
   styleUrls: ['./posts-widget.component.scss'],

@@ -8,6 +8,7 @@ import { RequestEntity } from '@shared/interfaces/entities/request.entity';
 import { RequestsService } from '@shared/services/requests.service';
 
 @Component({
+  standalone: false,
   selector: 'app-funds-withdrawal-request-view',
   templateUrl: './funds-withdrawal-request-view.component.html',
   styleUrls: ['./funds-withdrawal-request-view.component.scss'],

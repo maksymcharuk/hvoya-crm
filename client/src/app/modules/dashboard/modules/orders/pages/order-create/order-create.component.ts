@@ -22,6 +22,7 @@ import { UserBalanceService } from '../../../balance/services/user-balance.servi
 import { CartService } from '../../../cart/services/cart/cart.service';
 
 @Component({
+  standalone: false,
   selector: 'app-order-create',
   templateUrl: './order-create.component.html',
   styleUrls: ['./order-create.component.scss'],

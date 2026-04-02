@@ -9,6 +9,7 @@ import { Page } from '@shared/interfaces/page.interface';
 import { RequestsService } from '@shared/services/requests.service';
 
 @Component({
+  standalone: false,
   templateUrl: './request-list.component.html',
   styleUrls: ['./request-list.component.scss'],
 })

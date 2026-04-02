@@ -13,49 +13,51 @@
   [paginator]="true"
   [sortOrder]="-1"
   [scrollable]="true"
-  [scrollHeight]="adminView ? 'calc(100vh - 273px)' : 'calc(100vh - 326px)'"
+  [scrollHeight]="adminView ? 'calc(100vh - 17rem)' : 'calc(100vh - 20.5rem)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(rows)">
-      <tr>
-        <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
-        <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
-        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        <ng-container *ngIf="adminView">
-          <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        </ng-container>
-      </tr>
-    </ng-container>
+    @for (_ of [].constructor(rows); track $index) {
+    <tr>
+      <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
+      <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+      <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      @if (adminView) {
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      }
+    </tr>
+    }
   </ng-template>
   <ng-template pTemplate="caption">
-    <div class="table-header flex justify-content-between align-items-center">
+    <div class="table-header flex justify-between items-center">
       Запити
-      <form [formGroup]="searchForm" class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input
-          pInputText
-          formControlName="search"
-          type="text"
-          placeholder="№ запиту або ТТН"
-        />
+      <form [formGroup]="searchForm">
+        <p-iconField iconPosition="left">
+          <p-inputIcon styleClass="pi pi-search" />
+          <input
+            pInputText
+            formControlName="search"
+            type="text"
+            placeholder="№ запиту або ТТН"
+          />
+        </p-iconField>
       </form>
     </div>
   </ng-template>
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="number">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Номер
           <p-sortIcon field="number"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="createdAt">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Дата
           <p-sortIcon field="createdAt"></p-sortIcon>
         </div>
@@ -64,29 +66,29 @@
       <th>Статус</th>
       <th>Статус доставки</th>
       <th>Номер ТТН</th>
-      <ng-container *ngIf="adminView">
-        <th>ПІБ</th>
-      </ng-container>
+      @if (adminView) {
+      <th>ПІБ</th>
+      }
     </tr>
     <tr>
       <th></th>
       <th>
         <p-columnFilter type="date" field="createdAt" [showMenu]="false">
           <ng-template pTemplate="filter" let-filter="filterCallback">
-            <p-calendar
+            <p-datepicker
               (onSelect)="filter($event)"
               (onClear)="filter($event)"
               appendTo="body"
               placeholder="Дата"
               [showClear]="true"
-            ></p-calendar>
+            ></p-datepicker>
           </ng-template>
         </p-columnFilter>
       </th>
       <th>
         <p-columnFilter field="requestType" [showMenu]="false" class="ml-auto">
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
+            <p-select
               [ngModel]="value"
               [options]="requestTypes"
               (onChange)="filter($event.value)"
@@ -100,12 +102,14 @@
                 ></app-request-type-badge>
               </ng-template>
               <ng-template pTemplate="selectedItem">
+                @if (value) {
                 <app-request-type-badge
-                  *ngIf="value"
+                  class="whitespace-nowrap"
                   [type]="value"
                 ></app-request-type-badge>
+                }
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
@@ -116,7 +120,7 @@
           class="ml-auto"
         >
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
+            <p-select
               [ngModel]="value"
               [options]="requestStatuses"
               (onChange)="filter($event.value)"
@@ -130,12 +134,13 @@
                 ></app-request-status-badge>
               </ng-template>
               <ng-template pTemplate="selectedItem">
+                @if (value) {
                 <app-request-status-badge
-                  *ngIf="value"
                   [status]="value"
                 ></app-request-status-badge>
+                }
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
@@ -146,7 +151,7 @@
           class="ml-auto"
         >
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
+            <p-select
               [ngModel]="value"
               [options]="deliveryStatuses"
               (onChange)="filter($event.value)"
@@ -160,19 +165,20 @@
                 ></app-return-request-delivery-status-badge>
               </ng-template>
               <ng-template pTemplate="selectedItem">
+                @if (value) {
                 <app-return-request-delivery-status-badge
-                  *ngIf="value"
                   [status]="value"
                 ></app-return-request-delivery-status-badge>
+                }
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
       <th></th>
-      <ng-container *ngIf="adminView">
-        <th></th>
-      </ng-container>
+      @if (adminView) {
+      <th></th>
+      }
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-request let-notification>

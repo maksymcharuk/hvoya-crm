@@ -1,8 +1,7 @@
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
 import { BehaviorSubject, finalize } from 'rxjs';
 
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -17,6 +16,7 @@ const REJECT_MESSAGE =
   'Ви справді хочете відхилити цей запит на вивелення коштів?';
 
 @Component({
+  standalone: false,
   selector: 'app-funds-withdrawal-request-view',
   templateUrl: './funds-withdrawal-request-view.component.html',
   styleUrls: ['./funds-withdrawal-request-view.component.scss'],
@@ -43,8 +43,6 @@ export class FundsWithdrawalRequestViewComponent {
   get receiptControl(): AbstractControl {
     return this.fundsWithdrawalRequestForm.controls.receipt;
   }
-
-  @ViewChild('waybillUpload') waybillUpload!: FileUpload;
 
   constructor(
     private readonly route: ActivatedRoute,

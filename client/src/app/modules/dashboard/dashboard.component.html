@@ -7,59 +7,51 @@
     >
       <i class="pi pi-money-bill"></i>
       <span class="topbar-button-text">Баланс</span>
-      <span class="ml-2" *ngIf="balance$ | async as balance">{{
-        balance.amount | currency
-      }}</span>
+      @if (balance$ | async; as balance) {
+      <span class="ml-2">{{ balance.amount | currency }}</span>
+      }
     </button>
-    <p-overlayPanel #overlayPanel #balance>
-      <ng-template pTemplate
+    <p-popover #overlayPanel #balance>
+      <ng-template pTemplate="content"
         ><app-balance-widget></app-balance-widget
       ></ng-template>
-    </p-overlayPanel>
+    </p-popover>
 
     <button
       class="p-link layout-topbar-button"
       (click)="notifications.toggle($event)"
     >
-      <ng-container
-        *ngIf="notificationsNumber$ | async as notificationsNumber; else bell"
-      >
-        <i
-          class="pi pi-bell"
-          pBadge
-          [value]="notificationsNumber.toString()"
-        ></i>
-      </ng-container>
-      <ng-template #bell>
+      @if (notificationsNumber$ | async; as notificationsNumber) {
+      <p-overlaybadge [value]="notificationsNumber.toString()">
         <i class="pi pi-bell"></i>
-      </ng-template>
+      </p-overlaybadge>
+      } @else {
+      <i class="pi pi-bell"></i>
+      }
 
       <span class="topbar-button-text">Сповіщення</span>
     </button>
-    <p-overlayPanel #overlayPanel #notifications>
-      <ng-template pTemplate>
+    <p-popover #overlayPanel #notifications>
+      <ng-template pTemplate="content">
         <app-notifications></app-notifications>
       </ng-template>
-    </p-overlayPanel>
+    </p-popover>
 
     <button class="p-link layout-topbar-button" (click)="cart.toggle($event)">
-      <i
-        *ngIf="
-          cartItemsNumber$ | async as cartItemsNumber;
-          else shoppingIconWithoutBadge
-        "
-        class="pi pi-shopping-cart"
-        pBadge
-        [value]="cartItemsNumber.toString()"
-      ></i>
-      <ng-template #shoppingIconWithoutBadge>
+      @if ( cartItemsNumber$ | async; as cartItemsNumber) {
+      <p-overlaybadge [value]="cartItemsNumber.toString()">
         <i class="pi pi-shopping-cart"></i>
-      </ng-template>
+      </p-overlaybadge>
+      } @else {
+      <i class="pi pi-shopping-cart"></i>
+      }
       <span class="topbar-button-text">Кошик</span>
     </button>
-    <p-overlayPanel #overlayPanel #cart>
-      <ng-template pTemplate><app-cart-widget></app-cart-widget></ng-template>
-    </p-overlayPanel>
+    <p-popover #overlayPanel #cart>
+      <ng-template pTemplate="content"
+        ><app-cart-widget></app-cart-widget
+      ></ng-template>
+    </p-popover>
 
     <button
       class="p-link layout-topbar-button"
@@ -68,8 +60,8 @@
       <i class="pi pi-user"></i>
       <span class="topbar-button-text">Акаунт</span>
     </button>
-    <p-overlayPanel #overlayPanel #account>
-      <ng-template pTemplate>
+    <p-popover #overlayPanel #account>
+      <ng-template pTemplate="content">
         <div class="layout-menu-dropdown">
           <button
             pButton
@@ -89,7 +81,7 @@
           ></button>
         </div>
       </ng-template>
-    </p-overlayPanel>
+    </p-popover>
   </ng-container>
   <ng-container sidebar-appendix>
     <app-posts-widget></app-posts-widget>

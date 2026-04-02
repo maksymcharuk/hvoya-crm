@@ -6,14 +6,19 @@
     <div class="sign-in-wrapper-title">
       <h3>Вхід</h3>
     </div>
-    <form [formGroup]="signInForm" (ngSubmit)="onSubmit(signInForm.value)">
-      <div class="p-fluid formgrid grid">
-        <div class="field col-12">
-          <label>Пошта</label>
+    <form
+      class="flex w-full flex-col gap-6"
+      [formGroup]="signInForm"
+      (ngSubmit)="onSubmit(signInForm.value)"
+    >
+      <div class="grid grid-cols-1 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label for="sign-in-email">Пошта</label>
           <input
+            class="w-full"
             name="email"
             formControlName="email"
-            id="float-input-invalid"
+            id="sign-in-email"
             type="email"
             placeholder="Введіть пошту"
             pInputText
@@ -26,12 +31,13 @@
           >
           </app-form-control-error-message>
         </div>
-        <div class="field col-12">
-          <label for="float-input-invalid">Пароль</label>
+        <div class="flex flex-col gap-1.5">
+          <label for="sign-in-password">Пароль</label>
           <p-password
+            fluid
             name="password"
             formControlName="password"
-            id="float-input-invalid"
+            inputId="sign-in-password"
             placeholder="Введіть пароль"
             [toggleMask]="true"
             [feedback]="false"
@@ -45,26 +51,25 @@
           </app-form-control-error-message>
         </div>
       </div>
-      <div class="p-fluid formgrid grid">
-        <div class="field col-6 md:col-6">
+      <div
+        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div>
           <a [routerLink]="['/', 'auth', 'sign-up']">Реєстрація</a>
         </div>
-        <div class="field col-6 md:col-6 text-right">
+        <div class="sm:text-right">
           <a [routerLink]="['/', 'auth', 'forgot-password']">
             Відновити пароль
           </a>
         </div>
       </div>
-      <div class="p-fluid formgrid grid">
-        <div class="col-12 md:col-12">
-          <button
-            [disabled]="isLoading"
-            type="submit"
-            pButton
-            label="Вхід"
-          ></button>
-        </div>
-      </div>
+      <button
+        class="w-full"
+        [disabled]="isLoading"
+        type="submit"
+        pButton
+        label="Вхід"
+      ></button>
     </form>
   </div>
 </div>

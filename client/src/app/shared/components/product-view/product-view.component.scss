@@ -10,6 +10,7 @@
 }
 
 .gallery-thumbnail {
+  display: block;
   max-height: 120px;
 }
 
@@ -20,14 +21,20 @@
 }
 
 :host ::ng-deep {
-  .p-galleria .p-galleria-thumbnail-container {
+  // PrimeNG 21 renamed .p-galleria-thumbnail-container → .p-galleria-thumbnails
+  .p-galleria .p-galleria-thumbnails {
     background-color: transparent;
   }
 
-  .p-galleria .p-galleria-item-nav,
-  .p-galleria .p-galleria-item-nav:not(.p-disabled):hover,
-  .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-prev,
-  .p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-next {
+  // PrimeNG 21 renamed item nav classes:
+  //   .p-galleria-item-nav → .p-galleria-prev-button / .p-galleria-next-button
+  //   .p-galleria-thumbnail-prev/next → .p-galleria-thumbnail-prev-button/next-button
+  .p-galleria .p-galleria-prev-button,
+  .p-galleria .p-galleria-prev-button:not(.p-disabled):hover,
+  .p-galleria .p-galleria-next-button,
+  .p-galleria .p-galleria-next-button:not(.p-disabled):hover,
+  .p-galleria .p-galleria-thumbnail-prev-button,
+  .p-galleria .p-galleria-thumbnail-next-button {
     color: var(--primary-color);
     background-color: rgba(255, 255, 255, 0.2);
   }

@@ -13,6 +13,7 @@ import { AccountService } from '@shared/services/account.service';
 import { cyrillic } from '@shared/validators/cyrillic.validator';
 
 @Component({
+  standalone: false,
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],

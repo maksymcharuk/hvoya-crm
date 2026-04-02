@@ -1,14 +1,15 @@
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { EditorModule } from 'primeng/editor';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { TabViewModule } from 'primeng/tabview';
+import { TabsModule } from 'primeng/tabs';
 import { TooltipModule } from 'primeng/tooltip';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 import { CommonModule } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -41,16 +42,17 @@ import { ViewProductComponent } from './pages/view-product/view-product.componen
     ], imports: [CommonModule,
         AdminProductsRoutingModule,
         SharedModule,
-        TabViewModule,
+        TabsModule,
         ButtonModule,
         InputTextModule,
         ReactiveFormsModule,
-        DropdownModule,
-        InputTextareaModule,
+        SelectModule,
+        TextareaModule,
         FileUploadModule,
         InputNumberModule,
         EditorModule,
         TooltipModule,
+        ProgressBarModule,
         SelectButtonModule,
         CheckboxModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AdminProductsModule {}

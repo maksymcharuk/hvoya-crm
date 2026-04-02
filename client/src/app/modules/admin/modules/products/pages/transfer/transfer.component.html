@@ -1,21 +1,23 @@
 <div class="card transfer">
+  @if (submitting) {
   <p-progressBar
-    *ngIf="submitting"
     class="transfer__progress"
     mode="indeterminate"
     [style]="{ height: '4px' }"
   ></p-progressBar>
+  }
   <form [formGroup]="importForm" (ngSubmit)="onImportSubmit()">
-    <div class="p-fluid">
-      <h5>Імпорт продуктів</h5>
-      <div class="field">
-        <label for="import-source">Джерело імпорту:</label>
-        <p-dropdown
+    <h5>Імпорт продуктів</h5>
+    <div class="mt-4 flex flex-col gap-5">
+      <div class="flex flex-col gap-2">
+        <label for="import-source" class="font-medium">Джерело імпорту:</label>
+        <p-select
+          fluid
           id="import-source"
           [options]="importSources"
           formControlName="source"
           optionValue="value"
-        ></p-dropdown>
+        ></p-select>
         <app-form-control-error-message
           [formGroup]="importForm"
           controlName="source"
@@ -23,18 +25,17 @@
           errorMessage="Необхідно обрати джерело імпорту"
         ></app-form-control-error-message>
       </div>
-      <div class="field">
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Тип джерела:</label>
         <p-selectButton
           formControlName="sourceType"
           [options]="importSourceTypes"
         ></p-selectButton>
       </div>
-      <div
-        *ngIf="sourceType?.value === importSourceTypeEnum.Link"
-        class="field"
-      >
-        <label for="link">Посилання:</label>
-        <input id="link" pInputText formControlName="link" />
+      @if (sourceType?.value === importSourceTypeEnum.Link) {
+      <div class="flex flex-col gap-2">
+        <label for="link" class="font-medium">Посилання:</label>
+        <input id="link" pInputText fluid formControlName="link" />
         <app-form-control-error-message
           [formGroup]="importForm"
           controlName="link"
@@ -42,22 +43,18 @@
           errorMessage="Необхідно ввести посилання"
         ></app-form-control-error-message>
       </div>
-    </div>
-    <div
-      *ngIf="sourceType?.value === importSourceTypeEnum.File"
-      class="formgrid"
-    >
-      <div class="field">
-        <label>Файл (XML/XLS):</label>
-        <p-fileUpload
+      } @if (sourceType?.value === importSourceTypeEnum.File) {
+      <div class="flex flex-col gap-2">
+        <label class="font-medium">Файл (XML/XLS):</label>
+        <app-file-upload
           accept=".xml, .xls, .xlsx"
+          variant="file"
           [customUpload]="true"
           [auto]="true"
           [maxFileSize]="10000000"
           [disabled]="file!.disabled"
           (uploadHandler)="onFileUpload($event)"
-        >
-        </p-fileUpload>
+        ></app-file-upload>
         <app-form-control-error-message
           [formGroup]="importForm"
           controlName="file"
@@ -65,12 +62,14 @@
           errorMessage="Необхідно вибрати файл"
         ></app-form-control-error-message>
       </div>
+      }
+      <button
+        pButton
+        class="self-start"
+        type="submit"
+        label="Імпортувати"
+        [disabled]="submitting"
+      ></button>
     </div>
-    <button
-      pButton
-      type="submit"
-      label="Імпортувати"
-      [disabled]="submitting"
-    ></button>
   </form>
 </div>

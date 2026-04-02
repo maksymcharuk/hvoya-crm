@@ -1,5 +1,5 @@
-<div class="card flex flex-column w-full">
-  <div class="wrapper mb-3">
+<div class="card flex flex-col w-full">
+  <div class="wrapper mb-4">
     <a [routerLink]="[product.id?.toString()]">
       <app-image-component
         class="wrapper__img"
@@ -10,17 +10,17 @@
   <ng-template #imageWrapperSkeleton>
     <p-skeleton height="15rem" width="100%"></p-skeleton>
   </ng-template>
-  <div class="flex-grow-1 my-2">
+  <div class="grow my-2">
+    @if (product.name) {
     <a
-      *ngIf="product.name; else productNameSkeleton"
       [routerLink]="[product.id?.toString()]"
-      class="text-900 font-medium text-xl"
+      class="text-surface-900 font-medium text-xl"
       data-cy="product-name"
     >
       {{ product.name }}
     </a>
-  </div>
-  <ng-template #productNameSkeleton>
+    } @else {
     <p-skeleton height="2rem" width="100%"></p-skeleton>
-  </ng-template>
+    }
+  </div>
 </div>

@@ -8,6 +8,7 @@ import { Page } from '@shared/interfaces/page.interface';
 import { PaymentTransactionsService } from '@shared/services/payment-transactions.service';
 
 @Component({
+  standalone: false,
   selector: 'app-transaction-history',
   templateUrl: './transaction-history.component.html',
   styleUrls: ['./transaction-history.component.scss'],

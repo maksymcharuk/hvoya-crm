@@ -1,4 +1,4 @@
-<p-toolbar styleClass="mb-4 gap-2">
+<p-toolbar styleClass="mb-6 gap-2">
   <ng-template pTemplate="left">
     <button
       pButton
@@ -15,7 +15,7 @@
   #productColorsTable
   dataKey="id"
   currentPageReportTemplate="Показано від {first} до {last} з {totalRecords} кольорів"
-  class="block border-300 border-left-1 border-right-1"
+  class="block border-surface-300 border-l border-r"
   [value]="colors"
   [rows]="rows"
   [paginator]="true"
@@ -25,17 +25,17 @@
   [filterDelay]="0"
 >
   <ng-template pTemplate="caption">
-    <div class="flex align-items-center justify-content-between">
+    <div class="flex items-center justify-between">
       <h5 class="m-0">Кольори</h5>
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
+      <p-iconField iconPosition="left">
+        <p-inputIcon styleClass="pi pi-search" />
         <input
           pInputText
           type="text"
           (input)="filterColors($event)"
           placeholder="Пошук..."
         />
-      </span>
+      </p-iconField>
     </div>
   </ng-template>
   <ng-template pTemplate="header">
@@ -76,19 +76,19 @@
   [style]="{ width: '450px' }"
   header="Колір"
   [modal]="true"
-  styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <div class="flex justify-content-center">
+    <div class="flex justify-center mb-4">
       <!-- TODO: update color badge when color is changed in dialog -->
       <app-product-color-badge
         size="42px"
         [color]="color"
       ></app-product-color-badge>
     </div>
-    <div class="field">
+    <div class="flex flex-col gap-1 mb-4">
       <label for="name">Назва</label>
       <input
+        class="w-full"
         type="text"
         pInputText
         id="name"
@@ -97,9 +97,16 @@
         autofocus
       />
     </div>
-    <div class="field">
-      <label for="description">HEX</label>
-      <input type="text" pInputText id="hex" [(ngModel)]="color.hex" required />
+    <div class="flex flex-col gap-1 mb-4">
+      <label for="hex">HEX</label>
+      <input
+        class="w-full"
+        type="text"
+        pInputText
+        id="hex"
+        [(ngModel)]="color.hex"
+        required
+      />
     </div>
   </ng-template>
 

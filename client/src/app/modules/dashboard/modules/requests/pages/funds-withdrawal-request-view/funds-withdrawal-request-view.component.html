@@ -1,32 +1,27 @@
-<div class="request-view grid" data-cy="request-view-page">
-  <div class="col-12">
+<div class="request-view grid grid-cols-12 gap-4" data-cy="request-view-page">
+  <div class="col-span-12">
     <div class="card request-view__content">
-      <div *ngIf="request$ | async as request">
-        <h4 class="flex align-items-center">
+      @if (request$ | async; as request) {
+      <div>
+        <h4 class="flex items-center">
           <span>Виведення коштів №{{ request.number }}</span>
         </h4>
-        <ul
-          *ngIf="
-            request.managerComment ||
-            request.fundsWithdrawalRequest!.fundsWithdrawalReceipt?.url
-          "
-          class="striped-list my-5"
-        >
-          <li *ngIf="request.managerComment" class="striped-list__item">
-            <div class="striped-list__item-key align-self-baseline">
+        @if ( request.managerComment ||
+        request.fundsWithdrawalRequest!.fundsWithdrawalReceipt?.url ) {
+        <ul class="striped-list my-8">
+          @if (request.managerComment) {
+          <li class="striped-list__item">
+            <div class="striped-list__item-key self-baseline">
               Коментар менеджера
             </div>
             <div class="striped-list__item-value">
               <div class="mb-2">{{ request.managerComment }}</div>
             </div>
           </li>
-          <li
-            *ngIf="
-              request.fundsWithdrawalRequest!.fundsWithdrawalReceipt?.url as url
-            "
-            class="striped-list__item"
-          >
-            <div class="striped-list__item-key align-self-baseline">
+          } @if ( request.fundsWithdrawalRequest!.fundsWithdrawalReceipt?.url;
+          as url ) {
+          <li class="striped-list__item">
+            <div class="striped-list__item-key self-baseline">
               Документ
             </div>
             <div class="striped-list__item-value">
@@ -51,9 +46,11 @@
               </p-dialog>
             </div>
           </li>
+          }
         </ul>
-        <div class="grid">
-          <div class="col-12 xl:col-6">
+        }
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12 xl:col-span-6">
             <ul class="striped-list">
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Дата</div>
@@ -70,7 +67,7 @@
                 </div>
               </li>
               <li class="striped-list__item">
-                <div class="striped-list__item-key align-self-baseline">
+                <div class="striped-list__item-key self-baseline">
                   Сума
                 </div>
                 <div class="striped-list__item-value">
@@ -81,10 +78,10 @@
               </li>
             </ul>
           </div>
-          <div class="col-12 xl:col-6">
+          <div class="col-span-12 xl:col-span-6">
             <ul class="striped-list">
               <li class="striped-list__item">
-                <div class="striped-list__item-key align-self-baseline">
+                <div class="striped-list__item-key self-baseline">
                   Коментар до запиту
                 </div>
                 <div class="striped-list__item-value">
@@ -95,6 +92,7 @@
           </div>
         </div>
       </div>
+      }
     </div>
   </div>
 </div>

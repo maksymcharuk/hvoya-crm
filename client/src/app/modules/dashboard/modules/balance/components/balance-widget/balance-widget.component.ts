@@ -14,6 +14,7 @@ import { UserService } from '@shared/services/user.service';
 import { UserBalanceService } from '../../services/user-balance.service';
 
 @Component({
+  standalone: false,
   selector: 'app-balance-widget',
   templateUrl: './balance-widget.component.html',
   styleUrls: ['./balance-widget.component.scss'],

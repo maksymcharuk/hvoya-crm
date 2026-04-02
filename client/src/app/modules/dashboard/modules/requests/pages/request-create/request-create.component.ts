@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RequestType } from '@shared/enums/request-type.enum';
 
 @Component({
+  standalone: false,
   selector: 'app-request-create',
   templateUrl: './request-create.component.html',
   styleUrls: ['./request-create.component.scss'],

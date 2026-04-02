@@ -18,6 +18,7 @@ import { FormBuilder } from '@angular/forms';
 import { AdminAnalyticsService } from '@shared/services/admin-analytics.service';
 
 @Component({
+  standalone: false,
   selector: 'app-dropshippers-analytics',
   templateUrl: './dropshippers-analytics.component.html',
   styleUrls: ['./dropshippers-analytics.component.scss'],

@@ -1,23 +1,38 @@
-<div class="grid">
-  <div class="col-12">
-    <p-tabView (onChange)="onTabChange($event)">
-      <p-tabPanel header="AI Аналітика" leftIcon="pi pi-sparkles">
-        <div class="card p-0">
-          <app-nlq-chat *ngIf="activatedTabs.has(0)" />
-        </div>
-      </p-tabPanel>
-
-      <p-tabPanel header="Замовлення" leftIcon="pi pi-shopping-cart">
-        <app-orders-overview *ngIf="activatedTabs.has(1)" />
-      </p-tabPanel>
-
-      <p-tabPanel header="Дропшипери" leftIcon="pi pi-list">
-        <app-dropshippers-analytics *ngIf="activatedTabs.has(2)" />
-      </p-tabPanel>
-
-      <p-tabPanel header="Продукти" leftIcon="pi pi-box">
-        <app-products-overview *ngIf="activatedTabs.has(3)" />
-      </p-tabPanel>
-    </p-tabView>
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12">
+    <p-tabs [value]="activeTab" (valueChange)="onTabChange($event)">
+      <p-tablist>
+        <p-tab value="0"><i class="pi pi-sparkles mr-2"></i>AI Аналітика</p-tab>
+        <p-tab value="1"
+          ><i class="pi pi-shopping-cart mr-2"></i>Замовлення</p-tab
+        >
+        <p-tab value="2"><i class="pi pi-list mr-2"></i>Дропшипери</p-tab>
+        <p-tab value="3"><i class="pi pi-box mr-2"></i>Продукти</p-tab>
+      </p-tablist>
+      <p-tabpanels>
+        <p-tabpanel value="0">
+          <div class="card p-0">
+            @if (activatedTabs.has('0')) {
+            <app-nlq-chat />
+            }
+          </div>
+        </p-tabpanel>
+        <p-tabpanel value="1">
+          @if (activatedTabs.has('1')) {
+          <app-orders-overview />
+          }
+        </p-tabpanel>
+        <p-tabpanel value="2">
+          @if (activatedTabs.has('2')) {
+          <app-dropshippers-analytics />
+          }
+        </p-tabpanel>
+        <p-tabpanel value="3">
+          @if (activatedTabs.has('3')) {
+          <app-products-overview />
+          }
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
   </div>
 </div>

@@ -16,6 +16,7 @@ import { cyrillic } from '@shared/validators/cyrillic.validator';
 import { PasswordValidators } from '@shared/validators/password-validator';
 
 @Component({
+  standalone: false,
   selector: 'app-admin-sign-up',
   templateUrl: './admin-sign-up.component.html',
   styleUrls: ['./admin-sign-up.component.scss'],

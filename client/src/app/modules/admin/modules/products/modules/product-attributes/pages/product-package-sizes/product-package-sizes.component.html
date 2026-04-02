@@ -1,4 +1,4 @@
-<p-toolbar styleClass="mb-4 gap-2">
+<p-toolbar styleClass="mb-6 gap-2">
   <ng-template pTemplate="left">
     <button
       pButton
@@ -15,7 +15,7 @@
   #productSizesTable
   dataKey="id"
   currentPageReportTemplate="Показано від {first} до {last} з {totalRecords} розмірів"
-  class="block border-300 border-left-1 border-right-1"
+  class="block border-surface-300 border-l border-r"
   [value]="sizes"
   [rows]="rows"
   [paginator]="true"
@@ -25,17 +25,17 @@
   [filterDelay]="0"
 >
   <ng-template pTemplate="caption">
-    <div class="flex align-items-center justify-content-between">
+    <div class="flex items-center justify-between">
       <h5 class="m-0">Розміри (см)</h5>
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
+      <p-iconField iconPosition="left">
+        <p-inputIcon styleClass="pi pi-search" />
         <input
           pInputText
           type="text"
           (input)="filterSizes($event)"
           placeholder="Пошук..."
         />
-      </span>
+      </p-iconField>
     </div>
   </ng-template>
   <ng-template pTemplate="header">
@@ -75,12 +75,12 @@
   [style]="{ width: '450px' }"
   header="Розмір (см)"
   [modal]="true"
-  styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <div class="field">
+    <div class="flex flex-col gap-1 mb-4">
       <label for="height">Висота упаковки</label>
       <p-inputNumber
+        class="w-full"
         autofocus
         id="height"
         mode="decimal"
@@ -88,9 +88,10 @@
         [required]="true"
       ></p-inputNumber>
     </div>
-    <div class="field">
+    <div class="flex flex-col gap-1 mb-4">
       <label for="width">Ширина упаковки</label>
       <p-inputNumber
+        class="w-full"
         autofocus
         id="width"
         mode="decimal"
@@ -98,9 +99,10 @@
         [required]="true"
       ></p-inputNumber>
     </div>
-    <div class="field">
+    <div class="flex flex-col gap-1 mb-4">
       <label for="depth">Глибина упаковки</label>
       <p-inputNumber
+        class="w-full"
         autofocus
         id="depth"
         mode="decimal"

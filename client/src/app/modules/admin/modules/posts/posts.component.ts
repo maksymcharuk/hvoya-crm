@@ -13,6 +13,7 @@ import { Page } from '@shared/interfaces/page.interface';
 import { PostsService } from '@shared/services/posts.service';
 
 @Component({
+  standalone: false,
   selector: 'app-post',
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.scss'],

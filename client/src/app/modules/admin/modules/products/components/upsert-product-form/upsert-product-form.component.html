@@ -1,15 +1,14 @@
-<div class="grid">
-  <div class="col-12 md:col-8">
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12 md:col-span-8">
     <div class="card">
-      <form
-        *ngIf="productForm"
-        [formGroup]="productForm"
-        (ngSubmit)="onSubmit(productForm.value)"
-      >
-        <div *ngIf="isEdit" class="p-fluid p-formgrid grid">
-          <div class="field col-12 md:col-6">
-            <label for="productsList">Продукт</label>
-            <p-dropdown
+      @if (productForm) {
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit(productForm.value)">
+        @if (isEdit) {
+        <div class="grid grid-cols-12 gap-4 mb-6">
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-6">
+            <label class="font-medium" for="productsList">Продукт</label>
+            <p-select
+              fluid
               [options]="productsList"
               placeholder="Виберіть продукт для зміни"
               optionLabel="properties.name"
@@ -25,26 +24,30 @@
                   <div>{{ product.properties.name }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </div>
+          @if (productBaseProductChange) {
           <div
-            class="field col-12 md:col-4 changes-message"
-            *ngIf="productBaseProductChange"
+            class="flex flex-col gap-1 col-span-12 md:col-span-4 changes-message"
           >
             <app-product-state-changes
               [change]="productBaseProductChange"
             ></app-product-state-changes>
           </div>
+          }
         </div>
-        <hr *ngIf="isEdit" />
-
+        } @if (isEdit) {
+        <hr />
+        }
         <div
-          class="p-fluid p-formgrid grid"
+          class="grid grid-cols-12 gap-4 mb-6"
           formGroupName="productCategoryGroup"
         >
-          <div *ngIf="!newCategory" class="field col-12 md:col-6">
-            <label for="productCategoryId">Категорія</label>
-            <p-dropdown
+          @if (!newCategory) {
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-6">
+            <label class="font-medium" for="productCategoryId">Категорія</label>
+            <p-select
+              fluid
               [options]="productsCategories"
               placeholder="Виберіть категорію"
               optionLabel="name"
@@ -61,7 +64,7 @@
                   <div>{{ category.name }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
             <app-form-control-error-message
               [formGroup]="productForm"
               controlName="productCategoryGroup.productCategoryId"
@@ -70,9 +73,13 @@
             >
             </app-form-control-error-message>
           </div>
-          <div *ngIf="newCategory" class="field col-12 md:col-6">
-            <label for="productCategoryName">Нова категорія</label>
+          } @if (newCategory) {
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-6">
+            <label class="font-medium" for="productCategoryName"
+              >Нова категорія</label
+            >
             <input
+              class="w-full"
               id="productCategoryName"
               type="text"
               name="productCategoryName"
@@ -89,8 +96,11 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-12 md:col-1">
-            <label>&nbsp;</label>
+          }
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-1">
+            <label class="font-medium opacity-0" aria-hidden="true"
+              >&nbsp;</label
+            >
             <button
               pButton
               pRipple
@@ -103,10 +113,17 @@
           </div>
         </div>
         <hr />
-        <div class="p-fluid p-formgrid grid" formGroupName="productBaseGroup">
-          <div *ngIf="!newProductBase" class="field col-12 md:col-6">
-            <label for="productBaseId">Базовий продукт</label>
-            <p-dropdown
+        <div
+          class="grid grid-cols-12 gap-4 mb-6"
+          formGroupName="productBaseGroup"
+        >
+          @if (!newProductBase) {
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-6">
+            <label class="font-medium" for="productBaseId"
+              >Базовий продукт</label
+            >
+            <p-select
+              fluid
               [options]="isEdit ? allBaseProducts : baseProductsByCategory"
               placeholder="Виберіть базовий продукт"
               optionLabel="name"
@@ -121,7 +138,7 @@
                   {{ baseProduct.name }}
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
             <app-form-control-error-message
               [formGroup]="productForm"
               controlName="productBaseGroup.productBaseId"
@@ -130,9 +147,13 @@
             >
             </app-form-control-error-message>
           </div>
-          <div *ngIf="newProductBase" class="field col-12 md:col-6">
-            <label for="productBaseName">Новий базовий продукт</label>
+          } @if (newProductBase) {
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-6">
+            <label class="font-medium" for="productBaseName"
+              >Новий базовий продукт</label
+            >
             <input
+              class="w-full"
               id="productBaseName"
               type="text"
               name="productBaseName"
@@ -149,8 +170,11 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-12 md:col-1">
-            <label>&nbsp;</label>
+          }
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-1">
+            <label class="font-medium opacity-0" aria-hidden="true"
+              >&nbsp;</label
+            >
             <button
               pButton
               pRipple
@@ -162,24 +186,25 @@
               data-cy="new-base-product-toggle"
             ></button>
           </div>
+          @if (isEdit && baseProductCategoryChange) {
           <div
-            *ngIf="isEdit && baseProductCategoryChange"
-            class="field col-12 md:col-4 changes-message"
+            class="flex flex-col gap-1 col-span-12 md:col-span-4 changes-message"
           >
             <app-product-state-changes
               [change]="baseProductCategoryChange"
             ></app-product-state-changes>
           </div>
+          }
         </div>
         <hr />
-
         <div
-          class="p-fluid p-formgrid grid"
+          class="grid grid-cols-12 gap-4 mb-6"
           formGroupName="productVariantGroup"
         >
-          <div class="field col-6">
-            <label for="productVariantSku">Артикул</label>
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-6">
+            <label class="font-medium" for="productVariantSku">Артикул</label>
             <input
+              class="w-full"
               id="productVariantSku"
               type="text"
               name="productVariantSku"
@@ -196,9 +221,10 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-6">
-            <label for="productVariantName">Назва</label>
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-6">
+            <label class="font-medium" for="productVariantName">Назва</label>
             <input
+              class="w-full"
               id="productVariantName"
               type="text"
               name="productVariantName"
@@ -215,8 +241,10 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-12">
-            <label for="productVariantDescription">Опис</label>
+          <div class="col-span-12 flex flex-col gap-2">
+            <label class="font-medium" for="productVariantDescription"
+              >Опис</label
+            >
             <p-editor
               formControlName="productVariantDescription"
               id="productVariantDescription"
@@ -232,9 +260,10 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-4">
-            <label for="productVariantSizeId">Розмір</label>
-            <p-dropdown
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-4">
+            <label class="font-medium" for="productVariantSizeId">Розмір</label>
+            <p-select
+              fluid
               [options]="sizes"
               formControlName="productVariantSizeId"
               [showClear]="true"
@@ -249,7 +278,7 @@
               <ng-template let-size pTemplate="item">
                 {{ size | productSize }}
               </ng-template>
-            </p-dropdown>
+            </p-select>
             <app-form-control-error-message
               [formGroup]="productForm"
               controlName="productVariantGroup.productVariantSizeId"
@@ -258,9 +287,10 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-4">
-            <label for="productVariantColorId">Колір</label>
-            <p-dropdown
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-4">
+            <label class="font-medium" for="productVariantColorId">Колір</label>
+            <p-select
+              fluid
               #colorDropdown
               [options]="colors"
               formControlName="productVariantColorId"
@@ -271,16 +301,16 @@
               data-cy="product-color"
             >
               <!-- <ng-template pTemplate="selectedItem">
-                <div class="flex align-items-center">
-                  <app-product-color-badge
-                    class="mr-2"
-                    [color]="colorDropdown.selectedOption.value"
-                  ></app-product-color-badge>
-                  <div>{{ color.name }}</div>
-                </div>
-              </ng-template> -->
+              <div class="flex items-center">
+                <app-product-color-badge
+                  class="mr-2"
+                  [color]="colorDropdown.selectedOption.value"
+                ></app-product-color-badge>
+                <div>{{ color.name }}</div>
+              </div>
+            </ng-template> -->
               <ng-template let-color pTemplate="item">
-                <div class="flex align-items-center">
+                <div class="flex items-center">
                   <app-product-color-badge
                     class="mr-2"
                     [color]="color"
@@ -288,7 +318,7 @@
                   <div>{{ color.name }}</div>
                 </div>
               </ng-template>
-            </p-dropdown>
+            </p-select>
             <app-form-control-error-message
               [formGroup]="productForm"
               controlName="productVariantGroup.productVariantColorId"
@@ -297,9 +327,10 @@
             >
             </app-form-control-error-message>
           </div>
-          <div class="field col-4">
-            <label for="productVariantPrice">Ціна</label>
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-4">
+            <label class="font-medium" for="productVariantPrice">Ціна</label>
             <p-inputNumber
+              fluid
               inputId="productVariantPrice"
               id="productVariantPrice"
               formControlName="productVariantPrice"
@@ -318,10 +349,10 @@
             >
             </app-form-control-error-message>
           </div>
-
-          <div class="field col-4">
-            <label for="productVariantWeight">Вага</label>
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-4">
+            <label class="font-medium" for="productVariantWeight">Вага</label>
             <p-inputNumber
+              fluid
               inputId="productVariantWeight"
               id="productVariantWeight"
               formControlName="productVariantWeight"
@@ -341,10 +372,12 @@
             >
             </app-form-control-error-message>
           </div>
-
-          <div class="field col-4">
-            <label for="productVariantStock">Наявність</label>
+          <div class="col-span-12 flex flex-col gap-2 md:col-span-4">
+            <label class="font-medium" for="productVariantStock"
+              >Наявність</label
+            >
             <p-inputNumber
+              fluid
               pTooltip="Наявність товару синхронізується з 1С"
               inputId="productVariantStock"
               id="productVariantStock"
@@ -353,26 +386,27 @@
             >
             </p-inputNumber>
           </div>
-
-          <div class="field col-12 flex align-items-center">
+          <div
+            class="col-span-12 flex items-center gap-3 rounded-lg border border-surface-200 px-4 py-3"
+          >
             <p-checkbox
               inputId="productVariantIsPublished"
-              aria-labelledby="Опубліковати товар"
+              aria-labelledby="Опублікувати товар"
               [binary]="true"
               formControlName="productVariantIsPublished"
             ></p-checkbox>
-            <label class="mb-0 ml-3" for="productVariantIsPublished">
+            <label
+              class="cursor-pointer font-medium"
+              for="productVariantIsPublished"
+            >
               Опублікований
             </label>
           </div>
-
-          <div
-            class="col-12 selected-product-images-wrapper"
-            *ngIf="isEdit && selectedProductImages.length"
-          >
+          @if (isEdit && selectedProductImages.length) {
+          <div class="col-span-12 selected-product-images-wrapper">
+            @for (image of selectedProductImages; track image) {
             <div
               class="selected-product-images-wrapper-image"
-              *ngFor="let image of selectedProductImages"
               data-cy="product-images"
             >
               <img
@@ -382,8 +416,8 @@
                 [class.remove]="image?.remove"
                 (click)="setImageActive(image)"
               />
+              @if (!image?.active) {
               <button
-                *ngIf="!image?.active"
                 pButton
                 pRipple
                 type="button"
@@ -392,18 +426,20 @@
                 [class]="image?.remove ? 'restore' : 'remove'"
                 (click)="removeProductImage(image)"
               ></button>
+              }
             </div>
+            }
           </div>
-
-          <div class="field col-12">
-            <label for="images">Завантаження файлів</label>
-            <p-fileUpload
+          }
+          <div class="col-span-12 flex flex-col gap-2">
+            <label class="font-medium" for="images">Завантаження файлів</label>
+            <app-file-upload
               #fileUpload
               name="images[]"
+              variant="file"
               [customUpload]="true"
               (uploadHandler)="onUpload($event)"
               (onRemove)="onRemove($event)"
-              class="upload-files"
               [multiple]="true"
               [accept]="acceptedFiles"
               [invalidFileTypeMessageDetail]="invalidFileTypeMessage"
@@ -411,36 +447,16 @@
               [auto]="true"
               [disabled]="productImagesDisabled"
               chooseLabel="Завантажити файл"
+              emptyMessage="Перетягніть файл для завантаження"
               data-cy="product-image-upload"
-            >
-              <ng-template pTemplate="content">
-                <ul *ngIf="productImagesControl?.value?.length">
-                  <li *ngFor="let file of productImagesControl?.value">
-                    {{ file.name }} - {{ file.size }} bytes
-                  </li>
-                </ul>
-              </ng-template>
-              <ng-template pTemplate="content">
-                <ul
-                  *ngIf="!productImagesControl?.value?.length"
-                  class="upload-files-no-files"
-                >
-                  <span class="upload-files-no-files-text"
-                    >Перетягніть файл для завантаження<i
-                      class="pi pi-upload"
-                      style="font-size: 1.5rem"
-                    ></i
-                  ></span>
-                </ul>
-              </ng-template>
-            </p-fileUpload>
+            ></app-file-upload>
           </div>
-
-          <div class="grid justify-content-end col-12">
-            <div class="field col-3">
+          <div class="col-span-12 flex justify-end">
+            <div class="w-full md:w-1/4">
               <button
                 type="submit"
                 pButton
+                class="w-full"
                 label="Зберегти"
                 data-cy="product-save-button"
               ></button>
@@ -448,11 +464,12 @@
           </div>
         </div>
       </form>
+      }
     </div>
   </div>
-  <div class="col-4 hidden md:block">
+  <div class="col-span-4 hidden md:block">
     <div class="product-preview">
-      <div class="product-preview-header mb-4">
+      <div class="product-preview-header mb-6">
         <div>Попередній перегляд</div>
       </div>
       <app-product-item

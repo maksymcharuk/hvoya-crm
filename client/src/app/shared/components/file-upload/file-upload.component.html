@@ -1,0 +1,97 @@
+<p-fileUpload
+  class="app-file-upload"
+  [name]="name"
+  [accept]="accept"
+  [customUpload]="customUpload"
+  [auto]="auto"
+  [maxFileSize]="maxFileSize"
+  [disabled]="disabled"
+  [multiple]="multiple"
+  [chooseLabel]="chooseLabel"
+  [invalidFileTypeMessageDetail]="invalidFileTypeMessageDetail"
+  [invalidFileSizeMessageDetail]="invalidFileSizeMessageDetail"
+  [invalidFileSizeMessageSummary]="invalidFileSizeMessageSummary"
+  [attr.data-cy]="dataCy || null"
+  (uploadHandler)="emitUpload($event)"
+  (onRemove)="emitRemove($event)"
+  (onSelect)="emitSelect($event)"
+>
+  <ng-template
+    pTemplate="header"
+    let-chooseCallback="chooseCallback"
+  >
+    <div class="app-file-upload__header">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        class="app-file-upload__choose-button"
+        [label]="chooseLabel"
+        [disabled]="disabled"
+        (click)="chooseCallback()"
+      ></button>
+    </div>
+  </ng-template>
+
+  <ng-template
+    pTemplate="content"
+    let-files
+    let-messages="messages"
+    let-removeFileCallback="removeFileCallback"
+  >
+    <div class="app-file-upload__content">
+      @if (messages?.length) {
+        <div class="app-file-upload__messages">
+          @for (message of messages; track message) {
+            <p-message
+              [severity]="message.severity"
+              [text]="message.text"
+            ></p-message>
+          }
+        </div>
+      }
+
+      @if (files?.length) {
+        <div class="app-file-upload__list">
+          @for (file of files; track file; let index = $index) {
+            <div class="app-file-upload__item">
+              <div class="app-file-upload__file">
+                @if (isImage(file)) {
+                  <img
+                    class="app-file-upload__preview"
+                    [src]="getPreviewUrl(file)"
+                    [alt]="file.name"
+                  />
+                } @else {
+                  <span class="app-file-upload__icon pi pi-file"></span>
+                }
+
+                <div class="app-file-upload__meta">
+                  <span class="app-file-upload__name">{{ file.name }}</span>
+                  <span class="app-file-upload__size">{{
+                    formatFileSize(file.size)
+                  }}</span>
+                </div>
+              </div>
+
+              <button
+                pButton
+                type="button"
+                icon="pi pi-times"
+                text
+                severity="danger"
+                class="app-file-upload__remove-button"
+                (click)="removeFileCallback(index)"
+              ></button>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="app-file-upload__empty">
+          <i class="pi pi-upload"></i>
+          <span>{{ emptyMessage }}</span>
+        </div>
+      }
+    </div>
+  </ng-template>
+</p-fileUpload>

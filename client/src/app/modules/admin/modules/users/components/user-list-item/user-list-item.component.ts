@@ -5,6 +5,7 @@ import { User } from '@shared/interfaces/entities/user.entity';
 import { NotificationsService } from '@shared/services/notifications.service';
 
 @Component({
+  standalone: false,
   selector: 'tr[app-user-list-item]',
   templateUrl: './user-list-item.component.html',
   styleUrls: ['./user-list-item.component.scss'],

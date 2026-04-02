@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 type StatusBadgeStyle = 'default' | 'accent' | 'success' | 'danger' | 'warn';
 
 @Component({
+  standalone: false,
   selector: 'app-status-badge',
   templateUrl: './status-badge.component.html',
   styleUrls: ['./status-badge.component.scss'],

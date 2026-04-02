@@ -1,5 +1,4 @@
 import { MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
 import {
   BehaviorSubject,
   Subject,
@@ -20,6 +19,7 @@ import {
   FIELD_UPDATE_DEBOUNCE_TIME,
   ICONS,
 } from '@shared/constants/base.constants';
+import { FileUploadComponent } from '@shared/components/file-upload/file-upload.component';
 import {
   COMMENT_REQUIRED_ORDER_STATUSES,
   MANUAL_ORDER_STATUSES,
@@ -33,12 +33,13 @@ import { OrdersService } from '@shared/services/orders.service';
 import { alphanumeric } from '@shared/validators/alphanumeric.validator';
 
 @Component({
+  standalone: false,
   selector: 'app-order-view',
   templateUrl: './order-view.component.html',
   styleUrls: ['./order-view.component.scss'],
 })
 export class OrderViewComponent implements OnDestroy {
-  @ViewChild('waybillUpload') waybillUpload!: FileUpload;
+  @ViewChild('waybillUpload') waybillUpload!: FileUploadComponent;
 
   private readonly destroy$ = new Subject<void>();
 

@@ -1,15 +1,14 @@
-<div class="grid">
-  <div class="col-12">
-    <div
-      *ngIf="'create' | able : userEntity"
-      class="flex justify-content-end mb-3"
-    >
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12">
+    @if ('create' | able : userEntity) {
+    <div class="flex justify-end mb-4">
       <p-button
         label="Запросити адміністратора"
         icon="pi pi-plus"
         (click)="openAdminInvitationDialog()"
       ></p-button>
     </div>
+    }
     <div class="card p-0">
       <app-users-list
         [users]="users$ | async"
@@ -19,19 +18,19 @@
   </div>
 </div>
 
+@if ('create' | able : userEntity) {
 <p-dialog
-  *ngIf="'create' | able : userEntity"
   header="Надіслати запрошення для нового адміністратора"
-  styleClass="p-fluid"
   [modal]="true"
   [style]="{ width: '400px', maxWidth: '90%' }"
   [(visible)]="showAdminInvitationDialog"
 >
   <ng-template pTemplate="content">
-    <form [formGroup]="adminInvitationForm">
-      <div class="field">
-        <label for="email">Ел. пошта:</label>
+    <form [formGroup]="adminInvitationForm" class="flex flex-col gap-5 pt-1">
+      <div class="flex flex-col gap-2">
+        <label class="font-medium" for="email">Ел. пошта:</label>
         <input
+          class="w-full"
           pInputText
           id="email"
           name="email"
@@ -45,9 +44,11 @@
           errorMessage="Це є обов'язковим полем"
         ></app-form-control-error-message>
       </div>
-      <div class="field">
-        <label for="role">Роль:</label>
-        <p-dropdown
+      <div class="flex flex-col gap-2">
+        <label class="font-medium" for="role">Роль:</label>
+        <p-select
+          fluid
+          inputId="role"
           formControlName="role"
           placeholder="Статус"
           appendTo="body"
@@ -59,7 +60,7 @@
           <ng-template let-option pTemplate="item">
             {{ option | roleName }}
           </ng-template>
-        </p-dropdown>
+        </p-select>
         <app-form-control-error-message
           [formGroup]="adminInvitationForm"
           controlName="role"
@@ -69,12 +70,12 @@
       </div>
     </form>
   </ng-template>
-
   <ng-template pTemplate="footer">
     <p-button
       label="Відмінити"
       icon="pi pi-times"
-      styleClass="p-button-outlined p-button-secondary"
+      styleClass="p-button-outlined"
+      severity="secondary"
       (onClick)="closeAdminInvitationDialog()"
     ></p-button>
     <p-button
@@ -85,3 +86,4 @@
     ></p-button>
   </ng-template>
 </p-dialog>
+}

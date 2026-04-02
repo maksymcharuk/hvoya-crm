@@ -1,141 +1,143 @@
 <!-- Date filter -->
-<form
-  [formGroup]="filtersForm"
-  class="p-fluid formgrid grid justify-content-end mb-3"
->
-  <div class="col-fixed">
-    <div class="field">
-      <label>Період:</label>
-      <p-calendar
-        formControlName="range"
-        selectionMode="range"
-        appendTo="body"
-        placeholder="Період"
-      ></p-calendar>
-    </div>
+<form [formGroup]="filtersForm" class="mb-4 flex justify-end">
+  <div class="flex w-full flex-col gap-2 md:w-72">
+    <label class="font-medium">Період</label>
+    <p-datepicker
+      class="w-full"
+      formControlName="range"
+      selectionMode="range"
+      appendTo="body"
+      placeholder="Період"
+    ></p-datepicker>
   </div>
 </form>
 
 <!-- KPI Cards -->
-<div class="grid">
-  <div class="col-12 md:col-6 lg:col-3">
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12 md:col-span-6 lg:col-span-3">
     <div class="card mb-0">
-      <ng-container *ngIf="kpiStats$ | async as kpis; else kpiSkeleton">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium mb-3"
-              >Всього продуктів</span
-            >
-            <div class="text-900 font-medium text-xl">
-              {{ kpis.totalProducts }}
-            </div>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center bg-blue-100 border-round"
-            style="width: 2.5rem; height: 2.5rem"
+      @if (kpiStats$ | async; as kpis) {
+      <div class="flex justify-between mb-4">
+        <div>
+          <span class="block text-surface-500 font-medium mb-4"
+            >Всього продуктів</span
           >
-            <i class="pi pi-box text-blue-500 text-xl"></i>
+          <div class="text-surface-900 font-medium text-xl">
+            {{ kpis.totalProducts }}
           </div>
         </div>
-        <span class="text-500">У каталозі за період</span>
-      </ng-container>
-    </div>
-  </div>
-
-  <div class="col-12 md:col-6 lg:col-3">
-    <div class="card mb-0">
-      <ng-container *ngIf="kpiStats$ | async as kpis; else kpiSkeleton">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium mb-3">Топ продукт</span>
-            <div class="text-900 font-medium text-xl">
-              {{ kpis.topProduct }}
-            </div>
-          </div>
-          <div
-            class="flex flex-none align-items-center justify-content-center bg-yellow-100 border-round"
-            style="width: 2.5rem; height: 2.5rem"
-          >
-            <i class="pi pi-star text-yellow-500 text-xl"></i>
-          </div>
-        </div>
-        <span class="text-500"
-          >{{ formatCurrency(kpis.topRevenue) }} доходу</span
+        <div
+          class="flex items-center justify-center bg-blue-100 rounded-border"
+          style="width: 2.5rem; height: 2.5rem"
         >
-      </ng-container>
+          <i class="pi pi-box text-blue-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-surface-500">У каталозі за період</span>
+      } @else {
+      <p-skeleton height="60px"></p-skeleton>
+      }
     </div>
   </div>
 
-  <div class="col-12 md:col-6 lg:col-3">
+  <div class="col-span-12 md:col-span-6 lg:col-span-3">
     <div class="card mb-0">
-      <ng-container *ngIf="kpiStats$ | async as kpis; else kpiSkeleton">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium mb-3"
-              >Продано одиниць (топ 10)</span
-            >
-            <div class="text-900 font-medium text-xl">
-              {{ kpis.totalUnitsSold }}
-            </div>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center bg-green-100 border-round"
-            style="width: 2.5rem; height: 2.5rem"
+      @if (kpiStats$ | async; as kpis) {
+      <div class="flex justify-between mb-4">
+        <div>
+          <span class="block text-surface-500 font-medium mb-4"
+            >Топ продукт</span
           >
-            <i class="pi pi-shopping-cart text-green-500 text-xl"></i>
+          <div class="text-surface-900 font-medium text-xl">
+            {{ kpis.topProduct }}
           </div>
         </div>
-        <span class="text-500">Серед топ-10 за доходом</span>
-      </ng-container>
+        <div
+          class="flex flex-none items-center justify-center bg-yellow-100 rounded-border"
+          style="width: 2.5rem; height: 2.5rem"
+        >
+          <i class="pi pi-star text-yellow-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-surface-500"
+        >{{ formatCurrency(kpis.topRevenue) }} доходу</span
+      >
+      } @else {
+      <p-skeleton height="60px"></p-skeleton>
+      }
     </div>
   </div>
 
-  <div class="col-12 md:col-6 lg:col-3">
+  <div class="col-span-12 md:col-span-6 lg:col-span-3">
     <div class="card mb-0">
-      <ng-container *ngIf="kpiStats$ | async as kpis; else kpiSkeleton">
-        <div class="flex justify-content-between mb-3">
-          <div>
-            <span class="block text-500 font-medium mb-3"
-              >Сер. % повернень</span
-            >
-            <div class="text-900 font-medium text-xl">
-              {{ formatPercent(kpis.avgReturnRate) }}
-            </div>
-          </div>
-          <div
-            class="flex align-items-center justify-content-center bg-red-100 border-round"
-            style="width: 2.5rem; height: 2.5rem"
+      @if (kpiStats$ | async; as kpis) {
+      <div class="flex justify-between mb-4">
+        <div>
+          <span class="block text-surface-500 font-medium mb-4"
+            >Продано одиниць (топ 10)</span
           >
-            <i class="pi pi-replay text-red-500 text-xl"></i>
+          <div class="text-surface-900 font-medium text-xl">
+            {{ kpis.totalUnitsSold }}
           </div>
         </div>
-        <span class="text-500">Серед топ-10 продуктів</span>
-      </ng-container>
+        <div
+          class="flex items-center justify-center bg-green-100 rounded-border"
+          style="width: 2.5rem; height: 2.5rem"
+        >
+          <i class="pi pi-shopping-cart text-green-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-surface-500">Серед топ-10 за доходом</span>
+      } @else {
+      <p-skeleton height="60px"></p-skeleton>
+      }
+    </div>
+  </div>
+
+  <div class="col-span-12 md:col-span-6 lg:col-span-3">
+    <div class="card mb-0">
+      @if (kpiStats$ | async; as kpis) {
+      <div class="flex justify-between mb-4">
+        <div>
+          <span class="block text-surface-500 font-medium mb-4"
+            >Сер. % повернень</span
+          >
+          <div class="text-surface-900 font-medium text-xl">
+            {{ formatPercent(kpis.avgReturnRate) }}
+          </div>
+        </div>
+        <div
+          class="flex items-center justify-center bg-red-100 rounded-border"
+          style="width: 2.5rem; height: 2.5rem"
+        >
+          <i class="pi pi-replay text-red-500 text-xl"></i>
+        </div>
+      </div>
+      <span class="text-surface-500">Серед топ-10 продуктів</span>
+      } @else {
+      <p-skeleton height="60px"></p-skeleton>
+      }
     </div>
   </div>
 </div>
 
-<ng-template #kpiSkeleton>
-  <p-skeleton height="60px"></p-skeleton>
-</ng-template>
-
 <!-- Top Products Chart -->
-<div class="card mt-3 mb-0">
+<div class="card mt-4 mb-0">
   <h5>Топ 10 продуктів за доходом</h5>
+  @if (chartData$ | async; as chartData) {
   <p-chart
-    *ngIf="chartData$ | async as chartData; else chartSkeleton"
     type="bar"
     [data]="chartData"
     [options]="chartOptions"
     height="350px"
   ></p-chart>
-  <ng-template #chartSkeleton>
-    <p-skeleton height="350px"></p-skeleton>
-  </ng-template>
+  } @else {
+  <p-skeleton height="350px"></p-skeleton>
+  }
 </div>
 
 <!-- Products Table -->
-<div class="card mt-3">
+<div class="card mt-4">
   <p-table
     #productsTable
     dataKey="productId"
@@ -152,16 +154,16 @@
   >
     <ng-template pTemplate="loadingicon"></ng-template>
     <ng-template pTemplate="loadingbody">
-      <ng-container *ngFor="let _ of [].constructor(rows)">
-        <tr>
-          <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
-          <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
-        </tr>
-      </ng-container>
+      @for (_ of [].constructor(rows); track $index) {
+      <tr>
+        <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
+        <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
+      </tr>
+      }
     </ng-template>
     <ng-template pTemplate="caption">
       <h5 class="m-0">Аналітика продуктів</h5>
@@ -169,37 +171,37 @@
     <ng-template pTemplate="header">
       <tr>
         <th pSortableColumn="productName">
-          <div class="flex justify-content-between align-items-center">
+          <div class="flex justify-between items-center">
             Назва продукту
             <p-sortIcon field="productName"></p-sortIcon>
           </div>
         </th>
         <th pSortableColumn="quantitySold">
-          <div class="flex justify-content-between align-items-center">
+          <div class="flex justify-between items-center">
             К-ть продано
             <p-sortIcon field="quantitySold"></p-sortIcon>
           </div>
         </th>
         <th pSortableColumn="totalRevenue">
-          <div class="flex justify-content-between align-items-center">
+          <div class="flex justify-between items-center">
             Загальний дохід
             <p-sortIcon field="totalRevenue"></p-sortIcon>
           </div>
         </th>
         <th pSortableColumn="uniqueDropshippersCount">
-          <div class="flex justify-content-between align-items-center">
+          <div class="flex justify-between items-center">
             Дропшипери
             <p-sortIcon field="uniqueDropshippersCount"></p-sortIcon>
           </div>
         </th>
         <th pSortableColumn="returnRate">
-          <div class="flex justify-content-between align-items-center">
+          <div class="flex justify-between items-center">
             % повернень
             <p-sortIcon field="returnRate"></p-sortIcon>
           </div>
         </th>
         <th pSortableColumn="averagePrice">
-          <div class="flex justify-content-between align-items-center">
+          <div class="flex justify-between items-center">
             Середня ціна
             <p-sortIcon field="averagePrice"></p-sortIcon>
           </div>
@@ -209,30 +211,12 @@
     <ng-template pTemplate="body" let-product>
       @if (!(loading$ | async)) {
       <tr>
-        <td>
-          <span class="p-column-title">Назва продукту</span>
-          {{ product.productName }}
-        </td>
-        <td>
-          <span class="p-column-title">К-ть продано</span>
-          {{ product.quantitySold }}
-        </td>
-        <td>
-          <span class="p-column-title">Загальний дохід</span>
-          {{ formatCurrency(product.totalRevenue) }}
-        </td>
-        <td>
-          <span class="p-column-title">Дропшипери</span>
-          {{ product.uniqueDropshippersCount }}
-        </td>
-        <td>
-          <span class="p-column-title">% повернень</span>
-          {{ formatPercent(product.returnRate) }}
-        </td>
-        <td>
-          <span class="p-column-title">Середня ціна</span>
-          {{ formatCurrency(product.averagePrice) }}
-        </td>
+        <td>{{ product.productName }}</td>
+        <td>{{ product.quantitySold }}</td>
+        <td>{{ formatCurrency(product.totalRevenue) }}</td>
+        <td>{{ product.uniqueDropshippersCount }}</td>
+        <td>{{ formatPercent(product.returnRate) }}</td>
+        <td>{{ formatCurrency(product.averagePrice) }}</td>
       </tr>
       }
     </ng-template>

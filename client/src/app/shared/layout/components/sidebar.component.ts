@@ -7,6 +7,7 @@ import { AccountService } from '@shared/services/account.service';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
+  standalone: false,
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],

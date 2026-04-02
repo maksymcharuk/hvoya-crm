@@ -1,31 +1,36 @@
-<div *ngIf="selectedVariant" class="grid" data-cy="product-view-page">
-  <div class="col-12 lg:col-6 relative">
+@if (selectedVariant) {
+<div class="grid grid-cols-12 gap-4" data-cy="product-view-page">
+  <div class="col-span-12 lg:col-span-6 relative">
+    @if (selectedVariant.properties?.images; as images) {
     <p-galleria
-      #galleria
-      *ngIf="selectedVariant.properties?.images as images"
-      [value]="images || null"
+      [value]="images"
+      [numVisible]="images.length >= 5 ? 5 : images.length || 1"
+      [responsiveOptions]="galleryResponsiveOptions"
+      [circular]="images.length > 1"
       [showItemNavigators]="images.length > 1"
       [showThumbnailNavigators]="images.length > 3"
-      [showThumbnails]="images.length > 2"
+      [showThumbnails]="images.length > 1"
+      [containerStyle]="{ 'max-width': '100%' }"
     >
-      <ng-template pTemplate="item" let-item>
+      <ng-template #item let-item>
         <app-image-component
           class="gallery-image"
           [image]="item.url"
         ></app-image-component>
       </ng-template>
-      <ng-template pTemplate="thumbnail" let-item>
+      <ng-template #thumbnail let-item>
         <img class="gallery-thumbnail" [src]="item.url" />
       </ng-template>
     </p-galleria>
+    } @if (selectedVariant.properties?.isPublished === false) {
     <p-tag
-      *ngIf="selectedVariant.properties?.isPublished === false"
       class="published-tag"
       severity="danger"
       value="Не опублікований"
     ></p-tag>
+    }
   </div>
-  <div class="col-12 lg:col-6 py-5 lg:py-3 lg:pl-5">
+  <div class="col-span-12 lg:col-span-6 py-8 lg:py-4 lg:pl-8">
     <ol class="breadcrumbs">
       <li class="breadcrumbs__item">
         <a class="breadcrumbs__item" [routerLink]="['../../../products']"
@@ -41,75 +46,80 @@
         >{{ product.name }}</a
       >
     </ol>
-    <div class="flex align-items-center justify-content-between mb-4">
-      <span class="text-xl font-medium text-900">{{
+    <div class="flex items-center justify-between mb-6">
+      <span class="text-xl font-medium text-surface-900">{{
         selectedVariant.properties.name
       }}</span
-      ><span class="text-xl font-medium text-900 ml-6">{{
+      ><span class="text-xl font-medium text-surface-900 ml-12">{{
         selectedVariant.properties.price | currency
       }}</span>
     </div>
     <p
-      class="p-0 mt-0 mb-5 line-height-3 text-700"
+      class="p-0 mt-0 mb-8 leading-normal text-surface-700"
       [innerHTML]="selectedVariant.properties.description"
     ></p>
-    <div class="font-bold text-900 mb-3">
-      Артикул: <span class="text-600">{{ selectedVariant.sku }}</span>
+    <div class="font-bold text-surface-900 mb-4">
+      Артикул: <span class="text-surface-600">{{ selectedVariant.sku }}</span>
     </div>
-    <div class="font-bold text-900 mb-3">Колір</div>
-    <ng-container *ngIf="selectedVariant.properties?.color as color">
-      <div class="flex align-items-center mb-5">
-        <app-product-color-badge
-          [color]="color"
-          size="28px"
-        ></app-product-color-badge>
-      </div>
-    </ng-container>
-    <ng-container *ngIf="selectedVariant.properties?.size as size">
-      <div class="mb-3 flex align-items-center justify-content-between">
-        <span class="font-bold text-900">Розмір</span>
-      </div>
-      <div class="flex align-items-center mb-5">
-        {{ size | productSize : 'short' }}
-      </div>
-    </ng-container>
+    <div class="font-bold text-surface-900 mb-4">Колір</div>
+    @if (selectedVariant.properties?.color; as color) {
+    <div class="flex items-center mb-8">
+      <app-product-color-badge
+        [color]="color"
+        size="28px"
+      ></app-product-color-badge>
+    </div>
+    } @if (selectedVariant.properties?.size; as size) {
+    <div class="mb-4 flex items-center justify-between">
+      <span class="font-bold text-surface-900">Розмір</span>
+    </div>
+    <div class="flex items-center mb-8">
+      {{ size | productSize : 'short' }}
+    </div>
+    }
     <!-- Габарити -->
     <div class="flex">
-      <div *ngIf="selectedVariant.properties?.packageSize as packageSize">
-        <div class="mb-3 flex align-items-center justify-content-between">
-          <span class="font-bold text-900">Габарити</span>
+      @if (selectedVariant.properties?.packageSize; as packageSize) {
+      <div>
+        <div class="mb-4 flex items-center justify-between">
+          <span class="font-bold text-surface-900">Габарити</span>
         </div>
-        <div class="flex align-items-center mb-5">
+        <div class="flex items-center mb-8">
           {{ packageSize | productPackageSize }}
         </div>
       </div>
+      }
       <!-- Вага -->
-      <div *ngIf="selectedVariant.properties?.weight as weight" class="ml-6">
-        <div class="mb-3 flex align-items-center justify-content-between">
-          <span class="font-bold text-900">Вага</span>
+      @if (selectedVariant.properties?.weight; as weight) {
+      <div class="ml-12">
+        <div class="mb-4 flex items-center justify-between">
+          <span class="font-bold text-surface-900">Вага</span>
         </div>
-        <div class="flex align-items-center mb-5">
+        <div class="flex items-center mb-8">
           {{ weight | productWeight }}
         </div>
       </div>
+      }
     </div>
     <!-- Наявність -->
-    <div class="mb-3 flex align-items-center justify-content-between">
-      <span class="font-bold text-900">Наявність</span>
+    <div class="mb-4 flex items-center justify-between">
+      <span class="font-bold text-surface-900">Наявність</span>
     </div>
-    <div class="flex align-items-center mb-5">
-      <ng-container *ngIf="selectedVariant.stock !== undefined">
-        <app-stock-badge [value]="selectedVariant.stock"></app-stock-badge>
-      </ng-container>
+    <div class="flex items-center mb-8">
+      @if (selectedVariant.stock !== undefined) {
+      <app-stock-badge [value]="selectedVariant.stock"></app-stock-badge>
+      }
     </div>
+    @if (!hideAddToCartButton) {
     <button
-      *ngIf="!hideAddToCartButton"
       pButton
       icon="pi pi-shopping-cart"
       label="Додати в кошик"
-      class="p-element p-ripple w-full mb-5 p-button p-component"
+      class="p-element p-ripple w-full mb-8 p-button p-component"
       [disabled]="!selectedVariant.stock"
       (click)="onAddToCart()"
     ></button>
+    }
   </div>
 </div>
+}

@@ -25,6 +25,7 @@ import { enumToLabelValue } from '@shared/utils';
 import { getUniqueObjectsByKey } from '@shared/utils/get-unique-objects-by-key.util';
 
 @Component({
+  standalone: false,
   selector: 'app-order-list',
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.scss'],

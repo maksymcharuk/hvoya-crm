@@ -16,6 +16,7 @@ import { AuthService } from '@shared/services/auth.service';
 import { PasswordValidators } from '@shared/validators/password-validator';
 
 @Component({
+  standalone: false,
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss'],

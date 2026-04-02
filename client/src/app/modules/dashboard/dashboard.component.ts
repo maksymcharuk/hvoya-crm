@@ -18,6 +18,7 @@ import { UserBalanceService } from './modules/balance/services/user-balance.serv
 import { CartService } from './modules/cart/services/cart/cart.service';
 
 @Component({
+  standalone: false,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],

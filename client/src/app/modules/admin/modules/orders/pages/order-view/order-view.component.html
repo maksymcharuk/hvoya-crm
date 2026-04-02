@@ -1,9 +1,11 @@
-<div *ngIf="order$ | async as order" data-cy="order-view-page">
-  <p-messages *ngIf="order.returnRequest as returnRequest" severity="warn">
-    <ng-template pTemplate>
-      <div class="flex align-items-center">
+@if (order$ | async; as order) {
+<div data-cy="order-view-page">
+  @if (order.returnRequest; as returnRequest) {
+  <p-message severity="warn">
+    <ng-template #container>
+      <div class="flex items-center">
         <i class="pi mr-2" [ngClass]="ICONS.ORDER_RETURN_REQUEST"></i>
-        <span class="vertical-align-middle">
+        <span class="align-middle">
           Запит на повернення
           <a
             [routerLink]="[
@@ -15,42 +17,42 @@
           </a>
         </span>
         <app-request-status-badge
-          class="ml-5"
+          class="ml-8"
           [status]="returnRequest.status"
         ></app-request-status-badge>
       </div>
     </ng-template>
-  </p-messages>
-  <div class="order-view grid">
-    <div class="col-12">
+  </p-message>
+  }
+  <div class="order-view grid grid-cols-12 gap-4">
+    <div class="col-span-12">
       <div class="card order-view__content">
-        <div class="flex align-items-center justify-content-between">
-          <div class="flex align-items-baseline">
+        <div class="flex items-center justify-between">
+          <div class="flex items-baseline">
             <h4 class="mb-0">Замовлення №{{ order.number }}</h4>
-            <small class="ml-2 text-600">
+            <small class="ml-2 text-surface-600 dark:text-surface-200">
               {{ order.createdAt | date : 'short' }}
             </small>
           </div>
+          @if ( order.delivery.waybill?.url && order.delivery.deliveryService
+          !== DeliveryService.SelfPickup ) {
           <p-button
-            *ngIf="
-              order.delivery.waybill?.url &&
-              order.delivery.deliveryService !== DeliveryService.SelfPickup
-            "
             icon="pi pi-print"
             label="Друк"
             data-cy="order-waybill-view-button"
             styleClass="ml-2"
             (click)="showWaybillViewDialogHandler()"
           ></p-button>
+          }
         </div>
-        <div class="my-5">
+        <div class="my-8">
           <ul class="striped-list">
             <li class="striped-list__item">
               <div class="striped-list__item-key">Статус</div>
               <div class="striped-list__item-value order-view__status-column">
-                <div class="py-2 mr-5">
-                  <div class="flex align-items-center mb-1">
-                    <span class="mr-3">
+                <div class="py-2 mr-8">
+                  <div class="flex items-center mb-1">
+                    <span class="mr-4">
                       <u>
                         {{
                           order.latestStatusFromHistory.createdAt
@@ -63,13 +65,16 @@
                       [status]="order.latestStatusFromHistory.status"
                     ></app-order-status-badge>
                   </div>
-                  <div *ngIf="order.latestStatusFromHistory.comment">
+                  @if (order.latestStatusFromHistory.comment) {
+                  <div>
                     <b>Коментар:</b> {{ order.latestStatusFromHistory.comment }}
                   </div>
-                  <div *ngIf="order.latestStatusFromHistory.createdBy">
+                  } @if (order.latestStatusFromHistory.createdBy) {
+                  <div>
                     <b>Оновлено:</b>
                     {{ order.latestStatusFromHistory.createdBy.fullName }}
                   </div>
+                  }
                 </div>
                 <button
                   pButton
@@ -94,7 +99,7 @@
             <li class="striped-list__item">
               <div class="striped-list__item-key">Нотатка</div>
               <div class="striped-list__item-value">
-                <form class="p-fluid" [formGroup]="orderNoteForm">
+                <form [formGroup]="orderNoteForm">
                   <p-progressBar
                     class="order-view__note-progress-bar"
                     mode="indeterminate"
@@ -102,6 +107,7 @@
                     [style]="{ height: '4px' }"
                   ></p-progressBar>
                   <textarea
+                    class="w-full"
                     rows="1"
                     cols="30"
                     pInputTextarea
@@ -113,8 +119,8 @@
             </li>
           </ul>
         </div>
-        <div class="grid">
-          <div class="col-12 xl:col-6">
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані дропшипера</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
@@ -128,42 +134,34 @@
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Номер телефону</div>
                 <div class="striped-list__item-value">
-                  <ng-container
-                    *ngIf="
-                      order.customer.phoneNumber as phoneNumber;
-                      else emptyPhoneNumber
-                    "
-                  >
-                    {{ phoneNumber | phoneNumber }}
-                  </ng-container>
-                  <ng-template #emptyPhoneNumber>-</ng-template>
+                  @if ( order.customer.phoneNumber; as phoneNumber) {
+                  {{ phoneNumber | phoneNumber }}
+                  } @else { - }
                 </div>
               </li>
             </ul>
           </div>
-          <div class="col-12 xl:col-6">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані доставки</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Служба доставки</div>
                 <div class="striped-list__item-value">
+                  @if (order.delivery.deliveryService; as deliveryService) {
                   <app-delivery-service-badge
-                    *ngIf="order.delivery.deliveryService as deliveryService"
                     [deliveryService]="deliveryService"
                   ></app-delivery-service-badge>
+                  }
                 </div>
               </li>
-              <li
-                *ngIf="
-                  order.delivery.deliveryService !== DeliveryService.SelfPickup
-                "
-                class="striped-list__item"
-              >
+              @if ( order.delivery.deliveryService !==
+              DeliveryService.SelfPickup ) {
+              <li class="striped-list__item">
                 <div class="striped-list__item-key">Статус доставки</div>
                 <div class="striped-list__item-value">
-                  <div class="py-2 mr-5">
-                    <div class="flex align-items-center mb-1">
-                      <span class="mr-3">
+                  <div class="py-2 mr-8">
+                    <div class="flex items-center mb-1">
+                      <span class="mr-4">
                         <u>
                           {{ order.delivery.updatedAt | date : 'short' }}
                         </u>
@@ -172,143 +170,149 @@
                         [status]="order.delivery.status"
                       ></app-order-delivery-status-badge>
                     </div>
-                    <div *ngIf="order.delivery.rawStatus">
+                    @if (order.delivery.rawStatus) {
+                    <div>
                       <b>Повний статус:</b> {{ order.delivery.rawStatus }}
                     </div>
+                    }
                   </div>
                 </div>
               </li>
-              <li *ngIf="!('update' | able : order)" class="striped-list__item">
+              } @if (!('update' | able : order)) {
+              <li class="striped-list__item">
                 <div class="striped-list__item-key">Номер ТТН</div>
                 <div class="striped-list__item-value">
                   {{ order.delivery.trackingId }}
                 </div>
               </li>
-              <li
-                *ngIf="
-                  order.delivery.deliveryService !== DeliveryService.SelfPickup
-                "
-                class="striped-list__item"
-              >
+              } @if ( order.delivery.deliveryService !==
+              DeliveryService.SelfPickup ) {
+              <li class="striped-list__item">
                 <div class="striped-list__item-key">Маркування (PDF)</div>
                 <div class="striped-list__item-value">
-                  <ng-container
-                    *ngIf="order.delivery.waybill?.url as url; else noWaybill"
+                  @if (order.delivery.waybill?.url; as url) {
+                  <p-button
+                    icon="pi pi-eye"
+                    label="Переглянути"
+                    data-cy="order-waybill-view-button"
+                    (click)="showWaybillViewDialogHandler()"
+                  ></p-button>
+                  <p-dialog
+                    [header]="
+                      'Товарно-транспортна накладна (замовлення №' +
+                      order.number +
+                      ')'
+                    "
+                    [(visible)]="showWaybillViewDialog"
+                    [modal]="true"
+                    [style]="{ width: '80vw' }"
+                    [draggable]="false"
+                    [resizable]="false"
                   >
-                    <p-button
-                      icon="pi pi-eye"
-                      label="Переглянути"
-                      data-cy="order-waybill-view-button"
-                      (click)="showWaybillViewDialogHandler()"
-                    ></p-button>
-                    <p-dialog
-                      [header]="
-                        'Товарно-транспортна накладна (замовлення №' +
-                        order.number +
-                        ')'
-                      "
-                      [(visible)]="showWaybillViewDialog"
-                      [modal]="true"
-                      [style]="{ width: '80vw' }"
-                      [draggable]="false"
-                      [resizable]="false"
-                    >
-                      <ngx-doc-viewer
-                        [url]="url"
-                        viewer="pdf"
-                        style="width: 100%; height: 70vh"
-                      ></ngx-doc-viewer>
-                    </p-dialog>
-                  </ng-container>
-                  <ng-template #noWaybill>
-                    <span>—</span>
-                  </ng-template>
+                    <ngx-doc-viewer
+                      [url]="url"
+                      viewer="pdf"
+                      style="width: 100%; height: 70vh"
+                    ></ngx-doc-viewer>
+                  </p-dialog>
+                  } @else {
+                  <span>—</span>
+                  }
                 </div>
               </li>
-              <li *ngIf="'update' | able : order" class="striped-list__item">
+              } @if ('update' | able : order) {
+              <li class="striped-list__item">
                 <div class="striped-list__item-key"></div>
                 <form
                   [formGroup]="updateWaybillForm"
-                  class="striped-list__item-value"
+                  class="striped-list__item-value flex flex-col gap-4"
                 >
-                  <div class="p-fluid">
-                    <div class="formgrid grid">
-                      <div class="field col-12">
-                        <label for="delivery-service">Служба доставки:</label>
-                        <p-dropdown
-                          id="delivery-service"
-                          [options]="deliveryServices"
-                          formControlName="deliveryService"
-                        >
-                          <ng-template let-selected pTemplate="selectedItem">
-                            <app-delivery-service-badge
-                              *ngIf="selected as deliveryService"
-                              mode="short"
-                              [withText]="true"
-                              [deliveryService]="deliveryService"
-                            ></app-delivery-service-badge>
-                          </ng-template>
-                          <ng-template let-option pTemplate="item">
-                            <app-delivery-service-badge
-                              *ngIf="option as deliveryService"
-                              mode="short"
-                              [withText]="true"
-                              [deliveryService]="deliveryService"
-                            ></app-delivery-service-badge>
-                          </ng-template>
-                        </p-dropdown>
-                        <app-form-control-error-message
-                          [formGroup]="updateWaybillForm"
-                          controlName="deliveryService"
-                          errorType="required"
-                          errorMessage="Це є обов'язковим полем"
-                        ></app-form-control-error-message>
-                      </div>
-                      <div *ngIf="!isSelfPickup" class="field col-12">
-                        <label for="tracking-id">Номер ТТН:</label>
-                        <input
-                          pInputText
-                          id="tracking-id"
-                          autocomplete="off"
-                          formControlName="trackingId"
-                        />
-                        <app-form-control-error-message
-                          [formGroup]="updateWaybillForm"
-                          controlName="trackingId"
-                          errorType="required"
-                          errorMessage="Потрібно ввести номер ТТН"
-                        ></app-form-control-error-message>
-                        <app-form-control-error-message
-                          [formGroup]="updateWaybillForm"
-                          controlName="trackingId"
-                          errorType="alphanumeric"
-                          errorMessage="Номер ТТН повинен містити тільки літери та цифри"
-                        ></app-form-control-error-message>
-                      </div>
-                    </div>
+                  <div class="flex flex-col gap-2">
+                    <label class="font-medium" for="delivery-service"
+                      >Служба доставки:</label
+                    >
+                    <p-select
+                      fluid
+                      id="delivery-service"
+                      [options]="deliveryServices"
+                      formControlName="deliveryService"
+                    >
+                      <ng-template let-selected pTemplate="selectedItem">
+                        @if (selected; as deliveryService) {
+                        <app-delivery-service-badge
+                          mode="short"
+                          [withText]="true"
+                          [deliveryService]="deliveryService"
+                        ></app-delivery-service-badge>
+                        }
+                      </ng-template>
+                      <ng-template let-option pTemplate="item">
+                        @if (option; as deliveryService) {
+                        <app-delivery-service-badge
+                          mode="short"
+                          [withText]="true"
+                          [deliveryService]="deliveryService"
+                        ></app-delivery-service-badge>
+                        }
+                      </ng-template>
+                    </p-select>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="deliveryService"
+                      errorType="required"
+                      errorMessage="Це є обов'язковим полем"
+                    ></app-form-control-error-message>
                   </div>
-                  <div *ngIf="!isSelfPickup" class="formgrid grid">
-                    <div class="field col-12">
-                      <label for="tracking-id">Файл маркування:</label>
-                      <p-fileUpload
-                        #waybillUpload
-                        data-cy="order-waybill-upload"
-                        [accept]="fileFormats"
-                        [customUpload]="true"
-                        [auto]="true"
-                        [maxFileSize]="1000000"
-                        [disabled]="(waybillSubmitting$ | async)!"
-                        (uploadHandler)="onFileUpload($event)"
-                      >
-                      </p-fileUpload>
-                      <app-form-control-error-message
-                        [formGroup]="updateWaybillForm"
-                        controlName="waybill"
-                        errorType="required"
-                        errorMessage="Це є обов'язковим полем"
-                      ></app-form-control-error-message>
-                    </div>
+                  @if (!isSelfPickup) {
+                  <div class="flex flex-col gap-2">
+                    <label class="font-medium" for="tracking-id"
+                      >Номер ТТН:</label
+                    >
+                    <input
+                      class="w-full"
+                      pInputText
+                      id="tracking-id"
+                      autocomplete="off"
+                      formControlName="trackingId"
+                    />
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="trackingId"
+                      errorType="required"
+                      errorMessage="Потрібно ввести номер ТТН"
+                    ></app-form-control-error-message>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="trackingId"
+                      errorType="alphanumeric"
+                      errorMessage="Номер ТТН повинен містити тільки літери та цифри"
+                    ></app-form-control-error-message>
                   </div>
+                  } @if (!isSelfPickup) {
+                  <div class="flex flex-col gap-2">
+                    <label class="font-medium" for="tracking-id"
+                      >Файл маркування:</label
+                    >
+                    <p-fileUpload
+                      class="w-full"
+                      #waybillUpload
+                      data-cy="order-waybill-upload"
+                      [accept]="fileFormats"
+                      [customUpload]="true"
+                      [auto]="true"
+                      [maxFileSize]="1000000"
+                      [disabled]="(waybillSubmitting$ | async)!"
+                      (uploadHandler)="onFileUpload($event)"
+                    >
+                    </p-fileUpload>
+                    <app-form-control-error-message
+                      [formGroup]="updateWaybillForm"
+                      controlName="waybill"
+                      errorType="required"
+                      errorMessage="Це є обов'язковим полем"
+                    ></app-form-control-error-message>
+                  </div>
+                  }
                   <button
                     (click)="updateWaybill()"
                     pButton
@@ -317,21 +321,23 @@
                   ></button>
                 </form>
               </li>
+              }
             </ul>
           </div>
         </div>
         <div>
           <h5>Товари</h5>
-          <app-order-view-item
-            *ngFor="let orderItem of order.items"
-            [orderItem]="orderItem"
-          ></app-order-view-item>
+          @for (orderItem of order.items; track orderItem) {
+          <app-order-view-item [orderItem]="orderItem"></app-order-view-item>
+          }
           <div class="flex">
-            <div class="w-12rem hidden md:block"></div>
-            <div class="md:pl-5 mt-2 flex-auto">
-              <div class="flex justify-content-end mb-4 pt-4">
-                <span class="text-xl text-900 font-bold text-3xl">Всього:</span>
-                <span class="text-xl text-900 font-bold text-3xl ml-5">
+            <div class="w-48 hidden md:block"></div>
+            <div class="md:pl-8 mt-2 flex-auto">
+              <div class="flex justify-end mb-6 pt-6">
+                <span class="text-xl text-surface-900 font-bold text-3xl"
+                  >Всього:</span
+                >
+                <span class="text-xl text-surface-900 font-bold text-3xl ml-8">
                   {{ order.total | currency }}
                 </span>
               </div>
@@ -342,70 +348,69 @@
     </div>
   </div>
 </div>
+}
 
 <p-dialog
   [(visible)]="showOrderStatusDialog"
   [style]="{ width: '600px' }"
   header="Статус замовлення"
   [modal]="true"
-  styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <form [formGroup]="updateOrderStatusForm" class="flex align-items-center">
-      <div class="formgrid w-full">
-        <div class="field">
-          <label for="delivery-service">Статус:</label>
-          <p-dropdown
-            formControlName="orderStatus"
-            placeholder="Статус"
-            data-cy="order-status-edit-dropdown"
-            [options]="orderStatuses"
-          >
-            <ng-template let-selected pTemplate="selectedItem">
-              <app-order-status-badge
-                [status]="selected.label"
-              ></app-order-status-badge>
-            </ng-template>
-            <ng-template let-option pTemplate="item">
-              <app-order-status-badge
-                [status]="option.label"
-              ></app-order-status-badge>
-            </ng-template>
-          </p-dropdown>
-          <app-form-control-error-message
-            [formGroup]="updateOrderStatusForm"
-            controlName="orderStatus"
-            errorType="required"
-            errorMessage="Це є обов'язковим полем"
-          ></app-form-control-error-message>
-        </div>
-        <div class="field">
-          <label for="delivery-service">Коментар:</label>
-          <textarea
-            formControlName="orderStatusComment"
-            pInputTextarea
-            placeholder="Коментар"
-            rows="5"
-            data-cy="order-status-edit-comment"
-          ></textarea>
-          <app-form-control-error-message
-            [formGroup]="updateOrderStatusForm"
-            controlName="orderStatusComment"
-            errorType="required"
-            errorMessage="Для зміни на даний статус потрібно вказати причину"
-          ></app-form-control-error-message>
-        </div>
+    <form [formGroup]="updateOrderStatusForm" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
+        <label class="font-medium" for="delivery-service">Статус:</label>
+        <p-select
+          fluid
+          formControlName="orderStatus"
+          placeholder="Статус"
+          data-cy="order-status-edit-dropdown"
+          [options]="orderStatuses"
+        >
+          <ng-template let-selected pTemplate="selectedItem">
+            <app-order-status-badge
+              [status]="selected.label"
+            ></app-order-status-badge>
+          </ng-template>
+          <ng-template let-option pTemplate="item">
+            <app-order-status-badge
+              [status]="option.label"
+            ></app-order-status-badge>
+          </ng-template>
+        </p-select>
+        <app-form-control-error-message
+          [formGroup]="updateOrderStatusForm"
+          controlName="orderStatus"
+          errorType="required"
+          errorMessage="Це є обов'язковим полем"
+        ></app-form-control-error-message>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="font-medium" for="delivery-service">Коментар:</label>
+        <textarea
+          class="w-full"
+          formControlName="orderStatusComment"
+          pInputTextarea
+          placeholder="Коментар"
+          rows="5"
+          data-cy="order-status-edit-comment"
+        ></textarea>
+        <app-form-control-error-message
+          [formGroup]="updateOrderStatusForm"
+          controlName="orderStatusComment"
+          errorType="required"
+          errorMessage="Для зміни на даний статус потрібно вказати причину"
+        ></app-form-control-error-message>
       </div>
     </form>
-    <div *ngIf="order$ | async as order" class="mt-5">
+    @if (order$ | async; as order) {
+    <div class="mt-8">
       <h5>Історія статусів:</h5>
       <div class="statuses-history">
-        <div
-          *ngFor="let status of order.statuses"
-          class="statuses-history__item"
-        >
-          <div class="flex align-items-center mb-1">
-            <span class="mr-3">
+        @for (status of order.statuses; track status) {
+        <div class="statuses-history__item">
+          <div class="flex items-center mb-1">
+            <span class="mr-4">
               <u>
                 {{ status.createdAt | date : 'short' }}
               </u>
@@ -414,15 +419,16 @@
               [status]="status.status"
             ></app-order-status-badge>
           </div>
-          <div *ngIf="status.comment">
-            <b>Коментар:</b> {{ status.comment }}
-          </div>
-          <div *ngIf="status.createdBy">
-            <b>Оновлено:</b> {{ status.createdBy.fullName }}
-          </div>
+          @if (status.comment) {
+          <div><b>Коментар:</b> {{ status.comment }}</div>
+          } @if (status.createdBy) {
+          <div><b>Оновлено:</b> {{ status.createdBy.fullName }}</div>
+          }
         </div>
+        }
       </div>
     </div>
+    }
   </ng-template>
 
   <ng-template pTemplate="footer">

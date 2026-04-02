@@ -6,6 +6,7 @@ import { Faq } from '@shared/interfaces/entities/faq.entity';
 import { FaqService } from '@shared/services/faq.service';
 
 @Component({
+  standalone: false,
   selector: 'app-faq',
   templateUrl: './faq.component.html',
   styleUrls: ['./faq.component.scss'],

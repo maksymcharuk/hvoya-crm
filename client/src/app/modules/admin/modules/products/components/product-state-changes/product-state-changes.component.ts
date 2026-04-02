@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-product-state-changes',
   templateUrl: './product-state-changes.component.html',
   styleUrls: ['./product-state-changes.component.scss']

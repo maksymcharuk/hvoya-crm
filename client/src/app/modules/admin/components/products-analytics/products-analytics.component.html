@@ -14,31 +14,32 @@
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(rows)">
-      <tr>
-        <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
-      </tr>
-    </ng-container>
+    @for (_ of [].constructor(rows); track $index) {
+    <tr>
+      <td><p-skeleton height="16px" width="200px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="80px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="120px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="100px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="90px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="110px"></p-skeleton></td>
+    </tr>
+    }
   </ng-template>
   <ng-template pTemplate="caption">
-    <div class="table-header flex justify-content-between align-items-center">
+    <div
+      class="table-header flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+    >
       <h5 class="m-0">Аналітика продуктів</h5>
-      <form class="p-fluid formgrid grid" [formGroup]="filtersForm">
-        <div class="col">
-          <div class="field">
-            <label>Період:</label>
-            <p-calendar
-              formControlName="range"
-              selectionMode="range"
-              appendTo="body"
-              placeholder="Період"
-            ></p-calendar>
-          </div>
+      <form class="w-full sm:w-auto" [formGroup]="filtersForm">
+        <div class="flex flex-col gap-2 sm:w-72">
+          <label class="font-medium">Період</label>
+          <p-datepicker
+            class="w-full"
+            formControlName="range"
+            selectionMode="range"
+            appendTo="body"
+            placeholder="Період"
+          ></p-datepicker>
         </div>
       </form>
     </div>
@@ -46,37 +47,37 @@
   <ng-template pTemplate="header">
     <tr>
       <th pSortableColumn="productName">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Назва продукту
           <p-sortIcon field="productName"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="quantitySold">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           К-ть продано
           <p-sortIcon field="quantitySold"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="totalRevenue">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Загальний дохід
           <p-sortIcon field="totalRevenue"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="uniqueDropshippersCount">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Дропшипери
           <p-sortIcon field="uniqueDropshippersCount"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="returnRate">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           % повернень
           <p-sortIcon field="returnRate"></p-sortIcon>
         </div>
       </th>
       <th pSortableColumn="averagePrice">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Середня ціна
           <p-sortIcon field="averagePrice"></p-sortIcon>
         </div>
@@ -86,30 +87,12 @@
   <ng-template pTemplate="body" let-product>
     @if (!(loading$ | async)) {
     <tr>
-      <td>
-        <span class="p-column-title">Назва продукту</span>
-        {{ product.productName }}
-      </td>
-      <td>
-        <span class="p-column-title">К-ть продано</span>
-        {{ product.quantitySold }}
-      </td>
-      <td>
-        <span class="p-column-title">Загальний дохід</span>
-        {{ formatCurrency(product.totalRevenue) }}
-      </td>
-      <td>
-        <span class="p-column-title">Дропшипери</span>
-        {{ product.uniqueDropshippersCount }}
-      </td>
-      <td>
-        <span class="p-column-title">% повернень</span>
-        {{ formatPercent(product.returnRate) }}
-      </td>
-      <td>
-        <span class="p-column-title">Середня ціна</span>
-        {{ formatCurrency(product.averagePrice) }}
-      </td>
+      <td>{{ product.productName }}</td>
+      <td>{{ product.quantitySold }}</td>
+      <td>{{ formatCurrency(product.totalRevenue) }}</td>
+      <td>{{ product.uniqueDropshippersCount }}</td>
+      <td>{{ formatPercent(product.returnRate) }}</td>
+      <td>{{ formatCurrency(product.averagePrice) }}</td>
     </tr>
     }
   </ng-template>

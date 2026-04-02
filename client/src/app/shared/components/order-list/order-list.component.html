@@ -13,38 +13,40 @@
   [paginator]="true"
   [sortOrder]="-1"
   [scrollable]="true"
-  [scrollHeight]="'calc(100vh - 273px)'"
+  [scrollHeight]="'calc(100vh - 17rem)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(rows)">
-      <tr>
-        <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
-        <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
-        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        <ng-container *ngIf="adminView">
-          <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
-        </ng-container>
-      </tr>
-    </ng-container>
+    @for (_ of [].constructor(rows); track $index) {
+    <tr>
+      <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
+      <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+      <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      @if (adminView) {
+      <td><p-skeleton height="16px" width="55px"></p-skeleton></td>
+      }
+    </tr>
+    }
   </ng-template>
   <ng-template pTemplate="caption">
-    <div class="table-header flex justify-content-between align-items-center">
+    <div class="table-header flex justify-between items-center">
       Замовлення
-      <form [formGroup]="searchForm" class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input
-          pInputText
-          formControlName="search"
-          type="text"
-          placeholder="№ замовлення або ТТН"
-        />
+      <form [formGroup]="searchForm">
+        <p-iconField iconPosition="left">
+          <p-inputIcon styleClass="pi pi-search" />
+          <input
+            pInputText
+            formControlName="search"
+            type="text"
+            placeholder="№ замовлення або ТТН"
+          />
+        </p-iconField>
       </form>
     </div>
   </ng-template>
@@ -54,7 +56,7 @@
       <th style="width: 1%"></th>
       <th>К-ть товарів</th>
       <th pSortableColumn="createdAt">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Дата
           <p-sortIcon field="createdAt"></p-sortIcon>
         </div>
@@ -63,19 +65,17 @@
       <th>Статус доставки</th>
       <th>Служба доставки</th>
       <th>
-        <div class="flex justify-content-between align-items-center">
-          Номер ТТН
-        </div>
+        <div class="flex justify-between items-center">Номер ТТН</div>
       </th>
       <th pSortableColumn="total">
-        <div class="flex justify-content-between align-items-center">
+        <div class="flex justify-between items-center">
           Сума
           <p-sortIcon field="total"></p-sortIcon>
         </div>
       </th>
-      <ng-container *ngIf="adminView">
-        <th>ПІБ</th>
-      </ng-container>
+      @if (adminView) {
+      <th>ПІБ</th>
+      }
     </tr>
     <tr>
       <th></th>
@@ -84,20 +84,21 @@
       <th>
         <p-columnFilter type="date" field="createdAt" [showMenu]="false">
           <ng-template pTemplate="filter" let-filter="filterCallback">
-            <p-calendar
+            <p-datepicker
+              class="w-30"
               (onSelect)="filter($event)"
               (onClear)="filter($event)"
               appendTo="body"
               placeholder="Дата"
               [showClear]="true"
-            ></p-calendar>
+            ></p-datepicker>
           </ng-template>
         </p-columnFilter>
       </th>
       <th>
         <p-columnFilter field="status" [showMenu]="false" class="ml-auto">
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
+            <p-select
               [ngModel]="value"
               [options]="orderStatuses"
               (onChange)="filter($event.value)"
@@ -111,12 +112,13 @@
                 ></app-order-status-badge>
               </ng-template>
               <ng-template pTemplate="selectedItem">
+                @if (value) {
                 <app-order-status-badge
-                  *ngIf="value"
                   [status]="value"
                 ></app-order-status-badge>
+                }
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
@@ -127,7 +129,7 @@
           class="ml-auto"
         >
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
+            <p-select
               [ngModel]="value"
               [options]="orderDeliveryStatuses"
               (onChange)="filter($event.value)"
@@ -141,12 +143,13 @@
                 ></app-order-delivery-status-badge>
               </ng-template>
               <ng-template pTemplate="selectedItem">
+                @if (value) {
                 <app-order-delivery-status-badge
-                  *ngIf="value"
                   [status]="value"
                 ></app-order-delivery-status-badge>
+                }
               </ng-template>
-            </p-dropdown>
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
@@ -157,7 +160,7 @@
           class="ml-auto"
         >
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-dropdown
+            <p-select
               [ngModel]="value"
               [options]="orderDeliveryServices"
               (onChange)="filter($event.value)"
@@ -173,20 +176,22 @@
                 ></app-delivery-service-badge>
               </ng-template>
               <ng-template pTemplate="selectedItem">
+                @if (value) {
                 <app-delivery-service-badge
-                  *ngIf="value"
                   mode="short"
                   [withText]="true"
                   [deliveryService]="value"
-                ></app-delivery-service-badge
-              ></ng-template>
-            </p-dropdown>
+                ></app-delivery-service-badge>
+                }</ng-template
+              >
+            </p-select>
           </ng-template>
         </p-columnFilter>
       </th>
       <th></th>
       <th></th>
-      <th *ngIf="adminView">
+      @if (adminView) {
+      <th>
         <p-columnFilter [showMenu]="false" class="ml-auto">
           <ng-template pTemplate="filter" let-value>
             <p-multiSelect
@@ -205,6 +210,7 @@
           </ng-template>
         </p-columnFilter>
       </th>
+      }
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-order let-notification>

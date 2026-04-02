@@ -1,26 +1,31 @@
 <form
-  class="p-fluid"
+  class="flex flex-col gap-4"
   [formGroup]="updateProfileForm"
   (ngSubmit)="onSubmit(updateProfileForm.value)"
 >
   <h5>Персональні дані</h5>
 
-  <div class="field">
-    <label for="phoneNumber">Номер договору:</label>
-    <span class="p-input-icon-right">
+  <div class="flex flex-col gap-1">
+    <label for="account-number">Номер договору:</label>
+    <p-iconField iconPosition="right" class="w-full">
+      <p-inputIcon
+        [styleClass]="accountNumberCopied ? 'pi pi-check' : 'pi pi-copy'"
+      />
       <input
+        id="account-number"
+        class="w-full"
         [value]="accountNumber"
         type="text"
         pInputText
         readonly
         (click)="copyAccountNumber()"
       />
-      <i [ngClass]="accountNumberCopied ? 'pi pi-check' : 'pi pi-copy'"></i>
-    </span>
+    </p-iconField>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="phoneNumber">Номер телефону:</label>
     <p-inputMask
+      class="w-full"
       name="phoneNumber"
       inputId="phoneNumber"
       formControlName="phoneNumber"
@@ -39,9 +44,10 @@
     >
     </app-form-control-error-message>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="lastName">Прізвище:</label>
     <input
+      class="w-full"
       id="lastName"
       name="lastName"
       formControlName="lastName"
@@ -65,9 +71,10 @@
     >
     </app-form-control-error-message>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="firstName">Ім'я:</label>
     <input
+      class="w-full"
       id="firstName"
       name="firstName"
       formControlName="firstName"
@@ -91,9 +98,10 @@
     >
     </app-form-control-error-message>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="middleName">По батькові:</label>
     <input
+      class="w-full"
       id="middleName"
       name="middleName"
       formControlName="middleName"
@@ -117,7 +125,7 @@
     >
     </app-form-control-error-message>
   </div>
-  <div class="field">
+  <div class="flex flex-col gap-1">
     <label for="website">
       Веб-сайт або сторінка у соц. мережі
       <i
@@ -128,6 +136,7 @@
       :
     </label>
     <input
+      class="w-full"
       id="website"
       name="website"
       formControlName="website"

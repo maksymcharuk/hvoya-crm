@@ -1,147 +1,139 @@
 <div class="cart-widget widget-width">
   <div
-    class="text-900 text-xl pb-3 border-bottom-1 surface-border flex justify-content-between"
+    class="text-surface-900 text-xl pb-4 border-b border-surface flex justify-between"
   >
     <span>
-      Баланс
-      <span *ngIf="profile$ | async as profile" class="text-600 text-base">
+      Баланс @if (profile$ | async; as profile) {
+      <span class="text-surface-600 text-base">
         (Номер договору: {{ profile.accountNumber }})
       </span>
+      }
     </span>
+    @if (!environment.production) {
     <p-button
-      *ngIf="!environment.production"
-      styleClass="p-button-raised p-button-text p-button-secondary p-button-sm"
+      styleClass="p-button-raised p-button-text p-button-sm"
+      severity="secondary"
       label="Тестове поповнення"
       (onClick)="addFundsTest()"
     ></p-button>
+    }
   </div>
-  <ng-container *ngIf="balance$ | async as balance; else skeleton">
-    <div class="grid mt-2">
-      <div class="col-12">
-        <p-button
-          label="Поповнити баланс"
-          (onClick)="redirectToBank()"
-          [pTooltip]="topUpTooltipMessage"
-          tooltipPosition="bottom"
-        ></p-button>
-        <p-button
-          [routerLink]="['/dashboard/requests/create']"
-          [queryParams]="{
-            requestType: RequestType.FundsWithdrawal
-          }"
-          styleClass="ml-4 p-button-danger"
-          tooltipPosition="bottom"
-        >
-          <app-request-type-badge
-            [type]="RequestType.FundsWithdrawal"
-          ></app-request-type-badge>
-        </p-button>
-      </div>
-      <div class="col-12">
-        <p-table
-          class="block"
-          [value]="(paymentTransactions$ | async) || []"
-          [rows]="rows"
-          [loading]="transactionsLoading"
-          [rowHover]="true"
-        >
-          <ng-template pTemplate="loadingicon"></ng-template>
-          <ng-template pTemplate="loadingbody">
-            <ng-container *ngFor="let _ of [].constructor(rows)">
-              <tr>
-                <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
-                <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
-                <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
-                <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
-              </tr>
-            </ng-container>
-          </ng-template>
-          <ng-template pTemplate="header">
-            <tr
-              class="p-selectable-row"
-              [routerLink]="[
-                '/',
-                'dashboard',
-                'balance',
-                'transaction-history'
-              ]"
-            >
-              <th>Сума</th>
-              <th>Статус</th>
-              <th>Дата</th>
-              <th class="w-1"></th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-transaction>
-            <tr>
-              <td>
-                <div
-                  data-cy="transaction-amount"
-                  [class.text-green-600]="+transaction.amount > 0"
-                  [class.text-red-600]="+transaction.amount < 0"
-                  [class.text-yellow-600]="
-                    transaction.status === TransactionStatus.Pending
-                  "
-                >
-                  {{ transaction.amount | currency }}
-                </div>
-                <small
-                  *ngIf="transaction.status === TransactionStatus.Success"
-                  class="text-600"
-                >
-                  {{ transaction.netBalance | currency }}
-                </small>
-              </td>
-              <td>{{ transaction.status | transactionStatus }}</td>
-              <td>{{ transaction.updatedAt | date : 'short' }}</td>
-              <td
-                *ngIf="
-                  transaction.order ||
-                    transaction.orderReturnRequest ||
-                    transaction.fundsWithdrawalRequest;
-                  else noEntity
+  @if (balance$ | async; as balance) {
+  <div class="grid grid-cols-12 gap-4 mt-2">
+    <div class="col-span-12">
+      <p-button
+        label="Поповнити баланс"
+        (onClick)="redirectToBank()"
+        [pTooltip]="topUpTooltipMessage"
+        tooltipPosition="bottom"
+      ></p-button>
+      <p-button
+        [routerLink]="['/dashboard/requests/create']"
+        [queryParams]="{
+          requestType: RequestType.FundsWithdrawal
+        }"
+        styleClass="ml-6"
+        severity="danger"
+        tooltipPosition="bottom"
+      >
+        <app-request-type-badge
+          [type]="RequestType.FundsWithdrawal"
+        ></app-request-type-badge>
+      </p-button>
+    </div>
+    <div class="col-span-12">
+      <p-table
+        class="block"
+        [value]="(paymentTransactions$ | async) || []"
+        [rows]="rows"
+        [loading]="transactionsLoading"
+        [rowHover]="true"
+      >
+        <ng-template pTemplate="loadingicon"></ng-template>
+        <ng-template pTemplate="loadingbody">
+          @for (_ of [].constructor(rows); track $index) {
+          <tr>
+            <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
+            <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+            <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+            <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+          </tr>
+          }
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr
+            class="p-selectable-row"
+            [routerLink]="['/', 'dashboard', 'balance', 'transaction-history']"
+          >
+            <th>Сума</th>
+            <th>Статус</th>
+            <th>Дата</th>
+            <th class="w-1/12"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-transaction>
+          <tr>
+            <td>
+              <div
+                data-cy="transaction-amount"
+                [class.text-green-600]="+transaction.amount > 0"
+                [class.text-red-600]="+transaction.amount < 0"
+                [class.text-yellow-600]="
+                  transaction.status === TransactionStatus.Pending
                 "
-                class="text-center"
               >
-                <button
-                  pButton
-                  pTooltip="Натистіть для перегляду замовлення або запиту"
-                  tooltipPosition="left"
-                  [icon]="transaction | transactionIcon"
-                  (click)="navigateToEntity(transaction)"
-                ></button>
-              </td>
-              <ng-template #noEntity><td></td></ng-template>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage" let-columns>
-            <tr>
-              <td [attr.colspan]="4" class="text-center">Транзакції вісутні</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
-      <div class="col-12 flex justify-content-end">
-        <p-button
-          data-cy="transactions-history-button"
-          label="Історія транзакцій"
-          [routerLink]="['/', 'dashboard', 'balance', 'transaction-history']"
-        ></p-button>
-      </div>
+                {{ transaction.amount | currency }}
+              </div>
+              @if (transaction.status === TransactionStatus.Success) {
+              <small class="text-surface-600">
+                {{ transaction.netBalance | currency }}
+              </small>
+              }
+            </td>
+            <td>{{ transaction.status | transactionStatus }}</td>
+            <td>{{ transaction.updatedAt | date : 'short' }}</td>
+            @if ( transaction.order || transaction.orderReturnRequest ||
+            transaction.fundsWithdrawalRequest) {
+            <td class="text-center">
+              <button
+                pButton
+                pTooltip="Натистіть для перегляду замовлення або запиту"
+                tooltipPosition="left"
+                [icon]="transaction | transactionIcon"
+                (click)="navigateToEntity(transaction)"
+              ></button>
+            </td>
+            } @else {
+            <td></td>
+            }
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+            <td [attr.colspan]="4" class="text-center">Транзакції вісутні</td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
-  </ng-container>
-</div>
-
-<ng-template #skeleton>
-  <div class="py-3 grid">
-    <div class="col-6 pr-2 pb-0">
+    <div class="col-span-12 flex justify-end">
+      <p-button
+        data-cy="transactions-history-button"
+        label="Історія транзакцій"
+        [routerLink]="['/', 'dashboard', 'balance', 'transaction-history']"
+      ></p-button>
+    </div>
+  </div>
+  } @else {
+  <div class="py-4 grid grid-cols-12 gap-4">
+    <div class="col-span-6 pr-2 pb-0">
       <p-skeleton height="39px"></p-skeleton>
     </div>
-    <div class="col-6 pl-2 pb-0">
+    <div class="col-span-6 pl-2 pb-0">
       <p-skeleton height="39px"></p-skeleton>
     </div>
   </div>
-  <div class="py-3">
+  <div class="py-4">
     <p-skeleton height="6rem" width="30rem"></p-skeleton>
   </div>
-</ng-template>
+  }
+</div>

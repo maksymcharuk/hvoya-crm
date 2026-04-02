@@ -11,7 +11,7 @@ import { PanelModule } from 'primeng/panel';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -30,7 +30,7 @@ import { PostsComponent } from './posts.component';
     ButtonModule,
     DialogModule,
     EditorModule,
-    AbilityModule,
+    AblePipe,
     CheckboxModule,
     PaginatorModule,
     ConfirmDialogModule,

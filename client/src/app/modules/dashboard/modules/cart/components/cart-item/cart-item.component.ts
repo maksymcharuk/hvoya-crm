@@ -20,6 +20,7 @@ import { CartItem } from '@shared/interfaces/entities/cart.entity';
 import { CartService } from '../../services/cart/cart.service';
 
 @Component({
+  standalone: false,
   selector: 'app-cart-item',
   templateUrl: './cart-item.component.html',
   styleUrls: ['./cart-item.component.scss'],

@@ -11,6 +11,7 @@ import {
 import { RequestItemUIEntity } from '@shared/interfaces/ui-entities/request-item.ui-entity';
 
 @Component({
+  standalone: false,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

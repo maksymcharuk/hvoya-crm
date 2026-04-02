@@ -8,6 +8,7 @@ import { AdminAnalyticsService } from '@shared/services/admin-analytics.service'
 import { OrdersFunnel, OrdersSummary } from '@shared/interfaces/analystics/orders-analytics.interface';
 
 @Component({
+  standalone: false,
   selector: 'app-orders-overview',
   templateUrl: './orders-overview.component.html',
   styleUrls: ['./orders-overview.component.scss'],

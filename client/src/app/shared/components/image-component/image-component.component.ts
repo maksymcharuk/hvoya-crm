@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-image-component',
   templateUrl: './image-component.component.html',
   styleUrls: ['./image-component.component.scss'],

@@ -1,52 +1,49 @@
 <td>
-  <div class="flex align-items-center">
+  <div class="flex items-center">
     <span data-cy="order-list-item-id">{{ order.number }}</span>
-    <i
-      *ngIf="showOrderNotification(order, notifications$ | async)"
-      class="pi pi-circle-fill text-green-600 ml-2"
-    ></i>
+    @if (showOrderNotification(order, notifications$ | async)) {
+    <i class="pi pi-circle-fill text-green-600 ml-2"></i>
+    }
   </div>
 </td>
 <td>
   <div class="flex">
+    @for (image of getPreviewThumbs(order); track image; let first = $first) {
     <img
-      *ngFor="let image of getPreviewThumbs(order); let first = first"
       [src]="image.url"
       [ngClass]="{ '-ml-4': !first }"
       [alt]="image.alt"
       [title]="image.alt"
-      class="w-3rem h-3rem border-circle border border-1 border-200"
+      class="w-12 h-12 rounded-full border border border-surface-200 max-w-none"
     />
+    }
   </div>
 </td>
 <td>{{ getOrderItemsNumber(order) }}</td>
 <td>
-  <span class="p-column-title">Дата</span>
   {{ order.createdAt | date : 'short' }}
 </td>
 <td>
-  <span class="p-column-title">Статус</span>
   <app-order-status-badge
     [status]="order.currentStatus"
   ></app-order-status-badge>
 </td>
 <td>
-  <span class="p-column-title">Статус доставки</span>
-  <div class="flex align-items-center">
+  <div class="flex items-center">
     <app-order-delivery-status-badge
       [status]="order.delivery.status"
     ></app-order-delivery-status-badge>
+    @if (getDeliveryWarningData(order); as data) {
     <i
-      *ngIf="getDeliveryWarningData(order) as data"
-      class="pi pi-exclamation-triangle ml-3"
+      class="pi pi-exclamation-triangle ml-4"
       [ngClass]="data.iconClass"
       [pTooltip]="data.text"
       tooltipPosition="right"
     ></i>
+    }
   </div>
 </td>
 <td>
-  <span class="p-column-title">Служба доставки</span>
   <app-delivery-service-badge
     mode="short"
     [withText]="true"
@@ -54,16 +51,13 @@
   ></app-delivery-service-badge>
 </td>
 <td>
-  <span class="p-column-title" data-cy="order-list-item-amount">Номер ТТН</span>
   {{ order.delivery.trackingId }}
 </td>
 <td>
-  <span class="p-column-title" data-cy="order-list-item-amount">Сума</span>
   {{ order.total | currency }}
 </td>
-<ng-container *ngIf="adminView">
-  <td>
-    <span class="p-column-title">ПІБ</span>
-    {{ order.customer.fullName }}
-  </td>
-</ng-container>
+@if (adminView) {
+<td>
+  {{ order.customer.fullName }}
+</td>
+}

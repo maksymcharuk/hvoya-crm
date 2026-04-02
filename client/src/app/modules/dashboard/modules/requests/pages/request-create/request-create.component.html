@@ -1,34 +1,40 @@
 <div class="card">
-  <div class="p-fluid formgrid grid">
-    <div class="field col-12">
-      <label for="type">Тип запиту:</label>
-      <p-dropdown
-        id="type"
-        [options]="requestTypes"
-        [(ngModel)]="selectedType"
-        placeholder="Виберіть тип запиту"
-      >
-        <ng-template pTemplate="selectedItem">
-          <app-request-type-badge
-            [type]="selectedType"
-          ></app-request-type-badge>
-        </ng-template>
-        <ng-template let-item pTemplate="item">
-          <app-request-type-badge [type]="item.label"></app-request-type-badge>
-        </ng-template>
-      </p-dropdown>
-    </div>
-  </div>
-  <div *ngIf="selectedType" class="grid">
-    <div class="col-12">
-      <div [ngSwitch]="selectedType">
-        <app-return-request-create *ngSwitchCase="requestType.Return">
-        </app-return-request-create>
-        <app-funds-withdrawal-request-create
-          *ngSwitchCase="requestType.FundsWithdrawal"
+  <div class="flex flex-col gap-4">
+    <div class="grid grid-cols-12 gap-4">
+      <div class="col-span-12 flex flex-col gap-1">
+        <label for="type">Тип запиту:</label>
+        <p-select
+          class="w-full"
+          id="type"
+          [options]="requestTypes"
+          [(ngModel)]="selectedType"
+          placeholder="Виберіть тип запиту"
         >
-        </app-funds-withdrawal-request-create>
+          <ng-template pTemplate="selectedItem">
+            <app-request-type-badge
+              [type]="selectedType"
+            ></app-request-type-badge>
+          </ng-template>
+          <ng-template let-item pTemplate="item">
+            <app-request-type-badge
+              [type]="item.label"
+            ></app-request-type-badge>
+          </ng-template>
+        </p-select>
       </div>
     </div>
+    @if (selectedType) {
+    <div class="grid grid-cols-12 gap-4">
+      <div class="col-span-12">
+        <div>
+          @switch (selectedType) { @case (requestType.Return) {
+          <app-return-request-create />
+          } @case (requestType.FundsWithdrawal) {
+          <app-funds-withdrawal-request-create />
+          } }
+        </div>
+      </div>
+    </div>
+    }
   </div>
 </div>

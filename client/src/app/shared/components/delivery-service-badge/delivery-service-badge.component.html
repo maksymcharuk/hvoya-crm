@@ -8,7 +8,9 @@
     [src]="deliveryServiceLogo"
     [alt]="deliveryService | deliveryServiceName"
   />
-  <span *ngIf="withText" class="delivery-service-badge__text">{{
+  @if (withText) {
+  <span class="delivery-service-badge__text">{{
     deliveryService | deliveryServiceName
   }}</span>
+  }
 </span>

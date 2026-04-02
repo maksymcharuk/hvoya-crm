@@ -1,8 +1,9 @@
-<div *ngIf="product$ | async as product" class="grid">
-  <div class="col-12">
+@if (product$ | async; as product) {
+<div class="grid grid-cols-12 gap-4">
+  <div class="col-span-12">
     <p-button routerLink=".." label="Назад" icon="pi pi-arrow-left"></p-button>
   </div>
-  <div class="col-12">
+  <div class="col-span-12">
     <div class="card">
       <app-product-view
         [product]="product"
@@ -12,3 +13,4 @@
     </div>
   </div>
 </div>
+}

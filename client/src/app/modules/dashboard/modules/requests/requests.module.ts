@@ -1,18 +1,18 @@
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { SkeletonModule } from 'primeng/skeleton';
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AbilityModule } from '@casl/angular';
+import { AblePipe } from '@casl/angular';
 
 import { SharedModule } from '@shared/shared.module';
 
@@ -37,16 +37,16 @@ import { RequestsRoutingModule } from './requests-routing.module';
     CommonModule,
     SharedModule,
     ButtonModule,
-    AbilityModule,
+    AblePipe,
     RequestsRoutingModule,
-    DropdownModule,
+    SelectModule,
     FormsModule,
     ReactiveFormsModule,
     InputNumberModule,
     SkeletonModule,
     FileUploadModule,
     InputTextModule,
-    InputTextareaModule,
+    TextareaModule,
     NgxDocViewerModule,
     DialogModule,
     ImageModule,

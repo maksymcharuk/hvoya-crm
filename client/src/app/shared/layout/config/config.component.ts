@@ -4,6 +4,7 @@ import { LayoutService } from '../services/layout.service';
 import { MenuService } from '../services/menu.service';
 
 @Component({
+  standalone: false,
   selector: 'app-config',
   templateUrl: './config.component.html',
 })

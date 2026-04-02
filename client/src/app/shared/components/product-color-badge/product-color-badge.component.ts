@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ProductColor } from '@shared/interfaces/entities/product.entity';
 
 @Component({
+  standalone: false,
   selector: 'app-product-color-badge',
   templateUrl: './product-color-badge.component.html',
   styleUrls: ['./product-color-badge.component.scss'],

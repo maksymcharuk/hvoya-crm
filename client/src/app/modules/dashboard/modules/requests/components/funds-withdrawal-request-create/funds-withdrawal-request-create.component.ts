@@ -17,6 +17,7 @@ import { UserService } from '@shared/services/user.service';
 import { UserBalanceService } from '../../../balance/services/user-balance.service';
 
 @Component({
+  standalone: false,
   selector: 'app-funds-withdrawal-request-create',
   templateUrl: './funds-withdrawal-request-create.component.html',
   styleUrls: ['./funds-withdrawal-request-create.component.scss'],

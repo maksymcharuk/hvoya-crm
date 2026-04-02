@@ -12,6 +12,7 @@ import { NotificationsService } from '@shared/services/notifications.service';
 import { WebSocketGatewayService } from '@shared/services/websocket-gateway.service';
 
 @Component({
+  standalone: false,
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],

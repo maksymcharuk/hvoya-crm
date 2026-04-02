@@ -10,6 +10,7 @@ import { NotificationsService } from '@shared/services/notifications.service';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
+  standalone: false,
   selector: 'app-notifications',
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],

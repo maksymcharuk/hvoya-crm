@@ -32,6 +32,7 @@ import { ProductSizesService } from '../../../modules/admin/modules/products/ser
 import { CartService } from '../../../modules/dashboard/modules/cart/services/cart/cart.service';
 
 @Component({
+  standalone: false,
   selector: 'app-product-base-list',
   templateUrl: './product-base-list.component.html',
   styleUrls: ['./product-base-list.component.scss'],

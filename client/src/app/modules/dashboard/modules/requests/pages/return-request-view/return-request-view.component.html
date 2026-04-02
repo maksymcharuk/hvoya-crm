@@ -1,58 +1,63 @@
-<div class="request-view grid" data-cy="request-view-page">
-  <div class="col-12">
+<div class="request-view grid grid-cols-12 gap-4" data-cy="request-view-page">
+  <div class="col-span-12">
     <div class="card request-view__content">
-      <div *ngIf="request$ | async as request">
-        <h4 class="flex align-items-center">
+      @if (request$ | async; as request) {
+      <div>
+        <h4 class="flex items-center">
           <span>Повернення №{{ request.number }}</span>
         </h4>
-        <div class="my-5">
+        <div class="my-8">
           <h5>Товари</h5>
           <app-return-request-item-list
             [orderReturnRequest]="request.returnRequest!"
           ></app-return-request-item-list>
-          <div class="flex justify-content-end my-4">
+          <div class="flex justify-end my-6">
             <table>
-              <tr *ngIf="request.returnRequest!.deduction > 0">
+              @if (request.returnRequest!.deduction > 0) {
+              <tr>
                 <td>Відрахування:</td>
-                <td class="pl-5">
+                <td class="pl-8">
                   -{{ request.returnRequest!.deduction | currency }}
                 </td>
               </tr>
+              }
               <tr>
-                <td class="text-xl text-900 font-bold text-3xl">Всього:</td>
-                <td class="text-xl text-900 font-bold text-3xl pl-5">
+                <td class="text-xl text-surface-900 font-bold text-3xl">
+                  Всього:
+                </td>
+                <td class="text-xl text-surface-900 font-bold text-3xl pl-8">
                   {{ request.returnRequest!.total | currency }}
                 </td>
               </tr>
             </table>
           </div>
         </div>
-        <div
-          *ngIf="request.managerComment || request.managerImages.length !== 0"
-          class="my-5"
-        >
+        @if (request.managerComment || request.managerImages.length !== 0) {
+        <div class="my-8">
           <ul class="striped-list">
             <li class="striped-list__item">
-              <div class="striped-list__item-key align-self-baseline">
+              <div class="striped-list__item-key self-baseline">
                 Коментар менеджера
               </div>
               <div class="striped-list__item-value">
                 <div class="mb-2">{{ request.managerComment }}</div>
                 <div class="flex">
+                  @for (image of request.managerImages; track image) {
                   <p-image
-                    *ngFor="let image of request.managerImages"
                     class="mr-2"
                     [src]="image.url"
                     [preview]="true"
                     width="80"
                   ></p-image>
+                  }
                 </div>
               </div>
             </li>
           </ul>
         </div>
-        <div class="grid">
-          <div class="col-12 xl:col-6">
+        }
+        <div class="grid grid-cols-12 gap-4">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані запиту</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
@@ -83,37 +88,37 @@
                 </div>
               </li>
               <li class="striped-list__item">
-                <div class="striped-list__item-key align-self-baseline">
+                <div class="striped-list__item-key self-baseline">
                   Коментар до запиту
                 </div>
                 <div class="striped-list__item-value">
                   <div class="mb-2">{{ request.customerComment }}</div>
                   <div class="flex">
+                    @for (image of request.customerImages; track image) {
                     <p-image
-                      *ngFor="let image of request.customerImages"
                       class="mr-2"
                       [src]="image.url"
                       [preview]="true"
                       width="80"
                     ></p-image>
+                    }
                   </div>
                 </div>
               </li>
             </ul>
           </div>
-          <div class="col-12 xl:col-6">
+          <div class="col-span-12 xl:col-span-6">
             <h5>Дані доставки</h5>
             <ul class="striped-list">
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Служба доставки</div>
                 <div class="striped-list__item-value">
+                  @if ( request.returnRequest!.delivery .deliveryService; as
+                  deliveryService ) {
                   <app-delivery-service-badge
-                    *ngIf="
-                      request.returnRequest!.delivery
-                        .deliveryService as deliveryService
-                    "
                     [deliveryService]="deliveryService"
                   ></app-delivery-service-badge>
+                  }
                 </div>
               </li>
               <li class="striped-list__item">
@@ -124,134 +129,127 @@
                   ></app-return-request-delivery-status-badge>
                 </div>
               </li>
-              <li
-                *ngIf="!('update' | able : request.returnRequest)"
-                class="striped-list__item"
-              >
+              @if (!('update' | able : request.returnRequest)) {
+              <li class="striped-list__item">
                 <div class="striped-list__item-key">Номер ТТН</div>
                 <div class="striped-list__item-value">
                   {{ request.returnRequest!.delivery.trackingId }}
                 </div>
               </li>
+              }
               <li class="striped-list__item">
                 <div class="striped-list__item-key">Експрес-накладна</div>
                 <div class="striped-list__item-value">
-                  <ng-container
-                    *ngIf="
-                      request.returnRequest!.delivery.waybill?.url as url;
-                      else noWaybill
+                  @if ( request.returnRequest!.delivery.waybill?.url; as url) {
+                  <p-button
+                    icon="pi pi-eye"
+                    label="Переглянути"
+                    data-cy="order-waybill-view-button"
+                    (click)="showWaybillViewDialogHandler()"
+                  ></p-button>
+                  <p-dialog
+                    [header]="
+                      'Товарно-транспортна накладна (запит №' +
+                      request.number +
+                      ')'
                     "
+                    [(visible)]="showWaybillViewDialog"
+                    [modal]="true"
+                    [style]="{ width: '80vw' }"
+                    [draggable]="false"
+                    [resizable]="false"
                   >
-                    <p-button
-                      icon="pi pi-eye"
-                      label="Переглянути"
-                      data-cy="order-waybill-view-button"
-                      (click)="showWaybillViewDialogHandler()"
-                    ></p-button>
-                    <p-dialog
-                      [header]="
-                        'Товарно-транспортна накладна (запит №' +
-                        request.number +
-                        ')'
-                      "
-                      [(visible)]="showWaybillViewDialog"
-                      [modal]="true"
-                      [style]="{ width: '80vw' }"
-                      [draggable]="false"
-                      [resizable]="false"
-                    >
-                      <ngx-doc-viewer
-                        [url]="url"
-                        viewer="pdf"
-                        style="width: 100%; height: 70vh"
-                      ></ngx-doc-viewer>
-                    </p-dialog>
-                  </ng-container>
-                  <ng-template #noWaybill>
-                    <span>—</span>
-                  </ng-template>
+                    <ngx-doc-viewer
+                      [url]="url"
+                      viewer="pdf"
+                      style="width: 100%; height: 70vh"
+                    ></ngx-doc-viewer>
+                  </p-dialog>
+                  } @else {
+                  <span>—</span>
+                  }
                 </div>
               </li>
-              <li
-                *ngIf="'update' | able : request.returnRequest"
-                class="striped-list__item"
-              >
+              @if ('update' | able : request.returnRequest) {
+              <li class="striped-list__item">
                 <div class="striped-list__item-key"></div>
                 <form
                   [formGroup]="updateDeliveryForm"
-                  class="striped-list__item-value"
+                  class="striped-list__item-value flex flex-col gap-4"
                 >
-                  <div class="p-fluid">
-                    <div class="formgrid grid">
-                      <div class="field col-12">
-                        <label for="delivery-service">Служба доставки:</label>
-                        <p-dropdown
-                          id="delivery-service"
-                          [options]="deliveryServices"
-                          formControlName="deliveryService"
-                        >
-                          <ng-template let-selected pTemplate="selectedItem">
-                            <app-delivery-service-badge
-                              *ngIf="selected as deliveryService"
-                              mode="short"
-                              [withText]="true"
-                              [deliveryService]="deliveryService"
-                            ></app-delivery-service-badge>
-                          </ng-template>
-                          <ng-template let-option pTemplate="item">
-                            <app-delivery-service-badge
-                              *ngIf="option as deliveryService"
-                              mode="short"
-                              [withText]="true"
-                              [deliveryService]="deliveryService"
-                            ></app-delivery-service-badge>
-                          </ng-template>
-                        </p-dropdown>
-                        <app-form-control-error-message
-                          [formGroup]="updateDeliveryForm"
-                          controlName="deliveryService"
-                          errorType="required"
-                          errorMessage="Це є обов'язковим полем"
-                        ></app-form-control-error-message>
-                      </div>
-                      <div class="field col-12">
-                        <label for="tracking-id">Номер ТТН:</label>
-                        <input
-                          pInputText
-                          id="tracking-id"
-                          autocomplete="off"
-                          formControlName="trackingId"
-                        />
-                        <app-form-control-error-message
-                          [formGroup]="updateDeliveryForm"
-                          controlName="trackingId"
-                          errorType="required"
-                          errorMessage="Потрібно ввести номер ТТН"
-                        ></app-form-control-error-message>
-                        <app-form-control-error-message
-                          [formGroup]="updateDeliveryForm"
-                          controlName="trackingId"
-                          errorType="alphanumeric"
-                          errorMessage="Номер ТТН повинен містити тільки літери та цифри"
-                        ></app-form-control-error-message>
-                      </div>
+                  <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12 flex flex-col gap-1">
+                      <label for="delivery-service">Служба доставки:</label>
+                      <p-select
+                        class="w-full"
+                        id="delivery-service"
+                        [options]="deliveryServices"
+                        formControlName="deliveryService"
+                      >
+                        <ng-template let-selected pTemplate="selectedItem">
+                          @if (selected; as deliveryService) {
+                          <app-delivery-service-badge
+                            mode="short"
+                            [withText]="true"
+                            [deliveryService]="deliveryService"
+                          ></app-delivery-service-badge>
+                          }
+                        </ng-template>
+                        <ng-template let-option pTemplate="item">
+                          @if (option; as deliveryService) {
+                          <app-delivery-service-badge
+                            mode="short"
+                            [withText]="true"
+                            [deliveryService]="deliveryService"
+                          ></app-delivery-service-badge>
+                          }
+                        </ng-template>
+                      </p-select>
+                      <app-form-control-error-message
+                        [formGroup]="updateDeliveryForm"
+                        controlName="deliveryService"
+                        errorType="required"
+                        errorMessage="Це є обов'язковим полем"
+                      ></app-form-control-error-message>
+                    </div>
+                    <div class="col-span-12 flex flex-col gap-1">
+                      <label for="tracking-id">Номер ТТН:</label>
+                      <input
+                        class="w-full"
+                        pInputText
+                        id="tracking-id"
+                        autocomplete="off"
+                        formControlName="trackingId"
+                      />
+                      <app-form-control-error-message
+                        [formGroup]="updateDeliveryForm"
+                        controlName="trackingId"
+                        errorType="required"
+                        errorMessage="Потрібно ввести номер ТТН"
+                      ></app-form-control-error-message>
+                      <app-form-control-error-message
+                        [formGroup]="updateDeliveryForm"
+                        controlName="trackingId"
+                        errorType="alphanumeric"
+                        errorMessage="Номер ТТН повинен містити тільки літери та цифри"
+                      ></app-form-control-error-message>
                     </div>
                   </div>
-                  <div class="formgrid grid">
-                    <div class="field col-12">
+                  <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12 flex flex-col gap-1">
                       <label for="tracking-id">Експрес-накладна:</label>
-                      <p-fileUpload
+                      <app-file-upload
                         #waybillUpload
                         data-cy="order-waybill-upload"
                         [accept]="fileFormats"
+                        variant="file"
                         [customUpload]="true"
                         [auto]="true"
                         [maxFileSize]="1000000"
                         [disabled]="(waybillSubmitting$ | async)!"
                         (uploadHandler)="onWaybillUpload($event)"
                         (onRemove)="onWaybillRemove()"
-                      >
-                      </p-fileUpload>
+                      ></app-file-upload>
                     </div>
                   </div>
                   <button
@@ -262,10 +260,12 @@
                   ></button>
                 </form>
               </li>
+              }
             </ul>
           </div>
         </div>
       </div>
+      }
     </div>
   </div>
 </div>

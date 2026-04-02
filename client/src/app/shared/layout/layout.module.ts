@@ -1,11 +1,11 @@
-import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { PopoverModule } from 'primeng/popover';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
-import { SidebarModule } from 'primeng/sidebar';
+import { DrawerModule } from 'primeng/drawer';
 
 import { CommonModule } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -35,12 +35,12 @@ import { ConfigModule } from './config/config.module';
         RouterModule,
         FormsModule,
         InputTextModule,
-        SidebarModule,
-        BadgeModule,
+        DrawerModule,
+        OverlayBadgeModule,
         RadioButtonModule,
-        InputSwitchModule,
+        ToggleSwitchModule,
         RippleModule,
-        OverlayPanelModule,
+        PopoverModule,
         ButtonModule,
         SharedModule,
         ConfigModule], providers: [provideHttpClient(withInterceptorsFromDi())] })

@@ -6,16 +6,22 @@
     <div class="admin-sign-up-wrapper-title">
       <h3>Реєстрація</h3>
     </div>
-    <form [formGroup]="adminSignUpForm" (ngSubmit)="onSubmit()">
+    <form
+      class="w-full"
+      [formGroup]="adminSignUpForm"
+      (ngSubmit)="onSubmit()"
+    >
       <div class="admin-sign-up-wrapper-form">
-        <div class="p-fluid formgrid grid">
+        <div class="grid grid-cols-1 gap-4">
           <!-- Left column -->
-          <div class="col-12">
-            <div class="field">
-              <label for="email">Пошта</label>
-              <div class="p-input-icon-right">
-                <i class="pi pi-user"></i>
+          <div class="col-span-12 flex flex-col gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label for="admin-sign-up-email">Пошта</label>
+              <p-iconField iconPosition="right" class="w-full">
+                <p-inputIcon styleClass="pi pi-user" />
                 <input
+                  class="w-full"
+                  id="admin-sign-up-email"
                   name="email"
                   formControlName="email"
                   type="email"
@@ -24,13 +30,14 @@
                   [readonly]="true"
                   [disabled]="true"
                 />
-              </div>
+              </p-iconField>
             </div>
-            <div class="field">
-              <label for="phoneNumber">Номер телефону</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="admin-sign-up-phone-number">Номер телефону</label>
               <p-inputMask
+                class="w-full"
                 name="phoneNumber"
-                inputId="phone-number"
+                inputId="admin-sign-up-phone-number"
                 formControlName="phoneNumber"
                 mask="+38 (999) 999-9999"
                 slotChar=" "
@@ -47,9 +54,11 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="lastName">Прізвище</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="admin-sign-up-last-name">Прізвище</label>
               <input
+                class="w-full"
+                id="admin-sign-up-last-name"
                 name="lastName"
                 formControlName="lastName"
                 type="text"
@@ -72,9 +81,11 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="firstName">Ім'я</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="admin-sign-up-first-name">Ім'я</label>
               <input
+                class="w-full"
+                id="admin-sign-up-first-name"
                 name="firstName"
                 formControlName="firstName"
                 type="text"
@@ -97,9 +108,11 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="middleName">По батькові</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="admin-sign-up-middle-name">По батькові</label>
               <input
+                class="w-full"
+                id="admin-sign-up-middle-name"
                 name="middleName"
                 formControlName="middleName"
                 type="text"
@@ -122,9 +135,11 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="password">Пароль</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="admin-sign-up-password">Пароль</label>
               <p-password
+                fluid
+                inputId="admin-sign-up-password"
                 name="password"
                 formControlName="password"
                 [toggleMask]="true"
@@ -136,20 +151,24 @@
                   <p class="mt-2">Вимоги до паролю</p>
                   <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
                     <li [ngClass]="{ valid: !hasLowerCase }">
-                      Хоча б одна мала літера
-                      <i class="pi pi-check" *ngIf="!hasLowerCase"></i>
+                      Хоча б одна мала літера @if (!hasLowerCase) {
+                      <i class="pi pi-check"></i>
+                      }
                     </li>
                     <li [ngClass]="{ valid: !hasUpperCase }">
-                      Хоча б одна велика літера
-                      <i class="pi pi-check" *ngIf="!hasUpperCase"></i>
+                      Хоча б одна велика літера @if (!hasUpperCase) {
+                      <i class="pi pi-check"></i>
+                      }
                     </li>
                     <li [ngClass]="{ valid: !hasNumeric }">
-                      Хоча б одна цифра
-                      <i class="pi pi-check" *ngIf="!hasNumeric"></i>
+                      Хоча б одна цифра @if (!hasNumeric) {
+                      <i class="pi pi-check"></i>
+                      }
                     </li>
                     <li [ngClass]="{ valid: !hasMinLength }">
-                      Не менше 8 символів
-                      <i class="pi pi-check" *ngIf="!hasMinLength"></i>
+                      Не менше 8 символів @if (!hasMinLength) {
+                      <i class="pi pi-check"></i>
+                      }
                     </li>
                   </ul>
                 </ng-template>
@@ -162,9 +181,13 @@
               >
               </app-form-control-error-message>
             </div>
-            <div class="field">
-              <label for="confirmPassword">Підтвердіть пароль</label>
+            <div class="flex flex-col gap-1.5">
+              <label for="admin-sign-up-confirm-password">
+                Підтвердіть пароль
+              </label>
               <p-password
+                fluid
+                inputId="admin-sign-up-confirm-password"
                 name="confirmPassword"
                 formControlName="confirmPassword"
                 [toggleMask]="true"
@@ -190,10 +213,12 @@
             </div>
           </div>
         </div>
-        <div class="flex align-items-center mt-5">
+        <div
+          class="mt-8 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <a [routerLink]="['/', 'auth', 'sign-in']">Вхід</a>
           <button
-            class="ml-5"
+            class="w-full sm:w-auto"
             type="submit"
             pButton
             label="Зареєструватися"

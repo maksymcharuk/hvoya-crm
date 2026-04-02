@@ -14,6 +14,7 @@ import { ProductsService } from '@shared/services/products.service';
 import { CartService } from '../../../cart/services/cart/cart.service';
 
 @Component({
+  standalone: false,
   selector: 'app-view-product',
   templateUrl: './view-product.component.html',
   styleUrls: ['./view-product.component.scss'],

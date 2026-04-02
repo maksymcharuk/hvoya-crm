@@ -12,83 +12,87 @@
   [loading]="loading"
   [paginator]="true"
   [scrollable]="true"
-  [scrollHeight]="'calc(100vh - 273px)'"
+  [scrollHeight]="'calc(100vh - 17rem)'"
   (onLazyLoad)="onLazyLoad($event)"
 >
   <ng-template pTemplate="loadingicon"></ng-template>
   <ng-template pTemplate="loadingbody">
-    <ng-container *ngFor="let _ of [].constructor(rows)">
-      <tr>
-        <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
-        <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
-        <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
-        <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
-      </tr>
-    </ng-container>
+    @for (_ of [].constructor(rows); track $index) {
+    <tr>
+      <td><p-skeleton height="28px" width="85px"></p-skeleton></td>
+      <td><p-skeleton height="16px" width="98px"></p-skeleton></td>
+      <td><p-skeleton height="19px" width="86px"></p-skeleton></td>
+      <td><p-skeleton height="28px" width="28px"></p-skeleton></td>
+    </tr>
+    }
   </ng-template>
   <ng-template pTemplate="caption">
-    <div class="table-header flex justify-content-between align-items-center">
+    <div class="table-header flex justify-between items-center">
       <div>Список транзакцій</div>
-      <div>
+      <div class="flex items-center gap-4">
         <button
           type="button"
           pButton
           [disabled]="exporting$ | async"
           icon="pi pi-file-excel"
           (click)="exportExcel()"
-          class="p-button-success mr-2"
+          class="p-button-success"
+          size="small"
           pTooltip="Експорт Excel файлу"
           tooltipPosition="bottom"
         ></button>
-        <form [formGroup]="searchForm" class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            formControlName="search"
-            type="text"
-            placeholder="Сума транзакції"
-          />
+        <form [formGroup]="searchForm">
+          <p-iconField iconPosition="left">
+            <p-inputIcon styleClass="pi pi-search" />
+            <input
+              pInputText
+              formControlName="search"
+              type="text"
+              placeholder="Сума транзакції"
+            />
+          </p-iconField>
         </form>
       </div>
     </div>
   </ng-template>
   <ng-template pTemplate="header">
     <tr>
-      <th class="w-4" pSortableColumn="amount">
+      <th class="w-4/12" pSortableColumn="amount">
         Сума
         <p-sortIcon field="amount"></p-sortIcon>
       </th>
-      <th class="w-4">Статус</th>
-      <th *ngIf="currentUser?.isAnyAdmin">
-        <div
-          class="flex align-items-center"
-          pTooltip="Статус синхронізації з 1С"
-        >
+      <th class="w-4/12">Статус</th>
+      @if (currentUser?.isAnyAdmin) {
+      <th>
+        <div class="flex items-center" pTooltip="Статус синхронізації з 1С">
           <i class="pi pi-sync mr-1"></i>1С
         </div>
       </th>
-      <th class="w-4" pSortableColumn="updatedAt">
-        <div class="flex justify-content-between align-items-center">
+      }
+      <th class="w-4/12" pSortableColumn="updatedAt">
+        <div class="flex justify-between items-center">
           Дата
           <p-sortIcon field="updatedAt"></p-sortIcon>
         </div>
       </th>
-      <th class="w-1"></th>
+      <th class="w-1/12"></th>
     </tr>
     <tr>
       <th></th>
       <th></th>
-      <th *ngIf="currentUser?.isAnyAdmin"></th>
+      @if (currentUser?.isAnyAdmin) {
+      <th></th>
+      }
       <th>
         <p-columnFilter type="date" field="updatedAt" [showMenu]="false">
           <ng-template pTemplate="filter" let-filter="filterCallback">
-            <p-calendar
+            <p-datepicker
               (onSelect)="filter($event)"
               (onClear)="filter($event)"
               appendTo="body"
               placeholder="Дата"
               [showClear]="true"
-            ></p-calendar>
+            ></p-datepicker>
           </ng-template>
         </p-columnFilter>
       </th>
@@ -108,17 +112,17 @@
         >
           {{ transaction.amount | currency }}
         </div>
-        <small
-          *ngIf="transaction.status === transactionStatus.Success"
-          class="text-600"
-        >
+        @if (transaction.status === transactionStatus.Success) {
+        <small class="text-surface-600">
           {{ transaction.netBalance | currency }}
         </small>
+        }
       </td>
       <td>{{ transaction.status | transactionStatus }}</td>
-      <td *ngIf="currentUser?.isAnyAdmin">
+      @if (currentUser?.isAnyAdmin) {
+      <td>
         <span
-          class="white-space-nowrap"
+          class="whitespace-nowrap"
           [pTooltip]="
             transaction.syncOneCStatus === transactionSyncOneCStatus.Failed
               ? 'У разі невдалої синхронізації система буде робити ще спроби. Зачекайте до години і також перевірте чи працює сервер 1С.'
@@ -128,16 +132,11 @@
           {{ transaction.syncOneCStatus | transactionSyncOneCStatus }}
         </span>
       </td>
+      }
       <td>{{ transaction.updatedAt | date : 'short' }}</td>
-      <td
-        *ngIf="
-          transaction.order ||
-            transaction.orderReturnRequest ||
-            transaction.fundsWithdrawalRequest;
-          else noEntity
-        "
-        class="text-center"
-      >
+      @if ( transaction.order || transaction.orderReturnRequest ||
+      transaction.fundsWithdrawalRequest) {
+      <td class="text-center">
         <button
           pButton
           pTooltip="Натистіть для перегляду замовлення або запиту"
@@ -146,7 +145,9 @@
           (click)="navigateToEntity(transaction)"
         ></button>
       </td>
-      <ng-template #noEntity><td></td></ng-template>
+      } @else {
+      <td></td>
+      }
     </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage">

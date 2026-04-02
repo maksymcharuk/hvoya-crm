@@ -1,21 +1,3 @@
-.upload-files {
-  &-no-files {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &-text {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #6c757d;
-
-      i {
-        margin-left: 10px;
-      }
-    }
-  }
-}
-
 .product-preview {
   position: sticky;
   top: 100px;
@@ -32,18 +14,6 @@
     font-size: 1.5rem;
     font-weight: 700;
     text-align: center;
-  }
-}
-
-::ng-deep {
-  .p-fileupload {
-    .p-fileupload-highlight {
-      background-color: #1c1c1c34;
-    }
-  }
-
-  .p-fluid .p-fileupload button.p-button {
-    width: 50%;
   }
 }
 

@@ -16,6 +16,7 @@ import { PoliciesService } from '@shared/services/policies.service';
 import { UserService } from '@shared/services/user.service';
 
 @Component({
+  standalone: false,
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],

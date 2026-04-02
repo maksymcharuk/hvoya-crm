@@ -1,14 +1,14 @@
-import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 import { ChartModule } from 'primeng/chart';
-import { DropdownModule } from 'primeng/dropdown';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { SelectModule } from 'primeng/select';
+import { PopoverModule } from 'primeng/popover';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
-import { TabViewModule } from 'primeng/tabview';
+import { TabsModule } from 'primeng/tabs';
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -48,17 +48,17 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
-    DropdownModule,
-    CalendarModule,
-    OverlayPanelModule,
-    BadgeModule,
+    SelectModule,
+    DatePickerModule,
+    PopoverModule,
+    OverlayBadgeModule,
     LayoutModule,
     SharedModule,
     TableModule,
     SkeletonModule,
     ChartModule,
-    TabViewModule,
-    InputTextareaModule,
+    TabsModule,
+    TextareaModule,
     TooltipModule,
   ],
 })

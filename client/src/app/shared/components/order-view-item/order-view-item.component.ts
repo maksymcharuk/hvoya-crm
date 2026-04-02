@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { OrderItem } from '@shared/interfaces/entities/order.entity';
 
 @Component({
+  standalone: false,
   selector: 'app-order-view-item',
   templateUrl: './order-view-item.component.html',
   styleUrls: ['./order-view-item.component.scss'],

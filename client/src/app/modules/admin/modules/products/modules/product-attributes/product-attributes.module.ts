@@ -1,4 +1,6 @@
 import { MessageService } from 'primeng/api';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -31,6 +33,8 @@ import { ProductAttributesComponent } from './product-attributes.component';
     FormsModule,
     ProductAttributesRoutingModule,
     SharedModule,
+    IconFieldModule,
+    InputIconModule,
     ButtonModule,
     InputTextModule,
     InputNumberModule,

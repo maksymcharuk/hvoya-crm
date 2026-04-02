@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { OrderStatus } from '@shared/enums/order-status.enum';
 
 @Component({
+  standalone: false,
   selector: 'app-order-status-badge',
   templateUrl: './order-status-badge.component.html',
   styleUrls: ['./order-status-badge.component.scss'],

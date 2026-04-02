@@ -56,6 +56,7 @@ interface ChatMessage {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-nlq-chat',
   templateUrl: './nlq-chat.component.html',
   styleUrls: ['./nlq-chat.component.scss'],
