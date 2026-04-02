@@ -1,18 +1,17 @@
 #!/bin/sh
 ssh charuk@164.90.184.112 <<EOF
- cd ~/hvoya-crm
+ cd /var/www/sales.hvoya.com/api
  npm run db:backup
+ pm2 stop 0
  git checkout .
  git pull
- cd ~/hvoya-crm/client
- npm install
- cd ~/hvoya-crm
- npm install
+ npm install --legacy-peer-deps
  npm run build
- cd ~/hvoya-crm/client
- npm run build
- cd ~/hvoya-crm
  npm run migrations:run
- pm2 restart all
+ cd /var/www/sales.hvoya.com/api/client
+ npm install --legacy-peer-deps
+ npm run build
+ cd /var/www/sales.hvoya.com/api
+ pm2 restart 0
  exit
 EOF
