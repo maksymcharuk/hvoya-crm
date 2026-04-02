@@ -29,9 +29,9 @@
           </div>
           <div class="col-span-12 flex flex-col gap-2 xl:col-span-6">
             <label class="font-medium" for="receipt">Документ:</label>
-            <p-fileUpload
-              class="w-full"
+            <app-file-upload
               [accept]="'.pdf'"
+              variant="file"
               [customUpload]="true"
               [auto]="true"
               [maxFileSize]="1000000"
@@ -39,8 +39,7 @@
               [multiple]="true"
               (uploadHandler)="onReceiptUpload($event.files)"
               (onRemove)="onReceiptRemove()"
-            >
-            </p-fileUpload>
+            ></app-file-upload>
             <app-form-control-error-message
               [formGroup]="fundsWithdrawalRequestForm"
               controlName="receipt"
@@ -62,7 +61,7 @@
               <p-button
                 icon="pi pi-times"
                 label="Відхилити"
-                styleClass="p-button-danger"
+                severity="danger"
                 class="ml-4"
                 [disabled]="submitting"
                 (click)="confirmOrRejectToggle(action.Reject)"

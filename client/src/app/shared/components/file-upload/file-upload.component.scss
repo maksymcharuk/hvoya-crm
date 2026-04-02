@@ -1,0 +1,129 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+::ng-deep {
+  .app-file-upload {
+    width: 100%;
+
+    .p-fileupload-header {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .p-fileupload-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-top: 0.75rem;
+    }
+  }
+}
+
+.app-file-upload__header {
+  display: flex;
+  align-items: center;
+}
+
+.app-file-upload__choose-button {
+  background: #16a34a;
+  border-color: #16a34a;
+
+  &:enabled:hover {
+    background: #15803d;
+    border-color: #15803d;
+  }
+}
+
+.app-file-upload__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.app-file-upload__messages,
+.app-file-upload__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.app-file-upload__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--surface-border);
+  border-radius: 0.75rem;
+  background: var(--surface-ground);
+}
+
+.app-file-upload__file {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.app-file-upload__preview,
+.app-file-upload__icon {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+}
+
+.app-file-upload__preview {
+  object-fit: cover;
+  border-radius: 0.5rem;
+  border: 1px solid var(--surface-border);
+}
+
+.app-file-upload__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: var(--surface-200);
+  color: var(--text-color-secondary);
+  font-size: 1.25rem;
+}
+
+.app-file-upload__meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.app-file-upload__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.app-file-upload__size {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+}
+
+.app-file-upload__remove-button {
+  flex-shrink: 0;
+}
+
+.app-file-upload__empty {
+  min-height: 5.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px dashed var(--surface-border);
+  border-radius: 0.75rem;
+  color: var(--text-color-secondary);
+  text-align: center;
+}

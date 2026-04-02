@@ -1,5 +1,4 @@
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
 import {
   BehaviorSubject,
   Subject,
@@ -23,6 +22,7 @@ import {
   FIELD_UPDATE_DEBOUNCE_TIME,
   ICONS,
 } from '@shared/constants/base.constants';
+import { FileUploadComponent } from '@shared/components/file-upload/file-upload.component';
 import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { OrderStatus } from '@shared/enums/order-status.enum';
@@ -43,7 +43,7 @@ import { UserBalanceService } from '../../../balance/services/user-balance.servi
   styleUrls: ['./order-view.component.scss'],
 })
 export class OrderViewComponent {
-  @ViewChild('waybillUpload') waybillUpload!: FileUpload;
+  @ViewChild('waybillUpload') waybillUpload!: FileUploadComponent;
 
   private readonly destroy$ = new Subject<void>();
 

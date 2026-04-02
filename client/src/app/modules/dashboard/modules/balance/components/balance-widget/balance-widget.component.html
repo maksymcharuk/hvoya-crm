@@ -11,7 +11,8 @@
     </span>
     @if (!environment.production) {
     <p-button
-      styleClass="p-button-raised p-button-text p-button-secondary p-button-sm"
+      styleClass="p-button-raised p-button-text p-button-sm"
+      severity="secondary"
       label="Тестове поповнення"
       (onClick)="addFundsTest()"
     ></p-button>
@@ -31,7 +32,8 @@
         [queryParams]="{
           requestType: RequestType.FundsWithdrawal
         }"
-        styleClass="ml-6 p-button-danger"
+        styleClass="ml-6"
+        severity="danger"
         tooltipPosition="bottom"
       >
         <app-request-type-badge

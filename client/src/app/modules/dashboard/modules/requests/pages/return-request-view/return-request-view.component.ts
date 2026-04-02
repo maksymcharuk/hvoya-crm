@@ -1,5 +1,4 @@
 import { MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
 import { BehaviorSubject, finalize, map } from 'rxjs';
 
 import { Component, ViewChild } from '@angular/core';
@@ -7,6 +6,7 @@ import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { WAYBILL_ACCEPTABLE_FILE_FORMATS } from '@shared/constants/order.constants';
+import { FileUploadComponent } from '@shared/components/file-upload/file-upload.component';
 import { DeliveryService } from '@shared/enums/delivery-service.enum';
 import { OrderReturnRequestStatus } from '@shared/enums/order-return-request-status.enum';
 import { RequestEntity } from '@shared/interfaces/entities/request.entity';
@@ -43,7 +43,7 @@ export class ReturnRequestViewComponent {
     return this.updateDeliveryForm.controls.waybill;
   }
 
-  @ViewChild('waybillUpload') waybillUpload!: FileUpload;
+  @ViewChild('waybillUpload') waybillUpload!: FileUploadComponent;
 
   constructor(
     private readonly route: ActivatedRoute,

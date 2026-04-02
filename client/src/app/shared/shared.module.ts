@@ -10,6 +10,7 @@ import { DialogModule } from 'primeng/dialog';
 import { DragDropModule } from 'primeng/dragdrop';
 import { SelectModule } from 'primeng/select';
 import { EditorModule } from 'primeng/editor';
+import { FileUploadModule } from 'primeng/fileupload';
 import { GalleriaModule } from 'primeng/galleria';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -44,6 +45,7 @@ import { RouterModule } from '@angular/router';
 import { AblePipe } from '@casl/angular';
 
 import { DeliveryServiceBadgeComponent } from './components/delivery-service-badge/delivery-service-badge.component';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
 import { FaqListComponent } from './components/faq-list/faq-list.component';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
@@ -142,6 +144,7 @@ const COMPONENTS = [
   PostsWidgetComponent,
   ProductBaseItemComponent,
   ProductBaseListComponent,
+  FileUploadComponent,
 ];
 
 const PRIMENG_MODULES = [
@@ -160,6 +163,7 @@ const PRIMENG_MODULES = [
   ConfirmDialogModule,
   DialogModule,
   EditorModule,
+  FileUploadModule,
   BadgeModule,
   ScrollPanelModule,
   MultiSelectModule,

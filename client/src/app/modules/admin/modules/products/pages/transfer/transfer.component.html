@@ -46,17 +46,15 @@
       } @if (sourceType?.value === importSourceTypeEnum.File) {
       <div class="flex flex-col gap-2">
         <label class="font-medium">Файл (XML/XLS):</label>
-        <p-fileUpload
-          fluid
-          class="w-full"
+        <app-file-upload
           accept=".xml, .xls, .xlsx"
+          variant="file"
           [customUpload]="true"
           [auto]="true"
           [maxFileSize]="10000000"
           [disabled]="file!.disabled"
           (uploadHandler)="onFileUpload($event)"
-        >
-        </p-fileUpload>
+        ></app-file-upload>
         <app-form-control-error-message
           [formGroup]="importForm"
           controlName="file"

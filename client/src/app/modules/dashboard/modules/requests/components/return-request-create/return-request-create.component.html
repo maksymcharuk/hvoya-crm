@@ -58,9 +58,9 @@
           </div>
           <div class="col-span-12 flex flex-col gap-1">
             <label for="customerImages">Фото:</label>
-            <p-fileUpload
-              class="w-full"
+            <app-file-upload
               [accept]="imageFormats"
+              variant="image"
               [customUpload]="true"
               [auto]="true"
               [maxFileSize]="1000000"
@@ -68,8 +68,7 @@
               [multiple]="true"
               (uploadHandler)="onCustomerImagesUpload($event.files)"
               (onRemove)="onCustomerImageRemove($event.file)"
-            >
-            </p-fileUpload>
+            ></app-file-upload>
           </div>
         </div>
       </div>
@@ -133,17 +132,16 @@
           </div>
           <div class="col-span-12 flex flex-col gap-1">
             <label for="tracking-id">Експрес-накладна:</label>
-            <p-fileUpload
-              class="w-full"
-              [accept]="fileFormats"
-              [customUpload]="true"
-              [auto]="true"
-              [maxFileSize]="1000000"
-              [disabled]="submitting"
-              (uploadHandler)="onWaybillUpload($event.files)"
-              (onRemove)="onWaybillRemove()"
-            >
-            </p-fileUpload>
+              <app-file-upload
+                [accept]="fileFormats"
+                variant="file"
+                [customUpload]="true"
+                [auto]="true"
+                [maxFileSize]="1000000"
+                [disabled]="submitting"
+                (uploadHandler)="onWaybillUpload($event.files)"
+                (onRemove)="onWaybillRemove()"
+              ></app-file-upload>
           </div>
         </div>
       </div>

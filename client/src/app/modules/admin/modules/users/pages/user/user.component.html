@@ -220,7 +220,8 @@
     <p-button
       label="Відмінити"
       icon="pi pi-times"
-      styleClass="p-button-outlined p-button-secondary"
+      styleClass="p-button-outlined"
+      severity="secondary"
       (onClick)="hideUserConfirmDialog()"
     ></p-button>
     <p-button
@@ -278,11 +279,12 @@
   <ng-template pTemplate="footer">
     <p-button
       label="Відмінити"
-      styleClass="p-button-outlined p-button-secondary"
+      styleClass="p-button-outlined"
+      severity="secondary"
       (onClick)="closeDeleteDialog()"
     ></p-button>
     <p-button
-      styleClass="p-button-danger"
+      severity="danger"
       label="Видалити"
       icon="pi pi-times"
       data-cy="confirm-user-submit-button"

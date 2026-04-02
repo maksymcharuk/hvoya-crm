@@ -238,19 +238,18 @@
                   <div class="grid grid-cols-12 gap-4">
                     <div class="col-span-12 flex flex-col gap-1">
                       <label for="tracking-id">Експрес-накладна:</label>
-                      <p-fileUpload
-                        class="w-full"
+                      <app-file-upload
                         #waybillUpload
                         data-cy="order-waybill-upload"
                         [accept]="fileFormats"
+                        variant="file"
                         [customUpload]="true"
                         [auto]="true"
                         [maxFileSize]="1000000"
                         [disabled]="(waybillSubmitting$ | async)!"
                         (uploadHandler)="onWaybillUpload($event)"
                         (onRemove)="onWaybillRemove()"
-                      >
-                      </p-fileUpload>
+                      ></app-file-upload>
                     </div>
                   </div>
                   <button

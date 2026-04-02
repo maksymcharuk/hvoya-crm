@@ -2,7 +2,7 @@
 <div data-cy="order-view-page">
   @if (order.returnRequest; as returnRequest) {
   <p-message severity="warn">
-    <ng-template pTemplate>
+    <ng-template #container>
       <div class="flex items-center">
         <i class="pi mr-2" [ngClass]="ICONS.ORDER_RETURN_REQUEST"></i>
         <span class="align-middle">
@@ -30,7 +30,7 @@
         <div class="flex items-center justify-between">
           <div class="flex items-baseline">
             <h4 class="mb-0">Замовлення №{{ order.number }}</h4>
-            <small class="ml-2 text-surface-600">
+            <small class="ml-2 text-surface-600 dark:text-surface-200">
               {{ order.createdAt | date : 'short' }}
             </small>
           </div>

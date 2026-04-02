@@ -433,13 +433,13 @@
           }
           <div class="col-span-12 flex flex-col gap-2">
             <label class="font-medium" for="images">Завантаження файлів</label>
-            <p-fileUpload
+            <app-file-upload
               #fileUpload
               name="images[]"
+              variant="file"
               [customUpload]="true"
               (uploadHandler)="onUpload($event)"
               (onRemove)="onRemove($event)"
-              class="upload-files"
               [multiple]="true"
               [accept]="acceptedFiles"
               [invalidFileTypeMessageDetail]="invalidFileTypeMessage"
@@ -447,30 +447,9 @@
               [auto]="true"
               [disabled]="productImagesDisabled"
               chooseLabel="Завантажити файл"
+              emptyMessage="Перетягніть файл для завантаження"
               data-cy="product-image-upload"
-            >
-              <ng-template pTemplate="content">
-                @if (productImagesControl?.value?.length) {
-                <ul>
-                  @for (file of productImagesControl?.value; track file) {
-                  <li>{{ file.name }} - {{ file.size }} bytes</li>
-                  }
-                </ul>
-                }
-              </ng-template>
-              <ng-template pTemplate="content">
-                @if (!productImagesControl?.value?.length) {
-                <ul class="upload-files-no-files">
-                  <span class="upload-files-no-files-text"
-                    >Перетягніть файл для завантаження<i
-                      class="pi pi-upload"
-                      style="font-size: 1.5rem"
-                    ></i
-                  ></span>
-                </ul>
-                }
-              </ng-template>
-            </p-fileUpload>
+            ></app-file-upload>
           </div>
           <div class="col-span-12 flex justify-end">
             <div class="w-full md:w-1/4">

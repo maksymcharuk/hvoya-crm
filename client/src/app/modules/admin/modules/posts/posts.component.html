@@ -42,7 +42,7 @@
         <p-button
           class="ml-2"
           icon="pi pi-trash"
-          styleClass="p-button-danger"
+          severity="danger"
           (click)="confirmToggle(post)"
         ></p-button>
       </div>
@@ -112,7 +112,8 @@
     <p-button
       label="Відмінити"
       icon="pi pi-times"
-      styleClass="p-button-outlined p-button-secondary"
+      styleClass="p-button-outlined"
+      severity="secondary"
       (onClick)="hideDialog()"
     ></p-button>
     <p-button

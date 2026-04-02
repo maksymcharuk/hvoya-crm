@@ -81,8 +81,9 @@
                 </div>
                 <div class="flex flex-col gap-1 col-span-6">
                   <label for="customerImages">Фото:</label>
-                  <p-fileUpload
+                  <app-file-upload
                     [accept]="imageFormats"
+                    variant="image"
                     [customUpload]="true"
                     [auto]="true"
                     [maxFileSize]="1000000"
@@ -90,8 +91,7 @@
                     [multiple]="true"
                     (uploadHandler)="onManagerImagesUpload($event.files)"
                     (onRemove)="onManagerImageRemove($event.file)"
-                  >
-                  </p-fileUpload>
+                  ></app-file-upload>
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@
               <p-button
                 icon="pi pi-times"
                 label="Відхилити"
-                styleClass="p-button-danger"
+                severity="danger"
                 class="ml-4"
                 [disabled]="submitting"
                 (click)="confirmOrRejectToggle(action.Reject)"
@@ -397,18 +397,18 @@
                   </div>
                   <div class="flex flex-col gap-1">
                     <label for="tracking-id">Експрес-накладна:</label>
-                    <p-fileUpload
+                    <app-file-upload
                       #waybillUpload
                       data-cy="order-waybill-upload"
                       [accept]="fileFormats"
+                      variant="file"
                       [customUpload]="true"
                       [auto]="true"
                       [maxFileSize]="1000000"
                       [disabled]="(waybillSubmitting$ | async)!"
                       (uploadHandler)="onWaybillUpload($event)"
                       (onRemove)="onWaybillRemove()"
-                    >
-                    </p-fileUpload>
+                    ></app-file-upload>
                   </div>
                   <button
                     (click)="updateWaybill()"

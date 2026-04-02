@@ -2,7 +2,7 @@
 <div data-cy="order-view-page">
   @if (order.returnRequest; as returnRequest) {
   <p-message severity="warn">
-    <ng-template pTemplate>
+    <ng-template #container>
       <div class="flex items-center">
         <i class="pi mr-2" [ngClass]="ICONS.ORDER_RETURN_REQUEST"></i>
         <span class="align-middle">
@@ -38,14 +38,14 @@
           @if ('cancel' | able : order) {
           <p-button
             icon="pi pi-times"
-            styleClass="p-button-danger"
+            severity="danger"
             label="Скасувати замовлення"
             (click)="confirmOrderCancelation()"
           ></p-button>
           } @if ('return' | able : order) {
           <p-button
             icon="pi pi-times"
-            styleClass="p-button-warning"
+            severity="warn"
             label="Оформити повернення"
             [routerLink]="['/dashboard/requests/create']"
             [queryParams]="{
@@ -274,18 +274,17 @@
                 <div class="grid grid-cols-12 gap-4">
                   <div class="col-span-12 md:col-span-6 flex flex-col gap-1">
                     <label for="tracking-id">Файл маркування:</label>
-                    <p-fileUpload
-                      class="w-full"
+                    <app-file-upload
                       #waybillUpload
                       data-cy="order-waybill-upload"
                       [accept]="fileFormats"
+                      variant="file"
                       [customUpload]="true"
                       [auto]="true"
                       [maxFileSize]="1000000"
                       [disabled]="(waybillSubmitting$ | async)!"
                       (uploadHandler)="onFileUpload($event)"
-                    >
-                    </p-fileUpload>
+                    ></app-file-upload>
                     <app-form-control-error-message
                       [formGroup]="updateWaybillForm"
                       controlName="waybill"
