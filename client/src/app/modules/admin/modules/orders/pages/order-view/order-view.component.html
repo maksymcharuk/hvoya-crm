@@ -293,18 +293,15 @@
                     <label class="font-medium" for="tracking-id"
                       >Файл маркування:</label
                     >
-                    <p-fileUpload
+                    <app-file-upload
                       class="w-full"
                       #waybillUpload
-                      data-cy="order-waybill-upload"
+                      [dataCy]="'order-waybill-upload'"
                       [accept]="fileFormats"
-                      [customUpload]="true"
-                      [auto]="true"
                       [maxFileSize]="1000000"
                       [disabled]="(waybillSubmitting$ | async)!"
                       (uploadHandler)="onFileUpload($event)"
-                    >
-                    </p-fileUpload>
+                    ></app-file-upload>
                     <app-form-control-error-message
                       [formGroup]="updateWaybillForm"
                       controlName="waybill"
