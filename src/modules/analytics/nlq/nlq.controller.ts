@@ -1,4 +1,5 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 
 import { Action } from '@enums/action.enum';
 
@@ -19,5 +20,15 @@ export class NlqController {
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, 'AdminAalytics'))
   query(@Body() dto: NlqRequestDto) {
     return this.nlqService.query(dto);
+  }
+
+  @Post('stream')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, 'AdminAalytics'))
+  async stream(@Body() dto: NlqRequestDto, @Res() res: Response) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+    await this.nlqService.stream(dto, res);
   }
 }

@@ -10,6 +10,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
 
+import { Surface } from '@a2ui/angular';
+
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -60,6 +62,7 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
     TabsModule,
     TextareaModule,
     TooltipModule,
+    Surface,
   ],
 })
 export class AdminModule {}

@@ -3,6 +3,14 @@ import { Observable, map } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+import { AguiEvent } from '@shared/protocols/ag-ui.types';
+import { A2uiMessage } from '@shared/protocols/a2ui.types';
+import { TokenService } from './token.service';
+
+export type NlqStreamEvent =
+  | { protocol: 'agui'; event: AguiEvent }
+  | { protocol: 'a2ui'; event: A2uiMessage };
+
 export type VizType = 'table' | 'bar' | 'line' | 'kpi';
 
 export interface NlqMessage {
@@ -54,7 +62,10 @@ export interface PaginationOptions {
 export class AdminAnalyticsService {
   private readonly baseUrl = `${environment.apiUrl}/analytics/admin`;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService,
+  ) {}
 
   /**
    * Fetch dropshippers analytics with pagination and date filtering
@@ -232,6 +243,87 @@ export class AdminAnalyticsService {
       `${environment.apiUrl}/analytics/nlq`,
       request,
     );
+  }
+
+  /**
+   * Stream a natural language question over SSE.
+   * Emits typed events from both the AG-UI and A2UI protocols.
+   *
+   * AG-UI events carry the conversational layer:
+   *   RUN_START, TOOL_CALL_START/END, TEXT_MESSAGE_CONTENT (streamed), RUN_FINISH
+   *
+   * A2UI events carry declarative UI: component tree + data model for the visualization.
+   */
+  streamNlq(request: NlqRequest): Observable<NlqStreamEvent> {
+    return new Observable((observer) => {
+      const token = this.tokenService.getToken();
+      let aborted = false;
+      const controller = new AbortController();
+
+      fetch(`${environment.apiUrl}/analytics/nlq/stream`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(request),
+        signal: controller.signal,
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          if (!response.body) throw new Error('No response body');
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          const pump = (): Promise<void> =>
+            reader.read().then(({ done, value }) => {
+              if (done || aborted) {
+                observer.complete();
+                return;
+              }
+
+              buffer += decoder.decode(value, { stream: true });
+              const blocks = buffer.split('\n\n');
+              // Keep the last (possibly incomplete) block in the buffer
+              buffer = blocks.pop() ?? '';
+
+              for (const block of blocks) {
+                let eventName = '';
+                let dataLine = '';
+                for (const line of block.split('\n')) {
+                  if (line.startsWith('event: ')) eventName = line.slice(7).trim();
+                  if (line.startsWith('data: ')) dataLine = line.slice(6);
+                }
+                if (!dataLine) continue;
+                try {
+                  const parsed = JSON.parse(dataLine);
+                  if (eventName === 'agui') {
+                    observer.next({ protocol: 'agui', event: parsed as AguiEvent });
+                  } else if (eventName === 'a2ui') {
+                    observer.next({ protocol: 'a2ui', event: parsed as A2uiMessage });
+                  }
+                } catch {
+                  // malformed JSON — skip
+                }
+              }
+
+              return pump();
+            });
+
+          return pump();
+        })
+        .catch((err) => {
+          if (!aborted) observer.error(err);
+        });
+
+      // Teardown: abort the fetch when the Observable is unsubscribed
+      return () => {
+        aborted = true;
+        controller.abort();
+      };
+    });
   }
 
   /**

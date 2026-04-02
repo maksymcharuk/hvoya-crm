@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -s https://raw.githubusercontent.com/google/A2UI/main/README.md)",
+      "Bash(curl -s https://raw.githubusercontent.com/google/A2UI/main/docs/spec.md)"
+    ]
+  }
+}

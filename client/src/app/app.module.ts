@@ -3,6 +3,9 @@ import { definePreset } from '@primeuix/themes';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { ToastModule } from 'primeng/toast';
+import { provideA2UI } from '@a2ui/angular';
+
+import { HVOYA_CATALOG, HVOYA_THEME } from './modules/admin/catalog/hvoya-catalog';
 
 import {
   provideHttpClient,
@@ -77,6 +80,7 @@ const HvoyaPreset = definePreset(Aura, {
     providePrimeNG({
       theme: { preset: HvoyaPreset, options: { darkModeSelector: '.app-dark' } },
     }),
+    provideA2UI({ catalog: HVOYA_CATALOG, theme: HVOYA_THEME }),
   ],
 })
 export class AppModule {}

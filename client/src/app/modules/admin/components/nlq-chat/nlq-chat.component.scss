@@ -179,6 +179,18 @@
   }
 }
 
+// AG-UI: shown while the agent is executing a tool call
+.tool-call-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 0.35rem;
+
+  i { font-size: 0.75rem; }
+}
+
 .loading-bubble {
   display: flex;
   align-items: center;

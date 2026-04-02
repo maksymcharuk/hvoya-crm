@@ -1,58 +1,36 @@
+import { MessageProcessor } from '@a2ui/angular';
+// Import types from the same web_core instance @a2ui/angular uses internally
+import type { Types } from '@a2ui/lit/0.8';
 import { marked } from 'marked';
 import { Subject, takeUntil } from 'rxjs';
 
 import {
   AfterViewChecked,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnDestroy,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import {
   AdminAnalyticsService,
   NlqMessage,
-  NlqResponse,
-  VizType,
 } from '@shared/services/admin-analytics.service';
-
-const COLUMN_LABELS: Record<string, string> = {
-  productName: 'Продукт',
-  quantitySold: 'Продано (шт.)',
-  totalRevenue: 'Дохід (₴)',
-  uniqueDropshippersCount: 'Дропшиперів',
-  averagePrice: 'Сер. ціна (₴)',
-  minPrice: 'Мін. ціна (₴)',
-  maxPrice: 'Макс. ціна (₴)',
-  returnRate: 'Повернень (%)',
-  name: "Ім'я",
-  email: 'Email',
-  ordersCount: 'Замовлень',
-  averageOrderValue: 'Сер. замовлення (₴)',
-  returnedAmount: 'Повернено (₴)',
-  walletBalance: 'Баланс (₴)',
-  lastOrderDate: 'Остання дата',
-  lifetimeValue: 'LTV (₴)',
-  status: 'Статус',
-  count: 'К-ть',
-  percentage: 'Частка (%)',
-  month: 'Місяць',
-  totalAmount: 'Заг. сума (₴)',
-  revenueAmount: 'Дохід (₴)',
-  processedCount: 'Виконано',
-  returnedCount: 'Повернено',
-};
 
 interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
   displayedText?: string;
   isAnimating?: boolean;
-  data?: unknown;
-  vizType?: VizType;
-  vizFields?: string[];
-  chartData?: unknown;
+  /** Set while the agent is calling an analytics tool (AG-UI TOOL_CALL_START). */
+  activeToolCall?: string;
+  /** SurfaceId assigned to this assistant turn by the backend beginRendering message. */
+  a2uiSurfaceId?: string;
+  /** Live surface reference from the global MessageProcessor. */
+  a2uiSurface?: Types.Surface | null;
 }
 
 @Component({
@@ -68,19 +46,14 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
   inputText = '';
   loading = false;
 
+  private readonly processor = inject(MessageProcessor);
+  private readonly adminAnalyticsService = inject(AdminAnalyticsService);
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   private readonly destroyed$ = new Subject<void>();
   private shouldScrollToBottom = false;
   private readonly animationIntervals: ReturnType<typeof setInterval>[] = [];
-
-  readonly chartOptions = {
-    responsive: true,
-    plugins: { legend: { position: 'bottom' } },
-  };
-
-  constructor(
-    private readonly adminAnalyticsService: AdminAnalyticsService,
-    private readonly sanitizer: DomSanitizer,
-  ) {}
 
   renderMarkdown(text: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(marked.parse(text) as string);
@@ -100,35 +73,81 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
       .slice(-10)
       .map((m) => ({ role: m.role, content: m.text }));
 
+    const assistantMsg: ChatMessage = {
+      role: 'assistant',
+      text: '',
+      displayedText: '',
+    };
+    this.messages.push(assistantMsg);
+
     this.adminAnalyticsService
-      .queryNlq({ question, conversationHistory: history })
+      .streamNlq({ question, conversationHistory: history })
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
-        next: (response: NlqResponse) => {
-          const msg: ChatMessage = {
-            role: 'assistant',
-            text: response.answer,
-            displayedText: '',
-            isAnimating: true,
-            data: response.data,
-            vizType: response.vizType,
-            vizFields: response.vizFields,
-          };
-          if (response.data && (response.vizType === 'bar' || response.vizType === 'line')) {
-            msg.chartData = this.buildChartData(response.data, response.vizType, response.vizFields);
+        next: (evt) => {
+          if (evt.protocol === 'agui') {
+            const e = evt.event;
+
+            if (e.type === 'TOOL_CALL_START') {
+              assistantMsg.activeToolCall = e.toolName;
+            }
+
+            if (e.type === 'TOOL_CALL_END') {
+              assistantMsg.activeToolCall = undefined;
+            }
+
+            if (e.type === 'TEXT_MESSAGE_CONTENT') {
+              assistantMsg.text += e.delta;
+              this.ensureTypewriter(assistantMsg);
+              this.shouldScrollToBottom = true;
+            }
+
+            if (e.type === 'RUN_FINISH' || e.type === 'RUN_ERROR') {
+              if (e.type === 'RUN_ERROR') {
+                assistantMsg.text = 'Виникла помилка. Спробуйте ще раз.';
+                this.ensureTypewriter(assistantMsg);
+              }
+              assistantMsg.activeToolCall = undefined;
+              this.loading = false;
+              this.shouldScrollToBottom = true;
+            }
           }
-          this.messages.push(msg);
-          this.loading = false;
-          this.shouldScrollToBottom = true;
-          this.startTypewriter(msg);
+
+          if (evt.protocol === 'a2ui') {
+            try {
+              const msg = evt.event as Types.ServerToClientMessage;
+
+              // Capture surfaceId from the first beginRendering message
+              if ('beginRendering' in msg && !assistantMsg.a2uiSurfaceId) {
+                assistantMsg.a2uiSurfaceId = msg.beginRendering?.surfaceId;
+              }
+
+              // Cast through unknown to bridge the two web_core version instances
+              this.processor.processMessages([msg as unknown as Parameters<typeof this.processor.processMessages>[0][number]]);
+
+              if (assistantMsg.a2uiSurfaceId) {
+                assistantMsg.a2uiSurface = (
+                  this.processor.getSurfaces().get(assistantMsg.a2uiSurfaceId) ?? null
+                ) as Types.Surface | null;
+              }
+            } catch {
+              // ignore malformed A2UI messages
+            }
+          }
+
+          this.cdr.detectChanges();
         },
         error: () => {
-          this.messages.push({
-            role: 'assistant',
-            text: 'Виникла помилка. Спробуйте ще раз.',
-          });
+          assistantMsg.text = 'Виникла помилка. Спробуйте ще раз.';
+          this.ensureTypewriter(assistantMsg);
+          assistantMsg.activeToolCall = undefined;
           this.loading = false;
           this.shouldScrollToBottom = true;
+          this.cdr.detectChanges();
+        },
+        complete: () => {
+          this.loading = false;
+          this.cdr.detectChanges();
         },
       });
   }
@@ -138,121 +157,6 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
       event.preventDefault();
       this.submit();
     }
-  }
-
-  getTableRows(data: unknown): Record<string, unknown>[] {
-    if (!data) return [];
-    const d = data as any;
-    const rows = d?.data ?? (Array.isArray(d) ? d : []);
-    return rows.slice(0, 10);
-  }
-
-  getTableColumns(data: unknown): { key: string; label: string }[] {
-    const rows = this.getTableRows(data);
-    const first = rows[0];
-    if (!first) return [];
-    const exclude = new Set(['dropshipperId', 'productId']);
-    return Object.keys(first)
-      .filter((k) => !exclude.has(k))
-      .map((k) => ({ key: k, label: COLUMN_LABELS[k] ?? k }));
-  }
-
-  formatCellValue(value: unknown): string {
-    if (value === null || value === undefined) return '—';
-    // Decimal.js serializes to string; try to format numbers
-    const num = Number(value);
-    if (!isNaN(num) && typeof value === 'string' && value.includes('.')) {
-      return num.toFixed(2);
-    }
-    return String(value);
-  }
-
-  buildChartData(data: unknown, vizType: 'bar' | 'line', vizFields?: string[]): any {
-    const d = data as any;
-    const rows: any[] = d?.data ?? (Array.isArray(d) ? d : []);
-    const s = getComputedStyle(document.documentElement);
-    const blue   = s.getPropertyValue('--blue-500').trim()   || '#42A5F5';
-    const green  = s.getPropertyValue('--green-500').trim()  || '#66BB6A';
-    const red    = s.getPropertyValue('--red-500').trim()    || '#EF5350';
-    const teal   = s.getPropertyValue('--teal-500').trim()   || '#26A69A';
-    const orange = s.getPropertyValue('--orange-400').trim() || '#FFA726';
-    const purple = s.getPropertyValue('--purple-400').trim() || '#AB47BC';
-
-    if (vizType === 'bar') {
-      return {
-        labels: rows.map((r) => r.status),
-        datasets: [{ label: 'К-ть замовлень', data: rows.map((r) => r.count), backgroundColor: blue }],
-      };
-    }
-
-    const ALL_LINE_DATASETS = [
-      { field: 'ordersCount',       label: 'Замовлень',             color: blue,   numeric: false },
-      { field: 'revenueAmount',     label: 'Дохід (₴)',             color: green,  numeric: true  },
-      { field: 'totalAmount',       label: 'Заг. сума (₴)',         color: orange, numeric: true  },
-      { field: 'processedCount',    label: 'Виконано',              color: teal,   numeric: false },
-      { field: 'returnedCount',     label: 'Повернено',             color: red,    numeric: false },
-      { field: 'averageOrderValue', label: 'Сер. замовлення (₴)',   color: purple, numeric: true  },
-    ];
-
-    const active = vizFields?.length
-      ? ALL_LINE_DATASETS.filter((d) => vizFields.includes(d.field))
-      : ALL_LINE_DATASETS.filter((d) => ['ordersCount', 'revenueAmount'].includes(d.field));
-
-    return {
-      labels: rows.map((r) => r.month),
-      datasets: active.map((d) => ({
-        label: d.label,
-        data: rows.map((r) => d.numeric ? Number(r[d.field]) : r[d.field]),
-        borderColor: d.color,
-        fill: false,
-        tension: 0.4,
-      })),
-    };
-  }
-
-  getKpiEntries(data: unknown): { label: string; value: string }[] {
-    if (!data) return [];
-    const summary = (data as any)?.summary ?? {};
-    const labels: Record<string, string> = {
-      totalOrdersCount: 'Всього замовлень',
-      totalRevenue: 'Загальний дохід',
-      averageOrderValue: 'Середнє замовлення',
-      averageProcessingTime: 'Час обробки (год)',
-      completedOrdersCount: 'Виконано',
-      cancelledOrdersCount: 'Скасовано',
-      refundedOrdersCount: 'Повернено',
-      refusedOrdersCount: 'Відмовлено',
-    };
-    return Object.entries(summary).map(([key, value]) => ({
-      label: labels[key] ?? key,
-      value: this.formatKpiValue(value),
-    }));
-  }
-
-  private formatKpiValue(value: unknown): string {
-    if (value === null || value === undefined) return '—';
-    const num = Number(value);
-    if (!isNaN(num)) return num.toFixed(2).replace(/\.00$/, '');
-    return String(value);
-  }
-
-  private startTypewriter(msg: ChatMessage) {
-    const fullText = msg.text;
-    const charsPerTick = Math.max(1, Math.ceil(fullText.length / 50));
-
-    const id = setInterval(() => {
-      const current = msg.displayedText?.length ?? 0;
-      if (current >= fullText.length) {
-        msg.displayedText = fullText;
-        msg.isAnimating = false;
-        clearInterval(id);
-      } else {
-        msg.displayedText = fullText.slice(0, current + charsPerTick);
-        this.shouldScrollToBottom = true;
-      }
-    }, 20);
-
-    this.animationIntervals.push(id);
   }
 
   clearChat() {
@@ -273,5 +177,33 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
     this.animationIntervals.forEach(clearInterval);
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  private startTypewriter(msg: ChatMessage) {
+    msg.isAnimating = true;
+
+    const id = setInterval(() => {
+      const fullText = msg.text;
+      const current = msg.displayedText?.length ?? 0;
+
+      if (current >= fullText.length) {
+        msg.displayedText = fullText;
+        msg.isAnimating = false;
+        clearInterval(id);
+      } else {
+        const charsPerTick = Math.max(1, Math.ceil((fullText.length - current) / 12));
+        msg.displayedText = fullText.slice(0, current + charsPerTick);
+        this.shouldScrollToBottom = true;
+      }
+
+      this.cdr.detectChanges();
+    }, 20);
+
+    this.animationIntervals.push(id);
+  }
+
+  private ensureTypewriter(msg: ChatMessage) {
+    if (msg.isAnimating) return;
+    this.startTypewriter(msg);
   }
 }
