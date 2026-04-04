@@ -1,5 +1,5 @@
 #!/bin/sh
-ssh charuk@164.90.184.112 <<EOF
+ssh root@164.90.184.112 <<EOF
  cd /var/www/sales.hvoya.com/api
  npm run db:backup
  pm2 stop 0
