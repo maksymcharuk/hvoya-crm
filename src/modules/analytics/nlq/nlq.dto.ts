@@ -25,3 +25,31 @@ export interface NlqResponseDto {
   toolCalled: string | null;
   data: unknown;
 }
+
+/**
+ * Minimal subset of AG-UI RunAgentInput used by the /stream endpoint.
+ * The full spec includes threadId, runId, state, tools, context, forwardedProps.
+ */
+export class RunAgentMessageDto {
+  @IsString()
+  id: string;
+
+  @IsString()
+  role: 'user' | 'assistant';
+
+  @IsString()
+  content: string;
+}
+
+export class RunAgentInputDto {
+  @IsString()
+  threadId: string;
+
+  @IsString()
+  runId: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RunAgentMessageDto)
+  messages: RunAgentMessageDto[];
+}

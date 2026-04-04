@@ -15,7 +15,7 @@ import { AnalyticsDateRangeDto } from '@dtos/analytics/analytics-date-range.dto'
 import { AnalyticsPageOptionsDto } from '@dtos/analytics/analytics-page-options.dto';
 
 import { AnalyticsService } from '../services/analytics.service';
-import { NlqMessageDto, NlqRequestDto, NlqResponseDto } from './nlq.dto';
+import { NlqMessageDto, NlqRequestDto, NlqResponseDto, RunAgentInputDto } from './nlq.dto';
 
 const TOOLS: ChatCompletionTool[] = [
   {
@@ -321,18 +321,29 @@ export class NlqService {
     };
   }
 
-  async stream(dto: NlqRequestDto, res: Response): Promise<void> {
-    const emit = (eventName: string, data: unknown) => {
-      res.write(`event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`);
+  async stream(dto: RunAgentInputDto, res: Response): Promise<void> {
+    // Standard AG-UI SSE format: plain data lines, no event: prefix
+    const emit = (data: unknown) => {
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
     };
 
+    // Extract question from last user message; treat prior messages as history
+    const lastMsg = dto.messages[dto.messages.length - 1];
+    const question = lastMsg?.content ?? '';
+    const history = dto.messages.slice(0, -1).map((m) => ({
+      role: m.role,
+      content: m.content,
+    }));
+
+    const { threadId, runId } = dto;
+
     try {
-      emit('agui', { type: 'RUN_STARTED' });
+      emit({ type: 'RUN_STARTED', threadId, runId });
 
       const messages: ChatCompletionMessageParam[] = [
         { role: 'system', content: SYSTEM_PROMPT },
-        ...this.mapHistory(dto.conversationHistory),
-        { role: 'user', content: dto.question },
+        ...history,
+        { role: 'user', content: question },
       ];
 
       const firstResponse = await this.openai.chat.completions.create({
@@ -346,10 +357,10 @@ export class NlqService {
       const messageId = 'msg-1';
 
       if (!firstChoice.tool_calls?.length) {
-        emit('agui', { type: 'TEXT_MESSAGE_START', messageId });
-        emit('agui', { type: 'TEXT_MESSAGE_CONTENT', messageId, delta: firstChoice.content ?? '' });
-        emit('agui', { type: 'TEXT_MESSAGE_END', messageId });
-        emit('agui', { type: 'RUN_FINISHED' });
+        emit({ type: 'TEXT_MESSAGE_START', messageId });
+        emit({ type: 'TEXT_MESSAGE_CONTENT', messageId, delta: firstChoice.content ?? '' });
+        emit({ type: 'TEXT_MESSAGE_END', messageId });
+        emit({ type: 'RUN_FINISHED', threadId, runId });
         return;
       }
 
@@ -357,9 +368,9 @@ export class NlqService {
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments || '{}') as Record<string, any>;
 
-      emit('agui', { type: 'TOOL_CALL_START', toolCallId: toolCall.id, toolCallName: toolName });
+      emit({ type: 'TOOL_CALL_START', toolCallId: toolCall.id, toolCallName: toolName });
       const toolResult = await this.dispatchTool(toolName, toolArgs);
-      emit('agui', { type: 'TOOL_CALL_END', toolCallId: toolCall.id });
+      emit({ type: 'TOOL_CALL_END', toolCallId: toolCall.id });
 
       const surfaceId = `viz-${randomUUID()}`;
       const toolMessages: ChatCompletionMessageParam[] = [
@@ -375,27 +386,28 @@ export class NlqService {
           messages: toolMessages,
           stream: true,
         }),
-        this.generateA2uiMessages(dto.question, toolName, toolResult, surfaceId),
+        this.generateA2uiMessages(question, toolName, toolResult, surfaceId),
       ]);
 
-      // Emit A2UI visualization first so it appears before the text
+      // Emit A2UI messages wrapped as CUSTOM AG-UI events so the frontend
+      // receives them on the single standard SSE stream
       for (const msg of a2uiMessages) {
-        emit('a2ui', msg);
+        emit({ type: 'CUSTOM', name: 'a2ui', value: msg });
       }
 
-      emit('agui', { type: 'TEXT_MESSAGE_START', messageId });
+      emit({ type: 'TEXT_MESSAGE_START', messageId });
 
       for await (const chunk of streamResponse) {
         const delta = chunk.choices[0]?.delta?.content ?? '';
         if (delta) {
-          emit('agui', { type: 'TEXT_MESSAGE_CONTENT', messageId, delta });
+          emit({ type: 'TEXT_MESSAGE_CONTENT', messageId, delta });
         }
       }
 
-      emit('agui', { type: 'TEXT_MESSAGE_END', messageId });
-      emit('agui', { type: 'RUN_FINISHED' });
+      emit({ type: 'TEXT_MESSAGE_END', messageId });
+      emit({ type: 'RUN_FINISHED', threadId, runId });
     } catch (err) {
-      emit('agui', { type: 'RUN_ERROR', message: String(err) });
+      emit({ type: 'RUN_ERROR', message: String(err) });
     } finally {
       res.end();
     }

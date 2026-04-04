@@ -122,8 +122,11 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
                 assistantMsg.a2uiSurfaceId = msg.beginRendering?.surfaceId;
               }
 
-              // Cast through unknown to bridge the two web_core version instances
-              this.processor.processMessages([msg as unknown as Parameters<typeof this.processor.processMessages>[0][number]]);
+              // Cast through unknown to bridge the two web_core version instances.
+              // Guard against null values that cause async throws inside processMessages.
+              if (msg != null) {
+                this.processor.processMessages([msg as unknown as Parameters<typeof this.processor.processMessages>[0][number]]);
+              }
 
               if (assistantMsg.a2uiSurfaceId) {
                 assistantMsg.a2uiSurface = (

@@ -8,7 +8,7 @@ import { AppAbility } from '@modules/casl/casl-ability/casl-ability.factory';
 import { CheckPolicies } from '@modules/casl/check-policies.decorator';
 import { PoliciesGuard } from '@modules/casl/policies.guard';
 
-import { NlqRequestDto } from './nlq.dto';
+import { NlqRequestDto, RunAgentInputDto } from './nlq.dto';
 import { NlqService } from './nlq.service';
 
 @Controller('analytics/nlq')
@@ -24,7 +24,7 @@ export class NlqController {
 
   @Post('stream')
   @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, 'AdminAalytics'))
-  async stream(@Body() dto: NlqRequestDto, @Res() res: Response) {
+  async stream(@Body() dto: RunAgentInputDto, @Res() res: Response) {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');

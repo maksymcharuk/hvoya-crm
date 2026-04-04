@@ -1,5 +1,6 @@
 import type { Types } from '@a2ui/lit/0.8';
-import type { AGUIEvent } from '@ag-ui/core';
+import type { AGUIEvent, CustomEvent } from '@ag-ui/core';
+import { HttpAgent, randomUUID } from '@ag-ui/client';
 import { Observable, map } from 'rxjs';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -243,90 +244,58 @@ export class AdminAnalyticsService {
   }
 
   /**
-   * Stream a natural language question over SSE.
-   * Emits typed events from both the AG-UI and A2UI protocols.
+   * Stream a natural language question over SSE using the official AG-UI HttpAgent.
    *
-   * AG-UI events carry the conversational layer:
-   *   RUN_START, TOOL_CALL_START/END, TEXT_MESSAGE_CONTENT (streamed), RUN_FINISH
+   * The backend emits standard AG-UI events as plain `data:` SSE lines.
+   * A2UI visualization messages are embedded as CUSTOM events (name: 'a2ui')
+   * and unpacked back into the { protocol: 'a2ui' } shape here.
    *
-   * A2UI events carry declarative UI: component tree + data model for the visualization.
+   * Note: we wrap agent.run() in a new Observable to bridge the RxJS instance
+   * bundled inside @ag-ui/client with Angular's own RxJS instance.
    */
   streamNlq(request: NlqRequest): Observable<NlqStreamEvent> {
-    return new Observable((observer) => {
-      const token = this.tokenService.getToken();
-      let aborted = false;
-      const controller = new AbortController();
+    const token = this.tokenService.getToken();
 
-      fetch(`${environment.apiUrl}/analytics/nlq/stream`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(request),
-        signal: controller.signal,
-      })
-        .then((response) => {
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          if (!response.body) throw new Error('No response body');
+    const agent = new HttpAgent({
+      url: `${environment.apiUrl}/analytics/nlq/stream`,
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
 
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let buffer = '';
+    // Build the RunAgentInput messages array: history + current question
+    const history = (request.conversationHistory ?? []).map((m) => ({
+      id: randomUUID(),
+      role: m.role as 'user' | 'assistant',
+      content: m.content,
+    }));
+    const input = {
+      threadId: randomUUID(),
+      runId: randomUUID(),
+      context: [],
+      tools: [],
+      messages: [
+        ...history,
+        { id: randomUUID(), role: 'user' as const, content: request.question },
+      ],
+    };
 
-          const pump = (): Promise<void> =>
-            reader.read().then(({ done, value }) => {
-              if (done || aborted) {
-                observer.complete();
-                return;
-              }
-
-              buffer += decoder.decode(value, { stream: true });
-              const blocks = buffer.split('\n\n');
-              // Keep the last (possibly incomplete) block in the buffer
-              buffer = blocks.pop() ?? '';
-
-              for (const block of blocks) {
-                let eventName = '';
-                let dataLine = '';
-                for (const line of block.split('\n')) {
-                  if (line.startsWith('event: '))
-                    eventName = line.slice(7).trim();
-                  if (line.startsWith('data: ')) dataLine = line.slice(6);
-                }
-                if (!dataLine) continue;
-                try {
-                  const parsed = JSON.parse(dataLine);
-                  if (eventName === 'agui') {
-                    observer.next({
-                      protocol: 'agui',
-                      event: parsed as AGUIEvent,
-                    });
-                  } else if (eventName === 'a2ui') {
-                    observer.next({
-                      protocol: 'a2ui',
-                      event: parsed as Types.ServerToClientMessage,
-                    });
-                  }
-                } catch {
-                  // malformed JSON — skip
-                }
-              }
-
-              return pump();
+    return new Observable<NlqStreamEvent>((observer) => {
+      const sub = agent.run(input).subscribe({
+        next: (event) => {
+          // CUSTOM events with name 'a2ui' carry A2UI visualization messages
+          if (event.type === 'CUSTOM' && (event as CustomEvent).name === 'a2ui') {
+            observer.next({
+              protocol: 'a2ui',
+              event: (event as CustomEvent).value as Types.ServerToClientMessage,
             });
+          } else {
+            observer.next({ protocol: 'agui', event: event as AGUIEvent });
+          }
+        },
+        error: (err) => observer.error(err),
+        complete: () => observer.complete(),
+      });
 
-          return pump();
-        })
-        .catch((err) => {
-          if (!aborted) observer.error(err);
-        });
-
-      // Teardown: abort the fetch when the Observable is unsubscribed
-      return () => {
-        aborted = true;
-        controller.abort();
-      };
+      return () => sub.unsubscribe();
     });
   }
 
