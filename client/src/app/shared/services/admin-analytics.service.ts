@@ -3,13 +3,26 @@ import { Observable, map } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+import { environment } from '@environment/environment';
+import { DropshipperAnalytics } from '@shared/interfaces/analystics/dropshipper-analytics.interface';
+import {
+  OrdersByMonthData,
+  OrdersByStatusData,
+  OrdersSummaryResponse,
+} from '@shared/interfaces/analystics/orders-analytics.interface';
+import { PaginatedResponse } from '@shared/interfaces/analystics/paginated-response.interface';
+import {
+  ProductAnalytics,
+  ProductTimeline,
+} from '@shared/interfaces/analystics/products-analytics.interface';
+import type { Types } from '@a2ui/lit/0.8';
 import { AguiEvent } from '@shared/protocols/ag-ui.types';
-import { A2uiMessage } from '@shared/protocols/a2ui.types';
+
 import { TokenService } from './token.service';
 
 export type NlqStreamEvent =
   | { protocol: 'agui'; event: AguiEvent }
-  | { protocol: 'a2ui'; event: A2uiMessage };
+  | { protocol: 'a2ui'; event: Types.ServerToClientMessage };
 
 export type VizType = 'table' | 'bar' | 'line' | 'kpi';
 
@@ -31,19 +44,6 @@ export interface NlqResponse {
   vizFields?: string[];
 }
 
-import { environment } from '@environment/environment';
-import { DropshipperAnalytics } from '@shared/interfaces/analystics/dropshipper-analytics.interface';
-import {
-  OrdersByMonthData,
-  OrdersByStatusData,
-  OrdersSummaryResponse,
-} from '@shared/interfaces/analystics/orders-analytics.interface';
-import { PaginatedResponse } from '@shared/interfaces/analystics/paginated-response.interface';
-import {
-  ProductAnalytics,
-  ProductTimeline,
-} from '@shared/interfaces/analystics/products-analytics.interface';
-
 export interface DateRange {
   from?: Date;
   to?: Date;
@@ -62,10 +62,7 @@ export interface PaginationOptions {
 export class AdminAnalyticsService {
   private readonly baseUrl = `${environment.apiUrl}/analytics/admin`;
 
-  constructor(
-    private http: HttpClient,
-    private tokenService: TokenService,
-  ) {}
+  constructor(private http: HttpClient, private tokenService: TokenService) {}
 
   /**
    * Fetch dropshippers analytics with pagination and date filtering
@@ -293,16 +290,23 @@ export class AdminAnalyticsService {
                 let eventName = '';
                 let dataLine = '';
                 for (const line of block.split('\n')) {
-                  if (line.startsWith('event: ')) eventName = line.slice(7).trim();
+                  if (line.startsWith('event: '))
+                    eventName = line.slice(7).trim();
                   if (line.startsWith('data: ')) dataLine = line.slice(6);
                 }
                 if (!dataLine) continue;
                 try {
                   const parsed = JSON.parse(dataLine);
                   if (eventName === 'agui') {
-                    observer.next({ protocol: 'agui', event: parsed as AguiEvent });
+                    observer.next({
+                      protocol: 'agui',
+                      event: parsed as AguiEvent,
+                    });
                   } else if (eventName === 'a2ui') {
-                    observer.next({ protocol: 'a2ui', event: parsed as A2uiMessage });
+                    observer.next({
+                      protocol: 'a2ui',
+                      event: parsed as Types.ServerToClientMessage,
+                    });
                   }
                 } catch {
                   // malformed JSON — skip
