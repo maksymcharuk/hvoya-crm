@@ -89,7 +89,7 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
             const e = evt.event;
 
             if (e.type === 'TOOL_CALL_START') {
-              assistantMsg.activeToolCall = e.toolName;
+              assistantMsg.activeToolCall = e.toolCallName;
             }
 
             if (e.type === 'TOOL_CALL_END') {
@@ -102,7 +102,7 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
               this.shouldScrollToBottom = true;
             }
 
-            if (e.type === 'RUN_FINISH' || e.type === 'RUN_ERROR') {
+            if (e.type === 'RUN_FINISHED' || e.type === 'RUN_ERROR') {
               if (e.type === 'RUN_ERROR') {
                 assistantMsg.text = 'Виникла помилка. Спробуйте ще раз.';
                 this.ensureTypewriter(assistantMsg);

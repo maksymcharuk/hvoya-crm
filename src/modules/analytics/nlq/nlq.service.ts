@@ -327,7 +327,7 @@ export class NlqService {
     };
 
     try {
-      emit('agui', { type: 'RUN_START' });
+      emit('agui', { type: 'RUN_STARTED' });
 
       const messages: ChatCompletionMessageParam[] = [
         { role: 'system', content: SYSTEM_PROMPT },
@@ -349,7 +349,7 @@ export class NlqService {
         emit('agui', { type: 'TEXT_MESSAGE_START', messageId });
         emit('agui', { type: 'TEXT_MESSAGE_CONTENT', messageId, delta: firstChoice.content ?? '' });
         emit('agui', { type: 'TEXT_MESSAGE_END', messageId });
-        emit('agui', { type: 'RUN_FINISH' });
+        emit('agui', { type: 'RUN_FINISHED' });
         return;
       }
 
@@ -357,7 +357,7 @@ export class NlqService {
       const toolName = toolCall.function.name;
       const toolArgs = JSON.parse(toolCall.function.arguments || '{}') as Record<string, any>;
 
-      emit('agui', { type: 'TOOL_CALL_START', toolCallId: toolCall.id, toolName });
+      emit('agui', { type: 'TOOL_CALL_START', toolCallId: toolCall.id, toolCallName: toolName });
       const toolResult = await this.dispatchTool(toolName, toolArgs);
       emit('agui', { type: 'TOOL_CALL_END', toolCallId: toolCall.id });
 
@@ -393,9 +393,9 @@ export class NlqService {
       }
 
       emit('agui', { type: 'TEXT_MESSAGE_END', messageId });
-      emit('agui', { type: 'RUN_FINISH' });
+      emit('agui', { type: 'RUN_FINISHED' });
     } catch (err) {
-      emit('agui', { type: 'RUN_ERROR', error: String(err) });
+      emit('agui', { type: 'RUN_ERROR', message: String(err) });
     } finally {
       res.end();
     }

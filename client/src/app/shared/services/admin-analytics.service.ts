@@ -1,3 +1,5 @@
+import type { Types } from '@a2ui/lit/0.8';
+import type { AGUIEvent } from '@ag-ui/core';
 import { Observable, map } from 'rxjs';
 
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -15,13 +17,11 @@ import {
   ProductAnalytics,
   ProductTimeline,
 } from '@shared/interfaces/analystics/products-analytics.interface';
-import type { Types } from '@a2ui/lit/0.8';
-import { AguiEvent } from '@shared/protocols/ag-ui.types';
 
 import { TokenService } from './token.service';
 
 export type NlqStreamEvent =
-  | { protocol: 'agui'; event: AguiEvent }
+  | { protocol: 'agui'; event: AGUIEvent }
   | { protocol: 'a2ui'; event: Types.ServerToClientMessage };
 
 export type VizType = 'table' | 'bar' | 'line' | 'kpi';
@@ -300,7 +300,7 @@ export class AdminAnalyticsService {
                   if (eventName === 'agui') {
                     observer.next({
                       protocol: 'agui',
-                      event: parsed as AguiEvent,
+                      event: parsed as AGUIEvent,
                     });
                   } else if (eventName === 'a2ui') {
                     observer.next({
