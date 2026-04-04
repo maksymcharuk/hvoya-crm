@@ -45,6 +45,7 @@
     "test:ui"
   ],
   "dependencies": {
+    "@ag-ui/encoder": "^0.0.50",
     "@aws-sdk/client-s3": "^3.370.0",
     "@casl/ability": "^6.3.3",
     "@nestjs/axios": "^2.0.0",

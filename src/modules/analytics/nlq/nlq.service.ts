@@ -1,12 +1,14 @@
+import { EventType } from '@ag-ui/core';
+import type { BaseEvent } from '@ag-ui/core';
+import { EventEncoder } from '@ag-ui/encoder';
 import { randomUUID } from 'crypto';
-
+import { Response } from 'express';
 import OpenAI from 'openai';
 import type {
   ChatCompletionMessageFunctionToolCall,
   ChatCompletionMessageParam,
   ChatCompletionTool,
 } from 'openai/resources';
-import { Response } from 'express';
 
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -15,7 +17,12 @@ import { AnalyticsDateRangeDto } from '@dtos/analytics/analytics-date-range.dto'
 import { AnalyticsPageOptionsDto } from '@dtos/analytics/analytics-page-options.dto';
 
 import { AnalyticsService } from '../services/analytics.service';
-import { NlqMessageDto, NlqRequestDto, NlqResponseDto, RunAgentInputDto } from './nlq.dto';
+import {
+  NlqMessageDto,
+  NlqRequestDto,
+  NlqResponseDto,
+  RunAgentInputDto,
+} from './nlq.dto';
 
 const TOOLS: ChatCompletionTool[] = [
   {
@@ -96,7 +103,8 @@ const TOOLS: ChatCompletionTool[] = [
           order: {
             type: 'string',
             enum: ['ASC', 'DESC'],
-            description: 'Sort direction: DESC (default) for top/most, ASC for bottom/least',
+            description:
+              'Sort direction: DESC (default) for top/most, ASC for bottom/least',
           },
         },
       },
@@ -126,12 +134,14 @@ const TOOLS: ChatCompletionTool[] = [
               'returnedCount',
               'walletBalance',
             ],
-            description: 'Field to sort dropshippers by. Use returnedCount for questions about number of returned orders, returnRate for percentage-based return questions.',
+            description:
+              'Field to sort dropshippers by. Use returnedCount for questions about number of returned orders, returnRate for percentage-based return questions.',
           },
           order: {
             type: 'string',
             enum: ['ASC', 'DESC'],
-            description: 'Sort direction: DESC (default) for top/most, ASC for bottom/least',
+            description:
+              'Sort direction: DESC (default) for top/most, ASC for bottom/least',
           },
         },
       },
@@ -181,7 +191,8 @@ Sorting rules:
  * Prompt for A2UI component tree generation.
  * Describes the available catalog and instructs the LLM to output valid A2UI messages.
  */
-const buildA2uiSystemPrompt = (surfaceId: string): string => `
+const buildA2uiSystemPrompt = (surfaceId: string): string =>
+  `
 You generate A2UI component trees to visualize analytics data.
 Output ONLY a JSON object in this exact shape: {"messages": [...]}
 
@@ -289,7 +300,7 @@ export class NlqService {
     ];
 
     const firstResponse = await this.openai.chat.completions.create({
-      model: 'gpt-5.4-nano',
+      model: 'gpt-5.4-mini',
       messages,
       tools: TOOLS,
       tool_choice: 'auto',
@@ -298,19 +309,34 @@ export class NlqService {
     const firstChoice = firstResponse.choices[0]!.message;
 
     if (!firstChoice.tool_calls?.length) {
-      return { answer: firstChoice.content ?? '', toolCalled: null, data: null };
+      return {
+        answer: firstChoice.content ?? '',
+        toolCalled: null,
+        data: null,
+      };
     }
 
-    const toolCall = firstChoice.tool_calls[0] as ChatCompletionMessageFunctionToolCall;
-    const toolArgs = JSON.parse(toolCall.function.arguments || '{}') as Record<string, any>;
-    const toolResult = await this.dispatchTool(toolCall.function.name, toolArgs);
+    const toolCall = firstChoice
+      .tool_calls[0] as ChatCompletionMessageFunctionToolCall;
+    const toolArgs = JSON.parse(toolCall.function.arguments || '{}') as Record<
+      string,
+      any
+    >;
+    const toolResult = await this.dispatchTool(
+      toolCall.function.name,
+      toolArgs,
+    );
 
     const secondResponse = await this.openai.chat.completions.create({
       model: 'gpt-5.4-nano',
       messages: [
         ...messages,
         firstChoice,
-        { role: 'tool', tool_call_id: toolCall.id, content: JSON.stringify(toolResult) },
+        {
+          role: 'tool',
+          tool_call_id: toolCall.id,
+          content: JSON.stringify(toolResult),
+        },
       ],
     });
 
@@ -321,10 +347,17 @@ export class NlqService {
     };
   }
 
-  async stream(dto: RunAgentInputDto, res: Response): Promise<void> {
-    // Standard AG-UI SSE format: plain data lines, no event: prefix
-    const emit = (data: unknown) => {
-      res.write(`data: ${JSON.stringify(data)}\n\n`);
+  async stream(
+    dto: RunAgentInputDto,
+    res: Response,
+    accept?: string,
+  ): Promise<void> {
+    const encoder = new EventEncoder({ accept });
+    res.setHeader('Content-Type', encoder.getContentType());
+    res.flushHeaders();
+
+    const emit = (event: BaseEvent) => {
+      res.write(encoder.encodeSSE(event));
     };
 
     // Extract question from last user message; treat prior messages as history
@@ -338,7 +371,7 @@ export class NlqService {
     const { threadId, runId } = dto;
 
     try {
-      emit({ type: 'RUN_STARTED', threadId, runId });
+      emit({ type: EventType.RUN_STARTED, threadId, runId });
 
       const messages: ChatCompletionMessageParam[] = [
         { role: 'system', content: SYSTEM_PROMPT },
@@ -357,26 +390,41 @@ export class NlqService {
       const messageId = 'msg-1';
 
       if (!firstChoice.tool_calls?.length) {
-        emit({ type: 'TEXT_MESSAGE_START', messageId });
-        emit({ type: 'TEXT_MESSAGE_CONTENT', messageId, delta: firstChoice.content ?? '' });
-        emit({ type: 'TEXT_MESSAGE_END', messageId });
-        emit({ type: 'RUN_FINISHED', threadId, runId });
+        emit({ type: EventType.TEXT_MESSAGE_START, messageId });
+        emit({
+          type: EventType.TEXT_MESSAGE_CONTENT,
+          messageId,
+          delta: firstChoice.content ?? '',
+        });
+        emit({ type: EventType.TEXT_MESSAGE_END, messageId });
+        emit({ type: EventType.RUN_FINISHED, threadId, runId });
         return;
       }
 
-      const toolCall = firstChoice.tool_calls[0] as ChatCompletionMessageFunctionToolCall;
+      const toolCall = firstChoice
+        .tool_calls[0] as ChatCompletionMessageFunctionToolCall;
       const toolName = toolCall.function.name;
-      const toolArgs = JSON.parse(toolCall.function.arguments || '{}') as Record<string, any>;
+      const toolArgs = JSON.parse(
+        toolCall.function.arguments || '{}',
+      ) as Record<string, any>;
 
-      emit({ type: 'TOOL_CALL_START', toolCallId: toolCall.id, toolCallName: toolName });
+      emit({
+        type: EventType.TOOL_CALL_START,
+        toolCallId: toolCall.id,
+        toolCallName: toolName,
+      });
       const toolResult = await this.dispatchTool(toolName, toolArgs);
-      emit({ type: 'TOOL_CALL_END', toolCallId: toolCall.id });
+      emit({ type: EventType.TOOL_CALL_END, toolCallId: toolCall.id });
 
       const surfaceId = `viz-${randomUUID()}`;
       const toolMessages: ChatCompletionMessageParam[] = [
         ...messages,
         firstChoice,
-        { role: 'tool', tool_call_id: toolCall.id, content: JSON.stringify(toolResult) },
+        {
+          role: 'tool',
+          tool_call_id: toolCall.id,
+          content: JSON.stringify(toolResult),
+        },
       ];
 
       // Run text streaming and A2UI generation in parallel to avoid extra latency
@@ -392,22 +440,22 @@ export class NlqService {
       // Emit A2UI messages wrapped as CUSTOM AG-UI events so the frontend
       // receives them on the single standard SSE stream
       for (const msg of a2uiMessages) {
-        emit({ type: 'CUSTOM', name: 'a2ui', value: msg });
+        emit({ type: EventType.CUSTOM, name: 'a2ui', value: msg });
       }
 
-      emit({ type: 'TEXT_MESSAGE_START', messageId });
+      emit({ type: EventType.TEXT_MESSAGE_START, messageId });
 
       for await (const chunk of streamResponse) {
         const delta = chunk.choices[0]?.delta?.content ?? '';
         if (delta) {
-          emit({ type: 'TEXT_MESSAGE_CONTENT', messageId, delta });
+          emit({ type: EventType.TEXT_MESSAGE_CONTENT, messageId, delta });
         }
       }
 
-      emit({ type: 'TEXT_MESSAGE_END', messageId });
-      emit({ type: 'RUN_FINISHED', threadId, runId });
+      emit({ type: EventType.TEXT_MESSAGE_END, messageId });
+      emit({ type: EventType.RUN_FINISHED, threadId, runId });
     } catch (err) {
-      emit({ type: 'RUN_ERROR', message: String(err) });
+      emit({ type: EventType.RUN_ERROR, message: String(err) });
     } finally {
       res.end();
     }
@@ -431,13 +479,17 @@ export class NlqService {
           { role: 'system', content: buildA2uiSystemPrompt(surfaceId) },
           {
             role: 'user',
-            content: `Question: ${question}\nTool called: ${toolName}\nData: ${JSON.stringify(toolResult)}`,
+            content: `Question: ${question}\nTool called: ${toolName}\nData: ${JSON.stringify(
+              toolResult,
+            )}`,
           },
         ],
       });
 
       const raw = response.choices[0]?.message.content ?? '{}';
-      const parsed = JSON.parse(raw) as { messages?: Record<string, unknown>[] };
+      const parsed = JSON.parse(raw) as {
+        messages?: Record<string, unknown>[];
+      };
       return Array.isArray(parsed.messages) ? parsed.messages : [];
     } catch {
       return [];
@@ -449,7 +501,10 @@ export class NlqService {
     return history.map((m) => ({ role: m.role, content: m.content }));
   }
 
-  private buildDateRangeQuery(args: { from?: string; to?: string }): AnalyticsDateRangeDto {
+  private buildDateRangeQuery(args: {
+    from?: string;
+    to?: string;
+  }): AnalyticsDateRangeDto {
     const dto = new AnalyticsDateRangeDto();
     (dto as any).from = args.from ? new Date(args.from) : undefined;
     (dto as any).to = args.to ? new Date(args.to) : undefined;
@@ -471,7 +526,10 @@ export class NlqService {
     return dto;
   }
 
-  private async dispatchTool(name: string, args: Record<string, any>): Promise<unknown> {
+  private async dispatchTool(
+    name: string,
+    args: Record<string, any>,
+  ): Promise<unknown> {
     const query = this.buildDateRangeQuery(args);
     const pageOptions = this.buildPageOptions(args);
 
@@ -485,7 +543,10 @@ export class NlqService {
       case 'getProductsAnalytics':
         return this.analyticsService.getProductsAnalytics(query, pageOptions);
       case 'getDropshippersAnalytics':
-        return this.analyticsService.getDropshippersAnalytics(query as any, pageOptions);
+        return this.analyticsService.getDropshippersAnalytics(
+          query as any,
+          pageOptions,
+        );
       default:
         return null;
     }
