@@ -1,11 +1,11 @@
 import { MessageProcessor } from '@a2ui/angular';
 // Import types from the same web_core instance @a2ui/angular uses internally
 import type { Types } from '@a2ui/lit/0.8';
+import type { StepStartedEvent } from '@ag-ui/core';
 import { marked } from 'marked';
 import { Subject, takeUntil } from 'rxjs';
 
 import {
-  AfterViewChecked,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -27,6 +27,10 @@ interface ChatMessage {
   isAnimating?: boolean;
   /** Set while the agent is calling an analytics tool (AG-UI TOOL_CALL_START). */
   activeToolCall?: string;
+  /** Set while a sub-agent step is running (AG-UI STEP_STARTED). */
+  activeStep?: string;
+  /** Sources returned by the web research sub-agent. */
+  sources?: { url: string; title: string }[];
   /** SurfaceId assigned to this assistant turn by the backend beginRendering message. */
   a2uiSurfaceId?: string;
   /** Live surface reference from the global MessageProcessor. */
@@ -39,7 +43,7 @@ interface ChatMessage {
   templateUrl: './nlq-chat.component.html',
   styleUrls: ['./nlq-chat.component.scss'],
 })
-export class NlqChatComponent implements OnDestroy, AfterViewChecked {
+export class NlqChatComponent implements OnDestroy {
   @ViewChild('messagesContainer') messagesContainer!: ElementRef<HTMLElement>;
 
   messages: ChatMessage[] = [];
@@ -52,7 +56,6 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
   private readonly cdr = inject(ChangeDetectorRef);
 
   private readonly destroyed$ = new Subject<void>();
-  private shouldScrollToBottom = false;
   private readonly animationIntervals: ReturnType<typeof setInterval>[] = [];
 
   renderMarkdown(text: string): SafeHtml {
@@ -66,7 +69,8 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
     this.inputText = '';
     this.messages.push({ role: 'user', text: question });
     this.loading = true;
-    this.shouldScrollToBottom = true;
+    // After Angular renders the new message, scroll it to the top of the container
+    setTimeout(() => this.scrollLastUserMessageToTop());
 
     const history: NlqMessage[] = this.messages
       .slice(0, -1)
@@ -88,6 +92,18 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
           if (evt.protocol === 'agui') {
             const e = evt.event;
 
+            if (e.type === 'STEP_STARTED') {
+              assistantMsg.activeStep = (e as StepStartedEvent).stepName;
+            }
+
+            if (e.type === 'STEP_FINISHED') {
+              assistantMsg.activeStep = undefined;
+            }
+
+            if (e.type === 'CUSTOM' && (e as any).name === 'research-sources') {
+              assistantMsg.sources = (e as any).value as { url: string; title: string }[];
+            }
+
             if (e.type === 'TOOL_CALL_START') {
               assistantMsg.activeToolCall = e.toolCallName;
             }
@@ -99,7 +115,6 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
             if (e.type === 'TEXT_MESSAGE_CONTENT') {
               assistantMsg.text += e.delta;
               this.ensureTypewriter(assistantMsg);
-              this.shouldScrollToBottom = true;
             }
 
             if (e.type === 'RUN_FINISHED' || e.type === 'RUN_ERROR') {
@@ -108,8 +123,8 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
                 this.ensureTypewriter(assistantMsg);
               }
               assistantMsg.activeToolCall = undefined;
+              assistantMsg.activeStep = undefined;
               this.loading = false;
-              this.shouldScrollToBottom = true;
             }
           }
 
@@ -145,7 +160,6 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
           this.ensureTypewriter(assistantMsg);
           assistantMsg.activeToolCall = undefined;
           this.loading = false;
-          this.shouldScrollToBottom = true;
           this.cdr.detectChanges();
         },
         complete: () => {
@@ -168,14 +182,6 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
     this.messages = [];
   }
 
-  ngAfterViewChecked() {
-    if (this.shouldScrollToBottom) {
-      const el = this.messagesContainer?.nativeElement;
-      if (el) el.scrollTop = el.scrollHeight;
-      this.shouldScrollToBottom = false;
-    }
-  }
-
   ngOnDestroy() {
     this.animationIntervals.forEach(clearInterval);
     this.destroyed$.next();
@@ -196,13 +202,22 @@ export class NlqChatComponent implements OnDestroy, AfterViewChecked {
       } else {
         const charsPerTick = Math.max(1, Math.ceil((fullText.length - current) / 12));
         msg.displayedText = fullText.slice(0, current + charsPerTick);
-        this.shouldScrollToBottom = true;
       }
 
       this.cdr.detectChanges();
     }, 20);
 
     this.animationIntervals.push(id);
+  }
+
+  private scrollLastUserMessageToTop() {
+    const container = this.messagesContainer?.nativeElement;
+    if (!container) return;
+    const userMessages = container.querySelectorAll<HTMLElement>('.user-message');
+    const last = userMessages[userMessages.length - 1];
+    if (!last) return;
+    const offset = last.getBoundingClientRect().top - container.getBoundingClientRect().top;
+    container.scrollTop += offset;
   }
 
   private ensureTypewriter(msg: ChatMessage) {

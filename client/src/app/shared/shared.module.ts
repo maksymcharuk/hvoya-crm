@@ -1,32 +1,32 @@
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { BadgeModule } from 'primeng/badge';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
 import { ButtonModule } from 'primeng/button';
-import { DatePickerModule } from 'primeng/datepicker';
 import { ChartModule } from 'primeng/chart';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DatePickerModule } from 'primeng/datepicker';
 import { DialogModule } from 'primeng/dialog';
 import { DragDropModule } from 'primeng/dragdrop';
-import { SelectModule } from 'primeng/select';
 import { EditorModule } from 'primeng/editor';
 import { FileUploadModule } from 'primeng/fileupload';
 import { GalleriaModule } from 'primeng/galleria';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
+import { MessageModule } from 'primeng/message';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PanelModule } from 'primeng/panel';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { TooltipModule } from 'primeng/tooltip';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { MessageModule } from 'primeng/message';
 
 import {
   CommonModule,
@@ -45,9 +45,9 @@ import { RouterModule } from '@angular/router';
 import { AblePipe } from '@casl/angular';
 
 import { DeliveryServiceBadgeComponent } from './components/delivery-service-badge/delivery-service-badge.component';
-import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { FaqItemComponent } from './components/faq-item/faq-item.component';
 import { FaqListComponent } from './components/faq-list/faq-list.component';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { FormControlErrorMessageComponent } from './components/form-control-error-message/form-control-error-message.component';
 import { ImageComponentComponent } from './components/image-component/image-component.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';

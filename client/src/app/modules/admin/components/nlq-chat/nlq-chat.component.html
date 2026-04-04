@@ -68,7 +68,14 @@
                 <span class="dot"></span>
               </div>
             } @else {
-              <!-- AG-UI: tool call in progress — shown above the text -->
+              <!-- AG-UI STEP_STARTED: research sub-agent is running -->
+              @if (msg.activeStep === 'web-research') {
+                <div class="tool-call-indicator research-indicator">
+                  <i class="pi pi-spin pi-globe"></i>
+                  <span>Агент досліджень…</span>
+                </div>
+              }
+              <!-- AG-UI TOOL_CALL_START: analytics tool in progress -->
               @if (msg.activeToolCall) {
                 <div class="tool-call-indicator">
                   <i class="pi pi-spin pi-cog"></i>
@@ -90,6 +97,21 @@
           @if (msg.a2uiSurfaceId && msg.a2uiSurface) {
             <div class="viz-container">
               <a2ui-surface [surfaceId]="msg.a2uiSurfaceId" [surface]="msg.a2uiSurface" />
+            </div>
+          }
+
+          @if (msg.sources?.length) {
+            <div class="sources-list">
+              <span class="sources-label">
+                <i class="pi pi-globe"></i> Джерела
+              </span>
+              <div class="sources-tags">
+                @for (source of msg.sources; track source.url) {
+                  <a [href]="source.url" target="_blank" rel="noopener noreferrer">
+                    <p-tag [value]="source.title || source.url" icon="pi pi-external-link" severity="secondary" />
+                  </a>
+                }
+              </div>
             </div>
           }
         </div>

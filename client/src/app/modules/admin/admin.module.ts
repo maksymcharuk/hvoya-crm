@@ -9,6 +9,7 @@ import { PopoverModule } from 'primeng/popover';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
+import { TagModule } from 'primeng/tag';
 
 import { Surface } from '@a2ui/angular';
 
@@ -60,6 +61,7 @@ import { AdminDashboardComponent } from './pages/dashboard/dashboard.component';
     SkeletonModule,
     ChartModule,
     TabsModule,
+    TagModule,
     TextareaModule,
     TooltipModule,
     Surface,

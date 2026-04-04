@@ -188,7 +188,9 @@
   color: var(--text-color-secondary);
   margin-bottom: 0.35rem;
 
-  i { font-size: 0.75rem; }
+  i {
+    font-size: 0.75rem;
+  }
 }
 
 .loading-bubble {
@@ -284,4 +286,28 @@
     opacity: 0.6;
     cursor: not-allowed;
   }
+}
+
+.sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  .sources-label {
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    i {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+.sources-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
 }
