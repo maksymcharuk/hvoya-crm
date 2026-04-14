@@ -1,28 +1,29 @@
 <p-table
-  [value]="rows()"
-  [columns]="columns()"
+  [value]="tableRows()"
   styleClass="p-datatable-sm"
   [tableStyle]="{ 'min-width': '20rem' }"
 >
-  <ng-template #header let-columns>
+  <ng-template #header>
     <tr>
-      @for (col of columns; track col.field) {
-        <th>{{ col.header }}</th>
+      @for (title of columnTitles(); track $index) {
+        <th>{{ title }}</th>
       }
     </tr>
   </ng-template>
 
-  <ng-template #body let-row let-columns="columns">
+  <ng-template #body let-rowNode>
     <tr>
-      @for (col of columns; track col.field) {
-        <td>{{ row[col.field] ?? '—' }}</td>
+      @for (cellNode of getCellNodes(rowNode); track $index) {
+        <td>
+          <ng-container a2ui-renderer [surfaceId]="surfaceId() ?? ''" [component]="cellNode" />
+        </td>
       }
     </tr>
   </ng-template>
 
   <ng-template #emptymessage>
     <tr>
-      <td [attr.colspan]="columns().length || 1" class="text-center text-muted-color">
+      <td [attr.colspan]="columnTitles().length || 1" class="text-center text-muted-color">
         Немає даних
       </td>
     </tr>

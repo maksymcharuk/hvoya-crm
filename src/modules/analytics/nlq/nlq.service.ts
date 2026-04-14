@@ -254,13 +254,26 @@ Divider:
   {"id":"d1","component":{"Divider":{}}}
 
 ### Custom catalog
-DataTable — renders records as a sortable table (use for products/dropshippers lists):
-  {"id":"dt1","component":{"DataTable":{
-    "columnsJson":{"literalString":"[{\\"field\\":\\"name\\",\\"header\\":\\"Назва\\"}]"},
-    "rowsJson":{"literalString":"[{\\"name\\":\\"Product A\\",\\"revenue\\":1200}]"}
-  }}}
-  columnsJson: JSON-encoded array of {field: string, header: string}
-  rowsJson:    JSON-encoded array of row objects
+DataTable — renders records as a table (use for products/dropshippers lists).
+  columnSpecs: ordered array of column headers (title uses literalString).
+  rows: explicitList of TableRow component IDs (one per data row).
+  TableRow cells: explicitList of cell component IDs (order must match columnSpecs order).
+  Each cell can be any catalog component (Text, Button, etc.).
+
+  Example — 2 columns, 2 rows:
+    {"id":"dt1","component":{"DataTable":{
+      "columnSpecs":[
+        {"title":{"literalString":"Назва"}},
+        {"title":{"literalString":"Дохід"}}
+      ],
+      "rows":{"explicitList":["row-0","row-1"]}
+    }}}
+    {"id":"row-0","component":{"TableRow":{"cells":{"explicitList":["c-0-0","c-0-1"]}}}}
+    {"id":"row-1","component":{"TableRow":{"cells":{"explicitList":["c-1-0","c-1-1"]}}}}
+    {"id":"c-0-0","component":{"Text":{"text":{"literalString":"Product A"},"usageHint":"body"}}}
+    {"id":"c-0-1","component":{"Text":{"text":{"literalString":"1200"},"usageHint":"body"}}}
+    {"id":"c-1-0","component":{"Text":{"text":{"literalString":"Product B"},"usageHint":"body"}}}
+    {"id":"c-1-1","component":{"Text":{"text":{"literalString":"800"},"usageHint":"body"}}}
 
 BarChart — vertical bar chart (use for product/dropshipper comparisons):
   {"id":"bc1","component":{"BarChart":{
