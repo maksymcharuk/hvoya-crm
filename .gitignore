@@ -23,8 +23,6 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
-e2e/cypress/videos
-e2e/cypress/screenshots
 
 # IDEs and editors
 /.idea

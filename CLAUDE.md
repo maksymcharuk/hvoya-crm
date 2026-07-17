@@ -20,9 +20,6 @@ npm run start:test         # Start with test DB (NODE_ENV=test)
 npm run build              # Compile to dist/
 npm run lint               # ESLint with auto-fix
 npm run format:all         # Prettier format
-npm test                   # Jest unit tests (runs serially with --runInBand)
-npm run test:watch         # Jest in watch mode
-npm run test:e2e           # Jest e2e tests (./test/jest-e2e.json)
 ```
 
 ### Database (root directory)
@@ -44,18 +41,9 @@ npm run start              # Angular dev server (port 4200)
 npm run start:test         # Angular test server (port 4201, test configuration)
 npm run build              # Production build
 npm run format:all         # Prettier format
-npm test                   # Karma/Jasmine unit tests (no watch)
-npm run test:watch         # Unit tests in watch mode
 ```
 
-### E2E Tests (client/ directory)
-
-```bash
-# Terminal 1 (root): npm run start:test
-# Terminal 2 (client): npm run start:test
-npm run cypress:open       # Open Cypress UI
-npm run cypress:start      # Run Cypress headless
-```
+There are no automated tests — the old Cypress e2e suite and the abandoned Jest/Karma unit tests were removed in 2026.
 
 ## Architecture
 
