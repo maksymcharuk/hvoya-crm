@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Hvoya CRM is a full-stack application for managing products, orders, users, and deliveries. The backend is NestJS (in the repo root `/src`) and the frontend is Angular 21 (in `/client`). The NestJS server serves the compiled Angular app as static files in production.
 
+## Deployment
+
+`./deploy/deploy.sh` (or the legacy alias `./run_deploy`) performs a release-based, near-zero-downtime deploy to the VPS as user `charuk` — see `deploy/README.md` for the full flow, server layout, and one-time setup (`deploy/setup.sh`). pm2 runs the app via `ecosystem.config.js` (cluster mode, `wait_ready`). A DB backup is uploaded to S3 before migrations on every deploy; S3 retention keeps the 15 newest dumps (`DatabaseService.cleanupOldBackups`).
+
 ## Commands
 
 ### Backend (root directory)

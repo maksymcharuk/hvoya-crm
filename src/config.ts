@@ -7,8 +7,6 @@ import * as winston from 'winston';
 
 import { Env } from './enums/env.enum';
 
-const newrelicFormatter = require('@newrelic/winston-enricher')(winston);
-
 config({
   path: `env/${process.env['NODE_ENV'] === 'test' ? 'test.env' : '.env'}`,
 });
@@ -40,10 +38,6 @@ export default () => {
         prettyPrint: true,
       }),
     ];
-
-    if (process.env['NEW_RELIC_ENABLED'] === 'true') {
-      formatters.unshift(newrelicFormatter());
-    }
 
     return {
       format: winston.format.combine(...formatters),

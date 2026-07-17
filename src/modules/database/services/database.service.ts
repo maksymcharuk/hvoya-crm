@@ -1,4 +1,5 @@
 import {
+  DeleteObjectsCommand,
   GetObjectCommand,
   ListObjectsCommand,
   S3Client,
@@ -15,6 +16,7 @@ import { options } from '../configs/db.configs';
 @Injectable()
 export class DatabaseService {
   static localFileName = 'backup.dump';
+  static backupsToKeep = 15;
   static s3Client = new S3Client({
     region: process.env['AWS_BUCKET_REGION'] || 'blank',
   });
@@ -23,6 +25,7 @@ export class DatabaseService {
     await this.pgBackup();
     await this.uploadDumpToS3();
     await this.deleteLocalFile();
+    await this.cleanupOldBackups();
   }
 
   static async restore() {
@@ -124,6 +127,44 @@ export class DatabaseService {
       fileStream.write(file);
       fileStream.end();
     });
+  }
+
+  private static async cleanupOldBackups() {
+    try {
+      const list = await this.s3Client.send(
+        new ListObjectsCommand({
+          Bucket: process.env['AWS_BUCKET_NAME'] || '',
+        }),
+      );
+
+      const stale = (list.Contents ?? [])
+        .filter((object) => object.Key?.startsWith('backup-'))
+        .sort((a, b) => {
+          if (a.LastModified && b.LastModified) {
+            return a.LastModified > b.LastModified ? -1 : 1;
+          }
+          return 0;
+        })
+        .slice(this.backupsToKeep);
+
+      if (!stale.length) {
+        return;
+      }
+
+      await this.s3Client.send(
+        new DeleteObjectsCommand({
+          Bucket: process.env['AWS_BUCKET_NAME'] || '',
+          Delete: {
+            Objects: stale.map((object) => ({ Key: object.Key })),
+          },
+        }),
+      );
+
+      console.log(`Removed ${stale.length} old backup(s) from S3`);
+    } catch (error) {
+      // A failed cleanup should not fail the backup (or a deploy) itself.
+      console.error('Failed to clean up old backups!', error);
+    }
   }
 
   private static getS3FileName(date: Date) {

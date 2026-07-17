@@ -11,7 +11,8 @@ require('dotenv').config({
  * description of configuration variables and their potential values.
  */
 exports.config = {
-  agent_enabled: process.env.NEW_RELIC_ENABLED,
+  // Must be a real boolean — the raw env var is a string, and 'false' is truthy
+  agent_enabled: process.env.NEW_RELIC_ENABLED === 'true',
   /**
    * Array of application names.
    */

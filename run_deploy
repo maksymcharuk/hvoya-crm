@@ -1,17 +1,3 @@
 #!/bin/sh
-ssh root@164.90.184.112 <<EOF
- cd /var/www/sales.hvoya.com/api
- npm run db:backup
- pm2 stop 0
- git checkout .
- git pull
- npm install --legacy-peer-deps
- npm run build
- npm run migrations:run
- cd /var/www/sales.hvoya.com/api/client
- npm install --legacy-peer-deps
- npm run build
- cd /var/www/sales.hvoya.com/api
- pm2 restart 0
- exit
-EOF
+# Kept for muscle memory — the real deploy lives in deploy/deploy.sh
+exec "$(dirname "$0")/deploy/deploy.sh" "$@"

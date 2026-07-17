@@ -40,7 +40,8 @@ import { UsersModule } from './modules/users/users.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client/browser'),
+      // compiled app.module.js lives in dist/src, so this is <root>/client/dist
+      rootPath: join(__dirname, '..', '..', 'client', 'dist'),
     }),
     ConfigModule.forRoot({
       envFilePath: process.env['NODE_ENV']

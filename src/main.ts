@@ -3,7 +3,6 @@ import * as express from 'express';
 import * as xmlparser from 'express-xml-bodyparser';
 import helmet from 'helmet';
 import * as http from 'http';
-import * as newrelic from 'newrelic';
 import * as nocache from 'nocache';
 
 import { ValidationPipe } from '@nestjs/common';
@@ -47,10 +46,6 @@ async function bootstrap() {
   }
 
   // Other configs
-  if (process.env['NEW_RELIC_ENABLED'] === 'true') {
-    const loaded = newrelic.instrumentLoadedModule('express', server);
-    logger.log('New Relic loaded: ' + loaded);
-  }
   app.enableCors({
     origin: APP_ORIGIN.get(process.env['NODE_ENV'] || Env.Development),
   });
@@ -66,7 +61,21 @@ async function bootstrap() {
 
   await app.init();
 
-  httpServer.listen(process.env['PORT'] || 8080);
+  httpServer.listen(process.env['PORT'] || 8080, () => {
+    // Tells pm2 (wait_ready mode) the new process can take traffic, so the
+    // old one is only killed once this release is actually serving.
+    process.send?.('ready');
+  });
+
+  const shutdown = async (signal: string) => {
+    logger.log(`${signal} received, shutting down gracefully`);
+    // pm2's kill_timeout force-kills us if this hangs (e.g. open websockets)
+    httpServer.close();
+    await app.close();
+    process.exit(0);
+  };
+  process.once('SIGINT', () => shutdown('SIGINT'));
+  process.once('SIGTERM', () => shutdown('SIGTERM'));
 }
 
 bootstrap()
