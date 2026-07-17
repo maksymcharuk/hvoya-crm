@@ -44,6 +44,22 @@ if [ "$NODE_OK" != ok ]; then
   exit 1
 fi
 
+# Builds are memory-hungry (Angular especially). Without this the build once
+# consumed all RAM on the 2GB droplet and hard-locked the whole machine.
+#  - cap the JS heap so a build fails cleanly instead of eating everything
+#  - run builds at lowest CPU/IO priority so the live app stays responsive
+#  - refuse to start without a reasonable amount of memory available
+export NODE_OPTIONS="--max-old-space-size=1024"
+BUILD_NICE="nice -n 19 ionice -c 3"
+
+MEM_AVAILABLE_MB=$(awk '/MemAvailable/ {print int($2/1024)}' /proc/meminfo)
+SWAP_FREE_MB=$(awk '/SwapFree/ {print int($2/1024)}' /proc/meminfo)
+if [ $((MEM_AVAILABLE_MB + SWAP_FREE_MB)) -lt 1200 ]; then
+  echo "!!! Not enough memory to build safely: ${MEM_AVAILABLE_MB}MB RAM + ${SWAP_FREE_MB}MB swap available (need ~1200MB)" >&2
+  echo "    Add swap to the server (see 'Server prerequisites' in deploy/README.md)" >&2
+  exit 1
+fi
+
 log "Fetching latest '$BRANCH'"
 git -C "$REPO" fetch --prune origin
 
@@ -67,17 +83,17 @@ fi
 
 log "Installing backend dependencies"
 cd "$RELEASE"
-npm install --legacy-peer-deps --no-audit --no-fund
+$BUILD_NICE npm install --legacy-peer-deps --no-audit --no-fund
 
 log "Building backend"
-npm run build
+$BUILD_NICE npm run build
 
 log "Installing client dependencies"
 cd "$RELEASE/client"
-npm install --legacy-peer-deps --no-audit --no-fund
+$BUILD_NICE npm install --legacy-peer-deps --no-audit --no-fund
 
 log "Building client"
-npm run build
+$BUILD_NICE npm run build
 
 log "Backing up database to S3"
 cd "$RELEASE"
@@ -98,7 +114,11 @@ LEGACY_APPS=$(pm2 jlist 2>/dev/null | node -e '
   process.stdin.on("data", (c) => (d += c)).on("end", () => {
     try {
       const apps = JSON.parse(d.slice(d.indexOf("[")));
-      console.log(apps.map((a) => a.name).filter((n) => n !== "hvoya-crm").join(" "));
+      const names = apps
+        .filter((a) => !(a.pm2_env && a.pm2_env.pmx_module)) // pm2 modules (e.g. pm2-logrotate) are not apps
+        .map((a) => a.name)
+        .filter((n) => n !== "hvoya-crm" && !n.startsWith("pm2-"));
+      console.log(names.join(" "));
     } catch {}
   });
 ')

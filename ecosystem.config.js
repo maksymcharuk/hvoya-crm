@@ -11,7 +11,9 @@ module.exports = {
       name: 'hvoya-crm',
       cwd: '/var/www/sales.hvoya.com/current',
       script: 'dist/src/main.js',
-      node_args: '-r newrelic',
+      // Absolute path required: pm2's cluster wrapper does not resolve bare
+      // module names against cwd, and the worker dies before it can log.
+      node_args: '-r /var/www/sales.hvoya.com/current/node_modules/newrelic',
       exec_mode: 'cluster',
       instances: 1,
       wait_ready: true,

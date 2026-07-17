@@ -58,6 +58,23 @@ pm2 unstartup && pm2 startup   # run the sudo command it prints, then: pm2 save
 `remote.sh` loads `~/.nvm` explicitly, since non-interactive ssh sessions
 skip it.)
 
+The droplet also needs **swap** — the Angular build can spike past the 2 GB
+of RAM and, without swap, that hard-locks the whole machine (this happened).
+As root, once:
+
+```bash
+fallocate -l 2G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile && swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab
+sysctl vm.swappiness=10
+echo 'vm.swappiness=10' >> /etc/sysctl.d/99-swap.conf
+```
+
+`remote.sh` additionally caps the build's JS heap, runs builds at lowest
+CPU/IO priority so the live app stays responsive, and refuses to start a
+build with less than ~1.2 GB of RAM+swap available.
+
 ## One-time server setup
 
 ```bash
