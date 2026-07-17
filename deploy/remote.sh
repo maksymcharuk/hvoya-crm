@@ -27,6 +27,23 @@ RELEASE=$BASE/releases/$TS
 
 log() { printf '\n\033[1;32m==> %s\033[0m\n' "$*"; }
 
+# Non-interactive ssh sessions skip the parts of .bashrc that set up nvm —
+# load it explicitly so we get the same Node an interactive shell would.
+export NVM_DIR="$HOME/.nvm"
+# shellcheck disable=SC1091
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+# Angular 21 requires Node ^20.19 || >=22.12
+NODE_OK=$(node -p '
+  const [major, minor] = process.versions.node.split(".").map(Number);
+  major > 22 || (major === 22 && minor >= 12) || (major === 20 && minor >= 19) ? "ok" : "old"
+' 2>/dev/null || echo old)
+if [ "$NODE_OK" != ok ]; then
+  echo "!!! Node ^20.19 or >=22.12 is required to build this project, found: $(node -v 2>/dev/null || echo 'none')" >&2
+  echo "    Upgrade Node on the server (see 'Server prerequisites' in deploy/README.md)" >&2
+  exit 1
+fi
+
 log "Fetching latest '$BRANCH'"
 git -C "$REPO" fetch --prune origin
 

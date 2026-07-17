@@ -35,6 +35,29 @@ Downtime is eliminated by two things:
   then gracefully stops the old one. The listening port is shared, so no
   request is ever refused.
 
+## Server prerequisites
+
+The build requires **Node ≥ 20.19** (Angular 21's minimum) available to the
+`charuk` user — `remote.sh` refuses to deploy on anything older. To upgrade
+system-wide to Node 22 LTS (as root):
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt-get install -y nodejs
+npm install -g pm2        # reinstall pm2 under the new Node
+```
+
+Then, as charuk, refresh the pm2 daemon and boot script:
+
+```bash
+pm2 update
+pm2 unstartup && pm2 startup   # run the sudo command it prints, then: pm2 save
+```
+
+(If you prefer nvm under the charuk user instead, that works too —
+`remote.sh` loads `~/.nvm` explicitly, since non-interactive ssh sessions
+skip it.)
+
 ## One-time server setup
 
 ```bash
