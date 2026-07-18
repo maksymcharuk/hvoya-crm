@@ -54,7 +54,7 @@ add the `master` ruleset.
 4. Keep `deploy/deploy.sh` as a documented manual fallback (build-on-server
    still works if GitHub is down); the memory guard stays as its safety net.
 
-## Phase 2 — Config & code cleanup (one evening)
+## Phase 2 — Config & code cleanup (one evening) ✅ Done 2026-07-18
 
 1. **Remove "staging".** Delete the `staging` entry from `APP_ORIGIN`,
    `isStaging()`, and the `Staging` member of the `Env` enum; check client
@@ -69,6 +69,13 @@ add the `master` ruleset.
 3. **Optional, low priority:** convert the static-method `DatabaseService`
    to a normal injectable service; add the missing hvoya theme stylesheet or
    remove its reference (build warning).
+
+All three items done (incl. the optional ones). The theme warning turned out
+to be the `index.html` `<link>` to `assets/.../theme/hvoya/theme.css`, which
+the esbuild builder can't resolve at build time — the css now loads via the
+`styles` array in `angular.json` instead (the link and the never-rendered
+theme-switcher it served are Sakai-template leftovers). The `production.env`
+symlink has been removed from the droplet.
 
 ## Phase 3 — Framework upgrades (one PR at a time, spread over weeks)
 

@@ -8,11 +8,13 @@ const { isDevelopment } = config();
 
 @Injectable()
 export class DatabaseTasksService {
+  constructor(private readonly databaseService: DatabaseService) {}
+
   @Cron(CronExpression.EVERY_6_HOURS)
   async backupDatabase() {
     if (isDevelopment()) {
       return;
     }
-    return DatabaseService.backup();
+    return this.databaseService.backup();
   }
 }

@@ -16,13 +16,11 @@ export default () => {
   const APP_ORIGIN = new Map([
     ['development', 'http://localhost:4200'],
     ['test', 'http://localhost:4201'],
-    ['staging', 'https://sales.hvoya.com'],
     ['production', 'https://sales.hvoya.com'],
   ]);
 
   // Helpers
   const isProduction = () => process.env['NODE_ENV'] === Env.Production;
-  const isStaging = () => process.env['NODE_ENV'] === Env.Staging;
   const isDevelopment = () => process.env['NODE_ENV'] === Env.Development;
   const isTest = () => process.env['NODE_ENV'] === Env.Test;
   const isOneCDisabled = () =>
@@ -52,7 +50,6 @@ export default () => {
     APP_ORIGIN,
     LOGGER,
     isProduction,
-    isStaging,
     isDevelopment,
     isTest,
     isOneCDisabled,

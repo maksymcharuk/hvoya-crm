@@ -1,7 +1,8 @@
 import { DatabaseService } from '../services/database.service';
 
 console.log('Backing up database...');
-DatabaseService.backup()
+new DatabaseService()
+  .backup()
   .then(() => {
     console.log('Database backed up successfully!');
     process.exit(0);

@@ -15,34 +15,34 @@ import { options } from '../configs/db.configs';
 
 @Injectable()
 export class DatabaseService {
-  static localFileName = 'backup.dump';
+  private readonly localFileName = 'backup.dump';
   // Backups run every 6 hours (DatabaseTasksService) plus one per deploy;
   // 28 keeps ≈ 7 days of scheduled dumps.
-  static backupsToKeep = 28;
-  static s3Client = new S3Client({
+  private readonly backupsToKeep = 28;
+  private readonly s3Client = new S3Client({
     region: process.env['AWS_BUCKET_REGION'] || 'blank',
   });
 
-  static async backup() {
+  async backup() {
     await this.pgBackup();
     await this.uploadDumpToS3();
     await this.deleteLocalFile();
     await this.cleanupOldBackups();
   }
 
-  static async restore() {
+  async restore() {
     await this.downloadDumpFromS3();
     await this.pgRestore();
     await this.deleteLocalFile();
   }
 
-  private static async pgBackup(): Promise<void> {
+  private async pgBackup(): Promise<void> {
     return this.execute(
       `pg_dump -h ${options.host} -U ${options.username} -p ${options.port} -Fc -f ${this.localFileName} ${options.database}`,
     );
   }
 
-  private static async pgRestore(): Promise<any> {
+  private async pgRestore(): Promise<any> {
     const dropDB = `psql -h ${options.host} -U ${options.username} -p ${options.port} -c "DROP DATABASE ${options.database};"`;
     const createDB = `psql -h ${options.host} -U ${options.username} -p ${options.port} -c "CREATE DATABASE ${options.database};"`;
     const restoreDB = `pg_restore -h ${options.host} -p ${options.port} -U ${options.username} -d ${options.database} ./${this.localFileName}`;
@@ -59,7 +59,7 @@ export class DatabaseService {
     await this.execute(restoreDB, [1]);
   }
 
-  private static async execute(
+  private async execute(
     command: string,
     allowExitCodes: number[] = [],
   ): Promise<void> {
@@ -80,7 +80,7 @@ export class DatabaseService {
     });
   }
 
-  private static async uploadDumpToS3() {
+  private async uploadDumpToS3() {
     const date = new Date();
 
     return this.s3Client.send(
@@ -92,7 +92,7 @@ export class DatabaseService {
     );
   }
 
-  private static async downloadDumpFromS3(key?: string) {
+  private async downloadDumpFromS3(key?: string) {
     const list = await this.s3Client.send(
       new ListObjectsCommand({
         Bucket: process.env['AWS_BUCKET_NAME'] || '',
@@ -131,7 +131,7 @@ export class DatabaseService {
     });
   }
 
-  private static async cleanupOldBackups() {
+  private async cleanupOldBackups() {
     try {
       const list = await this.s3Client.send(
         new ListObjectsCommand({
@@ -169,11 +169,11 @@ export class DatabaseService {
     }
   }
 
-  private static getS3FileName(date: Date) {
+  private getS3FileName(date: Date) {
     return `backup-${this.getFormattedDate(date)}.dump`;
   }
 
-  private static getFormattedDate(date: Date) {
+  private getFormattedDate(date: Date) {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
@@ -184,7 +184,7 @@ export class DatabaseService {
     return `${year}-${month}-${day}T${hour}:${minutes}`;
   }
 
-  private static async deleteLocalFile() {
+  private async deleteLocalFile() {
     return new Promise<void>((resolve, reject) => {
       unlink(`./${this.localFileName}`, (error) => {
         if (error) {

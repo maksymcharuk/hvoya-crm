@@ -39,7 +39,7 @@ everything is built and migrated:
   current -> releases/...  # the live release (atomic symlink switch)
   html    -> current/client/dist   # nginx docroot follows the live release
   shared/
-    env/                   # .env, production.env — shared across releases
+    env/                   # .env — shared across releases
     secrets/               # TLS certs etc.
 ```
 

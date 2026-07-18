@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from '@auth/auth.module';
 import { UserEntity } from '@entities/user.entity';
+import { Env } from '@enums/env.enum';
 import { WSocketModule } from '@gateways/websocket/websocket.module';
 
 import { JwTokenModule } from '@modules/jw-token/jw-token.module';
@@ -44,9 +45,10 @@ import { UsersModule } from './modules/users/users.module';
       rootPath: join(__dirname, '..', '..', 'client', 'dist'),
     }),
     ConfigModule.forRoot({
-      envFilePath: process.env['NODE_ENV']
-        ? `${process.cwd()}/env/${process.env['NODE_ENV']}.env`
-        : `${process.cwd()}/env/.env`,
+      // Same rule as src/config.ts: test.env under NODE_ENV=test, env/.env otherwise
+      envFilePath: `${process.cwd()}/env/${
+        process.env['NODE_ENV'] === Env.Test ? 'test.env' : '.env'
+      }`,
       isGlobal: true,
     }),
     JwTokenModule,

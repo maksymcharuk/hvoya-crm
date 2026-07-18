@@ -46,13 +46,6 @@ if [ ! -f "$BASE/shared/env/.env" ]; then
   echo "!!! $BASE/shared/env/.env is missing — create it before deploying" >&2
 fi
 
-# ConfigModule loads env/production.env when NODE_ENV=production, while the
-# rest of the app reads env/.env. Keep them in sync via a symlink.
-if [ -f "$BASE/shared/env/.env" ] && [ ! -e "$BASE/shared/env/production.env" ]; then
-  log "Symlinking production.env -> .env"
-  ln -s .env "$BASE/shared/env/production.env"
-fi
-
 log "Configuring pm2 log rotation"
 command -v pm2 >/dev/null || { echo "pm2 not found — install it: npm install -g pm2" >&2; exit 1; }
 pm2 install pm2-logrotate

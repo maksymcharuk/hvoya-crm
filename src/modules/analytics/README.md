@@ -400,7 +400,7 @@ Solution:
 - [ ] Run all tests: `npm test`
 - [ ] Build project: `npm run build`
 - [ ] Review documentation
-- [ ] Test endpoints with staging data
+- [ ] Test endpoints with realistic local data
 - [ ] Monitor database performance
 - [ ] Configure caching TTL
 - [ ] Set up error alerting
