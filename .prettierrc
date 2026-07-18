@@ -2,6 +2,8 @@
   "singleQuote": true,
   "trailingComma": "all",
   "importOrder": [
+    "^newrelic$",
+    "<THIRD_PARTY_MODULES>",
     "^(?:@nestjs|@casl|@angular)/(.*)$",
     "^(?:@root)/(.*)$",
     "^(?:@constants|@enums|@interfaces|@entities|@dtos|@auth|@decorators|@transformers|@shared|@environment|@layout|@utils|@adapters|@gateways)/(.*)$",

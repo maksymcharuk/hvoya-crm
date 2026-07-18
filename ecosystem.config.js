@@ -11,9 +11,9 @@ module.exports = {
       name: 'hvoya-crm',
       cwd: '/var/www/sales.hvoya.com/current',
       script: 'dist/src/main.js',
-      // Absolute path required: pm2's cluster wrapper does not resolve bare
-      // module names against cwd, and the worker dies before it can log.
-      node_args: '-r /var/www/sales.hvoya.com/current/node_modules/newrelic',
+      // The New Relic agent is loaded by src/main.ts (first import), NOT via
+      // node_args: pm2 cluster reload silently drops node_args, so a preload
+      // here only survives until the first deploy (bit us 2026-07-18).
       exec_mode: 'cluster',
       instances: 1,
       wait_ready: true,
