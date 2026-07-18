@@ -8,7 +8,7 @@ Hvoya CRM is a full-stack application for managing products, orders, users, and 
 
 ## Deployment
 
-`./deploy/deploy.sh` (or the legacy alias `./run_deploy`) performs a release-based, near-zero-downtime deploy to the VPS as user `charuk` — see `deploy/README.md` for the full flow, server layout, and one-time setup (`deploy/setup.sh`). pm2 runs the app via `ecosystem.config.js` (cluster mode, `wait_ready`). A DB backup is uploaded to S3 before migrations on every deploy; S3 retention keeps the 15 newest dumps (`DatabaseService.cleanupOldBackups`).
+`./deploy/deploy.sh` (or the legacy alias `./run_deploy`) performs a release-based, near-zero-downtime deploy to the VPS as user `charuk` — see `deploy/README.md` for the full flow, server layout, and one-time setup (`deploy/setup.sh`). pm2 runs the app via `ecosystem.config.js` (cluster mode, `wait_ready`). A DB backup is uploaded to S3 before migrations on every deploy and every 6 hours by an in-app cron; S3 retention keeps the 28 newest dumps (`DatabaseService.cleanupOldBackups`).
 
 ## Commands
 

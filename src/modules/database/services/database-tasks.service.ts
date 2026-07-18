@@ -8,7 +8,7 @@ const { isDevelopment } = config();
 
 @Injectable()
 export class DatabaseTasksService {
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  @Cron(CronExpression.EVERY_6_HOURS)
   async backupDatabase() {
     if (isDevelopment()) {
       return;

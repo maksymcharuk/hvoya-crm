@@ -16,7 +16,9 @@ import { options } from '../configs/db.configs';
 @Injectable()
 export class DatabaseService {
   static localFileName = 'backup.dump';
-  static backupsToKeep = 15;
+  // Backups run every 6 hours (DatabaseTasksService) plus one per deploy;
+  // 28 keeps ≈ 7 days of scheduled dumps.
+  static backupsToKeep = 28;
   static s3Client = new S3Client({
     region: process.env['AWS_BUCKET_REGION'] || 'blank',
   });
