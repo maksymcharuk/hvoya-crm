@@ -87,6 +87,10 @@ Order matters; ship and verify each step in production before the next:
    pending production deploy + watch before step 2)
 2. NestJS 9 → 10 (all `@nestjs/*` together, follow the official migration
    guide; includes `@nestjs/schedule`, `serve-static`, `typeorm` adapter)
+   ✅ Done 2026-07-18 (Nest 10.4, config 3, axios 3, schedule 4,
+   serve-static 4, event-emitter 2, mapped-types 2, nest-winston 1.10;
+   zero code changes needed; verified locally incl. WebSocket handshake —
+   pending production deploy + watch before step 3)
 3. NestJS 10 → 11
 4. Remaining stragglers afterwards: `class-validator`/`class-transformer`,
    `socket.io` alignment, `helmet`, `express-rate-limit`
