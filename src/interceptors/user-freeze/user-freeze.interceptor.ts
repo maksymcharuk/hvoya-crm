@@ -17,7 +17,7 @@ export class UserFreezeInterceptor implements NestInterceptor {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
 
   async intercept(
     context: ExecutionContext,

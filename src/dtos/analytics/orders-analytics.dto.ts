@@ -48,10 +48,10 @@ export class OrdersByStatusDto {
  * Orders funnel data showing conversion at each stage
  */
 export class OrdersFunnelDto {
-  created: number;    // all orders in period
+  created: number; // all orders in period
   inProgress: number; // currently Processing or TransferedToDelivery
-  fulfilled: number;  // completed (Fulfilled)
-  returned: number;   // has a return request
+  fulfilled: number; // completed (Fulfilled)
+  returned: number; // has a return request
 }
 
 /**

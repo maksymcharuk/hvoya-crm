@@ -190,7 +190,7 @@ export class RequestsService {
   }
 
   async approveRequest(data: ApproveRequestContextDto): Promise<RequestEntity> {
-    let r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
+    const r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
       where: { number: data.requestNumber },
     });
 
@@ -210,7 +210,7 @@ export class RequestsService {
   }
 
   async rejectRequest(data: RejectRequestContextDto): Promise<RequestEntity> {
-    let r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
+    const r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
       where: { number: data.requestNumber },
     });
 
@@ -242,7 +242,7 @@ export class RequestsService {
   }
 
   async restoreRequest(data: RestoreRequestContextDto): Promise<RequestEntity> {
-    let r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
+    const r = await this.dataSource.manager.findOneOrFail(RequestEntity, {
       where: { number: data.requestNumber },
     });
 

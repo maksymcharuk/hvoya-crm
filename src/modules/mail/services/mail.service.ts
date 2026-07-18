@@ -18,7 +18,7 @@ export class MailService {
   constructor(
     private readonly configService: ConfigService,
     private readonly templateService: TemplateService,
-  ) { }
+  ) {}
 
   async send(mail: Mail, to: string | string[]): Promise<void> {
     // Don't send emails in test environment

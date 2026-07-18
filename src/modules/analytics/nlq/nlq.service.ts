@@ -448,28 +448,52 @@ export class NlqService {
           const fn = (tc as ChatCompletionMessageFunctionToolCall).function;
           const toolCallId = tc.id;
           const toolName = fn.name;
-          const toolArgs = JSON.parse(fn.arguments || '{}') as Record<string, any>;
+          const toolArgs = JSON.parse(fn.arguments || '{}') as Record<
+            string,
+            any
+          >;
 
           if (toolName === 'requestWebResearch') {
             emit({ type: EventType.STEP_STARTED, stepName: 'web-research' });
-            emit({ type: EventType.TOOL_CALL_START, toolCallId, toolCallName: toolName });
+            emit({
+              type: EventType.TOOL_CALL_START,
+              toolCallId,
+              toolCallName: toolName,
+            });
 
-            const { content: researchContent, sources } = await this.dispatchWebResearch(toolArgs['query'] as string);
+            const { content: researchContent, sources } =
+              await this.dispatchWebResearch(toolArgs['query'] as string);
 
             emit({ type: EventType.TOOL_CALL_END, toolCallId });
             if (sources.length) {
-              emit({ type: EventType.CUSTOM, name: 'research-sources', value: sources });
+              emit({
+                type: EventType.CUSTOM,
+                name: 'research-sources',
+                value: sources,
+              });
             }
             emit({ type: EventType.STEP_FINISHED, stepName: 'web-research' });
 
-            messages.push({ role: 'tool', tool_call_id: toolCallId, content: researchContent });
+            messages.push({
+              role: 'tool',
+              tool_call_id: toolCallId,
+              content: researchContent,
+            });
           } else {
-            emit({ type: EventType.TOOL_CALL_START, toolCallId, toolCallName: toolName });
+            emit({
+              type: EventType.TOOL_CALL_START,
+              toolCallId,
+              toolCallName: toolName,
+            });
             const toolResult = await this.dispatchTool(toolName, toolArgs);
             emit({ type: EventType.TOOL_CALL_END, toolCallId });
 
             lastAnalyticsTool = { name: toolName, result: toolResult };
-            messages.push({ role: 'tool', tool_call_id: toolCallId, content: JSON.stringify(toolResult) });
+            messages.push({
+              role: 'tool',
+              tool_call_id: toolCallId,
+              content: JSON.stringify(toolResult),
+            });
           }
         }
       }
@@ -477,7 +501,12 @@ export class NlqService {
       // Generate A2UI visualization in parallel with emitting the final answer
       const surfaceId = `viz-${randomUUID()}`;
       const a2uiMessages = lastAnalyticsTool
-        ? await this.generateA2uiMessages(question, lastAnalyticsTool.name, lastAnalyticsTool.result, surfaceId)
+        ? await this.generateA2uiMessages(
+            question,
+            lastAnalyticsTool.name,
+            lastAnalyticsTool.result,
+            surfaceId,
+          )
         : [];
 
       for (const msg of a2uiMessages) {
@@ -485,7 +514,11 @@ export class NlqService {
       }
 
       emit({ type: EventType.TEXT_MESSAGE_START, messageId });
-      emit({ type: EventType.TEXT_MESSAGE_CONTENT, messageId, delta: finalContent });
+      emit({
+        type: EventType.TEXT_MESSAGE_CONTENT,
+        messageId,
+        delta: finalContent,
+      });
       emit({ type: EventType.TEXT_MESSAGE_END, messageId });
       emit({ type: EventType.RUN_FINISHED, threadId, runId });
     } catch (err) {

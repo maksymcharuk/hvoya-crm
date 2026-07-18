@@ -79,7 +79,7 @@ export class AuthService {
     const { email } = authSignUpDto;
 
     let user = await this.usersService.findByEmail(email);
-    let adminUsers = await this.usersService.getUsers(
+    const adminUsers = await this.usersService.getUsers(
       new UsersPageOptionsDto({ roles: [Role.SuperAdmin] }),
     );
     if (user) {
@@ -94,7 +94,7 @@ export class AuthService {
         HttpStatus.CONFLICT,
       );
     }
-    let adminEmails = adminUsers.data.map((user) => user.email);
+    const adminEmails = adminUsers.data.map((user) => user.email);
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -221,7 +221,7 @@ export class AuthService {
 
     try {
       decodedToken = this.jwtService.verify(token) as JwtTokenPayload;
-    } catch (error) {
+    } catch {
       throw new HttpException(
         'Посилання для зміни паролю недійсне або закінчився термін дії. Спробуйте подати запит на відновлення паролю ще раз.',
         HttpStatus.BAD_REQUEST,

@@ -38,7 +38,7 @@ export class NotificationService {
     }
 
     const itemCount = await query.getCount();
-    let { entities } = await query.getRawAndEntities();
+    const { entities } = await query.getRawAndEntities();
 
     const pageMetaDto = new PageMeta({ itemCount, pageOptionsDto });
 

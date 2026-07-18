@@ -258,10 +258,10 @@ export class ProductsService {
       user = await this.dataSource.manager.findOneByOrFail(UserEntity, {
         id: userId,
       });
-    } catch (error) {
+    } catch {
       throw new HttpException('Користувач не знайдений', HttpStatus.NOT_FOUND);
     }
-    let product = await this.getProductQuery(id).getOne();
+    const product = await this.getProductQuery(id).getOne();
     const ability = this.caslAbilityFactory.createForUser(user);
 
     if (!product) {

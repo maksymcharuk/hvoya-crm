@@ -89,7 +89,7 @@ export class ProductsTransferController {
             }),
           )
         ).data;
-      } catch (error) {
+      } catch {
         throw new HttpException(
           'Не вдалося отримати файл за посиланням',
           HttpStatus.BAD_REQUEST,
@@ -108,13 +108,13 @@ export class ProductsTransferController {
       const worksheet = workbook.Sheets[firstSheetName]!;
       result = xlsx.utils.sheet_to_json(worksheet, { raw: true });
       type = ImportDataType.XLS;
-    } catch (error) {}
+    } catch {}
 
     try {
       const parser = new xml2js.Parser();
       result = await parser.parseStringPromise(buffer!.toString());
       type = ImportDataType.XML;
-    } catch (error) {}
+    } catch {}
 
     if (!result) {
       throw new HttpException(

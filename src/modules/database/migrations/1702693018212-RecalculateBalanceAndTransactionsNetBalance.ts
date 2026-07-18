@@ -12,7 +12,7 @@ export class RecalculateBalanceAndTransactionsNetBalance1702693018212
     const balances = await queryRunner.manager.find(BalanceEntity);
 
     // recalculating balance amount based on payment transactions
-    for (let balance of balances) {
+    for (const balance of balances) {
       const transactions = await queryRunner.manager.find(
         PaymentTransactionEntity,
         {

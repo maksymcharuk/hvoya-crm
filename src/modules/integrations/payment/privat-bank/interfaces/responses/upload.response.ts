@@ -10,17 +10,16 @@ class UploadResponseParams {
 
 class UploadResponseDate {
   $: {
-    'xmlns:xsi': typeof PRIVAT_BANK_XMLNS_XSI,
-    'xsi:type': XsiType.Gateway,
-    'reference': string,
+    'xmlns:xsi': typeof PRIVAT_BANK_XMLNS_XSI;
+    'xsi:type': XsiType.Gateway;
+    reference: string;
   };
-
 
   constructor(params: UploadResponseParams) {
     this.$ = {
       'xmlns:xsi': PRIVAT_BANK_XMLNS_XSI,
       'xsi:type': XsiType.Gateway,
-      'reference': params.uploadReference,
+      reference: params.uploadReference,
     };
   }
 }

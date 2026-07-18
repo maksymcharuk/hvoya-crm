@@ -74,7 +74,7 @@ export class OrdersSeeder {
           productId: randomProduct.id,
           quantity: quantity,
         });
-      } catch (error) {}
+      } catch {}
     }
     await this.ordersService.createOrder(userId, {
       trackingId: '1234567890',

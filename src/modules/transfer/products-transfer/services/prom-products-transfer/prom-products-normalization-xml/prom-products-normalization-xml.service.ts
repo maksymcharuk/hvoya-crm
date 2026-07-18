@@ -73,7 +73,7 @@ export class PromProductsNormalizationServiceXml
           }),
         }))
         .filter((product) => product?.variants?.length);
-    } catch (error) {
+    } catch {
       throw new HttpException(
         'Не вдалося нормалізувати дані з Prom.ua',
         HttpStatus.INTERNAL_SERVER_ERROR,

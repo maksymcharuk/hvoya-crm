@@ -169,7 +169,7 @@ export class OrdersService {
     queryBuilder.skip(pageOptionsDto.skip).take(pageOptionsDto.take);
 
     const itemCount = await queryBuilder.getCount();
-    let { entities } = await queryBuilder.getRawAndEntities();
+    const { entities } = await queryBuilder.getRawAndEntities();
 
     const orders: OrderEntity[] = entities.map((order) =>
       sanitizeEntity(ability, order),
@@ -786,7 +786,7 @@ export class OrdersService {
             })),
             createdAt: new Date(),
           });
-        } catch (error) {
+        } catch {
           // NOTE: If 1C return failed, then we try to cancel order in 1C
           await this.oneCApiClientService.cancel(order.id);
         }

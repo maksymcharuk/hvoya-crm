@@ -1,5 +1,6 @@
-import { registerDecorator, ValidationOptions } from "class-validator";
-import { CyrillicRule } from "./сyrillic.rule";
+import { ValidationOptions, registerDecorator } from 'class-validator';
+
+import { CyrillicRule } from './сyrillic.rule';
 
 export function Cyrillic(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {

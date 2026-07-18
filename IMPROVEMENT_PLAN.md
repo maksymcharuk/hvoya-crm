@@ -82,7 +82,9 @@ symlink has been removed from the droplet.
 Now safe to do because every deploy has a health check and auto-rollback.
 Order matters; ship and verify each step in production before the next:
 
-1. TypeScript 4.7 → 5.x (with Nest 9 still — supported)
+1. TypeScript 4.7 → 5.x (with Nest 9 still — supported) ✅ Done 2026-07-18
+   (TS 5.9, `@typescript-eslint` 5 → 8 to support it; verified locally —
+   pending production deploy + watch before step 2)
 2. NestJS 9 → 10 (all `@nestjs/*` together, follow the official migration
    guide; includes `@nestjs/schedule`, `serve-static`, `typeorm` adapter)
 3. NestJS 10 → 11
@@ -107,6 +109,29 @@ zero cost using the existing S3 bucket:
    scratch database on the droplet, verify row counts). An untested backup
    is a hope, not a backup. Document in `deploy/README.md`.
 4. Once WAL archiving is trusted, drop the 6h dump cron back to daily.
+
+## Phase 5 — Manage env config from the GitHub UI (free, one evening)
+
+Today changing a production env variable means SSH-ing into the droplet and
+editing `shared/env/.env` by hand. Move the editing surface to GitHub:
+
+1. Store the full contents of the server's `env/.env` as a single `ENV_FILE`
+   secret (Settings → Secrets and variables → Actions). Editing config =
+   pasting the updated file into the secret and re-running the deploy.
+2. Add a step to `.github/workflows/deploy.yml` that writes the secret to
+   `shared/env/.env` on the droplet before the release switch, so every
+   deploy ships the current config.
+3. Caveats to design around:
+   - Actions secrets are **write-only** — the UI never shows the value again.
+     The file on the droplet remains the readable source of truth; keep the
+     secret and the droplet copy in sync by only ever editing via the secret
+     once this lands.
+   - Anyone with repo write access can exfiltrate secrets through a
+     workflow — same trust boundary as the existing `DEPLOY_SSH_KEY`, fine
+     for a solo repo.
+   - The manual fallback (`deploy/deploy.sh`) must keep working without
+     GitHub: it should leave `shared/env/.env` untouched, never require the
+     secret.
 
 ## Explicit non-goals (decided, not forgotten)
 

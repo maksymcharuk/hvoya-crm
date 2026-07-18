@@ -70,7 +70,7 @@ export class UsersService {
   ): Promise<UserEntity> {
     const manager = queryRunner ? queryRunner.manager : this.dataSource.manager;
     try {
-      let user = await manager.create<UserEntity>(UserEntity, createUserDto);
+      const user = await manager.create<UserEntity>(UserEntity, createUserDto);
       user.balance = await manager.save(BalanceEntity, new BalanceEntity());
       await manager.save(user);
       await this.oneCApiClientService.counterparty(user);
@@ -98,7 +98,7 @@ export class UsersService {
     try {
       await validate(updateUserDto);
 
-      let user = await queryRunner.manager.findOneOrFail(UserEntity, {
+      const user = await queryRunner.manager.findOneOrFail(UserEntity, {
         where: { id: updateUserDto.id },
         relations: ['manager'],
       });
@@ -261,7 +261,7 @@ export class UsersService {
       where: { id: confirmUserDto.userId },
       relations: ['manager'],
     });
-    let currentUser = await manager.findOneOrFail(UserEntity, {
+    const currentUser = await manager.findOneOrFail(UserEntity, {
       where: { id: currentUserId },
     });
 
@@ -292,7 +292,7 @@ export class UsersService {
   }
 
   async freezeToggleUser(userId: string): Promise<UserEntity> {
-    let user = await this.usersRepository.findOneBy({ id: userId });
+    const user = await this.usersRepository.findOneBy({ id: userId });
 
     if (!user) {
       throw new HttpException('Користувача нe знайдено', 404);

@@ -27,7 +27,7 @@ export class OneCSyncService {
       throw new BadRequestException('Не вдалося отримати товари з 1С');
     }
 
-    for (let product of products) {
+    for (const product of products) {
       const newProduct = oneCProducts.find(
         (oneCProduct) => oneCProduct.sku === product.sku,
       );

@@ -48,7 +48,7 @@ export class CloudinaryService {
   async removeImageFromCloudinary(publicIds: string[]): Promise<void> {
     try {
       await this.removeImages(publicIds);
-    } catch (error) {
+    } catch {
       throw new BadRequestException('Виникла помилка при видаленні файлу');
     }
   }

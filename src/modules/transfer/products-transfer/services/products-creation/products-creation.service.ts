@@ -94,7 +94,7 @@ export class ProductsCreationService {
         currentEntity.packageDepth === nextEntity.packageDepth,
     );
 
-    for (let productCategory of productCategories) {
+    for (const productCategory of productCategories) {
       try {
         await this.upsertProductCategory(productCategory);
       } catch (error) {
@@ -105,7 +105,7 @@ export class ProductsCreationService {
       }
     }
 
-    for (let productColor of productColors) {
+    for (const productColor of productColors) {
       try {
         await this.upsertProductColor(productColor);
       } catch (error) {
@@ -116,7 +116,7 @@ export class ProductsCreationService {
       }
     }
 
-    for (let productSize of productSizes) {
+    for (const productSize of productSizes) {
       try {
         await this.upsertProductSize(productSize);
       } catch (error) {
@@ -127,7 +127,7 @@ export class ProductsCreationService {
       }
     }
 
-    for (let productPackageSize of productPackageSizes) {
+    for (const productPackageSize of productPackageSizes) {
       try {
         await this.upsertProductPackageSize(productPackageSize);
       } catch (error) {
@@ -140,7 +140,7 @@ export class ProductsCreationService {
   }
 
   private async upsertMain(products: NormalizedProductBase[]) {
-    for (let product of products) {
+    for (const product of products) {
       try {
         await this.upsertProductBase(product);
       } catch (error) {
