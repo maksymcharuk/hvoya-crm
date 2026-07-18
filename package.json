@@ -24,7 +24,9 @@
     "migrations:create": "npm run typeorm migration:create -- ./src/modules/database/migrations/$npm_config_name",
     "migrations:generate": "npm run typeorm migration:generate -- ./src/modules/database/migrations/$npm_config_name -d ./typeorm.config.ts",
     "migrations:revert": "npm run typeorm migration:revert -- -d ./typeorm.config.ts",
+    "migrations:revert:prod": "node ./node_modules/typeorm/cli migration:revert -d ./dist/typeorm.config.js",
     "migrations:run": "npm run typeorm migration:run -- -d ./typeorm.config.ts",
+    "migrations:run:prod": "node ./node_modules/typeorm/cli migration:run -d ./dist/typeorm.config.js",
     "schema:drop": "npm run typeorm schema:drop -- -d ./typeorm.config.ts",
     "schema:sync": "npm run typeorm schema:sync -- -d ./typeorm.config.ts",
     "schema:log": "npm run typeorm schema:log -- -d ./typeorm.config.ts",
@@ -35,7 +37,9 @@
     "db:setup": "npm run db:drop && npm run db:create",
     "db:setup-test": "NODE_ENV=test npm run db:setup && NODE_ENV=test npm run db:seed",
     "db:backup": "ts-node ./src/modules/database/scripts/backup.ts",
+    "db:backup:prod": "node ./dist/src/modules/database/scripts/backup.js",
     "db:restore": "ts-node ./src/modules/database/scripts/restore.ts",
+    "db:restore:prod": "node ./dist/src/modules/database/scripts/restore.js",
     "run:seed": "SEEDING_MODE=true ts-node -r tsconfig-paths/register ./src/modules/database/scripts/seed.ts"
   },
   "dependencies": {

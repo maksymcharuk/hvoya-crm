@@ -2,11 +2,34 @@
 
 Release-based, near-zero-downtime deploy to the DigitalOcean VPS.
 
+There are two deploy paths sharing the same release layout and rollback logic:
+
+- **CI deploy (primary):** a push to `master` triggers
+  `.github/workflows/deploy.yml`, which builds backend + client on GitHub's
+  runners, ships a prebuilt bundle to the droplet, and runs
+  `deploy/remote-artifact.sh` there. **The droplet never builds** — it only
+  installs production dependencies (the 2026-07-17 outage was an Angular
+  build eating all RAM on the production box).
+- **Manual fallback:** `./deploy/deploy.sh` builds on the server via
+  `deploy/remote.sh` — still works if GitHub is down. The memory guard in
+  `remote.sh` stays as its safety net.
+
+## Branch model
+
+`dev` is the default branch — daily work goes there, and fresh clones and PRs
+target it. `master` only receives deliberate merges from `dev`; **a push to
+`master` means "release"** (it triggers the deploy workflow). One-time GitHub
+setup (manual, in repo settings):
+
+1. Settings → General → Default branch → `dev`.
+2. Settings → Rules → Rulesets → add a ruleset for `master`: require a pull
+   request, block force pushes (if the repo plan allows it).
+
 ## How it works
 
-Each deploy creates a fresh directory under `releases/`, builds it **while the
-old version keeps serving traffic**, and only switches over once everything is
-built and migrated:
+Each deploy creates a fresh directory under `releases/`, prepares it **while
+the old version keeps serving traffic**, and only switches over once
+everything is built and migrated:
 
 ```text
 /var/www/sales.hvoya.com/
@@ -20,12 +43,26 @@ built and migrated:
     secrets/               # TLS certs etc.
 ```
 
-Deploy steps (`remote.sh`): fetch → checkout release → link shared config →
-`npm install` + build backend & client → **DB backup to S3** → migrations →
-switch `current` symlink → `pm2 startOrReload` → health check → prune old
-releases. The health check polls `GET /api/health`, which verifies DB
-connectivity (not just static file serving). If it fails, the symlink is
-switched back to the previous release automatically.
+CI deploy steps (`.github/workflows/deploy.yml` + `remote-artifact.sh`):
+`npm ci` + build backend & client on the runner → bundle `dist/`,
+`client/dist/`, `package.json`, `package-lock.json`, `ecosystem.config.js`,
+`newrelic.js`, `resources/` into a tarball → scp to the droplet → extract
+into `releases/<ts>` → `npm ci --omit=dev` (runtime deps only — no
+webpack/@nestjs/cli/Angular) → link shared config → **DB backup to S3** →
+migrations → switch `current` symlink → `pm2 startOrReload` → health check →
+prune old releases.
+
+Manual deploy steps (`remote.sh`): the same, except the release is checked
+out from the git mirror and built on the server (full `npm install`
+including dev deps).
+
+On the server, migrations and the backup run from the compiled output — no
+ts-node needed: `npm run migrations:run:prod` and `npm run db:backup:prod`
+use `dist/typeorm.config.js` and `dist/src/.../scripts/backup.js`.
+
+The health check polls `GET /api/health`, which verifies DB connectivity
+(not just static file serving). If it fails, the symlink is switched back to
+the previous release automatically.
 
 Downtime is eliminated by two things:
 
@@ -36,11 +73,26 @@ Downtime is eliminated by two things:
   then gracefully stops the old one. The listening port is shared, so no
   request is ever refused.
 
+## GitHub Actions access (one-time)
+
+The workflow ssh-es into the droplet as `charuk` with a dedicated keypair:
+
+```bash
+# on your machine:
+ssh-keygen -t ed25519 -N '' -C 'github-actions-deploy' -f hvoya-deploy-key
+ssh charuk@164.90.184.112 'cat >> ~/.ssh/authorized_keys' < hvoya-deploy-key.pub
+
+# add the PRIVATE key as a repo secret, then delete both local files:
+# GitHub repo → Settings → Secrets and variables → Actions →
+#   New repository secret → name: DEPLOY_SSH_KEY, value: contents of hvoya-deploy-key
+rm hvoya-deploy-key hvoya-deploy-key.pub
+```
+
 ## Server prerequisites
 
-The build requires **Node ≥ 20.19** (Angular 21's minimum) available to the
-`charuk` user — `remote.sh` refuses to deploy on anything older. To upgrade
-system-wide to Node 22 LTS (as root):
+The app requires **Node ≥ 20.19** available to the `charuk` user — both
+deploy scripts refuse to run on anything older. To upgrade system-wide to
+Node 22 LTS (as root):
 
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
@@ -59,7 +111,10 @@ pm2 unstartup && pm2 startup   # run the sudo command it prints, then: pm2 save
 `remote.sh` loads `~/.nvm` explicitly, since non-interactive ssh sessions
 skip it.)
 
-The droplet also needs **swap** — the Angular build can spike past the 2 GB
+The remaining prerequisites in this section only matter for the **manual
+build-on-server fallback** — CI deploys never build on the droplet.
+
+The droplet needs **swap** — the Angular build can spike past the 2 GB
 of RAM and, without swap, that hard-locks the whole machine (this happened).
 As root, once:
 
@@ -98,6 +153,13 @@ After the first deploy, `/var/www/sales.hvoya.com/html` becomes a symlink
 config change — it follows symlinks by default.
 
 ## Deploying
+
+**Normal release:** merge `dev` into `master` and push — the `Deploy`
+workflow does the rest. It can also be re-run manually from the Actions tab
+(`workflow_dispatch`). The built bundle is kept as a workflow artifact for
+14 days.
+
+**Manual fallback (build on server):**
 
 ```bash
 ./deploy/deploy.sh                     # deploys origin/master
