@@ -215,16 +215,15 @@ export class ReturnRequestsStrategy implements RequestStrategy {
         },
       },
     );
-    const approvedItems =
-      await data.queryRunner.manager.create<OrderReturnRequestItemEntity>(
-        OrderReturnRequestItemEntity,
-        approvedOrderItems.map((item) => ({
-          orderItem: item,
-          quantity: data.approveRequestDto.returnRequest.approvedItems.find(
-            (i) => i.orderItemId === item.id,
-          )!.quantity,
-        })),
-      );
+    const approvedItems = data.queryRunner.manager.create(
+      OrderReturnRequestItemEntity,
+      approvedOrderItems.map((item) => ({
+        orderItem: item,
+        quantity: data.approveRequestDto.returnRequest.approvedItems.find(
+          (i) => i.orderItemId === item.id,
+        )!.quantity,
+      })),
+    );
 
     const approvedItemsTotal = this.calculateTotal(approvedItems);
 
