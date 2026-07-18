@@ -12,8 +12,11 @@ module.exports = {
       cwd: '/var/www/sales.hvoya.com/current',
       script: 'dist/src/main.js',
       // The New Relic agent is loaded by src/main.ts (first import), NOT via
-      // node_args: pm2 cluster reload silently drops node_args, so a preload
-      // here only survives until the first deploy (bit us 2026-07-18).
+      // node_args: a preload runs before pm2 chdirs into cwd, so the agent
+      // resolves newrelic.js/env/.env against the pm2 daemon's cwd and
+      // silently disables itself (bit us 2026-07-17..18). Note: pm2 reload
+      // never removes a previously stored node_args — purging one requires
+      // `pm2 delete` + `pm2 start`.
       exec_mode: 'cluster',
       instances: 1,
       wait_ready: true,

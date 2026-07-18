@@ -1,8 +1,10 @@
 // Must stay the first import: the agent instruments modules (express, http,
 // pg, ...) by hooking require, so anything loaded before it is invisible to
-// New Relic. Loading it here instead of via pm2 node_args survives cluster
-// reloads, which silently drop node_args (learned 2026-07-18). Disabled
-// outside production by NEW_RELIC_ENABLED in the env file.
+// New Relic. Loading it here instead of via pm2 node_args matters because a
+// node_args preload runs before pm2 chdirs into cwd, so the agent resolves
+// newrelic.js/env/.env against the pm2 daemon's cwd and silently disables
+// itself (bit us 2026-07-17..18). An import here runs after the chdir.
+// Disabled outside production by NEW_RELIC_ENABLED in the env file.
 import 'newrelic';
 
 import * as compression from 'compression';
