@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddOrderCancelledNotificationType1688338081376
-  implements MigrationInterface
-{
+export class AddOrderCancelledNotificationType1688338081376 implements MigrationInterface {
   name = 'AddOrderCancelledNotificationType1688338081376';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

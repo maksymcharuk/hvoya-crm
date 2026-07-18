@@ -22,9 +22,7 @@ import {
 } from '../utils/products-normalization.util';
 
 @Injectable()
-export class PromProductsNormalizationServiceXml
-  implements BaseNormalizationService<PromProductsXml>
-{
+export class PromProductsNormalizationServiceXml implements BaseNormalizationService<PromProductsXml> {
   normalize(data: PromProductsXml): NormalizedProductsData {
     let products: NormalizedProductBase[] | undefined = [];
     try {

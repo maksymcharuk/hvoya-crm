@@ -8,9 +8,7 @@ import {
 import { RequestEntity } from '../../../entities/request.entity';
 
 @EventSubscriber()
-export class RequestSubscriber
-  implements EntitySubscriberInterface<RequestEntity>
-{
+export class RequestSubscriber implements EntitySubscriberInterface<RequestEntity> {
   listenTo() {
     return RequestEntity;
   }

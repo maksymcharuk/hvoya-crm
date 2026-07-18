@@ -4,9 +4,7 @@ import { OrderReturnRequestEntity } from '../../../entities/order-return-request
 import { OrderStatusEntity } from '../../../entities/order-status.entity';
 import { OrderStatus } from '../../../enums/order-status.enum';
 
-export class SetReturnStatusToOrdersWhereReturnRequestWasCreated1697226299244
-  implements MigrationInterface
-{
+export class SetReturnStatusToOrdersWhereReturnRequestWasCreated1697226299244 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const orderReturnRequests = await queryRunner.manager.find(
       OrderReturnRequestEntity,

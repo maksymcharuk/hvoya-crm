@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddWeightColumnToProductPropertiesTable1679859507428
-  implements MigrationInterface
-{
+export class AddWeightColumnToProductPropertiesTable1679859507428 implements MigrationInterface {
   name = 'AddWeightColumnToProductPropertiesTable1679859507428';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RenameAvailableItemsCountColumnToStockInProductVariantTable1680232575459
-  implements MigrationInterface
-{
+export class RenameAvailableItemsCountColumnToStockInProductVariantTable1680232575459 implements MigrationInterface {
   name =
     'RenameAvailableItemsCountColumnToStockInProductVariantTable1680232575459';
 

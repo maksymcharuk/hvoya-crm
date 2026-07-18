@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddBalanceTableAndUpdatedRelations1679076311466
-  implements MigrationInterface
-{
+export class AddBalanceTableAndUpdatedRelations1679076311466 implements MigrationInterface {
   name = 'AddBalanceTableAndUpdatedRelations1679076311466';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

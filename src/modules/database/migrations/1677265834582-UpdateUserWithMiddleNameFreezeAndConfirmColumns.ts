@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateUserWithMiddleNameFreezeAndConfirmColumns1677265834582
-  implements MigrationInterface
-{
+export class UpdateUserWithMiddleNameFreezeAndConfirmColumns1677265834582 implements MigrationInterface {
   name = 'UpdateUserWithMiddleNameFreezeAndConfirmColumns1677265834582';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateHeightColumnToAllowNullableInProductSizeTable1680838937302
-  implements MigrationInterface
-{
+export class UpdateHeightColumnToAllowNullableInProductSizeTable1680838937302 implements MigrationInterface {
   name = 'UpdateHeightColumnToAllowNullableInProductSizeTable1680838937302';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

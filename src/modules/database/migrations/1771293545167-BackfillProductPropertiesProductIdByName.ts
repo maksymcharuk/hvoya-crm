@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class BackfillProductPropertiesProductIdByName1771293545167
-  implements MigrationInterface
-{
+export class BackfillProductPropertiesProductIdByName1771293545167 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
                         UPDATE product_properties pp

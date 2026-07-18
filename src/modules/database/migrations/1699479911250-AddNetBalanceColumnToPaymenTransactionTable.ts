@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddNetBalanceColumnToPaymenTransactionTable1699479911250
-  implements MigrationInterface
-{
+export class AddNetBalanceColumnToPaymenTransactionTable1699479911250 implements MigrationInterface {
   name = 'AddNetBalanceColumnToPaymenTransactionTable1699479911250';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

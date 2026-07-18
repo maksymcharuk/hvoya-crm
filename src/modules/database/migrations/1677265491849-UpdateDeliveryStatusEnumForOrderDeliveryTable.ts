@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateDeliveryStatusEnumForOrderDeliveryTable1677265491849
-  implements MigrationInterface
-{
+export class UpdateDeliveryStatusEnumForOrderDeliveryTable1677265491849 implements MigrationInterface {
   name = 'UpdateDeliveryStatusEnumForOrderDeliveryTable1677265491849';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

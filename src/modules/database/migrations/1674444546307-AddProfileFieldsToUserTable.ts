@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddProfileFieldsToUserTable1674444546307
-  implements MigrationInterface
-{
+export class AddProfileFieldsToUserTable1674444546307 implements MigrationInterface {
   name = 'AddProfileFieldsToUserTable1674444546307';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

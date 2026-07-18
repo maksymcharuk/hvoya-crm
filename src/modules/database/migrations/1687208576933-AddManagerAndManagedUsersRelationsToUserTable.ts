@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddManagerAndManagedUsersRelationsToUserTable1687208576933
-  implements MigrationInterface
-{
+export class AddManagerAndManagedUsersRelationsToUserTable1687208576933 implements MigrationInterface {
   name = 'AddManagerAndManagedUsersRelationsToUserTable1687208576933';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

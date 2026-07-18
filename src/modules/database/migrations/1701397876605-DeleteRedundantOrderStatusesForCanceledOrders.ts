@@ -4,9 +4,7 @@ import { OrderStatusEntity } from '../../../entities/order-status.entity';
 import { OrderEntity } from '../../../entities/order.entity';
 import { SortOrder } from '../../../enums/sort-order.enum';
 
-export class DeleteRedundantOrderStatusesForCanceledOrders1701397876605
-  implements MigrationInterface
-{
+export class DeleteRedundantOrderStatusesForCanceledOrders1701397876605 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const order = await queryRunner.manager.findOne(OrderEntity, {
       where: { number: '1936' },

@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddExternalIdsColumnsAndUpdatePublicIdColumnInFilesTable1680819874550
-  implements MigrationInterface
-{
+export class AddExternalIdsColumnsAndUpdatePublicIdColumnInFilesTable1680819874550 implements MigrationInterface {
   name =
     'AddExternalIdsColumnsAndUpdatePublicIdColumnInFilesTable1680819874550';
 

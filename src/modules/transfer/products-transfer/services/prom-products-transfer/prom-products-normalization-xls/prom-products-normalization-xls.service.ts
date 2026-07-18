@@ -22,9 +22,7 @@ import {
 } from '../utils/products-normalization.util';
 
 @Injectable()
-export class PromProductsNormalizationServiceXls
-  implements BaseNormalizationService<PromProductsXlsRaw>
-{
+export class PromProductsNormalizationServiceXls implements BaseNormalizationService<PromProductsXlsRaw> {
   normalize(rawData: PromProductsXlsRaw): NormalizedProductsData {
     let products: NormalizedProductBase[] | undefined = [];
     const data: PromProductsXls = rawData.map((product) =>

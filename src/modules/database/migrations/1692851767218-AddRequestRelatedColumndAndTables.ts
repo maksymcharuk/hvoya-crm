@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddRequestRelatedColumndAndTables1692851767218
-  implements MigrationInterface
-{
+export class AddRequestRelatedColumndAndTables1692851767218 implements MigrationInterface {
   name = 'AddRequestRelatedColumndAndTables1692851767218';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

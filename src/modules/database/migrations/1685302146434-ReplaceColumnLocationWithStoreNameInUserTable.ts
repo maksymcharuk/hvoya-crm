@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class ReplaceColumnLocationWithStoreNameInUserTable1685302146434
-  implements MigrationInterface
-{
+export class ReplaceColumnLocationWithStoreNameInUserTable1685302146434 implements MigrationInterface {
   name = 'ReplaceColumnLocationWithStoreNameInUserTable1685302146434';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

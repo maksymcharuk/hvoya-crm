@@ -11,9 +11,7 @@ import { HttpException } from '@nestjs/common';
 import { ProductSizeEntity } from '../../../entities/product-size.entity';
 
 @EventSubscriber()
-export class ProductSizeSubscriber
-  implements EntitySubscriberInterface<ProductSizeEntity>
-{
+export class ProductSizeSubscriber implements EntitySubscriberInterface<ProductSizeEntity> {
   listenTo() {
     return ProductSizeEntity;
   }

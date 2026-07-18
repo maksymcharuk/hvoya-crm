@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class RemoveUrlFromNotificationAddDataColumn1682711725292
-  implements MigrationInterface
-{
+export class RemoveUrlFromNotificationAddDataColumn1682711725292 implements MigrationInterface {
   name = 'RemoveUrlFromNotificationAddDataColumn1682711725292';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

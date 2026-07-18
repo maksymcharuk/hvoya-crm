@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddStatusAndBankIdToPaymentTransactionEntity1680539728016
-  implements MigrationInterface
-{
+export class AddStatusAndBankIdToPaymentTransactionEntity1680539728016 implements MigrationInterface {
   name = 'AddStatusAndBankIdToPaymentTransactionEntity1680539728016';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -2,9 +2,7 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 import { OrderEntity } from '../../../entities/order.entity';
 
-export class SetValueForOrderCurrentStatusColumnBasedOnStatusesColumn1713842431970
-  implements MigrationInterface
-{
+export class SetValueForOrderCurrentStatusColumnBasedOnStatusesColumn1713842431970 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Set current status for all orders base on the last status in the statuses relation array and cast "public"."order_status_enum" for status column
     const orders = await queryRunner.manager.find(OrderEntity, {

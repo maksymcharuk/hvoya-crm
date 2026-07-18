@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class TypeFieldRemoveFromPaymentTransactionColumn1679514132549
-  implements MigrationInterface
-{
+export class TypeFieldRemoveFromPaymentTransactionColumn1679514132549 implements MigrationInterface {
   name = 'TypeFieldRemoveFromPaymentTransactionColumn1679514132549';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

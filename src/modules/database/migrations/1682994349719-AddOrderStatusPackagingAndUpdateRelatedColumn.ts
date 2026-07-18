@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddOrderStatusPackagingAndUpdateRelatedColumn1682994349719
-  implements MigrationInterface
-{
+export class AddOrderStatusPackagingAndUpdateRelatedColumn1682994349719 implements MigrationInterface {
   name = 'AddOrderStatusPackagingAndUpdateRelatedColumn1682994349719';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

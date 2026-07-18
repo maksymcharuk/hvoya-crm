@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddReceiverColumnsToOrderDeliveryTable1676503617917
-  implements MigrationInterface
-{
+export class AddReceiverColumnsToOrderDeliveryTable1676503617917 implements MigrationInterface {
   name = 'AddReceiverColumnsToOrderDeliveryTable1676503617917';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

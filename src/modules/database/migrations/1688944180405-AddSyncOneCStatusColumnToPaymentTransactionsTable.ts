@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddSyncOneCStatusColumnToPaymentTransactionsTable1688944180405
-  implements MigrationInterface
-{
+export class AddSyncOneCStatusColumnToPaymentTransactionsTable1688944180405 implements MigrationInterface {
   name = 'AddSyncOneCStatusColumnToPaymentTransactionsTable1688944180405';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

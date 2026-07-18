@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddFileForeignKeyToOrderDelivery1676512753879
-  implements MigrationInterface
-{
+export class AddFileForeignKeyToOrderDelivery1676512753879 implements MigrationInterface {
   name = 'AddFileForeignKeyToOrderDelivery1676512753879';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

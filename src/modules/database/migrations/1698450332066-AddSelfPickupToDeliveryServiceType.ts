@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddSelfPickupToDeliveryServiceType1698450332066
-  implements MigrationInterface
-{
+export class AddSelfPickupToDeliveryServiceType1698450332066 implements MigrationInterface {
   name = 'AddSelfPickupToDeliveryServiceType1698450332066';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

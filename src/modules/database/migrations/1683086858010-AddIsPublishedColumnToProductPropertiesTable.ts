@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddIsPublishedColumnToProductPropertiesTable1683086858010
-  implements MigrationInterface
-{
+export class AddIsPublishedColumnToProductPropertiesTable1683086858010 implements MigrationInterface {
   name = 'AddIsPublishedColumnToProductPropertiesTable1683086858010';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
