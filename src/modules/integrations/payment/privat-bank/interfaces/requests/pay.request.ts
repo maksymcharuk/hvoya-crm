@@ -4,7 +4,7 @@ export class PayRequest {
       xmls: string;
       interface: string;
       action: string;
-    }
+    };
     data: [
       {
         $: {
@@ -12,13 +12,13 @@ export class PayRequest {
           'xsi:type': string;
           id: string;
           number?: string;
-        }
+        };
         companyinfo?: [
           {
             $: {
               inn?: string;
               companyId: string;
-            }
+            };
             companyCode?: [''];
             unitCode?: [''];
             companyName?: [''];
@@ -29,25 +29,25 @@ export class PayRequest {
                     $: {
                       name: string;
                       value: string;
-                    }
-                  }
-                ]
-              }
+                    };
+                  },
+                ];
+              },
             ];
             checkreference: [''];
-          }
+          },
         ];
         payerinfo: [
           {
             $: {
               billIdentifier: string;
               ls?: string;
-            }
+            };
             fio?: [''];
             phone?: [''];
             address?: [''];
-          }
-        ]
+          },
+        ];
         totalsum: [''];
         createTime: [''];
         confirmTime?: [''];
@@ -61,7 +61,7 @@ export class PayRequest {
                   sum: string;
                   serviceCode: string;
                   id?: string;
-                }
+                };
                 companyinfo: [
                   {
                     checkReference?: [''];
@@ -75,13 +75,13 @@ export class PayRequest {
                             $: {
                               name: string;
                               value: string;
-                            }
-                          }
-                        ]
-                      }
+                            };
+                          },
+                        ];
+                      },
                     ];
-                  }
-                ]
+                  },
+                ];
                 idinvoice: [''];
                 serviceName?: [''];
                 destination?: [''];
@@ -95,10 +95,10 @@ export class PayRequest {
                           tarif?: string;
                           delta?: string;
                           name?: string;
-                        }
-                      }
-                    ]
-                  }
+                        };
+                      },
+                    ];
+                  },
                 ];
                 dopdata: [
                   {
@@ -107,20 +107,19 @@ export class PayRequest {
                         $: {
                           name: string;
                           value: string;
-                        }
-                      }
+                        };
+                      },
                     ];
-                  }
-                ]
-                comissions: Commision[]
-              }
+                  },
+                ];
+                comissions: Commision[];
+              },
             ];
-          }
-        ]
-      }
-    ]
-  }
-
+          },
+        ];
+      },
+    ];
+  };
 }
 
 class Commision {
@@ -129,7 +128,7 @@ class Commision {
       $: {
         type: string;
         summ: string;
-      }
-    }
-  ]
+      };
+    },
+  ];
 }

@@ -11,18 +11,17 @@ class ErrorResponseParams {
 
 class ErrorResponseData {
   $: {
-    'xmlns:xsi': typeof PRIVAT_BANK_XMLNS_XSI,
-    'xsi:type': XsiType.ErrorInfo,
-    'code': number,
+    'xmlns:xsi': typeof PRIVAT_BANK_XMLNS_XSI;
+    'xsi:type': XsiType.ErrorInfo;
+    code: number;
   };
   Message: string;
-
 
   constructor(params: ErrorResponseParams) {
     this.$ = {
       'xmlns:xsi': PRIVAT_BANK_XMLNS_XSI,
       'xsi:type': XsiType.ErrorInfo,
-      'code': params.code,
+      code: params.code,
     };
     this.Message = params.message;
   }

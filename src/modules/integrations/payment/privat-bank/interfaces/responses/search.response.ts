@@ -19,10 +19,10 @@ class SearchResponseData {
   PayerInfo: [
     {
       $: {
-        billIdentifier: string,
-        ls: string,
-      },
-      Fio: string,
+        billIdentifier: string;
+        ls: string;
+      };
+      Fio: string;
     },
   ];
   ServiceGroup: [
@@ -30,32 +30,32 @@ class SearchResponseData {
       DebtService: [
         {
           $: {
-            serviceCode: string,
-          },
+            serviceCode: string;
+          };
           CompanyInfo: [
             {
-              CompanyCode: string,
-            }
-          ]
+              CompanyCode: string;
+            },
+          ];
           DebtInfo: [
             {
               $: {
-                amountToPay: string,
-              }
-              _: string,
-            }
-          ]
+                amountToPay: string;
+              };
+              _: string;
+            },
+          ];
           PayerInfo: [
             {
               $: {
-                billIdentifier: string,
-                ls: string,
-              },
-              Fio: string,
-            }
-          ],
+                billIdentifier: string;
+                ls: string;
+              };
+              Fio: string;
+            },
+          ];
         },
-      ],
+      ];
     },
   ];
 
@@ -80,15 +80,15 @@ class SearchResponseData {
             CompanyInfo: [
               {
                 CompanyCode: '2611220009',
-              }
+              },
             ],
             DebtInfo: [
               {
                 $: {
                   amountToPay: '0.00',
                 },
-                _: ' '
-              }
+                _: ' ',
+              },
             ],
             PayerInfo: [
               {
@@ -97,7 +97,7 @@ class SearchResponseData {
                   ls: params.billIdentifier,
                 },
                 Fio: params.fio,
-              }
+              },
             ],
           },
         ],

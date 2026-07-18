@@ -13,9 +13,9 @@ import { UserEntity } from '@entities/user.entity';
 import { CaslModule } from '@modules/casl/casl.module';
 
 import { AnalyticsController } from './analytics.controller';
-import { AnalyticsService } from './services/analytics.service';
 import { NlqController } from './nlq/nlq.controller';
 import { NlqService } from './nlq/nlq.service';
+import { AnalyticsService } from './services/analytics.service';
 
 @Module({
   imports: [

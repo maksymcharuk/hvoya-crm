@@ -1,5 +1,13 @@
-import { Body, Controller, Headers, Post, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
+
+import {
+  Body,
+  Controller,
+  Headers,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 
 import { Action } from '@enums/action.enum';
 
@@ -17,13 +25,17 @@ export class NlqController {
   constructor(private readonly nlqService: NlqService) {}
 
   @Post()
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, 'AdminAalytics'))
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, 'AdminAalytics'),
+  )
   query(@Body() dto: NlqRequestDto) {
     return this.nlqService.query(dto);
   }
 
   @Post('stream')
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, 'AdminAalytics'))
+  @CheckPolicies((ability: AppAbility) =>
+    ability.can(Action.Read, 'AdminAalytics'),
+  )
   async stream(
     @Body() dto: RunAgentInputDto,
     @Res() res: Response,

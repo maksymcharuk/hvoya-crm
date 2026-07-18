@@ -29,14 +29,14 @@ export class RecalculateBalance1698778036926 implements MigrationInterface {
       .getMany();
 
     // recalculating balance amount based on payment transactions
-    for (let balance of balances) {
+    for (const balance of balances) {
       const transactions = balance.paymentTransactions.filter(
         (transaction) => transaction.status === TransactionStatus.Success,
       );
 
       balance.amount = new Decimal(0);
 
-      for (let transaction of transactions) {
+      for (const transaction of transactions) {
         balance.amount = balance.amount.plus(transaction.amount);
       }
 

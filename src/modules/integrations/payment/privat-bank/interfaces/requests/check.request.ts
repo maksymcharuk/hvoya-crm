@@ -4,7 +4,7 @@ export class CheckRequest {
       xmls: string;
       interface: string;
       action: string;
-    }
+    };
     data: [
       {
         $: {
@@ -12,12 +12,12 @@ export class CheckRequest {
           'xsi:type': string;
           number: string;
           id: string;
-        }
+        };
         companyinfo?: [
           {
             $: {
               companyId?: string;
-            }
+            };
             companyCode?: string;
             companyName?: string;
             dopdata?: [
@@ -27,24 +27,24 @@ export class CheckRequest {
                     $: {
                       name: string;
                       value: string;
-                    }
-                  }
-                ]
-              }
+                    };
+                  },
+                ];
+              },
             ];
-          }
+          },
         ];
         payerinfo: [
           {
             $: {
               billIdentifier?: string;
               ls?: string;
-            }
+            };
             fio?: [''];
             phone?: [''];
             address?: [''];
-          }
-        ]
+          },
+        ];
         totalsum: [''];
         createTime?: [''];
         servicegroup?: [
@@ -54,12 +54,12 @@ export class CheckRequest {
                 $: {
                   sum: string;
                   serviceCode: string;
-                }
+                };
                 companyinfo?: [
                   {
                     companyCode: [''];
                     companyName?: [''];
-                  }
+                  },
                 ];
                 serviceName?: [''];
                 destination?: [''];
@@ -73,11 +73,11 @@ export class CheckRequest {
                           tarif?: string;
                           delta?: string;
                           name?: string;
-                        }
-                      }
-                    ]
-                  }
-                ]
+                        };
+                      },
+                    ];
+                  },
+                ];
                 dopdata?: [
                   {
                     dop: [
@@ -85,16 +85,16 @@ export class CheckRequest {
                         $: {
                           name: string;
                           value: string;
-                        }
-                      }
-                    ]
-                  }
+                        };
+                      },
+                    ];
+                  },
                 ];
-              }
+              },
             ];
-          }
+          },
         ];
-      }
-    ]
-  }
+      },
+    ];
+  };
 }

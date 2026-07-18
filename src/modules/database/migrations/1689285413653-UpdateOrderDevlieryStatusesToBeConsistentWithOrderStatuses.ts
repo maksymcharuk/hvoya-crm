@@ -37,19 +37,19 @@ export class UpdateOrderDevlieryStatusesToBeConsistentWithOrderStatuses168928541
       (order) => order.statuses[0]?.status === OrderStatus.Refunded,
     );
 
-    for (let order of fulfilledOrders) {
+    for (const order of fulfilledOrders) {
       await queryRunner.manager.save(OrderDeliveryEntity, {
         id: order.delivery.id,
         status: DeliveryStatus.Received,
       });
     }
-    for (let order of cancelledOrders) {
+    for (const order of cancelledOrders) {
       await queryRunner.manager.save(OrderDeliveryEntity, {
         id: order.delivery.id,
         status: DeliveryStatus.Declined,
       });
     }
-    for (let order of refundedOrders) {
+    for (const order of refundedOrders) {
       await queryRunner.manager.save(OrderDeliveryEntity, {
         id: order.delivery.id,
         status: DeliveryStatus.Returned,

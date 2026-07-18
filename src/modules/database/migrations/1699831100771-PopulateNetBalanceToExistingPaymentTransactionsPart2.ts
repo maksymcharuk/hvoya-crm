@@ -11,7 +11,7 @@ export class PopulateNetBalanceToExistingPaymentTransactionsPart21699831100771
   public async up(queryRunner: QueryRunner): Promise<void> {
     const balances = await queryRunner.manager.find(BalanceEntity);
 
-    for (let balance of balances) {
+    for (const balance of balances) {
       const transactions = await queryRunner.manager.find(
         PaymentTransactionEntity,
         {
@@ -39,7 +39,7 @@ export class PopulateNetBalanceToExistingPaymentTransactionsPart21699831100771
       PaymentTransactionEntity,
     );
 
-    for (let transaction of transactions) {
+    for (const transaction of transactions) {
       transaction.netBalance = new Decimal(0);
     }
 

@@ -4,14 +4,14 @@ export class CancelRequest {
       xmls: string;
       interface: string;
       action: string;
-    }
+    };
     data: [
       {
         $: {
           'xmlns:xsi': string;
           'xsi:type': string;
           id: string;
-        }
+        };
         companyinfo: [
           {
             companyCode?: [''];
@@ -23,24 +23,24 @@ export class CancelRequest {
                     $: {
                       name: string;
                       value: string;
-                    }
-                  }
-                ]
-              }
+                    };
+                  },
+                ];
+              },
             ];
-          }
-        ]
+          },
+        ];
         payerinfo: [
           {
             $: {
               billIdentifier: string;
               ls: string;
-            }
+            };
             fio?: [''];
             phone?: [''];
             address?: [''];
-          }
-        ]
+          },
+        ];
         totalsum: [''];
         createTime: [''];
         confirmTime?: [''];
@@ -51,18 +51,18 @@ export class CancelRequest {
                 $: {
                   sum: string;
                   id: string;
-                }
+                };
                 payerInfo: [
                   {
                     $: {
                       billIdentifier: string;
                       ls?: string;
-                    }
+                    };
                     fio?: [''];
                     phone?: [''];
                     address?: [''];
-                  }
-                ]
+                  },
+                ];
                 companyinfo?: [
                   {
                     checkReference: string;
@@ -75,12 +75,12 @@ export class CancelRequest {
                             $: {
                               name: string;
                               value: string;
-                            }
-                          }
-                        ]
-                      }
-                    ]
-                  }
+                            };
+                          },
+                        ];
+                      },
+                    ];
+                  },
                 ];
                 idinvoice: string;
                 serviceName?: [''];
@@ -91,16 +91,16 @@ export class CancelRequest {
                         $: {
                           name: string;
                           value: string;
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
+                        };
+                      },
+                    ];
+                  },
+                ];
+              },
             ];
-          }
-        ]
-      }
-    ]
-  }
+          },
+        ];
+      },
+    ];
+  };
 }

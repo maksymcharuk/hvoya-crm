@@ -1,4 +1,7 @@
-import { ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
+import {
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 
 @ValidatorConstraint({ name: 'Cyrillic' })
 export class CyrillicRule implements ValidatorConstraintInterface {

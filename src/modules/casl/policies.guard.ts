@@ -42,7 +42,7 @@ export class PoliciesGuard implements CanActivate {
         .findOneOrFail(UserEntity, {
           where: { id: token.user.id },
         });
-    } catch (error) {
+    } catch {
       throw new HttpException('Користувача нe знайдено', 404);
     }
 

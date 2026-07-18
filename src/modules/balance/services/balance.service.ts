@@ -54,7 +54,7 @@ export class BalanceService {
     manager: EntityManager,
     orderId?: string,
   ): Promise<BalanceEntity> {
-    let balance = await manager.findOneOrFail(BalanceEntity, {
+    const balance = await manager.findOneOrFail(BalanceEntity, {
       where: { owner: { id: userId } },
     });
 

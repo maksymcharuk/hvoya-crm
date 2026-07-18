@@ -82,7 +82,9 @@ symlink has been removed from the droplet.
 Now safe to do because every deploy has a health check and auto-rollback.
 Order matters; ship and verify each step in production before the next:
 
-1. TypeScript 4.7 → 5.x (with Nest 9 still — supported)
+1. TypeScript 4.7 → 5.x (with Nest 9 still — supported) ✅ Done 2026-07-18
+   (TS 5.9, `@typescript-eslint` 5 → 8 to support it; verified locally —
+   pending production deploy + watch before step 2)
 2. NestJS 9 → 10 (all `@nestjs/*` together, follow the official migration
    guide; includes `@nestjs/schedule`, `serve-static`, `typeorm` adapter)
 3. NestJS 10 → 11

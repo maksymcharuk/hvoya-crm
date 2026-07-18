@@ -28,8 +28,8 @@ export abstract class DeliveryStatusUpdateService<T> {
     }
 
     // Get delivery statuses for all orders base on delivery service
-    let statuses = [];
-    for (let deliveryServiceName of Object.values(DeliveryService)) {
+    const statuses = [];
+    for (const deliveryServiceName of Object.values(DeliveryService)) {
       const deliveryService =
         this.deliveryServiceFactory.getDeliveryService(deliveryServiceName);
       if (!deliveryService) {
@@ -57,7 +57,7 @@ export abstract class DeliveryStatusUpdateService<T> {
     }
 
     // Update delivery statuses for orders
-    for (let entity of entities) {
+    for (const entity of entities) {
       const deliveryStatus = statuses.find(
         (status) => status.trackingId === this.getEntityTrackingId(entity),
       );

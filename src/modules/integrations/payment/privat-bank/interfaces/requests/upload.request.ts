@@ -4,18 +4,18 @@ export class UploadRequest {
       xmls: string;
       interface: string;
       action: string;
-    }
+    };
     data: [
       {
         $: {
           'xmlns:xsi': string;
           'xsi:type': string;
           id: string;
-        }
-        unit: Unit[]
-      }
-    ]
-  }
+        };
+        unit: Unit[];
+      },
+    ];
+  };
 }
 
 class Unit {
@@ -25,29 +25,29 @@ class Unit {
         {
           $: {
             id: string;
-          }
+          };
           companyinfo: [
             {
               checkReference: [''];
-            }
-          ]
+            },
+          ];
           payerinfo: [
             {
               $: {
                 ls?: string;
                 billIdentifier: string;
-              }
+              };
               fio?: [''];
               address?: [''];
-            }
-          ]
+            },
+          ];
           bankinfo?: [
             {
               $: {
                 pointId?: string;
                 pointType: string;
-              }
-            }
+              };
+            },
           ];
           totalSum: string;
           payerComission?: [''];
@@ -58,11 +58,11 @@ class Unit {
                   $: {
                     name: string;
                     value: string;
-                  }
-                }
-              ]
-            }
-          ]
+                  };
+                },
+              ];
+            },
+          ];
           createTime: string;
           companyComissionByPay?: [''];
           dealerComission?: [''];
@@ -74,7 +74,7 @@ class Unit {
                   $: {
                     sum: string;
                     serviceCode: string;
-                  }
+                  };
                   meterdata: [
                     {
                       meter: [
@@ -83,11 +83,11 @@ class Unit {
                             name: string;
                             delta: string;
                             previousValue: string;
-                          }
-                        }
-                      ]
-                    }
-                  ]
+                          };
+                        },
+                      ];
+                    },
+                  ];
                   dopdata?: [
                     {
                       dop: [
@@ -95,19 +95,19 @@ class Unit {
                           $: {
                             name: string;
                             value: string;
-                          }
-                        }
-                      ]
-                    }
+                          };
+                        },
+                      ];
+                    },
                   ];
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
+                },
+              ];
+            },
+          ];
+        },
+      ];
+    },
+  ];
   sdate?: [''];
   sum: string;
   timestamp?: [''];

@@ -64,7 +64,7 @@ export class PostsService {
     const ability = this.caslAbilityFactory.createForUser(user);
 
     const itemCount = await query.getCount();
-    let { entities } = await query.getRawAndEntities();
+    const { entities } = await query.getRawAndEntities();
 
     const posts: PostEntity[] = entities.map((order) =>
       sanitizeEntity(ability, order),

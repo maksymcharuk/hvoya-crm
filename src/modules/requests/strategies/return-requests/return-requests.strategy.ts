@@ -166,22 +166,24 @@ export class ReturnRequestsStrategy implements RequestStrategy {
   async approveRequest(
     data: ApproveRequestStrategyDto,
   ): Promise<RequestEntity> {
-    let request: RequestEntity;
     const user = await data.queryRunner.manager.findOneOrFail(UserEntity, {
       where: { id: data.userId },
     });
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    request = await data.queryRunner.manager.findOneOrFail(RequestEntity, {
-      relations: [
-        'returnRequest.approvedItems.orderItem',
-        'returnRequest.delivery',
-        'returnRequest.order',
-        'customer',
-      ],
-      where: { number: data.requestNumber },
-    });
+    const request = await data.queryRunner.manager.findOneOrFail(
+      RequestEntity,
+      {
+        relations: [
+          'returnRequest.approvedItems.orderItem',
+          'returnRequest.delivery',
+          'returnRequest.order',
+          'customer',
+        ],
+        where: { number: data.requestNumber },
+      },
+    );
 
     if (
       ability.cannot(Action.Approve, request) ||
@@ -314,21 +316,23 @@ export class ReturnRequestsStrategy implements RequestStrategy {
   }
 
   async rejectRequest(data: RejectRequestStrategyDto): Promise<RequestEntity> {
-    let request: RequestEntity;
     const user = await data.queryRunner.manager.findOneOrFail(UserEntity, {
       where: { id: data.userId },
     });
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    request = await data.queryRunner.manager.findOneOrFail(RequestEntity, {
-      relations: [
-        'returnRequest.approvedItems.orderItem',
-        'returnRequest.delivery',
-        'customer',
-      ],
-      where: { number: data.requestNumber },
-    });
+    const request = await data.queryRunner.manager.findOneOrFail(
+      RequestEntity,
+      {
+        relations: [
+          'returnRequest.approvedItems.orderItem',
+          'returnRequest.delivery',
+          'customer',
+        ],
+        where: { number: data.requestNumber },
+      },
+    );
 
     if (
       ability.cannot(Action.Decline, request) ||
@@ -446,17 +450,19 @@ export class ReturnRequestsStrategy implements RequestStrategy {
   async restoreRequest(
     data: RestoreRequestStrategyDto,
   ): Promise<RequestEntity> {
-    let request: RequestEntity;
     const user = await data.queryRunner.manager.findOneOrFail(UserEntity, {
       where: { id: data.userId },
     });
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    request = await data.queryRunner.manager.findOneOrFail(RequestEntity, {
-      relations: ['returnRequest', 'customer'],
-      where: { number: data.requestNumber },
-    });
+    const request = await data.queryRunner.manager.findOneOrFail(
+      RequestEntity,
+      {
+        relations: ['returnRequest', 'customer'],
+        where: { number: data.requestNumber },
+      },
+    );
 
     if (
       ability.cannot(Action.Restore, request) ||

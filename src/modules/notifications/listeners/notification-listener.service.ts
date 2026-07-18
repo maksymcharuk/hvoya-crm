@@ -63,7 +63,7 @@ export class NotificationListenerService {
   }
 
   private async sendNotificationToAdmins(payload: NotificationCreatedEvent) {
-    let adminUsers = await this.usersService.getUsers(
+    const adminUsers = await this.usersService.getUsers(
       new UsersPageOptionsDto({
         roles: [Role.SuperAdmin, Role.Admin],
       }),
@@ -79,7 +79,7 @@ export class NotificationListenerService {
   }
 
   private async sendNotificationToUser(payload: NotificationCreatedEvent) {
-    let user = await this.usersService.findById(payload.userId);
+    const user = await this.usersService.findById(payload.userId);
 
     if (!user) {
       throw new Error('User not found');
