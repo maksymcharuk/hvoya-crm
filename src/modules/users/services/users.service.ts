@@ -70,7 +70,7 @@ export class UsersService {
   ): Promise<UserEntity> {
     const manager = queryRunner ? queryRunner.manager : this.dataSource.manager;
     try {
-      const user = await manager.create<UserEntity>(UserEntity, createUserDto);
+      const user = manager.create(UserEntity, createUserDto);
       user.balance = await manager.save(BalanceEntity, new BalanceEntity());
       await manager.save(user);
       await this.oneCApiClientService.counterparty(user);

@@ -103,6 +103,14 @@ Order matters; ship and verify each step in production before the next:
    back during the Nest 11 step to isolate risk), `newrelic` agent 10 →
    current (10.1.2 works on Node 22 but logs "not tested"), and remove
    `express-rate-limit` (unused in src — dead dependency)
+   ✅ Done 2026-07-18 (class-validator 0.15, helmet 8, typeorm 0.3.31 —
+   deliberately NOT the new 1.x line, newrelic 14, passport 0.7,
+   client socket.io-client ^4.8 to match server 4.8; express-rate-limit
+   removed; two `manager.create<T>()` call sites updated for typeorm's
+   two-generic signature; verified locally: seed + migrations, validation
+   pipe messages, all routes, WS, client build. Note: helmet only runs
+   under isProduction() so its runtime path is first exercised in prod —
+   the deploy health check + rollback covers it)
 5. After each step: build, deploy, watch `/api/health` + New Relic errors,
    click through auth → orders → balance manually
 
