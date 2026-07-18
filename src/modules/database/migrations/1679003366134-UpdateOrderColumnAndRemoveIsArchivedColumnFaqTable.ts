@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateOrderColumnAndRemoveIsArchivedColumnFaqTable1679003366134
-  implements MigrationInterface
-{
+export class UpdateOrderColumnAndRemoveIsArchivedColumnFaqTable1679003366134 implements MigrationInterface {
   name = 'UpdateOrderColumnAndRemoveIsArchivedColumnFaqTable1679003366134';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

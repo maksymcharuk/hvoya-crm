@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdatePackageSizeColumnsToAllowNullableInProductSizeTable1680820401184
-  implements MigrationInterface
-{
+export class UpdatePackageSizeColumnsToAllowNullableInProductSizeTable1680820401184 implements MigrationInterface {
   name =
     'UpdatePackageSizeColumnsToAllowNullableInProductSizeTable1680820401184';
 

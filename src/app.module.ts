@@ -91,6 +91,7 @@ import { UsersModule } from './modules/users/users.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).forRoutes('*');
+    // Express 5 (path-to-regexp v8) syntax — bare '*' is no longer a valid path
+    consumer.apply(AppLoggerMiddleware).forRoutes('{*splat}');
   }
 }

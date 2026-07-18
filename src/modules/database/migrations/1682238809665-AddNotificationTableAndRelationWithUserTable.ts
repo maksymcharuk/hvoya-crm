@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddNotificationTableAndRelationWithUserTable1682238809665
-  implements MigrationInterface
-{
+export class AddNotificationTableAndRelationWithUserTable1682238809665 implements MigrationInterface {
   name = 'AddNotificationTableAndRelationWithUserTable1682238809665';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

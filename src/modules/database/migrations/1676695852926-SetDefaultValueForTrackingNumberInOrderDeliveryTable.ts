@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class SetDefaultValueForTrackingNumberInOrderDeliveryTable1676695852926
-  implements MigrationInterface
-{
+export class SetDefaultValueForTrackingNumberInOrderDeliveryTable1676695852926 implements MigrationInterface {
   name = 'SetDefaultValueForTrackingNumberInOrderDeliveryTable1676695852926';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

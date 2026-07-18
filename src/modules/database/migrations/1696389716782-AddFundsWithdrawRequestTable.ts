@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddFundsWithdrawRequestTable1696389716782
-  implements MigrationInterface
-{
+export class AddFundsWithdrawRequestTable1696389716782 implements MigrationInterface {
   name = 'AddFundsWithdrawRequestTable1696389716782';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

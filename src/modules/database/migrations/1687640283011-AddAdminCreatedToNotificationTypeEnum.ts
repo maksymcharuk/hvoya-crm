@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddAdminCreatedToNotificationTypeEnum1687640283011
-  implements MigrationInterface
-{
+export class AddAdminCreatedToNotificationTypeEnum1687640283011 implements MigrationInterface {
   name = 'AddAdminCreatedToNotificationTypeEnum1687640283011';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

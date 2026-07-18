@@ -3,7 +3,10 @@ import { MailTemplate } from '@interfaces/mail-template.interface';
 import { Mail } from '@interfaces/mail.interface';
 
 export class AdminInvitationMail implements Mail {
-  constructor(private role: Role, private url: string) {}
+  constructor(
+    private role: Role,
+    private url: string,
+  ) {}
 
   build(): MailTemplate {
     return {

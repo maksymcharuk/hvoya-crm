@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateTypeColumnInNotificationsTableToUseEnums1686947090991
-  implements MigrationInterface
-{
+export class UpdateTypeColumnInNotificationsTableToUseEnums1686947090991 implements MigrationInterface {
   name = 'UpdateTypeColumnInNotificationsTableToUseEnums1686947090991';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

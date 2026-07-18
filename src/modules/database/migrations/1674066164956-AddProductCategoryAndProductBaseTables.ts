@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddProductCategoryAndProductBaseTables1674066164956
-  implements MigrationInterface
-{
+export class AddProductCategoryAndProductBaseTables1674066164956 implements MigrationInterface {
   name = 'AddProductCategoryAndProductBaseTables1674066164956';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

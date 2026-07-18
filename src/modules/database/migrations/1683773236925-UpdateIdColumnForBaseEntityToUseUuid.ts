@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateIdColumnForBaseEntityToUseUuid1683773236925
-  implements MigrationInterface
-{
+export class UpdateIdColumnForBaseEntityToUseUuid1683773236925 implements MigrationInterface {
   name = 'UpdateIdColumnForBaseEntityToUseUuid1683773236925';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

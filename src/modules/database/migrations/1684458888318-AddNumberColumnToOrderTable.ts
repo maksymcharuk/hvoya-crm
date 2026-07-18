@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddNumberColumnToOrderTable1684458888318
-  implements MigrationInterface
-{
+export class AddNumberColumnToOrderTable1684458888318 implements MigrationInterface {
   name = 'AddNumberColumnToOrderTable1684458888318';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

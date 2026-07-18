@@ -1,6 +1,7 @@
 {
   "singleQuote": true,
   "trailingComma": "all",
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "importOrder": [
     "^newrelic$",
     "<THIRD_PARTY_MODULES>",

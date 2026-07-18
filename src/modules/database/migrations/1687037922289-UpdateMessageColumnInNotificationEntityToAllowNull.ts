@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateMessageColumnInNotificationEntityToAllowNull1687037922289
-  implements MigrationInterface
-{
+export class UpdateMessageColumnInNotificationEntityToAllowNull1687037922289 implements MigrationInterface {
   name = 'UpdateMessageColumnInNotificationEntityToAllowNull1687037922289';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

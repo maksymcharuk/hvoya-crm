@@ -5,9 +5,7 @@ import { OrderEntity } from '../../../entities/order.entity';
 import { DeliveryStatus } from '../../../enums/delivery-status.enum';
 import { OrderStatus } from '../../../enums/order-status.enum';
 
-export class UpdateOrderDevlieryStatusesToBeConsistentWithOrderStatuses1689285413653
-  implements MigrationInterface
-{
+export class UpdateOrderDevlieryStatusesToBeConsistentWithOrderStatuses1689285413653 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     // update orders delivery status to match order status
     const orders = await queryRunner.manager.find(OrderEntity, {

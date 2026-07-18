@@ -5,7 +5,8 @@ import {
   // ConnectedSocket,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  OnGatewayInit, // SubscribeMessage,
+  OnGatewayInit,
+  // SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';

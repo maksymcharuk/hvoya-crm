@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddProductSizeTableAndUpdateProductPropertiesTable1678565059139
-  implements MigrationInterface
-{
+export class AddProductSizeTableAndUpdateProductPropertiesTable1678565059139 implements MigrationInterface {
   name = 'AddProductSizeTableAndUpdateProductPropertiesTable1678565059139';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

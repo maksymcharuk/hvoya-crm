@@ -5,9 +5,7 @@ import { BalanceEntity } from '../../../entities/balance.entity';
 import { PaymentTransactionEntity } from '../../../entities/payment-transaction.entity';
 import { TransactionStatus } from '../../../enums/transaction-status.enum';
 
-export class PopulateNetBalanceToExistingPaymentTransactions1699481047081
-  implements MigrationInterface
-{
+export class PopulateNetBalanceToExistingPaymentTransactions1699481047081 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const balances = await queryRunner.manager.find(BalanceEntity);
 

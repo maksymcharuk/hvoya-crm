@@ -91,9 +91,18 @@ Order matters; ship and verify each step in production before the next:
    serve-static 4, event-emitter 2, mapped-types 2, nest-winston 1.10;
    zero code changes needed; verified locally incl. WebSocket handshake —
    pending production deploy + watch before step 3)
-3. NestJS 10 → 11
+3. NestJS 10 → 11 ✅ Done 2026-07-18 (Nest 11.1 + Express 5, config 4,
+   axios 4, schedule 6, serve-static 5, cache-manager 3/6, event-emitter 3,
+   jwt/passport/typeorm adapters 11, reflect-metadata 0.2; prettier 2 → 3
+   toolchain forced by @nestjs/schematics 11 — one-time ~78-file mechanical
+   reformat; only code change: `forRoutes('*')` → `'{*splat}'`; verified
+   locally incl. SPA fallback, cache interceptor, WS handshake, migrations
+   CLI — pending production deploy + watch before step 4)
 4. Remaining stragglers afterwards: `class-validator`/`class-transformer`,
-   `socket.io` alignment, `helmet`, `express-rate-limit`
+   `socket.io` alignment, `helmet`, `typeorm` 0.3.15 → latest 0.3.x (kept
+   back during the Nest 11 step to isolate risk), `newrelic` agent 10 →
+   current (10.1.2 works on Node 22 but logs "not tested"), and remove
+   `express-rate-limit` (unused in src — dead dependency)
 5. After each step: build, deploy, watch `/api/health` + New Relic errors,
    click through auth → orders → balance manually
 

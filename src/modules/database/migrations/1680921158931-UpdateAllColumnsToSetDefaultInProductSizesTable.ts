@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateAllColumnsToSetDefaultInProductSizesTable1680921158931
-  implements MigrationInterface
-{
+export class UpdateAllColumnsToSetDefaultInProductSizesTable1680921158931 implements MigrationInterface {
   name = 'UpdateAllColumnsToSetDefaultInProductSizesTable1680921158931';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

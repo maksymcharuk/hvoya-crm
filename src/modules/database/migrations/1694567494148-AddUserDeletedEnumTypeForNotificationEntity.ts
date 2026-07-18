@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddUserDeletedEnumTypeForNotificationEntity1694567494148
-  implements MigrationInterface
-{
+export class AddUserDeletedEnumTypeForNotificationEntity1694567494148 implements MigrationInterface {
   name = 'AddUserDeletedEnumTypeForNotificationEntity1694567494148';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
