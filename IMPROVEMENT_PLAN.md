@@ -3,7 +3,7 @@
 Constraints: single existing droplet (no new recurring costs), no test suite work
 for now, no staging environment — "staging" mentions get cleaned up instead.
 
-## Phase 0 — Quick wins (one evening)
+## Phase 0 — Quick wins (one evening) ✅ Done 2026-07-17
 
 1. **Real health endpoint.** Add `GET /api/health` (checks DB connectivity,
    returns version/uptime). Point `deploy/remote.sh`'s health check at it
@@ -21,10 +21,17 @@ for now, no staging environment — "staging" mentions get cleaned up instead.
    (`@types/axios`, `@types/winston`, `@types/joi`), bump `@types/node` to 22
    to match production Node, replace `rimraf` v3 usage.
 
-## Phase 1 — Build in CI, not on the droplet (one weekend)
+## Phase 1 — Build in CI, not on the droplet (one weekend) ✅ Done 2026-07-17
 
 The droplet should never build again — the 2026-07-17 outage was an Angular
 build eating all RAM on the production box.
+
+Implemented: `.github/workflows/deploy.yml` (build + artifact deploy) and
+`deploy/remote-artifact.sh` (no-build server script using
+`migrations:run:prod` / `db:backup:prod` against compiled `dist/`).
+Remaining manual steps (GitHub settings, see `deploy/README.md`):
+add the `DEPLOY_SSH_KEY` repo secret, switch the default branch to `dev`,
+add the `master` ruleset.
 
 0. **Branch model: `dev` (default) + `master` (releases).** Daily work goes
    to `dev`; `master` only receives deliberate merges from `dev`, and a push

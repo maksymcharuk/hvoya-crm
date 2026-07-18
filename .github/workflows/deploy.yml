@@ -1,0 +1,92 @@
+# Builds backend + client on GitHub's runners and ships the compiled bundle
+# to the droplet — the droplet itself never builds (see IMPROVEMENT_PLAN.md
+# Phase 1; the 2026-07-17 outage was an Angular build eating all RAM on the
+# production box).
+#
+# A push to master means "release". Setup required once:
+#   - repo secret DEPLOY_SSH_KEY: private key whose public half is in
+#     ~charuk/.ssh/authorized_keys on the droplet (see deploy/README.md)
+#
+# Manual fallback if GitHub is down: ./deploy/deploy.sh (build-on-server).
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# One deploy at a time; never cancel a deploy that is already touching the
+# server — queue behind it instead.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  DEPLOY_USER: charuk
+  DEPLOY_HOST: 164.90.184.112
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+
+      - name: Install backend dependencies
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
+
+      - name: Build backend
+        run: npm run build
+
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
+
+      - name: Build client
+        working-directory: client
+        run: npm run build
+
+      - name: Bundle release
+        run: |
+          tar -czf release.tar.gz \
+            dist \
+            client/dist \
+            package.json \
+            package-lock.json \
+            ecosystem.config.js \
+            newrelic.js \
+            resources
+
+      - name: Keep bundle as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.sha }}
+          path: release.tar.gz
+          retention-days: 14
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+
+      - name: Upload bundle to server
+        run: |
+          scp -i ~/.ssh/deploy_key release.tar.gz \
+            "$DEPLOY_USER@$DEPLOY_HOST:/tmp/hvoya-release-${{ github.run_id }}.tar.gz"
+
+      - name: Deploy on server
+        run: |
+          ssh -i ~/.ssh/deploy_key "$DEPLOY_USER@$DEPLOY_HOST" \
+            "RELEASE_TARBALL=/tmp/hvoya-release-${{ github.run_id }}.tar.gz bash -s" \
+            < deploy/remote-artifact.sh
