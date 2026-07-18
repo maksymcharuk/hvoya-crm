@@ -136,7 +136,7 @@ PORT=$(grep -E '^PORT=' "$BASE/shared/env/.env" | head -1 | cut -d= -f2 | tr -d 
 PORT=${PORT:-3000}
 healthy=0
 for _ in $(seq 1 30); do
-  if curl -sf -o /dev/null "http://127.0.0.1:$PORT/"; then
+  if curl -sf -o /dev/null "http://127.0.0.1:$PORT/api/health"; then
     healthy=1
     break
   fi

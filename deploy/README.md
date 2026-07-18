@@ -23,8 +23,9 @@ built and migrated:
 Deploy steps (`remote.sh`): fetch → checkout release → link shared config →
 `npm install` + build backend & client → **DB backup to S3** → migrations →
 switch `current` symlink → `pm2 startOrReload` → health check → prune old
-releases. If the health check fails, the symlink is switched back to the
-previous release automatically.
+releases. The health check polls `GET /api/health`, which verifies DB
+connectivity (not just static file serving). If it fails, the symlink is
+switched back to the previous release automatically.
 
 Downtime is eliminated by two things:
 
@@ -125,14 +126,29 @@ schema.
 
 ## DB backups
 
-- Nightly cron inside the app + before every deploy, uploaded to S3.
-- Retention: the **15 newest** `backup-*.dump` objects are kept; older ones
+- Cron inside the app every **6 hours** + before every deploy, uploaded to S3.
+- Retention: the **28 newest** `backup-*.dump` objects are kept (≈ 7 days of
+  scheduled dumps); older ones
   are deleted after each successful upload
   (`DatabaseService.cleanupOldBackups`, `backupsToKeep` in
   `src/modules/database/services/database.service.ts`).
 - Restore: `npm run db:restore` (downloads the newest dump).
 
 ## Monitoring & logs
+
+### Uptime (external)
+
+New Relic runs on the droplet, so it dies with the box — it cannot alert on
+"the whole droplet is down" (as seen 2026-07-17). External uptime monitoring
+covers that gap. **UptimeRobot free tier** (manual, one-time setup):
+
+1. Create a free account at <https://uptimerobot.com>.
+2. Add an HTTP(s) monitor for `https://sales.hvoya.com/api/health`,
+   interval 5 minutes.
+3. Add an email alert contact. The endpoint returns 503 when the DB is
+   unreachable, so DB outages alert too, not just full-box outages.
+
+### APM & logs
 
 **New Relic** (free tier: 100 GB/month ingest, APM + log management + alerts)
 is the recommended option and stays. The previous integration had two bugs
